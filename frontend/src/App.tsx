@@ -1,8 +1,5 @@
-import { useState } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
-
-function App() {
+const App = () => {
   return <></>;
-}
+};
 
 export default App;
