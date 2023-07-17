@@ -10,24 +10,26 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
+@Getter
 public class Location extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String parcelBaseAddress; // 지번 주소
+    private String parcelBaseAddress;
     @Column(nullable = false)
-    private String roadBaseAddress; // 도로명 주소
+    private String roadBaseAddress;
     @Embedded
-    private Coordinate coordinate; // 위도, 경도
+    private Coordinate coordinate;
     @ManyToOne
     @JoinColumn(name = "legal_dong_id", nullable = false)
-    private LegalDong legalDong; // 법정동
+    private LegalDong legalDong;
 
     public Location(
             Long id,
