@@ -11,6 +11,7 @@ export type BoxProps = {
   backgroundColor?: colorThemeKey;
   border?: string;
   overflow?: string;
+  minHeight?: string;
   color?: colorThemeKey;
 };
 
@@ -23,6 +24,7 @@ const Box = styled.div<BoxProps>`
   width: ${({ width }) => width};
   height: ${({ height }) => height};
   border: ${({ border }) => border};
+  min-height: ${({ minHeight }) => minHeight};
   overflow: ${({ overflow }) => overflow};
 `;
 

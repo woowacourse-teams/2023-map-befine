@@ -10,6 +10,7 @@ const Layout = ({ children }: LayoutProps) => {
     <Flex
       flexDirection="column"
       width="400px"
+      minHeight="100vh"
       backgroundColor="lightGray"
       padding={4}
     >
