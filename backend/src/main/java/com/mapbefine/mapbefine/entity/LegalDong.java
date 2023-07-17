@@ -24,7 +24,7 @@ public class LegalDong extends BaseEntity {
     private Long id;
     private String name;
     @ManyToOne
-    @JoinColumn(name = "gu_gun_id")
+    @JoinColumn(name = "gu_gun_id", nullable = false)
     private GuGun guGun;
     @OneToMany(mappedBy = "legalDong")
     private List<Location> addresses = new ArrayList<>();

@@ -13,9 +13,11 @@ import jakarta.persistence.OneToMany;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
+@ToString
 @Getter
 public class GuGun extends BaseEntity {
 
@@ -25,7 +27,7 @@ public class GuGun extends BaseEntity {
     @Column(nullable = false)
     private String name;
     @ManyToOne
-    @JoinColumn(name = "city_do_id")
+    @JoinColumn(name = "city_do_id", nullable = false)
     private CityDo cityDo;
     @OneToMany(mappedBy = "guGun")
     private List<LegalDong> legalDong;
