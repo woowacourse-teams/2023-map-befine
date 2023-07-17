@@ -50,7 +50,8 @@ const Button = styled.button<ButtonProps>`
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   border-radius: ${({ theme }) => theme.radius.small};
   padding: ${({ theme }) => theme.spacing['2']} ${({ theme }) => theme.spacing['3']};
-
+  box-sizing: border-box;
+  
   &:hover{
     background-color: ${({ variant }) => variants[variant].pseudoClass.hover.backgroundColor};
     color: ${({ variant }) => variants[variant].pseudoClass.hover.color};
