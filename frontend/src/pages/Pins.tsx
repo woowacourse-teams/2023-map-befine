@@ -2,6 +2,7 @@ import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
 import PinPreview from '../components/common/PinPreview';
 import Topic from '../components/common/Topic';
+import { Fragment } from 'react';
 
 const data = [
   {
@@ -53,9 +54,8 @@ const Pins = () => {
       {data &&
         data.map((value) => {
           return (
-            <>
+            <Fragment key={value.topic.topicTitle}>
               <Topic
-                key={value.topic.topicTitle}
                 topicParticipant={value.topic.topicParticipant}
                 pinNumber={value.topic.pinNumber}
                 topicTitle={value.topic.topicTitle}
@@ -66,18 +66,17 @@ const Pins = () => {
 
               {value.pin.map((info) => {
                 return (
-                  <>
+                  <Fragment key={info.pinTitle}>
                     <PinPreview
-                      key={info.pinTitle}
                       pinTitle={info.pinTitle}
                       pinLocation={info.pinLocation}
                       pinInformation={info.pinInformation}
                     />
                     <Space size={3} />
-                  </>
+                  </Fragment>
                 );
               })}
-            </>
+            </Fragment>
           );
         })}
 

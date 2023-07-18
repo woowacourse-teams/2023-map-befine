@@ -4,6 +4,7 @@ import TopicCard from '../components/common/TopicCard';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
+import { Fragment } from 'react';
 
 const data = [
   {
@@ -34,15 +35,14 @@ const Home = () => {
       {data &&
         data.map((topic, index) => {
           return (
-            <>
+            <Fragment key={index}>
               <TopicCard
-                key={index}
                 topicEmoji={topic.topicEmoji}
                 topicTitle={topic.topicTitle}
                 topicInformation={topic.topicInformation}
               />
               <Space size={4} />
-            </>
+            </Fragment>
           );
         })}
 
