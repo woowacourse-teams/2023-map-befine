@@ -1,0 +1,28 @@
+name: "feat"
+description: "기능 추가 시"
+labels: "feat"
+body:
+  - type: textarea
+    attributes:
+      label: 📄 작업 대상
+      description: 작업할 기능에 대한 설명을 작성해 주세요.
+      placeholder: 자세히 적을수록 좋습니다!
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: ✅ 작업 내용
+      description: 기능 구현에 대한 Tasks를 작성해 주세요.
+      placeholder: 최대한 세분화 해서 적어주세요!
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 📎 참고 자료
+      description: 새로운 기능에 대한 참고 자료가 있다면 URL을 작성해 주세요.
+  - type: textarea
+    attributes:
+      label: ⏰ 추정 시간
+      description: 새로운 기능을 추가하기 위한 추정 시간(비관적 추정, 낙관적 추정)에 대해 작성해주세요.
+    validations:
+      required: true
