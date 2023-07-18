@@ -31,7 +31,7 @@ const Box = styled.div<BoxProps>`
   background-color: ${({ $backgroundColor }) =>
     $backgroundColor && theme.color[$backgroundColor]};
   color: ${({ color }) => color && theme.color[color]};
-  padding: ${({ padding }) => padding && (theme.spacing[padding] as string)};
+  padding: ${({ padding }) => padding && theme.spacing[Number(padding)]};
   width: ${({ width }) => width};
   height: ${({ height }) => height};
   border: ${({ border }) => border};
