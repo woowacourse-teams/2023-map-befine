@@ -3,13 +3,13 @@ import Flex from '../Flex';
 import Text from '../Text';
 
 export interface TopicCardProps {
-  topicImoge: string;
+  topicEmoji: string;
   topicTitle: string;
   topicInformation: string;
 }
 
 const TopicCard = ({
-  topicImoge,
+  topicEmoji,
   topicTitle,
   topicInformation,
 }: TopicCardProps) => {
@@ -22,11 +22,11 @@ const TopicCard = ({
       alignItems="center"
       justifyContent="center"
       backgroundColor="whiteGray"
-      borderRadius='small'
+      borderRadius="small"
     >
       <TopicCardButton></TopicCardButton>
       <Text color="black" fontSize="extraLarge" fontWeight="normal">
-        {topicImoge}
+        {topicEmoji}
       </Text>
       <Text color="black" fontSize="medium" fontWeight="normal">
         {topicTitle}
@@ -37,21 +37,6 @@ const TopicCard = ({
     </Flex>
   );
 };
-
-// const TopicCardContainer = styled.div`
-//   width: 360px;
-//   height: 140px;
-
-//   position: relative;
-
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-
-//   background-color: ${({ theme }) => theme.color.whiteGray};
-//   box-shadow: 1px 4px 2px 1px ${({ theme }) => theme.color.lightGray};
-// `;
 
 const TopicCardButton = styled.button`
   width: 16px;
