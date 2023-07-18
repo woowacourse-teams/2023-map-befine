@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Coordinate {
 
+    private static final BigDecimal DUPLICATE_STANDARD_DISTANCE = BigDecimal.valueOf(0.0001);
     private static final BigDecimal UNIT_FOR_CONVERT_CENTIMETER = BigDecimal.valueOf(Math.pow(10, 7));
     @Column(precision = 18, scale = 15)
     private BigDecimal latitude;
@@ -49,6 +50,15 @@ public class Coordinate {
         BigDecimal squaredWidth = width.pow(2);
 
         return squaredWidth.add(squaredHeight).sqrt(MathContext.DECIMAL64);
+    }
+
+    public boolean isDuplicateCoordinate(Coordinate otherCoordinate) {
+        return calculateDistance(otherCoordinate).doubleValue()
+                <= convertToCentimeter(DUPLICATE_STANDARD_DISTANCE).doubleValue();
+    }
+
+    public static BigDecimal getDuplicateStandardDistance() {
+        return DUPLICATE_STANDARD_DISTANCE;
     }
 
 }
