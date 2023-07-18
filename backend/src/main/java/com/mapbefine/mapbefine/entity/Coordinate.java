@@ -4,11 +4,13 @@ import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Embeddable;
 import java.math.BigDecimal;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)
-public class Coordinate extends BaseEntity {
+@Getter
+public class Coordinate {
 
     private BigDecimal latitude;
     private BigDecimal longitude;
