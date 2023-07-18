@@ -1,11 +1,13 @@
 package com.mapbefine.mapbefine.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mapbefine.mapbefine.dto.TopicCreateMergeDto;
 import com.mapbefine.mapbefine.dto.TopicCreateNewDto;
 import com.mapbefine.mapbefine.dto.TopicDto;
 import com.mapbefine.mapbefine.entity.Topic;
@@ -40,6 +42,22 @@ public class TopicCommandService {
 		return userPins.stream()
 			.map(original -> UserPin.duplicate(original, topic))
 			.collect(Collectors.toList());
+	}
+
+	public TopicDto createMerge(TopicCreateMergeDto topicCreateMergeDto) {
+		List<Topic> topics = topicRepository.findAllById(topicCreateMergeDto.topics());
+
+		Topic topic = new Topic(topicCreateMergeDto.name(), topicCreateMergeDto.description());
+		topicRepository.save(topic);
+
+		List<UserPin> original = topics.stream()
+			.map(Topic::getUserPins)
+			.flatMap(Collection::stream)
+			.collect(Collectors.toList());
+		List<UserPin> userPins = duplicateUserPins(original, topic);
+		userPinRepository.saveAll(userPins);
+
+		return TopicDto.from(topic);
 	}
 
 }
