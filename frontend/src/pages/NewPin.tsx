@@ -18,8 +18,8 @@ const NewPin = ({ topicName }: NewPinProps) => {
   return (
     <form onSubmit={onSubmit}>
       <Space size={6} />
-      <Flex flexDirection="column">
-        <Text color="black" fontSize="large" fontWeight="bold">
+      <Flex $flexDirection="column">
+        <Text color="black" $fontSize="large" $fontWeight="bold">
           핀 추가
         </Text>
 
@@ -27,11 +27,11 @@ const NewPin = ({ topicName }: NewPinProps) => {
 
         <Box>
           <Flex>
-            <Text color="black" fontSize="default" fontWeight="normal">
+            <Text color="black" $fontSize="default" $fontWeight="normal">
               토픽 선택
             </Text>
             <Space size={0} />
-            <Text color="primary" fontSize="extraSmall" fontWeight="normal">
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
               *
             </Text>
           </Flex>
@@ -43,11 +43,11 @@ const NewPin = ({ topicName }: NewPinProps) => {
 
         <Box>
           <Flex>
-            <Text color="black" fontSize="default" fontWeight="normal">
+            <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 이름
             </Text>
             <Space size={0} />
-            <Text color="primary" fontSize="extraSmall" fontWeight="normal">
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
               *
             </Text>
           </Flex>
@@ -59,11 +59,11 @@ const NewPin = ({ topicName }: NewPinProps) => {
 
         <Box>
           <Flex>
-            <Text color="black" fontSize="default" fontWeight="normal">
+            <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 위치
             </Text>
             <Space size={0} />
-            <Text color="primary" fontSize="extraSmall" fontWeight="normal">
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
               *
             </Text>
           </Flex>
@@ -75,11 +75,11 @@ const NewPin = ({ topicName }: NewPinProps) => {
 
         <Box>
           <Flex>
-            <Text color="black" fontSize="default" fontWeight="normal">
+            <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 설명
             </Text>
             <Space size={0} />
-            <Text color="primary" fontSize="extraSmall" fontWeight="normal">
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
               *
             </Text>
           </Flex>
@@ -89,9 +89,11 @@ const NewPin = ({ topicName }: NewPinProps) => {
 
         <Space size={6} />
 
-        <Flex justifyContent="end">
+        <Flex $justifyContent="end">
+          {/* TODO: (prev) topics/${topicId} */}
           <Button variant="primary">추가하기</Button>
           <Space size={3} />
+          {/* TODO: prev page */}
           <Button variant="secondary">취소하기</Button>
         </Flex>
       </Flex>

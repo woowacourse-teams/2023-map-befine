@@ -1,11 +1,10 @@
 import { styled } from 'styled-components';
-import Flex from '../Flex';
-import Spacing from '../Space';
-import Text from '../Text';
-import Clipping from '../../../assets/clipping.svg';
-import Share from '../../../assets/share.svg';
-import Button from '../Button';
-import Space from '../Space';
+import Flex from '../common/Flex';
+import Text from '../common/Text';
+import Clipping from '../../assets/clipping.svg';
+import Share from '../../assets/share.svg';
+import Button from '../common/Button';
+import Space from '../common/Space';
 
 export interface TopicCardProps {
   topicParticipant: string;
@@ -15,7 +14,7 @@ export interface TopicCardProps {
   topicDescription: string;
 }
 
-const Topic = ({
+const TopicInfo = ({
   topicParticipant,
   pinNumber,
   topicTitle,
@@ -27,30 +26,30 @@ const Topic = ({
       width="360px"
       height="195px"
       position="relative"
-      flexDirection="column"
-      backgroundColor="white"
-      borderBottom="1px solid #E7E7E7"
+      $flexDirection="column"
+      $backgroundColor="white"
+      $borderBottom="1px solid #E7E7E7"
     >
       <Flex>
-        <Text color="gray" fontSize="small" fontWeight="normal">
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
           {topicParticipant}
         </Text>
         <Space size={2} />
-        <Text color="gray" fontSize="small" fontWeight="normal">
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
           {pinNumber}
         </Text>
       </Flex>
-      <Text color="black" fontSize="large" fontWeight="bold">
+      <Text color="black" $fontSize="large" $fontWeight="bold">
         {topicTitle}
       </Text>
-      <Text color="black" fontSize="small" fontWeight="normal">
+      <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicOwner}
       </Text>
-      <Text color="gray" fontSize="small" fontWeight="normal">
+      <Text color="gray" $fontSize="small" $fontWeight="normal">
         {topicDescription}
       </Text>
       <Space size={2} />
-      <Flex justifyContent="space-between">
+      <Flex $justifyContent="space-between">
         <Flex>
           <Clipping />
           <Space size={2} />
@@ -80,4 +79,4 @@ const PinButton = styled.button`
   }
 `;
 
-export default Topic;
+export default TopicInfo;

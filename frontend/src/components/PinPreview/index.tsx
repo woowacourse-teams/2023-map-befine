@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
-import Flex from '../Flex';
-import Spacing from '../Space';
-import Text from '../Text';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Text from '../common/Text';
 
 export interface TopicCardProps {
   pinTitle: string;
@@ -19,19 +19,19 @@ const PinPreview = ({
       width="360px"
       height="150px"
       position="relative"
-      flexDirection="column"
-      backgroundColor="white"
-      borderBottom="1px solid #E7E7E7"
+      $flexDirection="column"
+      $backgroundColor="white"
+      $borderBottom="1px solid #E7E7E7"
     >
       <PinButton></PinButton>
-      <Text color="black" fontSize="default" fontWeight="bold">
+      <Text color="black" $fontSize="default" $fontWeight="bold">
         {pinTitle}
       </Text>
-      <Text color="gray" fontSize="small" fontWeight="normal">
+      <Text color="gray" $fontSize="small" $fontWeight="normal">
         {pinLocation}
       </Text>
-      <Spacing size={3} />
-      <Text color="black" fontSize="small" fontWeight="normal">
+      <Space size={3} />
+      <Text color="black" $fontSize="small" $fontWeight="normal">
         {pinInformation}
       </Text>
     </Flex>

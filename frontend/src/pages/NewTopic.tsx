@@ -39,8 +39,8 @@ const NewTopic = () => {
   return (
     <form onSubmit={onSubmit}>
       <Space size={6} />
-      <Flex flexDirection="column">
-        <Text color="black" fontSize="large" fontWeight="bold">
+      <Flex $flexDirection="column">
+        <Text color="black" $fontSize="large" $fontWeight="bold">
           토픽 생성
         </Text>
 
@@ -48,16 +48,16 @@ const NewTopic = () => {
 
         <Box>
           <Flex>
-            <Text color="black" fontSize="default" fontWeight="normal">
+            <Text color="black" $fontSize="default" $fontWeight="normal">
               토픽 아이콘
             </Text>
             <Space size={0} />
-            <Text color="primary" fontSize="extraSmall" fontWeight="normal">
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
               *
             </Text>
           </Flex>
           <Space size={0} />
-          <Flex justifyContent="space-between">
+          <Flex $justifyContent="space-between">
             {icons.map((icon, idx) => (
               <Fragment key={idx}>
                 <TopicIcon
@@ -75,11 +75,11 @@ const NewTopic = () => {
 
         <Box>
           <Flex>
-            <Text color="black" fontSize="default" fontWeight="normal">
+            <Text color="black" $fontSize="default" $fontWeight="normal">
               토픽 이름
             </Text>
             <Space size={0} />
-            <Text color="primary" fontSize="extraSmall" fontWeight="normal">
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
               *
             </Text>
           </Flex>
@@ -91,11 +91,11 @@ const NewTopic = () => {
 
         <Box>
           <Flex>
-            <Text color="black" fontSize="default" fontWeight="normal">
+            <Text color="black" $fontSize="default" $fontWeight="normal">
               한 줄 설명
             </Text>
             <Space size={0} />
-            <Text color="primary" fontSize="extraSmall" fontWeight="normal">
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
               *
             </Text>
           </Flex>
@@ -105,9 +105,11 @@ const NewTopic = () => {
 
         <Space size={6} />
 
-        <Flex justifyContent="end">
+        <Flex $justifyContent="end">
+          {/* TODO: topics/${topicId} */}
           <Button variant="primary">생성하기</Button>
           <Space size={3} />
+          {/* TODO: prev page */}
           <Button variant="secondary">취소하기</Button>
         </Flex>
       </Flex>
