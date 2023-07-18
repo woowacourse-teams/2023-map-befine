@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.entity.Coordinate;
 import com.mapbefine.mapbefine.entity.Location;
-import com.mapbefine.mapbefine.entity.Pin;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
@@ -31,7 +30,6 @@ class PinRepositoryTest {
         BigDecimal distance = BigDecimal.valueOf(0.0001);
         Coordinate coordinate = new Coordinate(latitude, longitude);
         Location location = new Location(
-                null,
                 "parcel",
                 "road",
                 coordinate,
@@ -63,7 +61,6 @@ class PinRepositoryTest {
         BigDecimal distance = BigDecimal.valueOf(0.0001);
         Coordinate coordinate = new Coordinate(latitude, longitude);
         Location location = new Location(
-                null,
                 "parcel",
                 "road",
                 coordinate,
