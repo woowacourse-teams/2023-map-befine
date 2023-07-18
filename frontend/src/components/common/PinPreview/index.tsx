@@ -19,19 +19,19 @@ const PinPreview = ({
       width="360px"
       height="150px"
       position="relative"
-      flexDirection="column"
-      backgroundColor="white"
-      borderBottom="1px solid #E7E7E7"
+      $flexDirection="column"
+      $backgroundColor="white"
+      $borderBottom="1px solid #E7E7E7"
     >
       <PinButton></PinButton>
-      <Text color="black" fontSize="default" fontWeight="bold">
+      <Text color="black" $fontSize="default" $fontWeight="bold">
         {pinTitle}
       </Text>
-      <Text color="gray" fontSize="small" fontWeight="normal">
+      <Text color="gray" $fontSize="small" $fontWeight="normal">
         {pinLocation}
       </Text>
       <Spacing size={3} />
-      <Text color="black" fontSize="small" fontWeight="normal">
+      <Text color="black" $fontSize="small" $fontWeight="normal">
         {pinInformation}
       </Text>
     </Flex>

@@ -18,20 +18,20 @@ const TopicCard = ({
       width="360px"
       height="140px"
       position="relative"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      backgroundColor="whiteGray"
-      borderRadius="small"
+      $flexDirection="column"
+      $alignItems="center"
+      $justifyContent="center"
+      $backgroundColor="whiteGray"
+      $borderRadius="small"
     >
       <TopicCardButton></TopicCardButton>
-      <Text color="black" fontSize="extraLarge" fontWeight="normal">
+      <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
         {topicEmoji}
       </Text>
-      <Text color="black" fontSize="medium" fontWeight="normal">
+      <Text color="black" $fontSize="medium" $fontWeight="normal">
         {topicTitle}
       </Text>
-      <Text color="gray" fontSize="small" fontWeight="normal">
+      <Text color="gray" $fontSize="small" $fontWeight="normal">
         {topicInformation}
       </Text>
     </Flex>

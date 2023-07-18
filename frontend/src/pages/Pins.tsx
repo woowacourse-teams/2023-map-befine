@@ -50,7 +50,7 @@ const data = [
 
 const Pins = () => {
   return (
-    <Flex flexDirection="column">
+    <Flex $flexDirection="column">
       {data &&
         data.map((value) => {
           return (

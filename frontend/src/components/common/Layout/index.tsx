@@ -8,14 +8,14 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <Flex
-      flexDirection="column"
+      $flexDirection="column"
       width="400px"
-      minHeight="100vh"
-      backgroundColor="white"
+      $minHeight="100vh"
+      $backgroundColor="white"
       padding={4}
     >
       <Input />
-      <Flex flexDirection="column" overflow="scroll">
+      <Flex $flexDirection="column" overflow="scroll">
         {children}
       </Flex>
     </Flex>

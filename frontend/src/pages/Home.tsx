@@ -28,7 +28,7 @@ const Home = () => {
   return (
     <Box position="relative">
       <Space size={6} />
-      <Text color="black" fontSize="large" fontWeight="bold">
+      <Text color="black" $fontSize="large" $fontWeight="bold">
         내 주변 인기 있는 토픽
       </Text>
       <Space size={2} />
