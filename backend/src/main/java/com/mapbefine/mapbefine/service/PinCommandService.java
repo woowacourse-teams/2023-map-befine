@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.service;
 
-import com.mapbefine.mapbefine.dto.UserPinRequest;
+import com.mapbefine.mapbefine.dto.PinCreationRequest;
 import com.mapbefine.mapbefine.entity.Coordinate;
 import com.mapbefine.mapbefine.entity.Location;
 import com.mapbefine.mapbefine.entity.Pin;
@@ -30,7 +30,7 @@ public class PinCommandService {
         this.topicRepository = topicRepository;
     }
 
-    public Long save(UserPinRequest userPinRequest) {
+    public Long save(PinCreationRequest request) {
 
         // 기존 Pin 이 등록된 위치가 아니면
         // Pin 등록
@@ -50,8 +50,8 @@ public class PinCommandService {
         // 주소까지 동일하다면 해당 Pin 사용
         // select p from Pin p where p.longitude > :longitude - 0.0001 and p.longitude < longitude + 0.0001 and p.latitude - 0.0001 ㅅㅂ이따가해
 
-        Coordinate coordinate = new Coordinate(userPinRequest.latitude(), userPinRequest.longitude());
-        Topic topic = topicRepository.findById(userPinRequest.topicId())
+        Coordinate coordinate = new Coordinate(request.latitude(), request.longitude());
+        Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
 
         Location pinLocation = locationRepository.findAllByRectangle(
@@ -61,25 +61,23 @@ public class PinCommandService {
                 )
                 .stream()
                 .filter(location -> location.getCoordinate().isDuplicateCoordinate(coordinate))
-                .filter(location -> location.getRoadBaseAddress().equals(userPinRequest.address()))
+                .filter(location -> location.getRoadBaseAddress().equals(request.address()))
                 .findFirst()
-                .orElseGet(() -> saveLocation(userPinRequest, coordinate));
+                .orElseGet(() -> saveLocation(request, coordinate));
 
-        Pin pin = new Pin(userPinRequest.name(), userPinRequest.description(), pinLocation, topic);
+        Pin pin = new Pin(request.name(), request.description(), pinLocation, topic);
 
         return pinRepository.save(pin).getId();
     }
 
-    private Location saveLocation(UserPinRequest userPinRequest, Coordinate coordinate) {
+    private Location saveLocation(PinCreationRequest pinCreationRequest, Coordinate coordinate) {
         Location location = new Location(
-                userPinRequest.address(),
-                userPinRequest.address(),
+                pinCreationRequest.address(),
+                pinCreationRequest.address(),
                 coordinate,
-                userPinRequest.legalDongCode()
+                pinCreationRequest.legalDongCode()
         );
 
         return locationRepository.save(location);
     }
-
-
 }
