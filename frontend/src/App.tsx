@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Layout from './components/common/Layout';
 import Home from './pages/Home';
 import PinDetail from './pages/PinDetail';
-import Topics from './pages/Topics';
+import Pins from './pages/Pins';
 
 const App = () => {
   return (
@@ -10,7 +10,7 @@ const App = () => {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="topics/:topicId" element={<Topics />} />
+          <Route path="topics/:topicId" element={<Pins />} />
         </Routes>
       </Layout>
     </>
