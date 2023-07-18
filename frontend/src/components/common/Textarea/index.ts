@@ -1,25 +1,21 @@
 import { styled } from 'styled-components';
 
-const Input = styled.input`
+const Textarea = styled.textarea`
+  width: 100%;
+  height: 100px;
   color: ${({ theme }) => theme.color.black};
   border: 1px solid ${({ theme }) => theme.color.black};
+  border-radius: ${({ theme }) => theme.radius.small};
   padding: ${({ theme }) => theme.spacing['2']};
   box-sizing: border-box;
-  outline: none;
-  width: 100%;
-  height: 52px;
   font-size: ${({ theme }) => theme.fontSize.small};
-  border-radius: ${({ theme }) => theme.radius.small};
+  resize: none;
+  letter-spacing: -0.3%;
+  line-height: 160%;
 
   &::placeholder {
     color: ${({ theme }) => theme.color.gray};
   }
-
-  input[type='number']::-webkit-outer-spin-button,
-  input[type='number']::-webkit-inner-spin-button {
-    appearance: none;
-    margin: 0;
-  }
 `;
 
-export default Input;
+export default Textarea;
