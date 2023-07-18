@@ -34,7 +34,7 @@ const TopicCard = ({
       $backgroundColor="whiteGray"
       $borderRadius="small"
     >
-      <TopicCardButton></TopicCardButton>
+      <MultiSelectButton></MultiSelectButton>
       <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
         {topicEmoji}
       </Text>
@@ -48,7 +48,7 @@ const TopicCard = ({
   );
 };
 
-const TopicCardButton = styled.button`
+const MultiSelectButton = styled.button`
   width: 16px;
   height: 16px;
 
