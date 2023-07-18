@@ -11,7 +11,7 @@ const Layout = ({ children }: LayoutProps) => {
       flexDirection="column"
       width="400px"
       minHeight="100vh"
-      backgroundColor="lightGray"
+      backgroundColor="white"
       padding={4}
     >
       <Input />

@@ -48,5 +48,4 @@ const Box = styled.div<BoxProps>`
   border-bottom:${({ borderBottom }) => borderBottom};
   border-left:${({ borderLeft }) => borderLeft};
 `;
-
 export default Box;
