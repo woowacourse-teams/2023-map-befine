@@ -1,11 +1,10 @@
 import { styled } from 'styled-components';
-import Flex from '../Flex';
-import Spacing from '../Space';
-import Text from '../Text';
-import Clipping from '../../../assets/clipping.svg';
-import Share from '../../../assets/share.svg';
-import Button from '../Button';
-import Space from '../Space';
+import Flex from '../common/Flex';
+import Text from '../common/Text';
+import Clipping from '../../assets/clipping.svg';
+import Share from '../../assets/share.svg';
+import Button from '../common/Button';
+import Space from '../common/Space';
 
 export interface TopicCardProps {
   topicParticipant: string;

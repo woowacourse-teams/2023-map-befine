@@ -1,6 +1,6 @@
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import TopicCard from '../components/common/TopicCard';
+import TopicCard from '../components/TopicCard';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';

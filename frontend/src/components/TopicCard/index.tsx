@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
-import Flex from '../Flex';
-import Text from '../Text';
+import Flex from '../common/Flex';
+import Text from '../common/Text';
 
 export interface TopicCardProps {
   topicEmoji: string;

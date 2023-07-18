@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
-import Flex from '../Flex';
-import Spacing from '../Space';
-import Text from '../Text';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Text from '../common/Text';
 
 export interface TopicCardProps {
   pinTitle: string;
@@ -30,7 +30,7 @@ const PinPreview = ({
       <Text color="gray" $fontSize="small" $fontWeight="normal">
         {pinLocation}
       </Text>
-      <Spacing size={3} />
+      <Space size={3} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {pinInformation}
       </Text>

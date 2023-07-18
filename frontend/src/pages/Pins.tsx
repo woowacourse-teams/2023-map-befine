@@ -1,7 +1,7 @@
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
-import PinPreview from '../components/common/PinPreview';
-import Topic from '../components/common/Topic';
+import PinPreview from '../components/PinPreview';
+import Topic from '../components/Topic';
 import { Fragment } from 'react';
 
 const data = [
