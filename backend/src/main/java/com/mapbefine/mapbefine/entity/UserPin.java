@@ -54,4 +54,14 @@ public class UserPin extends BaseEntity {
         this.topic = topic;
     }
 
+    public static UserPin duplicate(UserPin userPin, Topic topic) {
+        return new UserPin(
+            null,
+            userPin.getName(),
+            userPin.getDescription(),
+            userPin.getPin(),
+            topic
+        );
+    }
+
 }
