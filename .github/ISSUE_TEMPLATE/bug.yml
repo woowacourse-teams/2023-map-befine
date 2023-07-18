@@ -1,0 +1,44 @@
+name: "bug"
+description: "버그 발생 시"
+labels: "bug"
+body:
+  - type: textarea
+    attributes:
+      label: 🐞버그 설명
+      description: 버그에 대한 설명을 작성해 주세요.
+      placeholder: 자세히 적을수록 좋습니다!
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 📄 버그 로그
+      description: 로그가 있으면 입력해 주세요.
+      render: shell
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: 🌏 버그 발생 환경
+      description: 버그가 발생한 환경에 대해 작성해 주세요.
+      placeholder: |
+        OS: macOS
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: ✅ 버그 재현 방법
+      description: Given-When-Then 형식으로 버그를 재현할 수 있는 방법에 대해 작성해 주세요.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: 📎 참고 자료
+      description: 발생한 버그에 대한 참고 자료가 있다면 작성해 주세요.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: ⏰ 추정 시간
+      description: 버그를 해결하기 위한 추정 시간(비관적 추정, 낙관적 추정)에 대해 작성해주세요.
+    validations:
+      required: true
