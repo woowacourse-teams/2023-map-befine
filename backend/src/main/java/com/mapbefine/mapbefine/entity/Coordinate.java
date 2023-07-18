@@ -26,14 +26,14 @@ public class Coordinate {
 		this.longitude = longitude;
 	}
 
-	public void validateLatitude(BigDecimal latitude) {
-		if (isNotInRange(latitude, new BigDecimal("124"), new BigDecimal("132"))) {
+	private void validateLatitude(BigDecimal latitude) {
+		if (isNotInRange(latitude, new BigDecimal("33"), new BigDecimal("43"))) {
 			throw new IllegalArgumentException("한국 내의 좌표만 입력해주세요.");
 		}
 	}
 
-	public void validateLongitude(BigDecimal longitude) {
-		if (isNotInRange(longitude, new BigDecimal("33"), new BigDecimal("43"))) {
+	private void validateLongitude(BigDecimal longitude) {
+		if (isNotInRange(longitude, new BigDecimal("124"), new BigDecimal("132"))) {
 			throw new IllegalArgumentException("한국 내의 좌표만 입력해주세요.");
 		}
 	}
