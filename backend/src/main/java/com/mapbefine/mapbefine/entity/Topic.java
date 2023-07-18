@@ -5,6 +5,8 @@ import static lombok.AccessLevel.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,50 +22,31 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Topic extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@Column(nullable = false, length = 20)
+	private String name;
+	@Lob
+	@Column(nullable = false)
+	private String description;
+	@OneToMany(mappedBy = "topic")
+	private List<Pin> pins = new ArrayList<>();
+	@Column(nullable = false)
+	@ColumnDefault(value = "false")
+	private boolean isDeleted = false;
 
-    @Column(nullable = false, length = 20)
-    private String name;
+	public Topic(
+		String name,
+		String description
+	) {
+		this.name = name;
+		this.description = description;
+	}
 
-    @Lob
-    @Column(nullable = false)
-    private String description;
-
-    @OneToMany(mappedBy = "topic")
-    private List<UserPin> userPins = new ArrayList<>();
-
-    @Column(nullable = false)
-    private boolean isDeleted;
-
-    public Topic(
-        Long id,
-        String name,
-        String description,
-        List<UserPin> userPins
-    ) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.userPins = userPins;
-    }
-
-    public Topic(
-        Long id,
-        String name,
-        String description
-    ) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
-
-    public Topic(
-        String name,
-        String description
-    ) {
-        this(null, name, description);
-    }
+	public void update(String name, String description) {
+		this.name = name;
+		this.description = description;
+	}
 
 }

@@ -11,20 +11,19 @@ import com.mapbefine.mapbefine.dto.TopicCreateMergeDto;
 import com.mapbefine.mapbefine.dto.TopicCreateNewDto;
 import com.mapbefine.mapbefine.dto.TopicDto;
 import com.mapbefine.mapbefine.entity.Topic;
-import com.mapbefine.mapbefine.entity.UserPin;
+import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
-import com.mapbefine.mapbefine.repository.UserPinRepository;
 
 @Transactional
 @Service
 public class TopicCommandService {
 
 	private final TopicRepository topicRepository;
-	private final UserPinRepository userPinRepository;
+	private final PinRepository pinRepository;
 
-	public TopicCommandService(final TopicRepository topicRepository, final UserPinRepository userPinRepository) {
+	public TopicCommandService(final TopicRepository topicRepository, final PinRepository pinRepository) {
 		this.topicRepository = topicRepository;
-		this.userPinRepository = userPinRepository;
+		this.pinRepository = pinRepository;
 	}
 
 	public TopicDto createNew(final TopicCreateNewDto topicCreateNewDto) {
@@ -32,15 +31,15 @@ public class TopicCommandService {
 		Topic topic = new Topic(topicCreateNewDto.name(), topicCreateNewDto.description());
 		topicRepository.save(topic);
 
-		List<UserPin> original = userPinRepository.findAllById(topicCreateNewDto.pins());
-		userPinRepository.saveAll(duplicateUserPins(original, topic));
+		List<Pin> original = pinRepository.findAllById(topicCreateNewDto.pins());
+		pinRepository.saveAll(duplicateUserPins(original, topic));
 
 		return TopicDto.from(topic);
 	}
 
-	private List<UserPin> duplicateUserPins(List<UserPin> userPins, Topic topic) {
-		return userPins.stream()
-			.map(original -> UserPin.duplicate(original, topic))
+	private List<Pin> duplicateUserPins(List<Pin> pins, Topic topic) {
+		return pins.stream()
+			.map(original -> original.duplicate(topic))
 			.collect(Collectors.toList());
 	}
 
@@ -50,12 +49,12 @@ public class TopicCommandService {
 		Topic topic = new Topic(topicCreateMergeDto.name(), topicCreateMergeDto.description());
 		topicRepository.save(topic);
 
-		List<UserPin> original = topics.stream()
-			.map(Topic::getUserPins)
+		List<Pin> original = topics.stream()
+			.map(Topic::getPins)
 			.flatMap(Collection::stream)
 			.collect(Collectors.toList());
-		List<UserPin> userPins = duplicateUserPins(original, topic);
-		userPinRepository.saveAll(userPins);
+		List<Pin> pins = duplicateUserPins(original, topic);
+		pinRepository.saveAll(pins);
 
 		return TopicDto.from(topic);
 	}
