@@ -2,43 +2,56 @@ package com.mapbefine.mapbefine.entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-@Builder
 public class Pin extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 50)
+    private String name;
+
+    @Lob
+    @Column(nullable = false, length = 1000)
+    private String description;
+
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
-    
-    @OneToMany(mappedBy = "pin")
-    private List<UserPin> userPins;
+
+    @ManyToOne
+    @JoinColumn(name = "topic_id", nullable = false)
+    private Topic topic;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     public Pin(
             Long id,
+            String name,
+            String description,
             Location location,
-            List<UserPin> userPins
+            Topic topic
     ) {
         this.id = id;
+        this.name = name;
+        this.description = description;
         this.location = location;
-        this.userPins = userPins;
+        this.topic = topic;
     }
 
 }

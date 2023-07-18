@@ -30,23 +30,20 @@ class PinRepositoryTest {
         // given
         BigDecimal distance = BigDecimal.valueOf(0.0001);
         Coordinate coordinate = new Coordinate(latitude, longitude);
-        Location location = Location.builder()
-                .parcelBaseAddress("parcel")
-                .roadBaseAddress("road")
-                .legalDongCode("legalDongCode")
-                .coordinate(coordinate)
-                .build();
+        Location location = new Location(
+                null,
+                "parcel",
+                "road",
+                coordinate,
+                "legalDongCode"
+        );
         locationRepository.save(location);
-        Pin pin = Pin.builder()
-                .location(location)
-                .build();
-        pinRepository.save(pin);
-
         // when
-        List<Pin> pins = pinRepository.findAllByRectangle(BigDecimal.valueOf(127), BigDecimal.valueOf(35), distance);
+        List<Location> locations = locationRepository.findAllByRectangle(BigDecimal.valueOf(127),
+                BigDecimal.valueOf(35), distance);
 
         // then
-        assertThat(pins).hasSize(1);
+        assertThat(locations).hasSize(1);
     }
 
     static Stream<Arguments> coordinates_Success() {
@@ -65,23 +62,21 @@ class PinRepositoryTest {
         // given
         BigDecimal distance = BigDecimal.valueOf(0.0001);
         Coordinate coordinate = new Coordinate(latitude, longitude);
-        Location location = Location.builder()
-                .parcelBaseAddress("parcel")
-                .roadBaseAddress("road")
-                .legalDongCode("legalDongCode")
-                .coordinate(coordinate)
-                .build();
+        Location location = new Location(
+                null,
+                "parcel",
+                "road",
+                coordinate,
+                "legalDongCode"
+        );
         locationRepository.save(location);
-        Pin pin = Pin.builder()
-                .location(location)
-                .build();
-        pinRepository.save(pin);
 
         // when
-        List<Pin> pins = pinRepository.findAllByRectangle(BigDecimal.valueOf(127), BigDecimal.valueOf(35), distance);
+        List<Location> locations = locationRepository.findAllByRectangle(BigDecimal.valueOf(127),
+                BigDecimal.valueOf(35), distance);
 
         // then
-        assertThat(pins).isEmpty();
+        assertThat(locations).isEmpty();
     }
 
     static Stream<Arguments> coordinates_Fail() {
