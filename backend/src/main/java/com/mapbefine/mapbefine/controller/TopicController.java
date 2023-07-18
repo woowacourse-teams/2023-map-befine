@@ -3,7 +3,10 @@ package com.mapbefine.mapbefine.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +16,8 @@ import com.mapbefine.mapbefine.dto.TopicCreateNewDto;
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicDto;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
+import com.mapbefine.mapbefine.dto.TopicUpdateDto;
+import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
 import com.mapbefine.mapbefine.service.TopicCommandService;
 import com.mapbefine.mapbefine.service.TopicQueryService;
 
@@ -42,4 +47,17 @@ public class TopicController {
 		return ResponseEntity.created(URI.create("/topics/" + topic.id())).build();
 	}
 
+	@PutMapping("/{id}")
+	public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody TopicUpdateRequest topicUpdateRequest) {
+		topicCommandService.update(TopicUpdateDto.of(id, topicUpdateRequest));
+
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		topicCommandService.delete(id);
+
+		return ResponseEntity.noContent().build();
+	}
 }

@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mapbefine.mapbefine.dto.TopicCreateMergeDto;
 import com.mapbefine.mapbefine.dto.TopicCreateNewDto;
 import com.mapbefine.mapbefine.dto.TopicDto;
+import com.mapbefine.mapbefine.dto.TopicUpdateDto;
+import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
@@ -59,4 +61,24 @@ public class TopicCommandService {
 		return TopicDto.from(topic);
 	}
 
+	public void update(TopicUpdateDto topicUpdateDto) {
+		Topic topic = topicRepository.findById(topicUpdateDto.id())
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
+
+		topic.update(topicUpdateDto.name(), topicUpdateDto.description());
+	}
+
+	public void delete(Long id) {
+		Topic topic = topicRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
+
+		// TODO: 연관된 UserPin Cascade로 삭제하도록 변경
+		List<Long> pinIds = topic.getPins()
+			.stream()
+			.map(Pin::getId)
+			.collect(Collectors.toList());
+		pinRepository.deleteAllById(pinIds);
+
+		topicRepository.delete(topic);
+	}
 }

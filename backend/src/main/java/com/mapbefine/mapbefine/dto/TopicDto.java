@@ -3,8 +3,8 @@ package com.mapbefine.mapbefine.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
-import com.mapbefine.mapbefine.entity.UserPin;
 
 public record TopicDto(
 	Long id,
@@ -13,8 +13,8 @@ public record TopicDto(
 	List<Long> pins
 ) {
 	public static TopicDto from(Topic topic) {
-		List<Long> userPinIds = topic.getUserPins().stream()
-			.map(UserPin::getId)
+		List<Long> userPinIds = topic.getPins().stream()
+			.map(Pin::getId)
 			.collect(Collectors.toList());
 
 		return new TopicDto(
