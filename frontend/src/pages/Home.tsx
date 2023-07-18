@@ -8,16 +8,19 @@ import { Fragment } from 'react';
 
 const data = [
   {
+    topicId: '1',
     topicEmoji: '🍛',
     topicTitle: '선릉 직장인이 추천하는 맛집',
     topicInformation: '업데이트 : 07.05 | 핀 개수 : 57',
   },
   {
+    topicId: '2',
     topicEmoji: '💪',
     topicTitle: '산스장 모음',
     topicInformation: '업데이트 : 22.12.25 | 핀 개수 : 257',
   },
   {
+    topicId: '3',
     topicEmoji: '✈️',
     topicTitle: '서울 여행하기 좋은 곳',
     topicInformation: '업데이트 : 01.25 | 핀 개수 : 9',
@@ -33,19 +36,17 @@ const Home = () => {
       </Text>
       <Space size={2} />
       {data &&
-        data.map((topic, index) => {
-          return (
-            // TODO: topics/${topicId}
-            <Fragment key={index}>
-              <TopicCard
-                topicEmoji={topic.topicEmoji}
-                topicTitle={topic.topicTitle}
-                topicInformation={topic.topicInformation}
-              />
-              <Space size={4} />
-            </Fragment>
-          );
-        })}
+        data.map((topic, index) => (
+          <Fragment key={topic.topicId}>
+            <TopicCard
+              topicId={topic.topicId}
+              topicEmoji={topic.topicEmoji}
+              topicTitle={topic.topicTitle}
+              topicInformation={topic.topicInformation}
+            />
+            <Space size={4} />
+          </Fragment>
+        ))}
 
       <Flex position="fixed" bottom="40px" left="130px">
         <Button variant="primary">토픽 추가하기</Button>

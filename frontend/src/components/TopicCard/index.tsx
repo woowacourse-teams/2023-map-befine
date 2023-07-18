@@ -1,20 +1,30 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
+import { useNavigate } from 'react-router-dom';
 
 export interface TopicCardProps {
+  topicId: string;
   topicEmoji: string;
   topicTitle: string;
   topicInformation: string;
 }
 
 const TopicCard = ({
+  topicId,
   topicEmoji,
   topicTitle,
   topicInformation,
 }: TopicCardProps) => {
+  const navigator = useNavigate();
+
+  const goToSelectedTopic = () => {
+    navigator(`topics/${topicId}`);
+  };
+
   return (
     <Flex
+      onClick={goToSelectedTopic}
       width="360px"
       height="140px"
       position="relative"
