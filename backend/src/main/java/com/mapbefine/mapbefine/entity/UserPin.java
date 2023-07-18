@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.entity;
 
-import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.*;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,12 +37,15 @@ public class UserPin extends BaseEntity {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
+    @Column(nullable = false)
+    private boolean isDeleted;
+
     public UserPin(
-            Long id,
-            String name,
-            String description,
-            Pin pin,
-            Topic topic
+        Long id,
+        String name,
+        String description,
+        Pin pin,
+        Topic topic
     ) {
         this.id = id;
         this.name = name;
