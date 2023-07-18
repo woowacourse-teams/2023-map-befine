@@ -14,8 +14,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.1",
     "styled-components": "^6.0.3"
   },
   "devDependencies": {
@@ -47,6 +49,7 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-storybook": "^0.6.12",
     "html-webpack-plugin": "^5.5.3",
+    "msw": "^1.2.2",
     "prettier": "^3.0.0",
     "react-refresh": "^0.14.0",
     "storybook": "^7.0.26",
@@ -59,5 +62,8 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

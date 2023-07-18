@@ -20,10 +20,10 @@ export type BoxProps = {
   left?: string;
   bottom?: string;
   borderRadius?: radiusKey;
-  borderTop?: string
-  borderRight?: string,
+  borderTop?: string;
+  borderRight?: string;
   borderBottom?: string;
-  borderLeft?: string,
+  borderLeft?: string;
 };
 
 const Box = styled.div<BoxProps>`
@@ -42,10 +42,10 @@ const Box = styled.div<BoxProps>`
   top: ${({ top }) => top};
   left: ${({ left }) => left};
   bottom: ${({ bottom }) => bottom};
-  border-radius: ${({ borderRadius }) => borderRadius};
-  border-top: ${({ borderTop }) => borderTop};
-  border-right: ${({ borderRight }) => borderRight};
-  border-bottom: ${({ borderBottom }) => borderBottom};
-  border-left: ${({ borderLeft }) => borderLeft};
+  border-radius: ${({ borderRadius }) => borderRadius && theme.radius[borderRadius]};
+  border-top:${({ borderTop }) => borderTop};
+  border-right:${({ borderRight }) => borderRight};
+  border-bottom:${({ borderBottom }) => borderBottom};
+  border-left:${({ borderLeft }) => borderLeft};
 `;
 export default Box;

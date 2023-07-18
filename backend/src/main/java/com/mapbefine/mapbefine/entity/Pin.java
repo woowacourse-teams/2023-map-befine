@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.List;
@@ -22,18 +23,19 @@ public class Pin extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    private Location address;
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
     
     @OneToMany(mappedBy = "pin")
     private List<UserPin> userPins;
 
     public Pin(
             Long id,
-            Location address,
+            Location location,
             List<UserPin> userPins
     ) {
         this.id = id;
-        this.address = address;
+        this.location = location;
         this.userPins = userPins;
     }
 

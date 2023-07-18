@@ -32,6 +32,9 @@ public class Topic extends BaseEntity {
     @OneToMany(mappedBy = "topic")
     private List<UserPin> userPins;
 
+    @Column(nullable = false)
+    private boolean isDeleted;
+
     public Topic(
             Long id,
             String name,

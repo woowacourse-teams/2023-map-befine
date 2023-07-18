@@ -8,39 +8,38 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
+@Getter
 public class Location extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String parcelBaseAddress; // 지번 주소
+    private String parcelBaseAddress;
     @Column(nullable = false)
-    private String roadBaseAddress; // 도로명 주소
+    private String roadBaseAddress;
     @Embedded
-    private Coordinate coordinate; // 위도, 경도
-    @ManyToOne
-    @JoinColumn(name = "legal_dong_id", nullable = false)
-    private LegalDong legalDong; // 법정동
+    private Coordinate coordinate;
+    @Column(nullable = false)
+    private String legalDongCode;
 
     public Location(
             Long id,
             String parcelBaseAddress,
             String roadBaseAddress,
             Coordinate coordinate,
-            LegalDong legalDong
+            String legalDongCode
     ) {
         this.id = id;
         this.parcelBaseAddress = parcelBaseAddress;
         this.roadBaseAddress = roadBaseAddress;
         this.coordinate = coordinate;
-        this.legalDong = legalDong;
+        this.legalDongCode = legalDongCode;
     }
 
 }

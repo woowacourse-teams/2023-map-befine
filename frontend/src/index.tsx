@@ -4,14 +4,22 @@ import App from './App';
 import { ThemeProvider } from 'styled-components';
 import theme from './themes';
 import GlobalStyle from './GlobalStyle';
+import { BrowserRouter } from 'react-router-dom';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
 const root = ReactDOM.createRoot(rootElement);
 
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = require('./mocks/browser');
+  worker.start();
+}
+
 root.render(
   <ThemeProvider theme={theme}>
     <GlobalStyle />
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </ThemeProvider>,
 );
