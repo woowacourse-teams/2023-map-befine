@@ -1,5 +1,57 @@
+import Space from '../components/common/Space';
+import Text from '../components/common/Text';
+import TopicCard from '../components/common/TopicCard';
+import Button from '../components/common/Button';
+import { styled } from 'styled-components';
+import Flex from '../components/common/Flex';
+import Box from '../components/common/Box';
+
+const data = [
+  {
+    topicImoge: '🍛',
+    topicTitle: '선릉 직장인이 추천하는 맛집',
+    topicInformation: '업데이트 : 07.05 | 핀 개수 : 57',
+  },
+  {
+    topicImoge: '💪',
+    topicTitle: '산스장 모음',
+    topicInformation: '업데이트 : 22.12.25 | 핀 개수 : 257',
+  },
+  {
+    topicImoge: '✈️',
+    topicTitle: '서울 여행하기 좋은 곳',
+    topicInformation: '업데이트 : 01.25 | 핀 개수 : 9',
+  },
+];
+
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <Box position="relative">
+      <Space size={6} />
+      <Text color="black" fontSize="large" fontWeight="bold">
+        내 주변 인기 있는 토픽
+      </Text>
+      <Space size={2} />
+      {data &&
+        data.map((topic, index) => {
+          return (
+            <>
+              <TopicCard
+                key={index}
+                topicImoge={topic.topicImoge}
+                topicTitle={topic.topicTitle}
+                topicInformation={topic.topicInformation}
+              />
+              <Space size={4} />
+            </>
+          );
+        })}
+
+      <Flex position="fixed" bottom="40px" left="130px">
+        <Button variant="primary">토픽 추가하기</Button>
+      </Flex>
+    </Box>
+  );
 };
 
 export default Home;

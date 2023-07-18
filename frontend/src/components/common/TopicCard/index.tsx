@@ -1,4 +1,5 @@
 import { styled } from 'styled-components';
+import Flex from '../Flex';
 import Text from '../Text';
 
 export interface TopicCardProps {
@@ -13,7 +14,16 @@ const TopicCard = ({
   topicInformation,
 }: TopicCardProps) => {
   return (
-    <TopicCardContainer>
+    <Flex
+      width="360px"
+      height="140px"
+      position="relative"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      backgroundColor="whiteGray"
+      borderRadius='small'
+    >
       <TopicCardButton></TopicCardButton>
       <Text color="black" fontSize="extraLarge" fontWeight="normal">
         {topicImoge}
@@ -21,29 +31,27 @@ const TopicCard = ({
       <Text color="black" fontSize="medium" fontWeight="normal">
         {topicTitle}
       </Text>
-      <Text color="black" fontSize="small" fontWeight="normal">
+      <Text color="gray" fontSize="small" fontWeight="normal">
         {topicInformation}
       </Text>
-    </TopicCardContainer>
+    </Flex>
   );
 };
 
-const TopicCardContainer = styled.div`
-  width: 360px;
-  height: 140px;
+// const TopicCardContainer = styled.div`
+//   width: 360px;
+//   height: 140px;
 
-  margin-left: 50px;
+//   position: relative;
 
-  position: relative;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  background-color: ${({ theme }) => theme.color.whiteGray};
-  box-shadow: 1px 4px 2px 1px ${({ theme }) => theme.color.lightGray};
-`;
+//   background-color: ${({ theme }) => theme.color.whiteGray};
+//   box-shadow: 1px 4px 2px 1px ${({ theme }) => theme.color.lightGray};
+// `;
 
 const TopicCardButton = styled.button`
   width: 16px;
