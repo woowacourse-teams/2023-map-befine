@@ -90,8 +90,10 @@ const NewPin = ({ topicName }: NewPinProps) => {
         <Space size={6} />
 
         <Flex $justifyContent="end">
+          {/* TODO: (prev) topics/${topicId} */}
           <Button variant="primary">추가하기</Button>
           <Space size={3} />
+          {/* TODO: prev page */}
           <Button variant="secondary">취소하기</Button>
         </Flex>
       </Flex>

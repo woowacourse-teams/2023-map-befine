@@ -35,6 +35,7 @@ const Home = () => {
       {data &&
         data.map((topic, index) => {
           return (
+            // TODO: topics/${topicId}
             <Fragment key={index}>
               <TopicCard
                 topicEmoji={topic.topicEmoji}

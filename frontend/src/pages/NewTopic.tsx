@@ -106,8 +106,10 @@ const NewTopic = () => {
         <Space size={6} />
 
         <Flex $justifyContent="end">
+          {/* TODO: topics/${topicId} */}
           <Button variant="primary">생성하기</Button>
           <Space size={3} />
+          {/* TODO: prev page */}
           <Button variant="secondary">취소하기</Button>
         </Flex>
       </Flex>
