@@ -1,8 +1,14 @@
-import { useState } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import Layout from './components/common/Layout';
+import Home from './pages/Home';
 
-function App() {
-  return <></>;
-}
+const App = () => {
+  return (
+    <>
+      <Layout>
+        <Home />
+      </Layout>
+    </>
+  );
+};
 
 export default App;
