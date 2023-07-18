@@ -1,7 +1,7 @@
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
-import Topic from '../components/Topic';
+import TopicInfo from '../components/TopicInfo';
 import { Fragment } from 'react';
 
 const data = [
@@ -48,14 +48,14 @@ const data = [
   },
 ];
 
-const Pins = () => {
+const SelectedTopic = () => {
   return (
     <Flex $flexDirection="column">
       {data &&
         data.map((value) => {
           return (
             <Fragment key={value.topic.topicTitle}>
-              <Topic
+              <TopicInfo
                 topicParticipant={value.topic.topicParticipant}
                 pinNumber={value.topic.pinNumber}
                 topicTitle={value.topic.topicTitle}
@@ -85,4 +85,4 @@ const Pins = () => {
   );
 };
 
-export default Pins;
+export default SelectedTopic;

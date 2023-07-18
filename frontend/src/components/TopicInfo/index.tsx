@@ -14,7 +14,7 @@ export interface TopicCardProps {
   topicDescription: string;
 }
 
-const Topic = ({
+const TopicInfo = ({
   topicParticipant,
   pinNumber,
   topicTitle,
@@ -79,4 +79,4 @@ const PinButton = styled.button`
   }
 `;
 
-export default Topic;
+export default TopicInfo;
