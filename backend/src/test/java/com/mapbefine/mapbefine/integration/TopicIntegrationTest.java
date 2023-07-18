@@ -108,7 +108,6 @@ public class TopicIntegrationTest extends IntegrationTest {
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.header("Location")).isNull();
 	}
 
 	@Test
@@ -129,6 +128,43 @@ public class TopicIntegrationTest extends IntegrationTest {
 
 		// then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-		assertThat(response.header("Location")).isNull();
+	}
+
+	@Test
+	@DisplayName("Topic 목록을 조회하면 200을 반환한다")
+	void findTopics_Success() {
+		final TopicCreateRequest 송파_데이트코스 = new TopicCreateRequest("송파 데이트코스", "맛집과 카페 토픽 합치기", List.of(1L, 2L));
+		final ExtractableResponse<Response> createResponse = createNewTopic(송파_데이트코스);
+		long topicId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+
+		// when
+		ExtractableResponse<Response> response = RestAssured
+			.given().log().all()
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/topics")
+			.then().log().all()
+			.extract();
+
+		// then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	@Test
+	@DisplayName("Topic 상세 정보를 조회하면 200을 반환한다")
+	void findTopicDetail_Success() {
+		final TopicCreateRequest 송파_데이트코스 = new TopicCreateRequest("송파 데이트코스", "맛집과 카페 토픽 합치기", List.of(1L, 2L));
+		final ExtractableResponse<Response> createResponse = createNewTopic(송파_데이트코스);
+		long topicId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+
+		// when
+		ExtractableResponse<Response> response = RestAssured
+			.given().log().all()
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/topics/{id}", topicId)
+			.then().log().all()
+			.extract();
+
+		// then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 }

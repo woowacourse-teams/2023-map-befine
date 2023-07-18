@@ -49,4 +49,7 @@ public class Topic extends BaseEntity {
 		this.description = description;
 	}
 
+	public int countPins() {
+		return pins.size();
+	}
 }

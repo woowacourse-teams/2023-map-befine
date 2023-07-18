@@ -7,10 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mapbefine.mapbefine.dto.TopicCreateMergeDto;
-import com.mapbefine.mapbefine.dto.TopicCreateNewDto;
-import com.mapbefine.mapbefine.dto.TopicDto;
-import com.mapbefine.mapbefine.dto.TopicUpdateDto;
+import com.mapbefine.mapbefine.dto.TopicCreateRequest;
+import com.mapbefine.mapbefine.dto.TopicMergeRequest;
+import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
 import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.PinRepository;
@@ -28,15 +27,15 @@ public class TopicCommandService {
 		this.pinRepository = pinRepository;
 	}
 
-	public TopicDto createNew(final TopicCreateNewDto topicCreateNewDto) {
+	public long createNew(final TopicCreateRequest request) {
 		/// TODO 더 객체지향적으로 연관관계를 매핑할 수 없을까?
-		Topic topic = new Topic(topicCreateNewDto.name(), topicCreateNewDto.description());
+		Topic topic = new Topic(request.name(), request.description());
 		topicRepository.save(topic);
 
-		List<Pin> original = pinRepository.findAllById(topicCreateNewDto.pins());
+		List<Pin> original = pinRepository.findAllById(request.pins());
 		pinRepository.saveAll(duplicateUserPins(original, topic));
 
-		return TopicDto.from(topic);
+		return topic.getId();
 	}
 
 	private List<Pin> duplicateUserPins(List<Pin> pins, Topic topic) {
@@ -45,10 +44,10 @@ public class TopicCommandService {
 			.collect(Collectors.toList());
 	}
 
-	public TopicDto createMerge(TopicCreateMergeDto topicCreateMergeDto) {
-		List<Topic> topics = topicRepository.findAllById(topicCreateMergeDto.topics());
+	public long createMerge(TopicMergeRequest request) {
+		List<Topic> topics = topicRepository.findAllById(request.topics());
 
-		Topic topic = new Topic(topicCreateMergeDto.name(), topicCreateMergeDto.description());
+		Topic topic = new Topic(request.name(), request.description());
 		topicRepository.save(topic);
 
 		List<Pin> original = topics.stream()
@@ -58,14 +57,14 @@ public class TopicCommandService {
 		List<Pin> pins = duplicateUserPins(original, topic);
 		pinRepository.saveAll(pins);
 
-		return TopicDto.from(topic);
+		return topic.getId();
 	}
 
-	public void update(TopicUpdateDto topicUpdateDto) {
-		Topic topic = topicRepository.findById(topicUpdateDto.id())
+	public void update(Long id, TopicUpdateRequest request) {
+		Topic topic = topicRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
 
-		topic.update(topicUpdateDto.name(), topicUpdateDto.description());
+		topic.update(request.name(), request.description());
 	}
 
 	public void delete(Long id) {
