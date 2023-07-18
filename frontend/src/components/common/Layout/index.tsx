@@ -15,7 +15,9 @@ const Layout = ({ children }: LayoutProps) => {
       padding={4}
     >
       <Input />
-      <Flex flexDirection="column">{children}</Flex>
+      <Flex flexDirection="column" overflow="scroll">
+        {children}
+      </Flex>
     </Flex>
   );
 };

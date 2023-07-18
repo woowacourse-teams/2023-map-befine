@@ -2,6 +2,7 @@ import { styled } from 'styled-components';
 import theme from '../../../themes';
 import { colorThemeKey } from '../../../themes/color';
 import { SpaceThemeKeys } from '../../../themes/spacing';
+import { radiusKey } from '../../../themes/radius';
 
 export type BoxProps = {
   display?: string;
@@ -13,6 +14,16 @@ export type BoxProps = {
   overflow?: string;
   minHeight?: string;
   color?: colorThemeKey;
+  position?: string;
+  right?: string;
+  top?: string;
+  left?: string;
+  bottom?: string;
+  borderRadius?: radiusKey;
+  borderTop?: string;
+  borderRight?: string;
+  borderBottom?: string;
+  borderLeft?: string;
 };
 
 const Box = styled.div<BoxProps>`
@@ -26,6 +37,16 @@ const Box = styled.div<BoxProps>`
   border: ${({ border }) => border};
   min-height: ${({ minHeight }) => minHeight};
   overflow: ${({ overflow }) => overflow};
+  position: ${({ position }) => position};
+  right: ${({ right }) => right};
+  top: ${({ top }) => top};
+  left: ${({ left }) => left};
+  bottom: ${({ bottom }) => bottom};
+  border-radius: ${({ borderRadius }) => borderRadius && theme.radius[borderRadius]};
+  border-top:${({ borderTop }) => borderTop};
+  border-right:${({ borderRight }) => borderRight};
+  border-bottom:${({ borderBottom }) => borderBottom};
+  border-left:${({ borderLeft }) => borderLeft};
 `;
 
 export default Box;
