@@ -26,15 +26,15 @@ public class UserPin extends BaseEntity {
     private String name;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "pin_id")
+    @JoinColumn(name = "pin_id", nullable = false)
     private Pin pin;
 
     @ManyToOne
-    @JoinColumn(name = "topic_id")
+    @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
     public UserPin(

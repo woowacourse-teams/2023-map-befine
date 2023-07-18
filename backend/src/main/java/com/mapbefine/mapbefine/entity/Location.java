@@ -8,8 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,22 +25,21 @@ public class Location extends BaseEntity {
     private String roadBaseAddress;
     @Embedded
     private Coordinate coordinate;
-    @ManyToOne
-    @JoinColumn(name = "legal_dong_id", nullable = false)
-    private LegalDong legalDong;
+    @Column(nullable = false)
+    private String legalDongCode;
 
     public Location(
             Long id,
             String parcelBaseAddress,
             String roadBaseAddress,
             Coordinate coordinate,
-            LegalDong legalDong
+            String legalDongCode
     ) {
         this.id = id;
         this.parcelBaseAddress = parcelBaseAddress;
         this.roadBaseAddress = roadBaseAddress;
         this.coordinate = coordinate;
-        this.legalDong = legalDong;
+        this.legalDongCode = legalDongCode;
     }
 
 }
