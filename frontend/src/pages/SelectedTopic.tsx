@@ -1,46 +1,13 @@
+import { useEffect, useState } from 'react';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
 import TopicInfo from '../components/TopicInfo';
-import { useEffect, useState } from 'react';
 import { TopicInfoType } from '../types/Topic';
 import { useNavigate, useParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
-
-const topicData = {
-  id: '1',
-  name: '점심 뭐먹지',
-  description: '점심을 뭐먹을지 고민하면서 만든 지도입니다.',
-  pinCount: 3,
-  updatedAt: '2023-07-19',
-  pins: [
-    {
-      id: '1',
-      name: '오또상스시',
-      address: '서울특별시 선릉역 주변',
-      description: '초밥 맛집입니다. 점심시간에는 웨이팅 좀 있어요.',
-      latitude: '37.12345',
-      longitude: '-122.54321',
-    },
-    {
-      id: '2',
-      name: '잇쇼우',
-      address: '서울특별시 선릉역 주변',
-      description: '돈까스 맛있어요. 모밀도 맛있습니다.',
-      latitude: '37.12345',
-      longitude: '-122.54321',
-    },
-    {
-      id: '3',
-      name: '오또상스시',
-      address: '서울특별시 선릉역 주변',
-      description: '초밥 맛집입니다. 점심시간에는 웨이팅 좀 있어요.',
-      latitude: '37.12345',
-      longitude: '-122.54321',
-    },
-  ],
-};
+import { getApi } from '../utils/getApi';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
@@ -53,11 +20,14 @@ const SelectedTopic = () => {
 
     navigator(`/topics/${topicId}?pinDetail=${pinId}`);
   };
+   
+  const getAndSetDataFromServer = async () => {
+    const data = await getApi(`/topics/${topicId}`);
+    setTopicDetail(data);
+  };
 
   useEffect(() => {
-    // TODO : GET topics/{topicId} & 상태 결합
-
-    setTopicDetail(topicData);
+    getAndSetDataFromServer();
 
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {

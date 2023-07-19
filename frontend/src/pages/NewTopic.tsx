@@ -6,17 +6,19 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { styled } from 'styled-components';
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { postApi } from '../utils/postApi';
 
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
 const NewTopic = () => {
+  const [topicId, setTopicId] = useState<string>();
   const [topicName, setTopicName] = useState<String>('');
   const [topicDescription, setTopicDescription] = useState<String>('');
   const topicIconRef = useRef<HTMLLabelElement>(null);
   const navigator = useNavigate();
-
+    
   const goToBack = () => {
     navigator(-1);
   };
@@ -31,6 +33,7 @@ const NewTopic = () => {
     setTopicDescription(e.target.value);
   };
 
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -40,6 +43,16 @@ const NewTopic = () => {
     // TODO: POST { topicIconRef.current.dataset.icon, topicName, topicDescription}
     const topicId = 10;
     navigator(`/topics/${topicId}`);
+  };
+
+  const postToServer = async () => {
+    const id = await postApi('/topics/new', {});
+    setTopicId(id.headers.get('Location')?.split('/')[2]);
+  };
+
+  const onClickButton = async () => {
+    await postToServer();
+    if(topicId) navigator(`/topics/${topicId}`, { state: topicId });
   };
 
   return (
@@ -124,7 +137,9 @@ const NewTopic = () => {
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button variant="primary">생성하기</Button>
+          <Button onClick={onClickButton} variant="primary">
+            생성하기
+          </Button>
           <Space size={3} />
           <Button type="button" variant="secondary" onClick={goToBack}>
             취소하기

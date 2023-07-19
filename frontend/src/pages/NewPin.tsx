@@ -5,15 +5,30 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { postApi } from '../utils/postApi';
 
 interface NewPinProps {
   topicName: string;
 }
 
 const NewPin = ({ topicName }: NewPinProps) => {
+  const navigate = useNavigate();
+
+  const { state } = useLocation();
+
+  const postToServer = async () => {
+    const id = await postApi('/pins', {});
+  };
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   };
+
+  const onClickButton = async () => {
+    await postToServer();
+    navigate(`/topics/${state}`, { state: state });
+  }
 
   return (
     <form onSubmit={onSubmit}>
@@ -91,7 +106,7 @@ const NewPin = ({ topicName }: NewPinProps) => {
 
         <Flex $justifyContent="end">
           {/* TODO: (prev) topics/${topicId} */}
-          <Button variant="primary">추가하기</Button>
+          <Button variant="primary" onClick={onClickButton}>추가하기</Button>
           <Space size={3} />
           {/* TODO: prev page */}
           <Button variant="secondary">취소하기</Button>
