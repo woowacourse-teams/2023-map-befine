@@ -22,6 +22,7 @@ const PinPreview = ({
       $flexDirection="column"
       $backgroundColor="white"
       $borderBottom="1px solid #E7E7E7"
+      cursor="pointer"
     >
       <PinButton></PinButton>
       <Text color="black" $fontSize="default" $fontWeight="bold">
