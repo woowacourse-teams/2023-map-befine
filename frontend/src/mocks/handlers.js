@@ -90,6 +90,7 @@ export const handlers = [
     };
 
     detailTopic[topicId - 1].pins.push(newPin);
+    tempPins.push(newPin);
 
     if (!name) {
       return res(ctx.status(403), ctx.json(addData));
