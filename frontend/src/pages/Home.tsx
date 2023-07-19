@@ -5,6 +5,7 @@ import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
 import { Fragment } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const data = [
   {
@@ -28,6 +29,12 @@ const data = [
 ];
 
 const Home = () => {
+  const navigator = useNavigate();
+
+  const goToNewTopic = () => {
+    navigator('new-topic');
+  };
+
   return (
     <Box position="relative">
       <Space size={6} />
@@ -49,7 +56,9 @@ const Home = () => {
         ))}
 
       <Flex position="fixed" bottom="40px" left="130px">
-        <Button variant="primary">토픽 추가하기</Button>
+        <Button variant="primary" onClick={goToNewTopic}>
+          토픽 추가하기
+        </Button>
       </Flex>
     </Box>
   );
