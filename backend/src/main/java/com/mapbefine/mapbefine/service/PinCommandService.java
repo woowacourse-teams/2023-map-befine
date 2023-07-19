@@ -67,7 +67,7 @@ public class PinCommandService {
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
 
-        Pin pin = new Pin(request.name(), request.description(), pinLocation, topic);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(request.name(), request.description(), pinLocation, topic);
 
         return pinRepository.save(pin).getId();
     }

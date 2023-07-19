@@ -1,19 +1,13 @@
 package com.mapbefine.mapbefine.entity;
 
-import static lombok.AccessLevel.PROTECTED;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import java.math.BigDecimal;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.math.BigDecimal;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -46,7 +40,7 @@ public class Pin extends BaseEntity {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
-    public Pin(
+    private Pin(
             String name,
             String description,
             Location location,
@@ -112,8 +106,8 @@ public class Pin extends BaseEntity {
         return location.getLongitude();
     }
 
-    public String getParcelBaseAddress() {
-        return location.getParcelBaseAddress();
+    public String getRoadBaseAddress() {
+        return location.getRoadBaseAddress();
     }
 
 }
