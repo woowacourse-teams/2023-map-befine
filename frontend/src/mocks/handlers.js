@@ -88,25 +88,27 @@ export const handlers = [
   }),
 
   // 핀 생성
-  rest.post('/pins', (req, res, ctx) => {
+  rest.post('/pins', async (req, res, ctx) => {
+    const { topicId, name, address, description } = await req.json();
+
     const newPin = {
-      id: `${detailTopic[0].pins.length + 1}`,
-      name: '찌개 맛있게 잘하는 집들',
-      description: '선릉에서 찌개를 잘하는 집들이에요!',
-      address: '서울특별시 선릉 테헤란로 127길 16',
-      latitude: '핀 위도',
-      longitude: '핀 경도',
+      id: `${detailTopic[topicId - 1].pins.length + 1}`,
+      name,
+      description,
+      address,
+      latitude: '37',
+      longitude: '127',
     };
 
-    detailTopic[0].pins.push(newPin);
+    detailTopic[topicId - 1].pins.push(newPin);
 
-    if (!newPin) {
+    if (!name) {
       return res(ctx.status(403), ctx.json(addData));
     }
 
     return res(
       ctx.status(201),
-      ctx.set('Location', `/pin/${detailTopic[0].pins.length}`),
+      ctx.set('Location', `/pin/${detailTopic[topicId - 1].pins.length}`),
     );
   }),
 ];

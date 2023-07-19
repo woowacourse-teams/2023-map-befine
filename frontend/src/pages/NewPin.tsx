@@ -11,11 +11,10 @@ import { useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 
-interface NewPinProps {
-  topicName: string;
-}
-
-const NewPin = ({ topicName }: NewPinProps) => {
+const NewPin = () => {
+  const [pinName, setPinName] = useState<string>('');
+  const [pinAddress, setPinAddress] = useState<string>('');
+  const [pinDescription, setPinDescription] = useState<string>('');
   const [topic, setTopic] = useState<TopicType | null>(null);
   const navigator = useNavigate();
 
@@ -24,7 +23,12 @@ const NewPin = ({ topicName }: NewPinProps) => {
   };
 
   const postToServer = async () => {
-    const id = await postApi('/pins', {});
+    const location = await postApi('/pins', {
+      topicId: topic?.id,
+      name: pinName,
+      address: pinAddress,
+      description: pinDescription,
+    });
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -71,7 +75,10 @@ const NewPin = ({ topicName }: NewPinProps) => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Button variant="primary">{`${topic.emoji} ${topic.name}`}</Button>
+          <Button
+            type="button"
+            variant="primary"
+          >{`${topic.emoji} ${topic.name}`}</Button>
         </Box>
 
         <Space size={5} />
@@ -87,7 +94,13 @@ const NewPin = ({ topicName }: NewPinProps) => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Input placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요." />
+          <Input
+            value={pinName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setPinName(e.target.value);
+            }}
+            placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
+          />
         </Box>
 
         <Space size={5} />
@@ -103,7 +116,13 @@ const NewPin = ({ topicName }: NewPinProps) => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Input placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요." />
+          <Input
+            value={pinAddress}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setPinAddress(e.target.value);
+            }}
+            placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
+          />
         </Box>
 
         <Space size={5} />
@@ -119,7 +138,13 @@ const NewPin = ({ topicName }: NewPinProps) => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Textarea placeholder="장소에 대한 의견을 자유롭게 남겨주세요." />
+          <Textarea
+            value={pinDescription}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              setPinDescription(e.target.value);
+            }}
+            placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
+          />
         </Box>
 
         <Space size={6} />

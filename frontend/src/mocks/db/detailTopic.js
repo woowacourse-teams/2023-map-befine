@@ -37,7 +37,7 @@ const detailTopic = [
     updatedAt: '2022-12-25',
     pins: [
       {
-        id: '4',
+        id: '1',
         name: '잇쇼우',
         address: '서울특별시 선릉 테헤란로 127길 16',
         description:
@@ -46,7 +46,7 @@ const detailTopic = [
         longitude: '핀 경도',
       },
       {
-        id: '5',
+        id: '2',
         name: '오또상스시',
         address: '서울특별시 선릉 테헤란로 192-46',
         description:
@@ -55,7 +55,7 @@ const detailTopic = [
         longitude: '핀 경도',
       },
       {
-        id: '6',
+        id: '3',
         name: '잇쇼우',
         address: '서울특별시 선릉 테헤란로 127길 16',
         description:
@@ -64,7 +64,7 @@ const detailTopic = [
         longitude: '핀 경도',
       },
       {
-        id: '7',
+        id: '4',
         name: '오또상스시',
         address: '서울특별시 선릉 테헤란로 192-46',
         description:

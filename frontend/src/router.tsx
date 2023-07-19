@@ -24,7 +24,7 @@ const routes = [
       },
       {
         path: 'new-pin',
-        element: <NewPin topicName="" />,
+        element: <NewPin />,
       },
     ],
   },
