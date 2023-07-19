@@ -65,8 +65,5 @@ public class Pin extends BaseEntity {
 	public Pin duplicate(Topic topic) {
 		return Pin.of(this.name, this.description, this.location, topic);
 	}
-
-	public void delete() {
-		this.isDeleted = true;
-	}
+	
 }

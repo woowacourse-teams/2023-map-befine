@@ -31,6 +31,7 @@ public class TopicCommandService {
 		Topic topic = new Topic(request.name(), request.description());
 		topicRepository.save(topic);
 
+		// TODO id 유효성 검증 or SQL Exception 전환
 		List<Pin> original = pinRepository.findAllById(request.pins());
 		pinRepository.saveAll(duplicateUserPins(original, topic));
 
@@ -44,6 +45,7 @@ public class TopicCommandService {
 	}
 
 	public long createMerge(TopicMergeRequest request) {
+		// TODO id 유효성 검증 or SQL Exception 전환
 		List<Topic> topics = topicRepository.findAllById(request.topics());
 
 		Topic topic = new Topic(request.name(), request.description());
@@ -60,6 +62,7 @@ public class TopicCommandService {
 	}
 
 	public void update(Long id, TopicUpdateRequest request) {
+		// TODO id 유효성 검증 or SQL Exception 전환
 		Topic topic = topicRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
 
@@ -67,10 +70,12 @@ public class TopicCommandService {
 	}
 
 	public void delete(Long id) {
+		// TODO id 유효성 검증 or SQL Exception 전환
 		Topic topic = topicRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
 
+		pinRepository.deleteAllByTopicId(id);
 		topic.delete();
-
 	}
+
 }

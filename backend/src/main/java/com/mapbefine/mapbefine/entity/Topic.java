@@ -40,11 +40,13 @@ public class Topic extends BaseEntity {
 		String name,
 		String description
 	) {
+		// TODO 이름, 설명 길이 검증
 		this.name = name;
 		this.description = description;
 	}
 
 	public void update(String name, String description) {
+		// TODO 이름, 설명 길이 검증
 		this.name = name;
 		this.description = description;
 	}
@@ -59,7 +61,5 @@ public class Topic extends BaseEntity {
 
 	public void delete() {
 		this.isDeleted = true;
-		pins.forEach(Pin::delete);
 	}
-
 }
