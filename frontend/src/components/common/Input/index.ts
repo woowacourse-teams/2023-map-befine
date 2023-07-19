@@ -5,10 +5,9 @@ const Input = styled.input`
   border: 1px solid ${({ theme }) => theme.color.black};
   padding: ${({ theme }) => theme.spacing['2']};
   box-sizing: border-box;
-  outline: none;
   width: 100%;
   height: 52px;
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fontSize.small};
   border-radius: ${({ theme }) => theme.radius.small};
 
   &::placeholder {
