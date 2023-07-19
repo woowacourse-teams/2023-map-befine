@@ -47,6 +47,7 @@
 - 유저 핀 정보 수정
     - name, description 만 수정 가능하다.
     - description 은 1000자 까지만 가능하다.
+
 - 유저 핀 삭제
     - Delete 는 Soft Delete
 

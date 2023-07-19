@@ -25,13 +25,17 @@ public class Topic extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+  
 	@Column(nullable = false, length = 20)
 	private String name;
+  
 	@Lob
 	@Column(nullable = false)
 	private String description;
+  
 	@OneToMany(mappedBy = "topic")
 	private List<Pin> pins = new ArrayList<>();
+  
 	@Column(nullable = false)
 	@ColumnDefault(value = "false")
 	private boolean isDeleted = false;
@@ -62,4 +66,5 @@ public class Topic extends BaseEntity {
 	public void delete() {
 		this.isDeleted = true;
 	}
+
 }

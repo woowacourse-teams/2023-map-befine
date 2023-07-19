@@ -19,17 +19,17 @@ import lombok.NoArgsConstructor;
 @Getter
 public abstract class BaseEntity {
 
-	@CreatedDate
-	private LocalDateTime createdAt;
-	@LastModifiedDate
-	private LocalDateTime updatedAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
-	public BaseEntity(
-		LocalDateTime createdAt,
-		LocalDateTime updatedAt
-	) {
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
+    protected BaseEntity(
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
 }
