@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.dto.PinModificationRequest;
 import com.mapbefine.mapbefine.service.PinCommandService;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,6 +35,14 @@ public class PinController {
 
         return ResponseEntity.ok()
                 .header("Location", "/pins/" + pinId)
+                .build();
+    }
+
+    @DeleteMapping("{pinId}")
+    public ResponseEntity<Void> delete(@PathVariable Long pinId) {
+        pinCommandService.removeById(pinId);
+
+        return ResponseEntity.noContent()
                 .build();
     }
 
