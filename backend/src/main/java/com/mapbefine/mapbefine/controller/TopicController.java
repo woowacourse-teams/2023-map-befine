@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.controller;
 
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
+import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
@@ -32,24 +33,24 @@ public class TopicController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> create(@RequestBody TopicCreateRequest topicCreateRequest) {
-        long topicId = topicCommandService.createNew(topicCreateRequest);
+    public ResponseEntity<Void> create(@RequestBody TopicCreateRequest request) {
+        long topicId = topicCommandService.createNew(request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();
     }
 
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeAndCreate(@RequestBody TopicMergeRequest topicMergeRequest) {
-        long topicId = topicCommandService.createMerge(topicMergeRequest);
+    public ResponseEntity<Void> mergeAndCreate(@RequestBody TopicMergeRequest request) {
+        long topicId = topicCommandService.createMerge(request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();
     }
 
     @PutMapping("/{topicId}")
-    public ResponseEntity<Void> update(@PathVariable Long topicId, @RequestBody TopicUpdateRequest topicUpdateRequest) {
-        topicCommandService.update(topicId, topicUpdateRequest);
+    public ResponseEntity<Void> update(@PathVariable Long topicId, @RequestBody TopicUpdateRequest request) {
+        topicCommandService.update(topicId, request);
 
         return ResponseEntity.ok().build();
     }
@@ -73,5 +74,12 @@ public class TopicController {
         TopicDetailResponse response = topicQueryService.findById(id);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/best")
+    public ResponseEntity<List<TopicResponse>> findBests(@RequestBody TopicFindBestRequest request) {
+        List<TopicResponse> responses = topicQueryService.findBests(request);
+
+        return ResponseEntity.ok(responses);
     }
 }
