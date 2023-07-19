@@ -2,86 +2,120 @@ import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
 import TopicInfo from '../components/TopicInfo';
-import { Fragment } from 'react';
+import { useEffect, useState } from 'react';
+import { TopicInfoType } from '../types/Topic';
+import { useNavigate, useParams } from 'react-router-dom';
+import theme from '../themes';
+import PinDetail from './PinDetail';
 
-const data = [
-  {
-    topic: {
-      topicParticipant: '12명의 참여자',
-      pinNumber: '57개의 핀',
-      topicTitle: '🍛 선릉 직징안이 추천하는 점심 맛집',
-      topicOwner: '하지원',
-      topicDescription: '선릉 직장인이 돌아다니면서 기록한 맛집 리스트예요.',
+const topicData = {
+  id: '1',
+  name: '점심 뭐먹지',
+  description: '점심을 뭐먹을지 고민하면서 만든 지도입니다.',
+  pinCount: 3,
+  updatedAt: '2023-07-19',
+  pins: [
+    {
+      id: '1',
+      name: '오또상스시',
+      address: '서울특별시 선릉역 주변',
+      description: '초밥 맛집입니다. 점심시간에는 웨이팅 좀 있어요.',
+      latitude: '37.12345',
+      longitude: '-122.54321',
     },
-    pin: [
-      {
-        pinTitle: '잇쇼우',
-        pinLocation: '서울특별시 선릉 테헤란로 127길 16',
-        pinInformation:
-          '돈까스와 모밀, 우동 등 다양한 일식 메뉴가 있어요. 돈까스가 특히 맛있습니다.',
-      },
-      {
-        pinTitle: '오또상스시',
-        pinLocation: '서울특별시 선릉 테헤란로 192-46',
-        pinInformation:
-          '초밥을 파는 곳입니다. 점심 특선 있고 초밥 질이 괜찮습니다. 가격대도 다른 곳에 비해서 양호한 편이고 적당히 생각날...',
-      },
-      {
-        pinTitle: '잇쇼우2',
-        pinLocation: '서울특별시 선릉 테헤란로 127길 16',
-        pinInformation:
-          '돈까스와 모밀, 우동 등 다양한 일식 메뉴가 있어요. 돈까스가 특히 맛있습니다.',
-      },
-      {
-        pinTitle: '오또상스시2',
-        pinLocation: '서울특별시 선릉 테헤란로 192-46',
-        pinInformation:
-          '초밥을 파는 곳입니다. 점심 특선 있고 초밥 질이 괜찮습니다. 가격대도 다른 곳에 비해서 양호한 편이고 적당히 생각날...',
-      },
-      {
-        pinTitle: '잇쇼우3',
-        pinLocation: '서울특별시 선릉 테헤란로 127길 16',
-        pinInformation:
-          '돈까스와 모밀, 우동 등 다양한 일식 메뉴가 있어요. 돈까스가 특히 맛있습니다.',
-      },
-    ],
-  },
-];
+    {
+      id: '2',
+      name: '잇쇼우',
+      address: '서울특별시 선릉역 주변',
+      description: '돈까스 맛있어요. 모밀도 맛있습니다.',
+      latitude: '37.12345',
+      longitude: '-122.54321',
+    },
+    {
+      id: '3',
+      name: '오또상스시',
+      address: '서울특별시 선릉역 주변',
+      description: '초밥 맛집입니다. 점심시간에는 웨이팅 좀 있어요.',
+      latitude: '37.12345',
+      longitude: '-122.54321',
+    },
+  ],
+};
 
 const SelectedTopic = () => {
+  const { topicId } = useParams();
+  const navigator = useNavigate();
+  const [topicDetail, setTopicDetail] = useState<TopicInfoType | null>(null);
+  const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
+
+  const onClickSetSelectedPinId = (pinId: string) => {
+    setSelectedPinId(pinId);
+
+    navigator(`/topics/${topicId}?pinDetail=${pinId}`);
+  };
+
+  useEffect(() => {
+    // TODO : GET topics/{topicId} & 상태 결합
+
+    setTopicDetail(topicData);
+
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.has('pinDetail')) {
+      setSelectedPinId(queryParams.get('pinDetail'));
+    }
+  }, []);
+
+  if (!topicDetail) return <></>;
+
   return (
-    <Flex $flexDirection="column">
-      {data &&
-        data.map((value) => {
-          return (
-            <Fragment key={value.topic.topicTitle}>
-              <TopicInfo
-                topicParticipant={value.topic.topicParticipant}
-                pinNumber={value.topic.pinNumber}
-                topicTitle={value.topic.topicTitle}
-                topicOwner={value.topic.topicOwner}
-                topicDescription={value.topic.topicDescription}
+    <>
+      <Space size={3} />
+      <Flex $flexDirection="column">
+        <TopicInfo
+          topicParticipant={12}
+          pinNumber={topicDetail.pinCount}
+          topicTitle={topicDetail.name}
+          topicOwner={'하지원'}
+          topicDescription={topicDetail.description}
+        />
+        <Space size={3} />
+        <div>
+          {topicDetail.pins.map((pin) => (
+            <div
+              key={pin.id}
+              onClick={() => {
+                onClickSetSelectedPinId(pin.id);
+              }}
+            >
+              <PinPreview
+                pinTitle={pin.name}
+                pinLocation={pin.address}
+                pinInformation={pin.description}
               />
               <Space size={3} />
+            </div>
+          ))}
+        </div>
 
-              {value.pin.map((info) => {
-                return (
-                  <Fragment key={info.pinTitle}>
-                    <PinPreview
-                      pinTitle={info.pinTitle}
-                      pinLocation={info.pinLocation}
-                      pinInformation={info.pinInformation}
-                    />
-                    <Space size={3} />
-                  </Fragment>
-                );
-              })}
-            </Fragment>
-          );
-        })}
+        {selectedPinId && (
+          <Flex
+            $backgroundColor="white"
+            width="400px"
+            $minHeight="100vh"
+            position="absolute"
+            left="400px"
+            top="0px"
+            padding={4}
+            $flexDirection="column"
+            $borderLeft={`1px solid ${theme.color.gray}`}
+          >
+            <PinDetail pinId={selectedPinId} />
+          </Flex>
+        )}
 
-      <Space size={4} />
-    </Flex>
+        <Space size={4} />
+      </Flex>
+    </>
   );
 };
 
