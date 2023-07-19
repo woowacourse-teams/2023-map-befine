@@ -10,19 +10,19 @@ import { useEffect, useState } from 'react';
 
 const PinDetail = ({ pinId }: any) => {
   const [pin, setPin] = useState<any>({});
+
   useEffect(() => {
     fetch(`/pin/${pinId}`)
       .then((res) => res.json())
       .then((data) => setPin(data));
-    console.log('fetch pin detail', pin);
   }, [pinId]);
 
   const copyContent = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      console.log('Content copied to clipboard');
     } catch (err) {
-      console.error('Failed to copy: ', err);
+      if (typeof err === 'string') throw new Error(err);
+      throw new Error('[ERROR]');
     }
   };
 
