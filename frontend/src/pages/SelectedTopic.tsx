@@ -35,6 +35,7 @@ const SelectedTopic = () => {
     }
   }, []);
 
+  if (!topicId) return <></>;
   if (!topicDetail) return <></>;
 
   return (
