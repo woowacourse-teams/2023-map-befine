@@ -1,20 +1,13 @@
 package com.mapbefine.mapbefine.entity;
 
-import static lombok.AccessLevel.PROTECTED;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import java.math.BigDecimal;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.math.BigDecimal;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -35,7 +28,7 @@ public class Pin extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String description;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
@@ -47,7 +40,7 @@ public class Pin extends BaseEntity {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
-    public Pin(
+    private Pin(
             String name,
             String description,
             Location location,
@@ -63,7 +56,7 @@ public class Pin extends BaseEntity {
     }
 
 
-    public static Pin of(
+    public static Pin createPinAssociatedWithLocationAndTopic(
             String name,
             String description,
             Location location,
@@ -94,7 +87,7 @@ public class Pin extends BaseEntity {
     }
 
     public Pin duplicate(Topic topic) {
-        return Pin.of(this.name, this.description, this.location, topic);
+        return Pin.createPinAssociatedWithLocationAndTopic(this.name, this.description, this.location, topic);
     }
 
     public void update(String name, String description) {
@@ -113,8 +106,8 @@ public class Pin extends BaseEntity {
         return location.getLongitude();
     }
 
-    public String getParcelBaseAddress() {
-        return location.getParcelBaseAddress();
+    public String getRoadBaseAddress() {
+        return location.getRoadBaseAddress();
     }
 
 }

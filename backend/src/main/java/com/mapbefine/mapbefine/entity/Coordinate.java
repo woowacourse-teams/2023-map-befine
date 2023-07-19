@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-@Builder
 public class Coordinate {
 
     private static final BigDecimal EARTH_RADIUS = BigDecimal.valueOf(6371);
