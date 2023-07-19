@@ -1,6 +1,6 @@
 import { rest } from 'msw';
-import topics from './db/getTopics.json';
-import detailTopic from './db/getDetailTopic.json';
+import topics from './db/topics';
+import detailTopic from './db/detailTopic';
 
 export const handlers = [
   // 포스트 목록
@@ -54,37 +54,36 @@ export const handlers = [
   }),
 
   // 토픽 생성
-  rest.post('/topics/new', (req, res, ctx) => {
-    const newTopic = {
+  rest.post('/topics/new', async (req, res, ctx) => {
+    const { name, emoji, description } = await req.json();
+
+    topics.push({
       id: `${topics.length + 1}`,
-      name: '찌개 맛있게 잘하는 집들',
-      description: '선릉에서 찌개를 잘하는 집들이에요!',
-      emoji: '🥘',
+      emoji,
+      name,
+      description,
       pins: [],
       pinCount: 0,
       updatedAt: '2023-07-19',
-    };
+    });
 
-    const newTopicDetail = {
-      id: `${topics.length + 1}`,
-      name: '찌개 맛있게 잘하는 집들',
-      description: '선릉에서 찌개를 잘하는 집들이에요!',
-      emoji: '🥘',
+    detailTopic.push({
+      id: `${detailTopic.length + 1}`,
+      emoji,
+      name,
+      description,
+      pins: [],
       pinCount: 0,
       updatedAt: '2023-07-19',
-      pins: []
-    }
+    });
 
-    topics.push(newTopic);
-    detailTopic.push(newTopicDetail);
-
-    if (!newTopic) {
+    if (!name) {
       return res(ctx.status(403), ctx.json(addData));
     }
 
     return res(
       ctx.status(201),
-      ctx.set('Location', `/topics/${topics.length}`)
+      ctx.set('Location', `/topics/${topics.length}`),
     );
   }),
 
@@ -94,9 +93,9 @@ export const handlers = [
       id: `${detailTopic[0].pins.length + 1}`,
       name: '찌개 맛있게 잘하는 집들',
       description: '선릉에서 찌개를 잘하는 집들이에요!',
-      address: "서울특별시 선릉 테헤란로 127길 16",
-      latitude: "핀 위도",
-      longitude: "핀 경도"
+      address: '서울특별시 선릉 테헤란로 127길 16',
+      latitude: '핀 위도',
+      longitude: '핀 경도',
     };
 
     detailTopic[0].pins.push(newPin);
@@ -107,7 +106,7 @@ export const handlers = [
 
     return res(
       ctx.status(201),
-      ctx.set('Location', `/pin/${detailTopic[0].pins.length}`)
+      ctx.set('Location', `/pin/${detailTopic[0].pins.length}`),
     );
   }),
 ];

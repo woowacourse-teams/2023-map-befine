@@ -43,7 +43,11 @@ const NewTopic = () => {
   };
 
   const postToServer = async () => {
-    const response = await postApi('/topics/new', {});
+    const response = await postApi('/topics/new', {
+      emoji: topicIconRef.current?.dataset.icon,
+      name: topicName,
+      description: topicDescription,
+    });
     const location = response.headers.get('Location');
 
     if (location) {
