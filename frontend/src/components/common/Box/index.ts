@@ -24,6 +24,7 @@ export type BoxProps = {
   $borderRight?: string;
   $borderBottom?: string;
   $borderLeft?: string;
+  cursor?: string;
 };
 
 const Box = styled.div<BoxProps>`
@@ -48,5 +49,6 @@ const Box = styled.div<BoxProps>`
   border-right: ${({ $borderRight }) => $borderRight};
   border-bottom: ${({ $borderBottom }) => $borderBottom};
   border-left: ${({ $borderLeft }) => $borderLeft};
+  cursor: ${({ cursor }) => cursor};
 `;
 export default Box;
