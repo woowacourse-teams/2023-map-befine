@@ -7,14 +7,16 @@ export interface TopicCardProps {
   topicId: string;
   topicEmoji: string;
   topicTitle: string;
-  topicInformation: string;
+  topicUpdatedAt: string;
+  topicPinCount: number;
 }
 
 const TopicCard = ({
   topicId,
   topicEmoji,
   topicTitle,
-  topicInformation,
+  topicUpdatedAt,
+  topicPinCount,
 }: TopicCardProps) => {
   const navigator = useNavigate();
 
@@ -48,7 +50,7 @@ const TopicCard = ({
           {topicTitle}
         </Text>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {topicInformation}
+          {`업데이트 : ${topicUpdatedAt} | 핀 개수 : ${topicPinCount}`}
         </Text>
       </Flex>
     </Flex>

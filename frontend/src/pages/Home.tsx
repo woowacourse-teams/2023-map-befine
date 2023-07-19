@@ -7,28 +7,19 @@ import Box from '../components/common/Box';
 import { Fragment, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { useNavigate } from 'react-router-dom';
-
-export interface topicType {
-  id: string;
-  name: string;
-  description: string;
-  emoji: string;
-  pins: number[];
-  pinCount: number;
-  updatedt: string; // 마지막으로 업데이트 된 시각
-}
+import { TopicType } from '../types/Topic';
 
 const Home = () => {
-  const [topics, setTopics] = useState<topicType[]>([]);
+  const [topics, setTopics] = useState<TopicType[]>([]);
 
-  const navigate = useNavigate();
+  const navigator = useNavigate();
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi('/');
     setTopics(data);
   };
 
- const goToNewTopic = () => {
+  const goToNewTopic = () => {
     navigator('new-topic');
   };
 
@@ -51,8 +42,8 @@ const Home = () => {
                 topicId={topic.id}
                 topicEmoji={topic.emoji}
                 topicTitle={topic.name}
-                topicLastDate={topic.updatedt}
-                topicNumber={topic.pinCount}
+                topicUpdatedAt={topic.updatedAt}
+                topicPinCount={topic.pinCount}
               />
               <Space size={4} />
             </Fragment>
@@ -60,7 +51,9 @@ const Home = () => {
         })}
 
       <Flex position="fixed" bottom="40px" left="130px">
-        <Button variant="primary" onClick={goToNewTopic}>토픽 추가하기</Button>
+        <Button variant="primary" onClick={goToNewTopic}>
+          토픽 추가하기
+        </Button>
       </Flex>
     </Box>
   );
