@@ -8,7 +8,7 @@ public record PinCreateRequest(
         String description,
         String address,
         String legalDongCode,
-        BigDecimal longitude,
-        BigDecimal latitude
+        BigDecimal latitude,
+        BigDecimal longitude
 ) {
 }
