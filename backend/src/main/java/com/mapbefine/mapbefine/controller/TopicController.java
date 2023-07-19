@@ -28,7 +28,7 @@ public class TopicController {
 	private final TopicCommandService topicCommandService;
 	private final TopicQueryService topicQueryService;
 
-	public TopicController(final TopicCommandService topicCommandService, final TopicQueryService topicQueryService) {
+	public TopicController(TopicCommandService topicCommandService, TopicQueryService topicQueryService) {
 		this.topicCommandService = topicCommandService;
 		this.topicQueryService = topicQueryService;
 	}
