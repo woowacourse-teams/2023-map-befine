@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.service;
 
 import com.mapbefine.mapbefine.dto.PinCreationRequest;
+import com.mapbefine.mapbefine.dto.PinModificationRequest;
 import com.mapbefine.mapbefine.entity.Coordinate;
 import com.mapbefine.mapbefine.entity.Location;
 import com.mapbefine.mapbefine.entity.Pin;
@@ -80,4 +81,14 @@ public class PinCommandService {
 
         return locationRepository.save(location);
     }
+
+    public void update(Long pinId, PinModificationRequest request) {
+        Pin pin = pinRepository.findById(pinId).orElseThrow(NoSuchElementException::new);
+
+        pin.update(request.name(), request.description());
+
+        pinRepository.save(pin);
+    }
+
+
 }
