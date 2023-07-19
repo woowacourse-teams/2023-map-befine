@@ -60,7 +60,6 @@ public class TopicCommandService {
     }
 
     public void update(Long id, TopicUpdateRequest request) {
-        // TODO id 유효성 검증 or SQL Exception 전환
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
 
@@ -68,12 +67,11 @@ public class TopicCommandService {
     }
 
     public void delete(Long id) {
-        // TODO id 유효성 검증 or SQL Exception 전환
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
 
         pinRepository.deleteAllByTopicId(id);
-        topic.delete();
+        topicRepository.deleteById(id);
     }
 
 }

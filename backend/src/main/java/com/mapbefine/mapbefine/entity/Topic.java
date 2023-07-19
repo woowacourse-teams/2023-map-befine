@@ -84,8 +84,4 @@ public class Topic extends BaseEntity {
         pins.add(pin);
     }
 
-    public void delete() {
-        this.isDeleted = true;
-    }
-
 }
