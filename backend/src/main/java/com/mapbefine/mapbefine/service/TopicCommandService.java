@@ -70,12 +70,7 @@ public class TopicCommandService {
 		Topic topic = topicRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
 
-		List<Long> pinIds = topic.getPins()
-			.stream()
-			.map(Pin::getId)
-			.collect(Collectors.toList());
-		pinRepository.deleteAllById(pinIds);
+		topic.delete();
 
-		topicRepository.delete(topic);
 	}
 }

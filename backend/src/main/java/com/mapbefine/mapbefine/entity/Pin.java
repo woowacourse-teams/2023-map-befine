@@ -66,4 +66,7 @@ public class Pin extends BaseEntity {
 		return Pin.of(this.name, this.description, this.location, topic);
 	}
 
+	public void delete() {
+		this.isDeleted = true;
+	}
 }

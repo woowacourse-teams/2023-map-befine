@@ -57,4 +57,9 @@ public class Topic extends BaseEntity {
 		pins.add(pin);
 	}
 
+	public void delete() {
+		this.isDeleted = true;
+		pins.forEach(Pin::delete);
+	}
+
 }
