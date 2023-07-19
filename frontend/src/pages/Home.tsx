@@ -4,27 +4,38 @@ import TopicCard from '../components/TopicCard';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { getApi } from '../utils/getApi';
+import { useNavigate } from 'react-router-dom';
 
-const data = [
-  {
-    topicEmoji: '🍛',
-    topicTitle: '선릉 직장인이 추천하는 맛집',
-    topicInformation: '업데이트 : 07.05 | 핀 개수 : 57',
-  },
-  {
-    topicEmoji: '💪',
-    topicTitle: '산스장 모음',
-    topicInformation: '업데이트 : 22.12.25 | 핀 개수 : 257',
-  },
-  {
-    topicEmoji: '✈️',
-    topicTitle: '서울 여행하기 좋은 곳',
-    topicInformation: '업데이트 : 01.25 | 핀 개수 : 9',
-  },
-];
+export interface topicType {
+  id: string;
+  name: string;
+  description: string;
+  emoji: string;
+  pins: number[];
+  pinCount: number;
+  updatedt: string; // 마지막으로 업데이트 된 시각
+}
 
 const Home = () => {
+  const [topics, setTopics] = useState<topicType[]>([]);
+
+  const navigate = useNavigate();
+
+  const getAndSetDataFromServer = async () => {
+    const data = await getApi('/');
+    setTopics(data);
+  };
+
+  const onClickButton = () => {
+    navigate(`/new-topic`);
+  }
+
+  useEffect(() => {
+    getAndSetDataFromServer();
+  }, []);
+
   return (
     <Box position="relative">
       <Space size={6} />
@@ -32,15 +43,17 @@ const Home = () => {
         내 주변 인기 있는 토픽
       </Text>
       <Space size={2} />
-      {data &&
-        data.map((topic, index) => {
+      {topics &&
+        topics.map((topic, index) => {
           return (
             // TODO: topics/${topicId}
             <Fragment key={index}>
               <TopicCard
-                topicEmoji={topic.topicEmoji}
-                topicTitle={topic.topicTitle}
-                topicInformation={topic.topicInformation}
+                topicId={topic.id}
+                topicEmoji={topic.emoji}
+                topicTitle={topic.name}
+                topicLastDate={topic.updatedt}
+                topicNumber={topic.pinCount}
               />
               <Space size={4} />
             </Fragment>
@@ -48,7 +61,7 @@ const Home = () => {
         })}
 
       <Flex position="fixed" bottom="40px" left="130px">
-        <Button variant="primary">토픽 추가하기</Button>
+        <Button variant="primary" onClick={onClickButton}>토픽 추가하기</Button>
       </Flex>
     </Box>
   );

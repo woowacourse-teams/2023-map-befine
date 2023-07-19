@@ -1,4 +1,5 @@
 import { rest } from 'msw';
+import topics from './db/getTopics.json';
 
 export const handlers = [
   // 포스트 목록
@@ -17,6 +18,21 @@ export const handlers = [
         longtitude: '핀 경도',
         updatedAt: '2023-07-12',
       }),
+    );
+  }),
+
+  // 토픽 목록
+  rest.get('/', (req, res, ctx) => {
+    const data = topics;
+
+    if (!data) {
+      return res(ctx.status(403), ctx.json(data));
+    }
+
+    return res(
+      ctx.set('Content-Type', 'application/json'),
+      ctx.status(200),
+      ctx.json(data),
     );
   }),
 ];
