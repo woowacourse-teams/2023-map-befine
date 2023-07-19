@@ -16,7 +16,7 @@ export const handlers = [
         description:
           '초밥을 파는 곳입니다. 점심 특선 있고 초밥 질이 괜찮습니다. 가격대도 다른 곳에 비해서 양호한 편이고 적당히 생각날 때 가면 좋을 것 같습니다.',
         latitude: '핀 위도',
-        longtitude: '핀 경도',
+        longitude: '핀 경도',
         updatedAt: '2023-07-12',
       }),
     );
@@ -62,7 +62,7 @@ export const handlers = [
       emoji: '🥘',
       pins: [],
       pinCount: 0,
-      updatedt: '2023-07-19',
+      updatedAt: '2023-07-19',
     };
 
     const newTopicDetail = {
@@ -71,7 +71,7 @@ export const handlers = [
       description: '선릉에서 찌개를 잘하는 집들이에요!',
       emoji: '🥘',
       pinCount: 0,
-      updatedt: '2023-07-19',
+      updatedAt: '2023-07-19',
       pins: []
     }
 
@@ -84,7 +84,7 @@ export const handlers = [
 
     return res(
       ctx.status(201),
-      ctx.set('Location', `/topics/${topics.length + 1}`)
+      ctx.set('Location', `/topics/${topics.length}`)
     );
   }),
 
@@ -96,7 +96,7 @@ export const handlers = [
       description: '선릉에서 찌개를 잘하는 집들이에요!',
       address: "서울특별시 선릉 테헤란로 127길 16",
       latitude: "핀 위도",
-      longtitude: "핀 경도"
+      longitude: "핀 경도"
     };
 
     detailTopic[0].pins.push(newPin);
@@ -107,7 +107,7 @@ export const handlers = [
 
     return res(
       ctx.status(201),
-      ctx.set('Location', `/pin/${detailTopic[0].pins.length + 1}`)
+      ctx.set('Location', `/pin/${detailTopic[0].pins.length}`)
     );
   }),
 ];
