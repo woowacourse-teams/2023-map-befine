@@ -30,7 +30,7 @@ class PinRepositoryTest {
 
     @Test
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
-    public void deleteById_Success() {
+    void deleteById_Success() {
         // given
         Topic topic = new Topic("topicName", "topicDescription");
         Location location = new Location(
@@ -56,7 +56,7 @@ class PinRepositoryTest {
 
     @Test
     @DisplayName("토픽 ID로 핀을 삭제하면 soft-deleting 된다.")
-    public void deleteAllByTopicId_Success() {
+    void deleteAllByTopicId_Success() {
         // given
         Topic topic = new Topic("topicName", "topicDescription");
         Location location = new Location(

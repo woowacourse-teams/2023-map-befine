@@ -1,5 +1,8 @@
 package com.mapbefine.mapbefine.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinUpdateRequest;
@@ -11,17 +14,13 @@ import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SpringBootTest
@@ -51,7 +50,7 @@ class PinCommandServiceTest {
 
     @Test
     @DisplayName("핀을 저장하려는 위치(Location)가 존재하면 해당 위치에 핀을 저장한다.")
-    public void saveIfExistLocation_Success() {
+    void saveIfExistLocation_Success() {
         // given
         BigDecimal latitude = BigDecimal.valueOf(37.123456);
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
@@ -102,7 +101,7 @@ class PinCommandServiceTest {
 
     @Test
     @DisplayName("핀을 저장하려는 존재하지 않는 위치(Location)가 존재하지 않으면 위치를 저장하고 핀을 저장한다.")
-    public void saveIfNotExistLocation_Success() {
+    void saveIfNotExistLocation_Success() {
         // given
         BigDecimal latitude = BigDecimal.valueOf(37.123456);
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
@@ -144,7 +143,7 @@ class PinCommandServiceTest {
 
     @Test
     @DisplayName("제약 사항(name, description)을 지킨 정보로 핀의 정보를 수정하면 핀이 수정된다.")
-    public void update_Success() {
+    void update_Success() {
         // given
         BigDecimal latitude = BigDecimal.valueOf(37.123456);
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
@@ -185,7 +184,7 @@ class PinCommandServiceTest {
 
     @Test
     @DisplayName("제약 사항(name, description)을 지키지 않은 정보로 핀의 정보를 수정하면 핀이 수정되지 않는다.")
-    public void update_Fail() {
+    void update_Fail() {
         // given
         BigDecimal latitude = BigDecimal.valueOf(37.123456);
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
@@ -211,7 +210,7 @@ class PinCommandServiceTest {
 
     @Test
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
-    public void removeById_Success() {
+    void removeById_Success() {
         // given
         BigDecimal latitude = BigDecimal.valueOf(37.123456);
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
@@ -243,7 +242,7 @@ class PinCommandServiceTest {
 
     @Test
     @DisplayName("토픽을 삭제하면 이와 관련된 모든 핀들이 soft-deleting 된다.")
-    public void removeAllByTopicId_Success() {
+    void removeAllByTopicId_Success() {
         // given
         BigDecimal latitude = BigDecimal.valueOf(37.123456);
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
@@ -268,8 +267,8 @@ class PinCommandServiceTest {
         Topic findTopicBeforeDeleting = topicRepository.findById(topic.getId()).get();
         assertThat(findTopicBeforeDeleting.getPins()).extractingResultOf("isDeleted")
                 .doesNotContain(true);
-
         pinCommandService.removeAllByTopicId(topic.getId());
+
         // then
         Topic findTopicAfterDeleting = topicRepository.findById(topic.getId()).get();
 
