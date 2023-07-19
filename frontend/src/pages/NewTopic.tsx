@@ -6,7 +6,9 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { styled } from 'styled-components';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { postApi } from '../utils/postApi';
 
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
@@ -32,8 +34,22 @@ const TopicIcon = styled(Input)`
 `;
 
 const NewTopic = () => {
+  const [topicId, setTopicId] = useState<string>();
+
+  const navigate = useNavigate();
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+  };
+
+  const postToServer = async () => {
+    const id = await postApi('/topics/new', {});
+    setTopicId(id.headers.get('Location')?.split('/')[2]);
+  };
+
+  const onClickButton = async () => {
+    await postToServer();
+    if(topicId) navigate(`/topics/${topicId}`, { state: topicId });
   };
 
   return (
@@ -107,7 +123,9 @@ const NewTopic = () => {
 
         <Flex $justifyContent="end">
           {/* TODO: topics/${topicId} */}
-          <Button variant="primary">생성하기</Button>
+          <Button onClick={onClickButton} variant="primary">
+            생성하기
+          </Button>
           <Space size={3} />
           {/* TODO: prev page */}
           <Button variant="secondary">취소하기</Button>

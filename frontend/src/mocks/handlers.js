@@ -52,4 +52,40 @@ export const handlers = [
       ctx.json(data[0]),
     );
   }),
+
+  // 토픽 생성
+  rest.post('/topics/new', (req, res, ctx) => {
+    const newTopic = {
+      id: `${topics.length + 1}`,
+      name: '찌개 맛있게 잘하는 집들',
+      description: '선릉에서 찌개를 잘하는 집들이에요!',
+      emoji: '🥘',
+      pins: [],
+      pinCount: 0,
+      updatedt: '2023-07-19',
+    };
+
+    const newTopicDetail = {
+      id: `${topics.length + 1}`,
+      name: '찌개 맛있게 잘하는 집들',
+      description: '선릉에서 찌개를 잘하는 집들이에요!',
+      emoji: '🥘',
+      pinCount: 0,
+      updatedt: '2023-07-19',
+      pins: []
+    }
+
+    topics.push(newTopic);
+    detailTopic.push(newTopicDetail);
+
+    if (!newTopic) {
+      return res(ctx.status(403), ctx.json(addData));
+    }
+
+    return res(
+      ctx.status(201),
+      ctx.set('Location', `/topics/${topics.length + 1}`)
+    );
+  }),
+
 ];
