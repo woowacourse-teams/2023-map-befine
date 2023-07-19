@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.entity;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -9,11 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -53,10 +51,10 @@ public class Location extends BaseEntity {
         this.legalDongCode = legalDongCode;
     }
 
-  	public void addPin(Pin pin) {
-		  pins.add(pin);
-	  }
-  
+    public void addPin(Pin pin) {
+        pins.add(pin);
+    }
+
     public BigDecimal getLatitude() {
         return coordinate.getLatitude();
     }

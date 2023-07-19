@@ -1,8 +1,14 @@
 package com.mapbefine.mapbefine.controller;
 
+import com.mapbefine.mapbefine.dto.TopicCreateRequest;
+import com.mapbefine.mapbefine.dto.TopicDetailResponse;
+import com.mapbefine.mapbefine.dto.TopicMergeRequest;
+import com.mapbefine.mapbefine.dto.TopicResponse;
+import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
+import com.mapbefine.mapbefine.service.TopicCommandService;
+import com.mapbefine.mapbefine.service.TopicQueryService;
 import java.net.URI;
 import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,65 +19,59 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mapbefine.mapbefine.dto.TopicCreateRequest;
-import com.mapbefine.mapbefine.dto.TopicDetailResponse;
-import com.mapbefine.mapbefine.dto.TopicMergeRequest;
-import com.mapbefine.mapbefine.dto.TopicResponse;
-import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
-import com.mapbefine.mapbefine.service.TopicCommandService;
-import com.mapbefine.mapbefine.service.TopicQueryService;
-
 @RestController
 @RequestMapping("/topics")
 public class TopicController {
 
-	private final TopicCommandService topicCommandService;
-	private final TopicQueryService topicQueryService;
+    private final TopicCommandService topicCommandService;
+    private final TopicQueryService topicQueryService;
 
-	public TopicController(TopicCommandService topicCommandService, TopicQueryService topicQueryService) {
-		this.topicCommandService = topicCommandService;
-		this.topicQueryService = topicQueryService;
-	}
+    public TopicController(TopicCommandService topicCommandService, TopicQueryService topicQueryService) {
+        this.topicCommandService = topicCommandService;
+        this.topicQueryService = topicQueryService;
+    }
 
-	@PostMapping("/new")
-	public ResponseEntity<Void> createNew(@RequestBody TopicCreateRequest topicCreateRequest) {
-		long topicId = topicCommandService.createNew(topicCreateRequest);
+    @PostMapping("/new")
+    public ResponseEntity<Void> create(@RequestBody TopicCreateRequest topicCreateRequest) {
+        long topicId = topicCommandService.createNew(topicCreateRequest);
 
-		return ResponseEntity.created(URI.create("/topics/" + topicId)).build();
-	}
+        return ResponseEntity.created(URI.create("/topics/" + topicId))
+                .build();
+    }
 
-	@PostMapping("/merge")
-	public ResponseEntity<Void> createMerge(@RequestBody TopicMergeRequest topicMergeRequest) {
-		long topicId = topicCommandService.createMerge(topicMergeRequest);
+    @PostMapping("/merge")
+    public ResponseEntity<Void> mergeAndCreate(@RequestBody TopicMergeRequest topicMergeRequest) {
+        long topicId = topicCommandService.createMerge(topicMergeRequest);
 
-		return ResponseEntity.created(URI.create("/topics/" + topicId)).build();
-	}
+        return ResponseEntity.created(URI.create("/topics/" + topicId))
+                .build();
+    }
 
-	@PutMapping("/{id}")
-	public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody TopicUpdateRequest topicUpdateRequest) {
-		topicCommandService.update(id, topicUpdateRequest);
+    @PutMapping("/{topicId}")
+    public ResponseEntity<Void> update(@PathVariable Long topicId, @RequestBody TopicUpdateRequest topicUpdateRequest) {
+        topicCommandService.update(topicId, topicUpdateRequest);
 
-		return ResponseEntity.ok().build();
-	}
+        return ResponseEntity.ok().build();
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		topicCommandService.delete(id);
+    @DeleteMapping("/{topicId}")
+    public ResponseEntity<Void> delete(@PathVariable Long topicId) {
+        topicCommandService.delete(topicId);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
-	@GetMapping
-	public ResponseEntity<List<TopicResponse>> findAll() {
-		List<TopicResponse> topics = topicQueryService.findAll();
+    @GetMapping
+    public ResponseEntity<List<TopicResponse>> findAll() {
+        List<TopicResponse> topics = topicQueryService.findAll();
 
-		return ResponseEntity.ok(topics);
-	}
+        return ResponseEntity.ok(topics);
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<TopicDetailResponse> findById(@PathVariable Long id) {
-		TopicDetailResponse response = topicQueryService.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<TopicDetailResponse> findById(@PathVariable Long id) {
+        TopicDetailResponse response = topicQueryService.findById(id);
 
-		return ResponseEntity.ok(response);
-	}
+        return ResponseEntity.ok(response);
+    }
 }

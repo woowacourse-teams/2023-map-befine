@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.dto;
 
-public record PinModificationRequest(
+public record PinUpdateRequest(
         String name,
         String description
 ) {

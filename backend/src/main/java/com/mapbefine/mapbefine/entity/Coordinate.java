@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.entity;
 
-import static lombok.AccessLevel.*;
-
+import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -28,32 +27,32 @@ public class Coordinate {
     @Column(precision = 18, scale = 15)
     private BigDecimal longitude;
 
-  	public Coordinate(
-		BigDecimal latitude,
-		BigDecimal longitude
-	) {
-		validateLatitude(latitude);
-		validateLongitude(longitude);
-      
-		this.latitude = latitude;
-		this.longitude = longitude;
-	}
+    public Coordinate(
+            BigDecimal latitude,
+            BigDecimal longitude
+    ) {
+        validateLatitude(latitude);
+        validateLongitude(longitude);
 
-	private void validateLatitude(BigDecimal latitude) {
-		if (isNotInRange(latitude, new BigDecimal("33"), new BigDecimal("43"))) {
-			throw new IllegalArgumentException("한국 내의 좌표만 입력해주세요.");
-		}
-	}
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
-	private void validateLongitude(BigDecimal longitude) {
-		if (isNotInRange(longitude, new BigDecimal("124"), new BigDecimal("132"))) {
-			throw new IllegalArgumentException("한국 내의 좌표만 입력해주세요.");
-		}
-	}
-  
-	private boolean isNotInRange(BigDecimal value, BigDecimal lowerBound, BigDecimal upperBound) {
-		return value.compareTo(lowerBound) < 0 || value.compareTo(upperBound) > 0;
-	}
+    private void validateLatitude(BigDecimal latitude) {
+        if (isNotInRange(latitude, new BigDecimal("33"), new BigDecimal("43"))) {
+            throw new IllegalArgumentException("한국 내의 좌표만 입력해주세요.");
+        }
+    }
+
+    private void validateLongitude(BigDecimal longitude) {
+        if (isNotInRange(longitude, new BigDecimal("124"), new BigDecimal("132"))) {
+            throw new IllegalArgumentException("한국 내의 좌표만 입력해주세요.");
+        }
+    }
+
+    private boolean isNotInRange(BigDecimal value, BigDecimal lowerBound, BigDecimal upperBound) {
+        return value.compareTo(lowerBound) < 0 || value.compareTo(upperBound) > 0;
+    }
 
     /*
      * 오차 범위 2%
@@ -72,8 +71,8 @@ public class Coordinate {
 
         return convertToCentimeter(
                 applyFormula(Math::asin, squareRoot)
-                .multiply(BigDecimal.valueOf(2))
-                .multiply(EARTH_RADIUS)
+                        .multiply(BigDecimal.valueOf(2))
+                        .multiply(EARTH_RADIUS)
         );
     }
 

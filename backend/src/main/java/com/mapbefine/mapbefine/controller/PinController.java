@@ -1,9 +1,9 @@
 package com.mapbefine.mapbefine.controller;
 
-import com.mapbefine.mapbefine.dto.PinCreationRequest;
+import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
-import com.mapbefine.mapbefine.dto.PinModificationRequest;
 import com.mapbefine.mapbefine.dto.PinResponse;
+import com.mapbefine.mapbefine.dto.PinUpdateRequest;
 import com.mapbefine.mapbefine.service.PinCommandService;
 import com.mapbefine.mapbefine.service.PinQueryService;
 import java.net.URI;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/pins")
 public class PinController {
+
     private final PinCommandService pinCommandService;
     private final PinQueryService pinQueryService;
 
@@ -29,15 +30,14 @@ public class PinController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> add(PinCreationRequest request) {
+    public ResponseEntity<Void> add(PinCreateRequest request) {
         Long savedId = pinCommandService.save(request);
 
-        return ResponseEntity.created(URI.create("/pins/" + savedId))
-                .build();
+        return ResponseEntity.created(URI.create("/pins/" + savedId)).build();
     }
 
-    @PutMapping("{pinId}")
-    public ResponseEntity<Void> update(@PathVariable Long pinId, PinModificationRequest request) {
+    @PutMapping("/{pinId}")
+    public ResponseEntity<Void> update(@PathVariable Long pinId, PinUpdateRequest request) {
         pinCommandService.update(pinId, request);
 
         return ResponseEntity.ok()
@@ -45,12 +45,11 @@ public class PinController {
                 .build();
     }
 
-    @DeleteMapping("{pinId}")
+    @DeleteMapping("/{pinId}")
     public ResponseEntity<Void> delete(@PathVariable Long pinId) {
         pinCommandService.removeById(pinId);
 
-        return ResponseEntity.noContent()
-                .build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("{pinId}")
