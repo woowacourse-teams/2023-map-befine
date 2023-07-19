@@ -30,7 +30,7 @@ public class Topic extends BaseEntity {
     private String description;
 
     @OneToMany(mappedBy = "topic")
-    private List<UserPin> userPins;
+    private List<Pin> pins;
 
     @Column(nullable = false)
     private boolean isDeleted;
@@ -39,12 +39,12 @@ public class Topic extends BaseEntity {
             Long id,
             String name,
             String description,
-            List<UserPin> userPins
+            List<Pin> pins
     ) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.userPins = userPins;
+        this.pins = pins;
     }
 
 }
