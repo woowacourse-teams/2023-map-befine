@@ -29,11 +29,19 @@ public class TopicCommandService {
         Topic topic = new Topic(request.name(), request.description());
         topicRepository.save(topic);
 
-        // TODO id 유효성 검증 or SQL Exception 전환
-        List<Pin> original = pinRepository.findAllById(request.pins());
+        List<Long> pinIds = request.pins();
+        List<Pin> original = pinRepository.findAllById(pinIds);
+
+        validateExist(pinIds.size(), original.size());
         pinRepository.saveAll(duplicateUserPins(original, topic));
 
         return topic.getId();
+    }
+
+    private void validateExist(int idCount, int existCount) {
+        if (idCount != existCount) {
+            throw new IllegalArgumentException("찾을 수 없는 ID가 포함되어 있습니다.");
+        }
     }
 
     private List<Pin> duplicateUserPins(List<Pin> pins, Topic topic) {
@@ -43,8 +51,10 @@ public class TopicCommandService {
     }
 
     public long createMerge(TopicMergeRequest request) {
-        // TODO id 유효성 검증 or SQL Exception 전환
-        List<Topic> topics = topicRepository.findAllById(request.topics());
+        List<Long> topicIds = request.topics();
+        List<Topic> topics = topicRepository.findAllById(topicIds);
+
+        validateExist(topicIds.size(), topics.size());
 
         Topic topic = new Topic(request.name(), request.description());
         topicRepository.save(topic);

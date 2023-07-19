@@ -71,7 +71,9 @@ public class Topic extends BaseEntity {
     }
 
     public void update(String name, String description) {
-        // TODO 이름, 설명 길이 검증
+        validateName(name);
+        validateDescription(description);
+
         this.name = name;
         this.description = description;
     }
