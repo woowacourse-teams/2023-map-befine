@@ -5,7 +5,7 @@ import Clipping from '../../assets/clipping.svg';
 import Share from '../../assets/share.svg';
 import Button from '../common/Button';
 import Space from '../common/Space';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export interface TopicCardProps {
   topicParticipant: number;
@@ -23,9 +23,10 @@ const TopicInfo = ({
   topicDescription,
 }: TopicCardProps) => {
   const navigator = useNavigate();
+  const { topicId } = useParams();
 
   const goToNewPin = () => {
-    navigator('/new-pin');
+    navigator(`/new-pin?topic-id=${topicId}`);
   };
 
   return (

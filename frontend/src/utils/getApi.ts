@@ -1,4 +1,4 @@
-export const getApi = (url:string) =>
+export const getApi = (url: string) =>
   fetch(url, {
     method: 'GET',
     headers: {
