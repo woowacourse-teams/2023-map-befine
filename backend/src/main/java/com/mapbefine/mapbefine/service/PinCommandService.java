@@ -90,5 +90,11 @@ public class PinCommandService {
         pinRepository.save(pin);
     }
 
+    public void removeById(Long pinId) {
+        pinRepository.deleteById(pinId);
+    }
 
+    public void removeAllByTopicId(Long topicId) {
+        pinRepository.deleteAllByTopicId(topicId);
+    }
 }
