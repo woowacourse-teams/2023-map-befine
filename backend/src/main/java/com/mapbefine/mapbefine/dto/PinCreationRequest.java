@@ -10,4 +10,5 @@ public record PinCreationRequest(
         String legalDongCode,
         BigDecimal longitude,
         BigDecimal latitude
-) { }
+) {
+}
