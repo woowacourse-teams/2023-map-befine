@@ -1,74 +1,91 @@
+import { useEffect, useState } from 'react';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
 import TopicInfo from '../components/TopicInfo';
-import { Fragment, useEffect, useState } from 'react';
+import { TopicInfoType } from '../types/Topic';
+import { useNavigate, useParams } from 'react-router-dom';
+import theme from '../themes';
+import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
-import { useLocation } from 'react-router-dom';
-
-
-interface PinProps {
-  id: string;
-  name: string;
-  address: string;
-  description: string;
-  latitude: string;
-  longtitude: string;
-}
-
-export interface TopicPinProps {
-  id: string;
-  name: string;
-  description: string;
-  pinCount: number;
-  updatedAt: string;
-  pins: PinProps[];
-}
 
 const SelectedTopic = () => {
-  const [topic, setTopic] = useState<TopicPinProps>();
+  const { topicId } = useParams();
+  const navigator = useNavigate();
+  const [topicDetail, setTopicDetail] = useState<TopicInfoType | null>(null);
+  const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
 
-  const { state } = useLocation();
+  const onClickSetSelectedPinId = (pinId: string) => {
+    setSelectedPinId(pinId);
 
+    navigator(`/topics/${topicId}?pinDetail=${pinId}`);
+  };
+   
   const getAndSetDataFromServer = async () => {
-    const data = await getApi(`/topics/${state}`);
-    setTopic(data);
+    const data = await getApi(`/topics/${topicId}`);
+    setTopicDetail(data);
   };
 
   useEffect(() => {
     getAndSetDataFromServer();
+
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.has('pinDetail')) {
+      setSelectedPinId(queryParams.get('pinDetail'));
+    }
   }, []);
 
+  if (!topicDetail) return <></>;
+
   return (
-    <Flex $flexDirection="column">
-      {topic && (
-        <Fragment>
-          <TopicInfo
-          topicId={topic.id}
-            pinNumber={topic.pinCount}
-            topicTitle={topic.name}
-            topicDescription={topic.description}
-          />
-          <Space size={3} />
+    <>
+      <Space size={3} />
+      <Flex $flexDirection="column">
+        <TopicInfo
+          topicParticipant={12}
+          pinNumber={topicDetail.pinCount}
+          topicTitle={topicDetail.name}
+          topicOwner={'하지원'}
+          topicDescription={topicDetail.description}
+        />
+        <Space size={3} />
+        <div>
+          {topicDetail.pins.map((pin) => (
+            <div
+              key={pin.id}
+              onClick={() => {
+                onClickSetSelectedPinId(pin.id);
+              }}
+            >
+              <PinPreview
+                pinTitle={pin.name}
+                pinLocation={pin.address}
+                pinInformation={pin.description}
+              />
+              <Space size={3} />
+            </div>
+          ))}
+        </div>
 
-          {topic.pins &&
-            topic.pins.map((info) => {
-              return (
-                <Fragment key={info.id}>
-                  <PinPreview
-                    pinTitle={info.name}
-                    pinLocation={info.address}
-                    pinInformation={info.description}
-                  />
-                  <Space size={3} />
-                </Fragment>
-              );
-            })}
-        </Fragment>
-      )}
+        {selectedPinId && (
+          <Flex
+            $backgroundColor="white"
+            width="400px"
+            $minHeight="100vh"
+            position="absolute"
+            left="400px"
+            top="0px"
+            padding={4}
+            $flexDirection="column"
+            $borderLeft={`1px solid ${theme.color.gray}`}
+          >
+            <PinDetail pinId={selectedPinId} />
+          </Flex>
+        )}
 
-      <Space size={4} />
-    </Flex>
+        <Space size={4} />
+      </Flex>
+    </>
   );
 };
 

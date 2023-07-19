@@ -28,9 +28,9 @@ const Home = () => {
     setTopics(data);
   };
 
-  const onClickButton = () => {
-    navigate(`/new-topic`);
-  }
+ const goToNewTopic = () => {
+    navigator('new-topic');
+  };
 
   useEffect(() => {
     getAndSetDataFromServer();
@@ -46,7 +46,6 @@ const Home = () => {
       {topics &&
         topics.map((topic, index) => {
           return (
-            // TODO: topics/${topicId}
             <Fragment key={index}>
               <TopicCard
                 topicId={topic.id}
@@ -61,7 +60,7 @@ const Home = () => {
         })}
 
       <Flex position="fixed" bottom="40px" left="130px">
-        <Button variant="primary" onClick={onClickButton}>토픽 추가하기</Button>
+        <Button variant="primary" onClick={goToNewTopic}>토픽 추가하기</Button>
       </Flex>
     </Box>
   );
