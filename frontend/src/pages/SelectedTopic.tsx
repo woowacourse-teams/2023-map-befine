@@ -20,7 +20,7 @@ const SelectedTopic = () => {
 
     navigator(`/topics/${topicId}?pinDetail=${pinId}`);
   };
-   
+
   const getAndSetDataFromServer = async () => {
     const data = await getApi(`/topics/${topicId}`);
     setTopicDetail(data);
