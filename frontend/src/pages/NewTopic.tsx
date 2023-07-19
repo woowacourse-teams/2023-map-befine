@@ -11,27 +11,6 @@ import { useNavigate } from 'react-router-dom';
 
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
-const TopicIcon = styled(Input)`
-  display: none;
-  position: relative;
-
-  & + label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 52px;
-    height: 52px;
-    font-size: 36px;
-    border: 1px solid ${({ theme }) => theme.color.black};
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  &:checked + label {
-    background-color: ${({ theme }) => theme.color.primary};
-  }
-`;
-
 const NewTopic = () => {
   const [topicName, setTopicName] = useState<String>('');
   const [topicDescription, setTopicDescription] = useState<String>('');
@@ -155,5 +134,26 @@ const NewTopic = () => {
     </form>
   );
 };
+
+const TopicIcon = styled(Input)`
+  display: none;
+  position: relative;
+
+  & + label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 52px;
+    height: 52px;
+    font-size: 36px;
+    border: 1px solid ${({ theme }) => theme.color.black};
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  &:checked + label {
+    background-color: ${({ theme }) => theme.color.primary};
+  }
+`;
 
 export default NewTopic;
