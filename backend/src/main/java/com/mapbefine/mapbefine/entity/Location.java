@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -48,4 +49,13 @@ public class Location extends BaseEntity {
         this.coordinate = coordinate;
         this.legalDongCode = legalDongCode;
     }
+
+    public BigDecimal getLatitude() {
+        return coordinate.getLatitude();
+    }
+
+    public BigDecimal getLongitude() {
+        return coordinate.getLongitude();
+    }
+
 }

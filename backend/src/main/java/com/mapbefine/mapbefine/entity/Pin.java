@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -85,5 +86,17 @@ public class Pin extends BaseEntity {
 
         this.name = name;
         this.description = description;
+    }
+
+    public BigDecimal getLatitude() {
+        return location.getLatitude();
+    }
+
+    public BigDecimal getLongitude() {
+        return location.getLongitude() ;
+    }
+
+    public String getParcelBaseAddress(){
+        return location.getParcelBaseAddress();
     }
 }
