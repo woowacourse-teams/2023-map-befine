@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.controller;
 
 import com.mapbefine.mapbefine.dto.PinCreationRequest;
+import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinModificationRequest;
 import com.mapbefine.mapbefine.dto.PinResponse;
 import com.mapbefine.mapbefine.service.PinCommandService;
@@ -50,6 +51,11 @@ public class PinController {
 
         return ResponseEntity.noContent()
                 .build();
+    }
+
+    @GetMapping("{pinId}")
+    public ResponseEntity<PinDetailResponse> findById(@PathVariable Long pinId) {
+        return ResponseEntity.ok(pinQueryService.findById(pinId));
     }
 
     @GetMapping
