@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Location extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,6 +49,10 @@ public class Location extends BaseEntity {
         this.roadBaseAddress = roadBaseAddress;
         this.coordinate = coordinate;
         this.legalDongCode = legalDongCode;
+    }
+
+    public void addPin(Pin pin) {
+        pins.add(pin);
     }
 
     public BigDecimal getLatitude() {

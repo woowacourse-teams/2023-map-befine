@@ -37,8 +37,11 @@ class LocationRepositoryTest {
         );
         locationRepository.save(location);
         // when
-        List<Location> locations = locationRepository.findAllByRectangle(BigDecimal.valueOf(127),
-                BigDecimal.valueOf(35), distance);
+        List<Location> locations = locationRepository.findAllByRectangle(
+                BigDecimal.valueOf(35),
+                BigDecimal.valueOf(127),
+                distance
+        );
 
         // then
         assertThat(locations).hasSize(1);
@@ -46,10 +49,10 @@ class LocationRepositoryTest {
 
     static Stream<Arguments> coordinates_Success() {
         return Stream.of(
-                Arguments.of(BigDecimal.valueOf(126.9999), BigDecimal.valueOf(34.9999)),
-                Arguments.of(BigDecimal.valueOf(126.9999), BigDecimal.valueOf(35.0001)),
-                Arguments.of(BigDecimal.valueOf(127.0001), BigDecimal.valueOf(34.9999)),
-                Arguments.of(BigDecimal.valueOf(127.0001), BigDecimal.valueOf(35.0001))
+                Arguments.of(BigDecimal.valueOf(34.9999), BigDecimal.valueOf(126.9999)),
+                Arguments.of(BigDecimal.valueOf(35.0001), BigDecimal.valueOf(126.9999)),
+                Arguments.of(BigDecimal.valueOf(34.9999), BigDecimal.valueOf(127.0001)),
+                Arguments.of(BigDecimal.valueOf(35.0001), BigDecimal.valueOf(127.0001))
         );
     }
 
@@ -69,8 +72,8 @@ class LocationRepositoryTest {
         locationRepository.save(location);
 
         // when
-        List<Location> locations = locationRepository.findAllByRectangle(BigDecimal.valueOf(127),
-                BigDecimal.valueOf(35), distance);
+        List<Location> locations = locationRepository.findAllByRectangle(BigDecimal.valueOf(35),
+                BigDecimal.valueOf(127), distance);
 
         // then
         assertThat(locations).isEmpty();
@@ -78,10 +81,10 @@ class LocationRepositoryTest {
 
     static Stream<Arguments> coordinates_Fail() {
         return Stream.of(
-                Arguments.of(BigDecimal.valueOf(126.9998), BigDecimal.valueOf(34.9999)),
-                Arguments.of(BigDecimal.valueOf(126.9998), BigDecimal.valueOf(35.0001)),
-                Arguments.of(BigDecimal.valueOf(127.0001), BigDecimal.valueOf(34.9998)),
-                Arguments.of(BigDecimal.valueOf(127.0001), BigDecimal.valueOf(35.0002))
+                Arguments.of(BigDecimal.valueOf(34.9999), BigDecimal.valueOf(126.9998)),
+                Arguments.of(BigDecimal.valueOf(35.0001), BigDecimal.valueOf(126.9998)),
+                Arguments.of(BigDecimal.valueOf(34.9998), BigDecimal.valueOf(127.0001)),
+                Arguments.of(BigDecimal.valueOf(35.0002), BigDecimal.valueOf(127.0001))
         );
     }
 

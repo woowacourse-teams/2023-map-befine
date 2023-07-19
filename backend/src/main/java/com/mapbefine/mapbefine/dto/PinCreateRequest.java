@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.dto;
 
 import java.math.BigDecimal;
 
-public record PinCreationRequest(
+public record PinCreateRequest(
         Long topicId,
         String name,
         String description,

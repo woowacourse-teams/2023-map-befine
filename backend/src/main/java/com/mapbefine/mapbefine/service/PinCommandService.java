@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.service;
 
-import com.mapbefine.mapbefine.dto.PinCreationRequest;
-import com.mapbefine.mapbefine.dto.PinModificationRequest;
+import com.mapbefine.mapbefine.dto.PinCreateRequest;
+import com.mapbefine.mapbefine.dto.PinUpdateRequest;
 import com.mapbefine.mapbefine.entity.Coordinate;
 import com.mapbefine.mapbefine.entity.Location;
 import com.mapbefine.mapbefine.entity.Pin;
@@ -31,7 +31,7 @@ public class PinCommandService {
         this.topicRepository = topicRepository;
     }
 
-    public Long save(PinCreationRequest request) {
+    public Long save(PinCreateRequest request) {
 
         // 기존 Pin 이 등록된 위치가 아니면
         // Pin 등록
@@ -71,18 +71,18 @@ public class PinCommandService {
         return pinRepository.save(pin).getId();
     }
 
-    private Location saveLocation(PinCreationRequest pinCreationRequest, Coordinate coordinate) {
+    private Location saveLocation(PinCreateRequest pinCreateRequest, Coordinate coordinate) {
         Location location = new Location(
-                pinCreationRequest.address(),
-                pinCreationRequest.address(),
+                pinCreateRequest.address(),
+                pinCreateRequest.address(),
                 coordinate,
-                pinCreationRequest.legalDongCode()
+                pinCreateRequest.legalDongCode()
         );
 
         return locationRepository.save(location);
     }
 
-    public void update(Long pinId, PinModificationRequest request) {
+    public void update(Long pinId, PinUpdateRequest request) {
         Pin pin = pinRepository.findById(pinId).orElseThrow(NoSuchElementException::new);
 
         pin.update(request.name(), request.description());

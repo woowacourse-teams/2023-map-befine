@@ -11,24 +11,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Pin extends BaseEntity {
+
     private static final int MAX_DESCRIPTION_LENGTH = 1000;
     private static final int MAX_NAME_LENGTH = 50;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @Column(nullable = false, length = 50)
     private String name;
 
@@ -40,12 +39,13 @@ public class Pin extends BaseEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @Column(nullable = false)
+    @ColumnDefault(value = "false")
+    private boolean isDeleted = false;
+
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
-
-    @Column(nullable = false)
-    private boolean isDeleted;
 
     public Pin(
             String name,
@@ -62,12 +62,25 @@ public class Pin extends BaseEntity {
         this.topic = topic;
     }
 
+
+    public static Pin of(
+            String name,
+            String description,
+            Location location,
+            Topic topic
+    ) {
+        Pin pin = new Pin(name, description, location, topic);
+        location.addPin(pin);
+        topic.addPin(pin);
+        return pin;
+    }
+
     private void validateName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("name null");
         }
         if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("이름 길이이상");
+            throw new IllegalArgumentException("이름 길이 이상");
         }
     }
 
@@ -76,8 +89,12 @@ public class Pin extends BaseEntity {
             throw new IllegalArgumentException("description null");
         }
         if (description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
-            throw new IllegalArgumentException("d e s c r i p t i o n 길 이 이 상");
+            throw new IllegalArgumentException("description 길이 이상");
         }
+    }
+
+    public Pin duplicate(Topic topic) {
+        return Pin.of(this.name, this.description, this.location, topic);
     }
 
     public void update(String name, String description) {
@@ -93,10 +110,11 @@ public class Pin extends BaseEntity {
     }
 
     public BigDecimal getLongitude() {
-        return location.getLongitude() ;
+        return location.getLongitude();
     }
 
-    public String getParcelBaseAddress(){
+    public String getParcelBaseAddress() {
         return location.getParcelBaseAddress();
     }
+
 }
