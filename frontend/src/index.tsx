@@ -1,10 +1,9 @@
 import ReactDOM from 'react-dom/client';
-
 import App from './App';
 import { ThemeProvider } from 'styled-components';
 import theme from './themes';
 import GlobalStyle from './GlobalStyle';
-import { BrowserRouter } from 'react-router-dom';
+import React from 'react';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
@@ -16,10 +15,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 root.render(
-  <ThemeProvider theme={theme}>
-    <GlobalStyle />
-    <BrowserRouter>
+  <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
       <App />
-    </BrowserRouter>
-  </ThemeProvider>,
+    </ThemeProvider>
+  </React.StrictMode>,
 );

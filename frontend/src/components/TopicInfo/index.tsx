@@ -5,10 +5,11 @@ import Clipping from '../../assets/clipping.svg';
 import Share from '../../assets/share.svg';
 import Button from '../common/Button';
 import Space from '../common/Space';
+import { useNavigate } from 'react-router-dom';
 
 export interface TopicCardProps {
-  topicParticipant: string;
-  pinNumber: string;
+  topicParticipant: number;
+  pinNumber: number;
   topicTitle: string;
   topicOwner: string;
   topicDescription: string;
@@ -21,6 +22,12 @@ const TopicInfo = ({
   topicOwner,
   topicDescription,
 }: TopicCardProps) => {
+  const navigator = useNavigate();
+
+  const goToNewPin = () => {
+    navigator('/new-pin');
+  };
+
   return (
     <Flex
       width="360px"
@@ -32,11 +39,11 @@ const TopicInfo = ({
     >
       <Flex>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {topicParticipant}
+          · {topicParticipant}명의 참가자
         </Text>
         <Space size={2} />
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {pinNumber}
+          · {pinNumber}개의 핀
         </Text>
       </Flex>
       <Text color="black" $fontSize="large" $fontWeight="bold">
@@ -55,28 +62,13 @@ const TopicInfo = ({
           <Space size={2} />
           <Share />
         </Flex>
-        <Button variant="secondary">+ 핀 추가하기</Button>
+        <Button variant="secondary" onClick={goToNewPin}>
+          + 핀 추가하기
+        </Button>
       </Flex>
       <Space size={6} />
     </Flex>
   );
 };
-
-const PinButton = styled.button`
-  width: 16px;
-  height: 16px;
-
-  position: absolute;
-  top: 8px;
-  right: 8px;
-
-  background-color: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.black};
-  border-radius: ${({ theme }) => theme.radius.medium};
-
-  &:focus {
-    background-color: ${({ theme }) => theme.color.primary};
-  }
-`;
 
 export default TopicInfo;
