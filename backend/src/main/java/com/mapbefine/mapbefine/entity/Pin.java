@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,7 +34,7 @@ public class Pin extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String description;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
@@ -63,7 +62,7 @@ public class Pin extends BaseEntity {
     }
 
 
-    public static Pin of(
+    public static Pin createPinAssociatedWithLocationAndTopic(
             String name,
             String description,
             Location location,
@@ -94,7 +93,7 @@ public class Pin extends BaseEntity {
     }
 
     public Pin duplicate(Topic topic) {
-        return Pin.of(this.name, this.description, this.location, topic);
+        return Pin.createPinAssociatedWithLocationAndTopic(this.name, this.description, this.location, topic);
     }
 
     public void update(String name, String description) {
