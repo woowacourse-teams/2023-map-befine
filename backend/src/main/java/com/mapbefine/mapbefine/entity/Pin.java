@@ -38,7 +38,7 @@ public class Pin extends BaseEntity {
 	@JoinColumn(name = "topic_id", nullable = false)
 	private Topic topic;
 
-	public Pin(
+	private Pin(
 		String name,
 		String description,
 		Location location,
@@ -50,13 +50,20 @@ public class Pin extends BaseEntity {
 		this.topic = topic;
 	}
 
+	public static Pin of(
+		String name,
+		String description,
+		Location location,
+		Topic topic
+	) {
+		Pin pin = new Pin(name, description, location, topic);
+		location.addPin(pin);
+		topic.addPin(pin);
+		return pin;
+	}
+
 	public Pin duplicate(Topic topic) {
-		return new Pin(
-			name,
-			description,
-			location,
-			topic
-		);
+		return Pin.of(this.name, this.description, this.location, topic);
 	}
 
 }

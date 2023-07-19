@@ -28,7 +28,6 @@ public class TopicCommandService {
 	}
 
 	public long createNew(final TopicCreateRequest request) {
-		/// TODO 더 객체지향적으로 연관관계를 매핑할 수 없을까?
 		Topic topic = new Topic(request.name(), request.description());
 		topicRepository.save(topic);
 
@@ -71,7 +70,6 @@ public class TopicCommandService {
 		Topic topic = topicRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
 
-		// TODO: 연관된 UserPin Cascade로 삭제하도록 변경
 		List<Long> pinIds = topic.getPins()
 			.stream()
 			.map(Pin::getId)

@@ -46,4 +46,8 @@ public class Location extends BaseEntity {
 		this.legalDongCode = legalDongCode;
 	}
 
+	public void addPin(Pin pin) {
+		pins.add(pin);
+	}
+
 }

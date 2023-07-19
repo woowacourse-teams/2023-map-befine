@@ -52,4 +52,9 @@ public class Topic extends BaseEntity {
 	public int countPins() {
 		return pins.size();
 	}
+
+	public void addPin(Pin pin) {
+		pins.add(pin);
+	}
+
 }
