@@ -7,7 +7,6 @@ export const handlers = [
   // 포스트 목록
   rest.get('/pin/:id', (req, res, ctx) => {
     const pinId = req.params.id;
-
     return res(ctx.status(200), ctx.json(tempPins[pinId - 1]));
   }),
 
@@ -100,5 +99,39 @@ export const handlers = [
       ctx.status(201),
       ctx.set('Location', `/pin/${detailTopic[topicId - 1].pins.length}`),
     );
+  }),
+
+  rest.put('/pins/:id', async (req, res, ctx) => {
+    const { id } = req.params;
+    const { name, address, description } = await req.json();
+
+    const pin = tempPins.find((pin) => pin.id === id);
+
+    if (!pin) {
+      return res(ctx.status(404), ctx.json({ message: 'Pin not found' }));
+    }
+
+    tempPins.forEach((pin) => {
+      if (pin.id === id) {
+        pin.name = name;
+        pin.address = address;
+        pin.description = description;
+      }
+      return pin;
+    });
+
+    detailTopic.forEach((topic) => {
+      topic.pins.forEach((pin) => {
+        if (pin.id === id) {
+          pin.name = name;
+          pin.address = address;
+          pin.description = description;
+        }
+        return pin;
+      });
+      return topic;
+    });
+    console.log('here');
+    return res(ctx.status(200), ctx.set('Location', `/pin/${id}`));
   }),
 ];

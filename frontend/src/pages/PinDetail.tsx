@@ -9,18 +9,69 @@ import Share from '../assets/share.svg';
 import { useEffect, useState } from 'react';
 import { PinType } from '../types/Pin';
 import { getApi } from '../utils/getApi';
+import { putApi } from '../utils/putApi';
+import Textarea from '../components/common/Textarea';
+import Input from '../components/common/Input';
+import { useSearchParams } from 'react-router-dom';
 
 const PinDetail = ({ pinId }: { pinId: string }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
-
+  const [isEditing, setIsEditing] = useState(false);
+  const [formValues, setFormValues] = useState({
+    name: '',
+    address: '',
+    description: '',
+  });
   useEffect(() => {
     const getPinData = async () => {
       const pinData = await getApi(`/pin/${pinId}`);
+      console.log('pinData', pinData);
       setPin(pinData);
+      setFormValues({
+        name: pinData.name,
+        address: pinData.address,
+        description: pinData.description,
+      });
     };
 
     getPinData();
-  }, [pinId]);
+  }, [pinId, searchParams]);
+
+  const updateQueryString = (key: string, value: string) => {
+    setSearchParams({ ...Object.fromEntries(searchParams), [key]: value });
+  };
+
+  const removeQueryString = (key: string) => {
+    const updatedSearchParams = { ...Object.fromEntries(searchParams) };
+    delete updatedSearchParams[key];
+    setSearchParams(updatedSearchParams);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+    updateQueryString('edit', 'true');
+  };
+
+  const handleUpdateClick = async () => {
+    await putApi(`/pins/${pinId}`, formValues);
+    setIsEditing(false);
+    removeQueryString('edit');
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
 
   const copyContent = async () => {
     try {
@@ -37,11 +88,46 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
     <>
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
-          {pin.name}
+          {isEditing ? (
+            <Input
+              type="text"
+              name="name"
+              value={formValues.name}
+              onChange={handleInputChange}
+            />
+          ) : (
+            pin.name
+          )}
         </Text>
-        <Text color="primary" $fontSize="default" $fontWeight="normal">
-          글 수정하기
-        </Text>
+        {isEditing ? (
+          <Flex>
+            <Text
+              color="primary"
+              $fontSize="default"
+              $fontWeight="normal"
+              onClick={handleUpdateClick}
+            >
+              저장
+            </Text>
+            <Text
+              color=""
+              $fontSize="default"
+              $fontWeight="normal"
+              onClick={handleCancelClick}
+            >
+              취소
+            </Text>
+          </Flex>
+        ) : (
+          <Text
+            color="primary"
+            $fontSize="default"
+            $fontWeight="normal"
+            onClick={handleEditClick}
+          >
+            수정하기
+          </Text>
+        )}
       </Flex>
       <Space size={0} />
 
@@ -81,18 +167,35 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어디에 있나요?
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {pin.address}
-        </Text>
+        {isEditing ? (
+          <Input
+            type="text"
+            name="address"
+            value={formValues.address}
+            onChange={handleInputChange}
+          />
+        ) : (
+          <Text color="gray" $fontSize="small" $fontWeight="normal">
+            {pin.address}
+          </Text>
+        )}
       </Flex>
       <Space size={6} />
       <Flex $flexDirection="column">
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어떤 곳인가요?
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {pin.description}
-        </Text>
+        {isEditing ? (
+          <Textarea
+            name="description"
+            value={formValues.description}
+            onChange={handleInputChange}
+          />
+        ) : (
+          <Text color="gray" $fontSize="small" $fontWeight="normal">
+            {pin.description}
+          </Text>
+        )}
       </Flex>
       <Space size={7} />
       <Flex $justifyContent="center">
