@@ -1,10 +1,12 @@
-= Rest Docs Practice Application API Document
-
 :doctype: book
 :source-highlighter: highlightjs
+:sectlinks:
 :toc: left
 :toclevels: 2
-:sectlinks:
 
-include::pin.adoc[]
+= 괜찮을지도 API 명세서
+
+toc::[]
+
 include::topic.adoc[]
+include::pin.adoc[]

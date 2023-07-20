@@ -1,15 +1,15 @@
 package com.mapbefine.mapbefine.entity;
 
-import static lombok.AccessLevel.PROTECTED;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.function.DoubleUnaryOperator;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)
@@ -35,6 +35,13 @@ public class Coordinate {
 
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public static Coordinate From(String latitude, String longitude) {
+        return new Coordinate(
+                new BigDecimal(latitude),
+                new BigDecimal(longitude)
+        );
     }
 
     private void validateLatitude(BigDecimal latitude) {

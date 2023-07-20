@@ -4,13 +4,14 @@ import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
 import TopicInfo from '../components/TopicInfo';
 import { TopicInfoType } from '../types/Topic';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigator = useNavigate();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType | null>(null);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
@@ -33,7 +34,7 @@ const SelectedTopic = () => {
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(queryParams.get('pinDetail'));
     }
-  }, []);
+  }, [searchParams]);
 
   if (!topicId) return <></>;
   if (!topicDetail) return <></>;
