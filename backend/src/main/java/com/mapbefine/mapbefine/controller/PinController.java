@@ -52,7 +52,7 @@ public class PinController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("{pinId}")
+    @GetMapping("/{pinId}")
     public ResponseEntity<PinDetailResponse> findById(@PathVariable Long pinId) {
         return ResponseEntity.ok(pinQueryService.findById(pinId));
     }
