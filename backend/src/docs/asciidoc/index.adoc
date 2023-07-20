@@ -1,0 +1,12 @@
+:doctype: book
+:source-highlighter: highlightjs
+:sectlinks:
+:toc: left
+:toclevels: 2
+
+= 괜찮을지도 API 명세서
+
+toc::[]
+
+include::topic.adoc[]
+include::pin.adoc[]

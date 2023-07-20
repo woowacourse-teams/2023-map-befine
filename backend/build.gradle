@@ -1,45 +1,86 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.1.1'
-	id 'io.spring.dependency-management' version '1.1.0'
+    id 'java'
+    id 'org.springframework.boot' version '3.1.1'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'com.mapbefine'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    asciidoctorExt
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
-	testImplementation 'io.rest-assured:rest-assured'
-	testImplementation 'io.rest-assured:spring-mock-mvc'
-	testImplementation 'org.assertj:assertj-core:3.19.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'io.rest-assured:spring-mock-mvc'
+    testImplementation 'org.assertj:assertj-core:3.19.0'
 
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
+
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+}
+
+ext { // 변수 설정
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+test { // outputs dir 를 snippetsDir 로 변경
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+asciidoctor {
+    configurations 'asciidoctorExt'
+    baseDirFollowsSourceFile()
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+task createDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static")
+}
+
+bootJar {
+    dependsOn createDocument
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
+}
+
+build {
+    dependsOn createDocument
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

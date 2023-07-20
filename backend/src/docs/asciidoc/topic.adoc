@@ -1,0 +1,29 @@
+== 토픽
+
+=== 토픽 목록 조회
+
+operation::topic-controller-test/find-all[snippets='http-request,http-response']
+
+=== 토픽 인기 목록 조회
+
+operation::topic-controller-test/find-bests[snippets='http-request,http-response']
+
+=== 토픽 상세 조회
+
+operation::topic-controller-test/find-by-id[snippets='http-request,http-response']
+
+=== 토픽 생성
+
+operation::topic-controller-test/create[snippets='http-request,http-response']
+
+=== 토픽 병합
+
+operation::topic-controller-test/merge-and-create[snippets='http-request,http-response']
+
+=== 토픽 수정
+
+operation::topic-controller-test/update[snippets='http-request,http-response']
+
+=== 토픽 삭제
+
+operation::topic-controller-test/delete[snippets='http-request,http-response']
