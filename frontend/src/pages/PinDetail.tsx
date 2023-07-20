@@ -13,6 +13,7 @@ import { putApi } from '../utils/putApi';
 import Textarea from '../components/common/Textarea';
 import Input from '../components/common/Input';
 import { useSearchParams } from 'react-router-dom';
+import Box from '../components/common/Box';
 
 const PinDetail = ({ pinId }: { pinId: string }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,7 +27,6 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
   useEffect(() => {
     const getPinData = async () => {
       const pinData = await getApi(`/pin/${pinId}`);
-      console.log('pinData', pinData);
       setPin(pinData);
       setFormValues({
         name: pinData.name,
@@ -83,42 +83,111 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
   };
 
   if (!pin) return <></>;
+  if (isEditing)
+    return (
+      <Flex $flexDirection="column">
+        <Flex
+          width="100%"
+          height="180px"
+          $backgroundColor="gray"
+          $alignItems="center"
+          $justifyContent="center"
+          $flexDirection="column"
+          padding={7}
+          $borderRadius="small"
+        >
+          <Plus />
+          <Space size={1} />
+          <Text
+            color="white"
+            $fontSize="default"
+            $fontWeight="normal"
+            $textAlign="center"
+          >
+            사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
+          </Text>
+        </Flex>
+        <Space size={5} />
+        <Box>
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              장소 이름
+            </Text>
+          </Flex>
+          <Space size={0} />
+          <Input
+            type="text"
+            name="name"
+            value={formValues.name}
+            onChange={handleInputChange}
+          />
+        </Box>
+
+        <Space size={5} />
+
+        <Box>
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              장소 위치
+            </Text>
+          </Flex>
+          <Space size={0} />
+          <Input
+            type="text"
+            name="address"
+            value={formValues.address}
+            onChange={handleInputChange}
+            placeholder={formValues.address}
+          />
+        </Box>
+
+        <Space size={5} />
+
+        <Box>
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              장소 설명
+            </Text>
+          </Flex>
+          <Space size={0} />
+          <Textarea
+            name="description"
+            value={formValues.description}
+            onChange={handleInputChange}
+          />
+        </Box>
+
+        <Space size={3} />
+
+        <Flex $justifyContent="end">
+          <Text
+            color="primary"
+            $fontSize="default"
+            $fontWeight="normal"
+            onClick={handleUpdateClick}
+          >
+            <Box cursor="pointer">저장</Box>
+          </Text>
+          <Space size={2} />
+          <Text
+            color="black"
+            $fontSize="default"
+            $fontWeight="normal"
+            onClick={handleCancelClick}
+          >
+            <Box cursor="pointer">취소</Box>
+          </Text>
+        </Flex>
+      </Flex>
+    );
 
   return (
     <>
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
-          {isEditing ? (
-            <Input
-              type="text"
-              name="name"
-              value={formValues.name}
-              onChange={handleInputChange}
-            />
-          ) : (
-            pin.name
-          )}
+          {pin.name}
         </Text>
-        {isEditing ? (
-          <Flex>
-            <Text
-              color="primary"
-              $fontSize="default"
-              $fontWeight="normal"
-              onClick={handleUpdateClick}
-            >
-              저장
-            </Text>
-            <Text
-              color=""
-              $fontSize="default"
-              $fontWeight="normal"
-              onClick={handleCancelClick}
-            >
-              취소
-            </Text>
-          </Flex>
-        ) : (
+        <Box cursor="pointer">
           <Text
             color="primary"
             $fontSize="default"
@@ -127,7 +196,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
           >
             수정하기
           </Text>
-        )}
+        </Box>
       </Flex>
       <Space size={0} />
 
@@ -144,7 +213,6 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
         width="100%"
         height="180px"
         $backgroundColor="gray"
-        onClick={() => console.log('image')}
         $alignItems="center"
         $justifyContent="center"
         $flexDirection="column"
@@ -167,35 +235,18 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어디에 있나요?
         </Text>
-        {isEditing ? (
-          <Input
-            type="text"
-            name="address"
-            value={formValues.address}
-            onChange={handleInputChange}
-          />
-        ) : (
-          <Text color="gray" $fontSize="small" $fontWeight="normal">
-            {pin.address}
-          </Text>
-        )}
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
+          {pin.address}
+        </Text>
       </Flex>
       <Space size={6} />
       <Flex $flexDirection="column">
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어떤 곳인가요?
         </Text>
-        {isEditing ? (
-          <Textarea
-            name="description"
-            value={formValues.description}
-            onChange={handleInputChange}
-          />
-        ) : (
-          <Text color="gray" $fontSize="small" $fontWeight="normal">
-            {pin.description}
-          </Text>
-        )}
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
+          {pin.description}
+        </Text>
       </Flex>
       <Space size={7} />
       <Flex $justifyContent="center">
