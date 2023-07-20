@@ -15,6 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Coordinate {
+
     public static final BigDecimal LATITUDE_LOWER_BOUND = BigDecimal.valueOf(33);
     public static final BigDecimal LATITUDE_UPPER_BOUND = BigDecimal.valueOf(43);
     public static final BigDecimal LONGITUDE_LOWER_BOUND = BigDecimal.valueOf(124);
