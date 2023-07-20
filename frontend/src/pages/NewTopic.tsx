@@ -66,7 +66,7 @@ const NewTopic = () => {
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               토픽 아이콘
@@ -98,11 +98,11 @@ const NewTopic = () => {
               </Fragment>
             ))}
           </Flex>
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               토픽 이름
@@ -117,11 +117,11 @@ const NewTopic = () => {
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
             onChange={onChangeTopicName}
           />
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               한 줄 설명
@@ -136,7 +136,7 @@ const NewTopic = () => {
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
             onChange={onChangeTopicDescription}
           />
-        </Box>
+        </section>
 
         <Space size={6} />
 

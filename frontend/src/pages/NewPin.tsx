@@ -64,7 +64,7 @@ const NewPin = () => {
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               토픽 선택
@@ -79,11 +79,11 @@ const NewPin = () => {
             type="button"
             variant="primary"
           >{`${topic.emoji} ${topic.name}`}</Button>
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 이름
@@ -101,11 +101,11 @@ const NewPin = () => {
             }}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
           />
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 위치
@@ -123,11 +123,11 @@ const NewPin = () => {
             }}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 설명
@@ -145,7 +145,7 @@ const NewPin = () => {
             }}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
           />
-        </Box>
+        </section>
 
         <Space size={6} />
 

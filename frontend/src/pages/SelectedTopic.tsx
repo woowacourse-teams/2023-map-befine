@@ -43,17 +43,17 @@ const SelectedTopic = () => {
     <>
       <Space size={3} />
       <Flex $flexDirection="column">
-        <TopicInfo
-          topicParticipant={12}
-          pinNumber={topicDetail.pinCount}
-          topicTitle={topicDetail.name}
-          topicOwner={'하지원'}
-          topicDescription={topicDetail.description}
-        />
-        <Space size={3} />
-        <div>
+        <ul>
+          <TopicInfo
+            topicParticipant={12}
+            pinNumber={topicDetail.pinCount}
+            topicTitle={topicDetail.name}
+            topicOwner={'하지원'}
+            topicDescription={topicDetail.description}
+          />
+          <Space size={3} />
           {topicDetail.pins.map((pin) => (
-            <div
+            <ul
               key={pin.id}
               onClick={() => {
                 onClickSetSelectedPinId(pin.id);
@@ -65,9 +65,9 @@ const SelectedTopic = () => {
                 pinInformation={pin.description}
               />
               <Space size={3} />
-            </div>
+            </ul>
           ))}
-        </div>
+        </ul>
 
         {selectedPinId && (
           <Flex
