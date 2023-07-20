@@ -5,4 +5,5 @@ export interface PinType {
   description: string;
   latitude: string;
   longitude: string;
+  updatedAt: string;
 }

@@ -13,12 +13,11 @@ import { postApi } from '../utils/postApi';
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
 const NewTopic = () => {
-  const [topicId, setTopicId] = useState<string>();
-  const [topicName, setTopicName] = useState<String>('');
-  const [topicDescription, setTopicDescription] = useState<String>('');
+  const [topicName, setTopicName] = useState<string>('');
+  const [topicDescription, setTopicDescription] = useState<string>('');
   const topicIconRef = useRef<HTMLLabelElement>(null);
   const navigator = useNavigate();
-    
+
   const goToBack = () => {
     navigator(-1);
   };
@@ -33,26 +32,28 @@ const NewTopic = () => {
     setTopicDescription(e.target.value);
   };
 
-
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!topicIconRef.current) return;
 
-    // TODO: POST 'topics/new' -> GET 'topics/{topicId}'
-    // TODO: POST { topicIconRef.current.dataset.icon, topicName, topicDescription}
-    const topicId = 10;
-    navigator(`/topics/${topicId}`);
+    const topicId = await postToServer();
+
+    if (topicId) navigator(`/topics/${topicId}`);
   };
 
   const postToServer = async () => {
-    const id = await postApi('/topics/new', {});
-    setTopicId(id.headers.get('Location')?.split('/')[2]);
-  };
+    const response = await postApi('/topics/new', {
+      emoji: topicIconRef.current?.dataset.icon,
+      name: topicName,
+      description: topicDescription,
+    });
+    const location = response.headers.get('Location');
 
-  const onClickButton = async () => {
-    await postToServer();
-    if(topicId) navigator(`/topics/${topicId}`, { state: topicId });
+    if (location) {
+      const topicIdFromLocation = location.split('/')[2];
+      return topicIdFromLocation;
+    }
   };
 
   return (
@@ -137,9 +138,7 @@ const NewTopic = () => {
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button onClick={onClickButton} variant="primary">
-            생성하기
-          </Button>
+          <Button variant="primary">생성하기</Button>
           <Space size={3} />
           <Button type="button" variant="secondary" onClick={goToBack}>
             취소하기
