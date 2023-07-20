@@ -6,7 +6,6 @@ import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ public class PinQueryService {
         return pinRepository.findAll()
                 .stream()
                 .map(PinResponse::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public PinDetailResponse findById(Long pinId) {

@@ -9,9 +9,10 @@ import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Transactional
 @Service
@@ -61,12 +62,12 @@ public class PinCommandService {
                         Coordinate.getDuplicateStandardDistance()
                 )
                 .stream()
-                .filter(location -> location.getCoordinate().isDuplicateCoordinate(coordinate))
-                .filter(location -> location.getRoadBaseAddress().equals(request.address()))
+                .filter(location -> location.isDuplicateCoordinate(coordinate))
+                .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
 
-        Pin pin = new Pin(request.name(), request.description(), pinLocation, topic);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(request.name(), request.description(), pinLocation, topic);
 
         return pinRepository.save(pin).getId();
     }

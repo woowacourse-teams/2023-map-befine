@@ -6,8 +6,10 @@ import com.mapbefine.mapbefine.LocationFixture;
 import com.mapbefine.mapbefine.PinFixture;
 import com.mapbefine.mapbefine.TopicFixture;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
+import com.mapbefine.mapbefine.entity.Location;
 import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,9 @@ class TopicCommandServiceTest {
     @Autowired
     private TopicRepository topicRepository;
 
+    @Autowired
+    private LocationRepository locationRepository;
+
     private TopicCommandService topicCommandService;
 
     private Topic TOPIC_WITH_TWO_PINS;
@@ -36,9 +41,13 @@ class TopicCommandServiceTest {
         topicCommandService = new TopicCommandService(topicRepository, pinRepository);
 
         TOPIC_WITH_TWO_PINS = TopicFixture.createByName("준팍의 또간집");
-        PinFixture.create(LocationFixture.create(), TOPIC_WITH_TWO_PINS);
-        PinFixture.create(LocationFixture.create(), TOPIC_WITH_TWO_PINS);
-        
+
+        Location location = LocationFixture.create();
+        locationRepository.save(location);
+
+        PinFixture.create(location, TOPIC_WITH_TWO_PINS);
+        PinFixture.create(location, TOPIC_WITH_TWO_PINS);
+
         topicRepository.save(TOPIC_WITH_TWO_PINS);
     }
 

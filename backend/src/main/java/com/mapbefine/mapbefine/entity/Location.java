@@ -1,19 +1,14 @@
 package com.mapbefine.mapbefine.entity;
 
-import static lombok.AccessLevel.PROTECTED;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -53,6 +48,14 @@ public class Location extends BaseEntity {
 
     public void addPin(Pin pin) {
         pins.add(pin);
+    }
+
+    public boolean isDuplicateCoordinate(Coordinate otherCoordinate) {
+        return coordinate.isDuplicateCoordinate(otherCoordinate);
+    }
+
+    public boolean isSameAddress(String otherAddress) {
+        return roadBaseAddress.equals(otherAddress);
     }
 
     public BigDecimal getLatitude() {

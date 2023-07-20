@@ -16,7 +16,7 @@ public record PinDetailResponse(
         return new PinDetailResponse(
                 pin.getId(),
                 pin.getName(),
-                pin.getParcelBaseAddress(),
+                pin.getRoadBaseAddress(),
                 pin.getDescription(),
                 pin.getLatitude().toString(),
                 pin.getLongitude().toString(),
