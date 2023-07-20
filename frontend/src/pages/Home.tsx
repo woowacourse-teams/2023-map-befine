@@ -34,22 +34,23 @@ const Home = () => {
         내 주변 인기 있는 토픽
       </Text>
       <Space size={2} />
-      {topics &&
-        topics.map((topic, index) => {
-          return (
-            <Fragment key={index}>
-              <TopicCard
-                topicId={topic.id}
-                topicEmoji={topic.emoji}
-                topicTitle={topic.name}
-                topicUpdatedAt={topic.updatedAt}
-                topicPinCount={topic.pinCount}
-              />
-              <Space size={4} />
-            </Fragment>
-          );
-        })}
-
+      <ul>
+        {topics &&
+          topics.map((topic, index) => {
+            return (
+              <Fragment key={index}>
+                <TopicCard
+                  topicId={topic.id}
+                  topicEmoji={topic.emoji}
+                  topicTitle={topic.name}
+                  topicUpdatedAt={topic.updatedAt}
+                  topicPinCount={topic.pinCount}
+                />
+                <Space size={4} />
+              </Fragment>
+            );
+          })}
+      </ul>
       <Flex position="fixed" bottom="40px" left="130px">
         <Button variant="primary" onClick={goToNewTopic}>
           토픽 추가하기

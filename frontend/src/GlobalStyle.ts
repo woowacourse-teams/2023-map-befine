@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -13,9 +13,13 @@ const GlobalStyle = createGlobalStyle`
     color: #000;
     transition: all 0.3s ease-in-out;
   }
+  ul{
+    padding-left: 0;
+    list-style-type: none;
+  }
   *{
     box-sizing:border-box;
   }
   `;
 
-export default GlobalStyle; 
+export default GlobalStyle;

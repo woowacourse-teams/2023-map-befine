@@ -108,7 +108,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
           </Text>
         </Flex>
         <Space size={5} />
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 이름
@@ -121,11 +121,11 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
             value={formValues.name}
             onChange={handleInputChange}
           />
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 위치
@@ -139,11 +139,11 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
             onChange={handleInputChange}
             placeholder={formValues.address}
           />
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 설명
@@ -155,7 +155,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
             value={formValues.description}
             onChange={handleInputChange}
           />
-        </Box>
+        </section>
 
         <Space size={3} />
 

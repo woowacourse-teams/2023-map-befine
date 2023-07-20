@@ -15,27 +15,29 @@ const PinPreview = ({
   pinInformation,
 }: TopicCardProps) => {
   return (
-    <Flex
-      width="360px"
-      height="150px"
-      position="relative"
-      $flexDirection="column"
-      $backgroundColor="white"
-      $borderBottom="1px solid #E7E7E7"
-      cursor="pointer"
-    >
-      <PinButton></PinButton>
-      <Text color="black" $fontSize="default" $fontWeight="bold">
-        {pinTitle}
-      </Text>
-      <Text color="gray" $fontSize="small" $fontWeight="normal">
-        {pinLocation}
-      </Text>
-      <Space size={3} />
-      <Text color="black" $fontSize="small" $fontWeight="normal">
-        {pinInformation}
-      </Text>
-    </Flex>
+    <li>
+      <Flex
+        width="360px"
+        height="150px"
+        position="relative"
+        $flexDirection="column"
+        $backgroundColor="white"
+        $borderBottom="1px solid #E7E7E7"
+        cursor="pointer"
+      >
+        <PinButton></PinButton>
+        <Text color="black" $fontSize="default" $fontWeight="bold">
+          {pinTitle}
+        </Text>
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
+          {pinLocation}
+        </Text>
+        <Space size={3} />
+        <Text color="black" $fontSize="small" $fontWeight="normal">
+          {pinInformation}
+        </Text>
+      </Flex>
+    </li>
   );
 };
 
