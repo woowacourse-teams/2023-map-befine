@@ -2,9 +2,14 @@ package com.mapbefine.mapbefine.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.LocationFixture;
+import com.mapbefine.mapbefine.PinFixture;
+import com.mapbefine.mapbefine.TopicFixture;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
+import com.mapbefine.mapbefine.entity.Location;
+import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import java.util.List;
@@ -14,15 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 
-@TestPropertySource(properties = {
-        "spring.jpa.defer-datasource-initialization=true"
-})
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql("/data-topic-query.sql")
 class TopicQueryServiceTest {
 
     @Autowired
@@ -31,11 +30,30 @@ class TopicQueryServiceTest {
     @Autowired
     private TopicRepository topicRepository;
 
-    private TopicQueryService topicQueryService;
+    private com.mapbefine.mapbefine.service.TopicQueryService topicQueryService;
+    private Topic TOPIC_BEST_3RD;
+    private Topic TOPIC_BEST_2ND;
+    private Topic TOPIC_BEST_1ST;
+    private Location ALL_PINS_LOCATION;
 
     @BeforeEach
     void setup() {
-        topicQueryService = new TopicQueryService(topicRepository, locationRepository);
+        topicQueryService = new com.mapbefine.mapbefine.service.TopicQueryService(topicRepository, locationRepository);
+
+        ALL_PINS_LOCATION = LocationFixture.createByCoordinate(35.0, 127.0);
+        locationRepository.save(ALL_PINS_LOCATION);
+
+        TOPIC_BEST_3RD = createAndSaveByNameAndPinCounts("준팍의 또간집", 1);
+        TOPIC_BEST_2ND = createAndSaveByNameAndPinCounts("도이의 또간집", 2);
+        TOPIC_BEST_1ST = createAndSaveByNameAndPinCounts("패트릭의 또간집", 3);
+    }
+
+    private Topic createAndSaveByNameAndPinCounts(String topicName, int pinCounts) {
+        Topic topic = TopicFixture.createByName(topicName);
+        for (int i = 0; i < pinCounts; i++) {
+            PinFixture.create(ALL_PINS_LOCATION, topic);
+        }
+        return topicRepository.save(topic);
     }
 
     @Test
@@ -46,39 +64,37 @@ class TopicQueryServiceTest {
         List<TopicResponse> topics = topicQueryService.findAll();
 
         // then
-        assertThat(topics).isNotEmpty();
+        assertThat(topics).contains(TopicResponse.from(TOPIC_BEST_3RD));
     }
 
     @Test
     @DisplayName("해당 ID를 가진 Topic을 조회한다.")
     void findById() {
         // given
-        List<TopicResponse> topics = topicQueryService.findAll();
-        TopicResponse expected = topics.get(0);
-
         // when
-        TopicDetailResponse actual = topicQueryService.findById(expected.id());
+        TopicDetailResponse actual = topicQueryService.findById(TOPIC_BEST_3RD.getId());
 
         // then
-        assertThat(actual.id()).isEqualTo(expected.id());
-        assertThat(actual.name()).isEqualTo(expected.name());
+        assertThat(actual).isEqualTo(TopicDetailResponse.from(TOPIC_BEST_3RD));
     }
 
     @Test
     @DisplayName("주어진 좌표 3KM 이내의 Topic들을 Pin 개수 순서대로 조회한다.")
     void findBests() {
         // given
+
+        TopicFindBestRequest currentLocation = new TopicFindBestRequest(
+                ALL_PINS_LOCATION.getLatitude().toString(),
+                ALL_PINS_LOCATION.getLongitude().toString()
+        );
+
         // when
-        List<TopicResponse> currentTopics = topicQueryService.findBests(new TopicFindBestRequest("0", "0"));
-        System.out.println(currentTopics);
+        List<TopicResponse> currentTopics = topicQueryService.findBests(currentLocation);
 
         // then
-        TopicResponse first = currentTopics.get(0);
-        TopicResponse second = currentTopics.get(1);
-        TopicResponse third = currentTopics.get(2);
-
-        assertThat(first.name()).isEqualTo("패트릭의 또간집");
-        assertThat(second.name()).isEqualTo("도이의 또간집");
-        assertThat(third.name()).isEqualTo("준팍의 또간집");
+        assertThat(currentTopics.get(0)).isEqualTo(TopicResponse.from(TOPIC_BEST_1ST));
+        assertThat(currentTopics.get(1)).isEqualTo(TopicResponse.from(TOPIC_BEST_2ND));
+        assertThat(currentTopics.get(2)).isEqualTo(TopicResponse.from(TOPIC_BEST_3RD));
     }
+
 }

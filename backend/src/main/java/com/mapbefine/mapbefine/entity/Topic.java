@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +35,7 @@ public class Topic extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String description;
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
 
     @Column(nullable = false)
