@@ -52,7 +52,7 @@ public class PinCommandService {
         // 주소까지 동일하다면 해당 Pin 사용
         // select p from Pin p where p.longitude > :longitude - 0.0001 and p.longitude < longitude + 0.0001 and p.latitude - 0.0001 ㅅㅂ이따가해
 
-        Coordinate coordinate = new Coordinate(request.latitude(), request.longitude());
+        Coordinate coordinate = Coordinate.From(request.latitude(),request.longitude());
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
 
