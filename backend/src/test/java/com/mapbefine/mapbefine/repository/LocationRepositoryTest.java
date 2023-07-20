@@ -18,8 +18,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class LocationRepositoryTest {
 
     @Autowired
-    private PinRepository pinRepository;
-    @Autowired
     private LocationRepository locationRepository;
 
     @DisplayName("범위 내의 Pin을 검색한다.")
@@ -36,6 +34,7 @@ class LocationRepositoryTest {
                 "legalDongCode"
         );
         locationRepository.save(location);
+
         // when
         List<Location> locations = locationRepository.findAllByRectangle(
                 BigDecimal.valueOf(35),

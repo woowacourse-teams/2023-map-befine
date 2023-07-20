@@ -7,14 +7,19 @@ import Clipping from '../assets/clipping.svg';
 import ShowDetail from '../assets/showDetail.svg';
 import Share from '../assets/share.svg';
 import { useEffect, useState } from 'react';
+import { PinType } from '../types/Pin';
+import { getApi } from '../utils/getApi';
 
-const PinDetail = ({ pinId }: any) => {
-  const [pin, setPin] = useState<any>({});
+const PinDetail = ({ pinId }: { pinId: string }) => {
+  const [pin, setPin] = useState<PinType | null>(null);
 
   useEffect(() => {
-    fetch(`/pin/${pinId}`)
-      .then((res) => res.json())
-      .then((data) => setPin(data));
+    const getPinData = async () => {
+      const pinData = await getApi(`/pin/${pinId}`);
+      setPin(pinData);
+    };
+
+    getPinData();
   }, [pinId]);
 
   const copyContent = async () => {
@@ -22,15 +27,17 @@ const PinDetail = ({ pinId }: any) => {
       await navigator.clipboard.writeText(window.location.href);
     } catch (err) {
       if (typeof err === 'string') throw new Error(err);
-      throw new Error('[ERROR]');
+      throw new Error('[ERROR] clipboard error');
     }
   };
+
+  if (!pin) return <></>;
 
   return (
     <>
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
-          오또상스시
+          {pin.name}
         </Text>
         <Text color="primary" $fontSize="default" $fontWeight="normal">
           글 수정하기
@@ -40,10 +47,10 @@ const PinDetail = ({ pinId }: any) => {
 
       <Flex $justifyContent="space-between" $alignItems="center" width="100%">
         <Text color="black" $fontSize="small" $fontWeight="normal">
-          매튜의 이야기
+          핀을 만든 사람
         </Text>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          2021.09.28
+          {pin.updatedAt}
         </Text>
       </Flex>
       <Space size={2} />
@@ -75,7 +82,7 @@ const PinDetail = ({ pinId }: any) => {
           어디에 있나요?
         </Text>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          서울특별시 선릉 테헤란로 192-46
+          {pin.address}
         </Text>
       </Flex>
       <Space size={6} />
@@ -84,8 +91,7 @@ const PinDetail = ({ pinId }: any) => {
           어떤 곳인가요?
         </Text>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          초밥을 파는 곳입니다. 점심 특선 있고 초밥 질이 괜찮습니다. 가격대도
-          다른 곳에 비해서 양호한 편이고 적당히 생각날 때 가면 좋을 것 같습니다.
+          {pin.description}
         </Text>
       </Flex>
       <Space size={7} />

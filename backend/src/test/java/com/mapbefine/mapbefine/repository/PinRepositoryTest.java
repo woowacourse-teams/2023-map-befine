@@ -1,18 +1,17 @@
 package com.mapbefine.mapbefine.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.mapbefine.mapbefine.entity.Coordinate;
 import com.mapbefine.mapbefine.entity.Location;
 import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
+import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class PinRepositoryTest {
@@ -30,7 +29,7 @@ class PinRepositoryTest {
 
     @Test
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
-    public void deleteById_Success() {
+    void deleteById_Success() {
         // given
         Topic topic = new Topic("topicName", "topicDescription");
         Location location = new Location(
@@ -56,7 +55,7 @@ class PinRepositoryTest {
 
     @Test
     @DisplayName("토픽 ID로 핀을 삭제하면 soft-deleting 된다.")
-    public void deleteAllByTopicId_Success() {
+    void deleteAllByTopicId_Success() {
         // given
         Topic topic = new Topic("topicName", "topicDescription");
         Location location = new Location(

@@ -55,7 +55,6 @@ public class Pin extends BaseEntity {
         this.topic = topic;
     }
 
-
     public static Pin createPinAssociatedWithLocationAndTopic(
             String name,
             String description,
