@@ -64,8 +64,8 @@ class PinCommandServiceTest {
                 "description",
                 "road",
                 "legalDongCode",
-                latitude,
-                longitude
+                latitude.toString(),
+                longitude.toString()
         );
         Long savedPinId = pinCommandService.save(request);
 
@@ -113,8 +113,8 @@ class PinCommandServiceTest {
                 "description",
                 "address",
                 "legalDongCode",
-                latitude,
-                longitude
+                latitude.toString(),
+                longitude.toString()
         );
         Long savedPinId = pinCommandService.save(request);
 
@@ -156,8 +156,8 @@ class PinCommandServiceTest {
                 "description",
                 "address",
                 "legalDongCode",
-                latitude,
-                longitude
+                latitude.toString(),
+                longitude.toString()
         );
         Long savedPinId = pinCommandService.save(createRequest);
 
@@ -197,8 +197,8 @@ class PinCommandServiceTest {
                 "description",
                 "address",
                 "legalDongCode",
-                latitude,
-                longitude
+                latitude.toString(),
+                longitude.toString()
         );
         Long savedPinId = pinCommandService.save(createRequest);
 
@@ -223,8 +223,8 @@ class PinCommandServiceTest {
                 "description",
                 "address",
                 "legalDongCode",
-                latitude,
-                longitude
+                latitude.toString(),
+                longitude.toString()
         );
         Long savedPinId = pinCommandService.save(createRequest);
 
@@ -255,8 +255,8 @@ class PinCommandServiceTest {
                 "description",
                 "address",
                 "legalDongCode",
-                latitude,
-                longitude
+                latitude.toString(),
+                longitude.toString()
         );
 
         for (int i = 0; i < 10; i++) {
