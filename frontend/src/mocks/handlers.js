@@ -131,7 +131,7 @@ export const handlers = [
       });
       return topic;
     });
-    console.log('here');
+
     return res(ctx.status(200), ctx.set('Location', `/pin/${id}`));
   }),
 ];

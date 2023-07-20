@@ -24,7 +24,6 @@ const SelectedTopic = () => {
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(`/topics/${topicId}`);
-    console.log('data', data);
     setTopicDetail(data);
   };
 
