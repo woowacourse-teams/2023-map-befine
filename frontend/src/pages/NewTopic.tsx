@@ -13,9 +13,9 @@ import { postApi } from '../utils/postApi';
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
 const NewTopic = () => {
+  const [selectedTopicIcon, setSelectedTopicIcon] = useState<string>('');
   const [topicName, setTopicName] = useState<string>('');
   const [topicDescription, setTopicDescription] = useState<string>('');
-  const topicIconRef = useRef<HTMLLabelElement>(null);
   const navigator = useNavigate();
 
   const goToBack = () => {
@@ -35,7 +35,7 @@ const NewTopic = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!topicIconRef.current) return;
+    const formElement = e.currentTarget;
 
     const topicId = await postToServer();
 
@@ -44,7 +44,7 @@ const NewTopic = () => {
 
   const postToServer = async () => {
     const response = await postApi('/topics/new', {
-      emoji: topicIconRef.current?.dataset.icon,
+      emoji: selectedTopicIcon,
       name: topicName,
       description: topicDescription,
     });
@@ -86,9 +86,12 @@ const NewTopic = () => {
                   name="topic-icon-radio"
                 />
                 <label
+                  id="radio-label"
                   htmlFor={`checkbox-${idx}`}
                   data-icon={icon}
-                  ref={topicIconRef}
+                  onClick={() => {
+                    setSelectedTopicIcon(icon);
+                  }}
                 >
                   {icon}
                 </label>
