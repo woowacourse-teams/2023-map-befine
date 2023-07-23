@@ -42,7 +42,6 @@ const SelectedTopic = () => {
 
   return (
     <>
-      <Space size={3} />
       <Flex $flexDirection="column">
         <ul>
           <TopicInfo
@@ -52,21 +51,20 @@ const SelectedTopic = () => {
             topicOwner={'하지원'}
             topicDescription={topicDetail.description}
           />
-          <Space size={3} />
           {topicDetail.pins.map((pin) => (
-            <ul
+            <li
               key={pin.id}
               onClick={() => {
                 onClickSetSelectedPinId(pin.id);
               }}
             >
+              <Space size={3} />
               <PinPreview
                 pinTitle={pin.name}
                 pinLocation={pin.address}
                 pinInformation={pin.description}
               />
-              <Space size={3} />
-            </ul>
+            </li>
           ))}
         </ul>
 
@@ -85,8 +83,6 @@ const SelectedTopic = () => {
             <PinDetail pinId={selectedPinId} />
           </Flex>
         )}
-
-        <Space size={4} />
       </Flex>
     </>
   );
