@@ -37,7 +37,6 @@ const SelectedTopic = () => {
     }
   }, [searchParams]);
 
-  if (!topicId) return <></>;
   if (!topicDetail) return <></>;
 
   return (

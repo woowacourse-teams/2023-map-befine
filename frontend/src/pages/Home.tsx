@@ -18,8 +18,8 @@ const Home = () => {
   };
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi('/');
-    setTopics(data);
+    const topics = await getApi('/');
+    setTopics(topics);
   };
 
   useEffect(() => {

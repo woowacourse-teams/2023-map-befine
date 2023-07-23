@@ -13,12 +13,12 @@ import { DefaultFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 
 const NewPin = () => {
+  const [topic, setTopic] = useState<TopicType | null>(null);
   const { formValues, onChangeInput } = useFormValues<DefaultFormValuesType>({
     name: '',
     address: '',
     description: '',
   });
-  const [topic, setTopic] = useState<TopicType | null>(null);
   const { routePage } = useNavigator();
 
   const goToBack = () => {
@@ -27,7 +27,7 @@ const NewPin = () => {
 
   const postToServer = async () => {
     await postApi('/pins', {
-      topicId: topic?.id,
+      topicId: topic?.id || 'error',
       name: formValues.name,
       address: formValues.address,
       description: formValues.description,
