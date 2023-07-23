@@ -8,7 +8,7 @@ import Input from '../components/common/Input';
 import { putApi } from '../utils/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
 
-interface FormValuesType {
+interface UpdatedPinDetailFormValuesType {
   name: string;
   address: string;
   description: string;
@@ -17,10 +17,12 @@ interface FormValuesType {
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
   pinId: string;
-  formValues: FormValuesType;
+  formValues: UpdatedPinDetailFormValuesType;
   setSearchParams: SetURLSearchParams;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  setFormValues: React.Dispatch<React.SetStateAction<FormValuesType>>;
+  setFormValues: React.Dispatch<
+    React.SetStateAction<UpdatedPinDetailFormValuesType>
+  >;
 }
 
 const UpdatedPinDetail = ({
@@ -52,7 +54,7 @@ const UpdatedPinDetail = ({
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
-    setFormValues((prevValues: FormValuesType) => ({
+    setFormValues((prevValues: UpdatedPinDetailFormValuesType) => ({
       ...prevValues,
       [name]: value,
     }));

@@ -10,10 +10,18 @@ import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 
+interface NewPinFormValuesType {
+  name: string;
+  address: string;
+  description: string;
+}
+
 const NewPin = () => {
-  const [pinName, setPinName] = useState<string>('');
-  const [pinAddress, setPinAddress] = useState<string>('');
-  const [pinDescription, setPinDescription] = useState<string>('');
+  const [formValues, setFormValues] = useState({
+    name: '',
+    address: '',
+    description: '',
+  });
   const [topic, setTopic] = useState<TopicType | null>(null);
   const { routePage } = useNavigator();
 
@@ -24,10 +32,20 @@ const NewPin = () => {
   const postToServer = async () => {
     const location = await postApi('/pins', {
       topicId: topic?.id,
-      name: pinName,
-      address: pinAddress,
-      description: pinDescription,
+      name: formValues.name,
+      address: formValues.address,
+      description: formValues.description,
     });
+  };
+
+  const onChangeInput = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues: NewPinFormValuesType) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -94,10 +112,9 @@ const NewPin = () => {
           </Flex>
           <Space size={0} />
           <Input
-            value={pinName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setPinName(e.target.value);
-            }}
+            name="name"
+            value={formValues.name}
+            onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
           />
         </section>
@@ -116,10 +133,9 @@ const NewPin = () => {
           </Flex>
           <Space size={0} />
           <Input
-            value={pinAddress}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setPinAddress(e.target.value);
-            }}
+            name="address"
+            value={formValues.address}
+            onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
         </section>
@@ -138,10 +154,9 @@ const NewPin = () => {
           </Flex>
           <Space size={0} />
           <Textarea
-            value={pinDescription}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-              setPinDescription(e.target.value);
-            }}
+            name="description"
+            value={formValues.description}
+            onChange={onChangeInput}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
           />
         </section>

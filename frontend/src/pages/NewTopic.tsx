@@ -11,24 +11,31 @@ import useNavigator from '../hooks/useNavigator';
 
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
+interface NewTopicFormValuesType {
+  name: string;
+  description: string;
+}
+
 const NewTopic = () => {
   const [selectedTopicIcon, setSelectedTopicIcon] = useState<string>('');
-  const [topicName, setTopicName] = useState<string>('');
-  const [topicDescription, setTopicDescription] = useState<string>('');
+  const [formValues, setFormValues] = useState<NewTopicFormValuesType>({
+    name: '',
+    description: '',
+  });
   const { routePage } = useNavigator();
 
   const goToBack = () => {
     routePage(-1);
   };
 
-  const onChangeTopicName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTopicName(e.target.value);
-  };
-
-  const onChangeTopicDescription = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
+  const onChangeInput = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    setTopicDescription(e.target.value);
+    const { name, value } = e.target;
+    setFormValues((prevValues: NewTopicFormValuesType) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -41,8 +48,8 @@ const NewTopic = () => {
   const postToServer = async () => {
     const response = await postApi('/topics/new', {
       emoji: selectedTopicIcon,
-      name: topicName,
-      description: topicDescription,
+      name: formValues.name,
+      description: formValues.description,
     });
     const location = response.headers.get('Location');
 
@@ -84,7 +91,6 @@ const NewTopic = () => {
                 <label
                   id="radio-label"
                   htmlFor={`checkbox-${idx}`}
-                  data-icon={icon}
                   onClick={() => {
                     setSelectedTopicIcon(icon);
                   }}
@@ -110,8 +116,10 @@ const NewTopic = () => {
           </Flex>
           <Space size={0} />
           <Input
+            name="name"
+            value={formValues.name}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
-            onChange={onChangeTopicName}
+            onChange={onChangeInput}
           />
         </section>
 
@@ -129,8 +137,10 @@ const NewTopic = () => {
           </Flex>
           <Space size={0} />
           <Textarea
+            name="description"
+            value={formValues.description}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
-            onChange={onChangeTopicDescription}
+            onChange={onChangeInput}
           />
         </section>
 

@@ -15,7 +15,7 @@ import UpdatedPinDetail from './UpdatedPinDetail';
 const PinDetail = ({ pinId }: { pinId: string }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({
     name: '',
     address: '',
