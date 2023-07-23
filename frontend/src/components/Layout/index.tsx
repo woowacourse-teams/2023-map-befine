@@ -19,7 +19,7 @@ const Layout = ({ children }: LayoutProps) => {
       <Logo />
       <Space size={5} />
       <Input placeholder="검색어를 입력하세요." />
-      <Flex $flexDirection="column" overflow="scroll">
+      <Flex $flexDirection="column" overflow="auto">
         {children}
       </Flex>
     </Flex>
