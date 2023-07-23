@@ -40,7 +40,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
     setSearchParams({ ...Object.fromEntries(searchParams), [key]: value });
   };
 
-  const handleEditClick = () => {
+  const onClickEditPin = () => {
     setIsEditing(true);
     updateQueryString('edit', 'true');
   };
@@ -79,7 +79,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
             color="primary"
             $fontSize="default"
             $fontWeight="normal"
-            onClick={handleEditClick}
+            onClick={onClickEditPin}
           >
             수정하기
           </Text>

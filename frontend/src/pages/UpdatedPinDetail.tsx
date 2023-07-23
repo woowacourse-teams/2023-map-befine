@@ -37,18 +37,18 @@ const UpdatedPinDetail = ({
     setSearchParams(updatedSearchParams);
   };
 
-  const handleUpdateClick = async () => {
+  const onClickUpdatePin = async () => {
     await putApi(`/pins/${pinId}`, formValues);
     setIsEditing(false);
     removeQueryString('edit');
   };
 
-  const handleCancelClick = () => {
+  const onClickCancelPinUpdate = () => {
     setIsEditing(false);
     removeQueryString('edit');
   };
 
-  const handleInputChange = (
+  const onChangeInput = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
@@ -93,7 +93,7 @@ const UpdatedPinDetail = ({
           type="text"
           name="name"
           value={formValues.name}
-          onChange={handleInputChange}
+          onChange={onChangeInput}
         />
       </section>
 
@@ -110,7 +110,7 @@ const UpdatedPinDetail = ({
           type="text"
           name="address"
           value={formValues.address}
-          onChange={handleInputChange}
+          onChange={onChangeInput}
           placeholder={formValues.address}
         />
       </section>
@@ -127,7 +127,7 @@ const UpdatedPinDetail = ({
         <Textarea
           name="description"
           value={formValues.description}
-          onChange={handleInputChange}
+          onChange={onChangeInput}
         />
       </section>
 
@@ -139,7 +139,7 @@ const UpdatedPinDetail = ({
             color="primary"
             $fontSize="default"
             $fontWeight="normal"
-            onClick={handleUpdateClick}
+            onClick={onClickUpdatePin}
           >
             저장
           </Text>
@@ -150,7 +150,7 @@ const UpdatedPinDetail = ({
             color="black"
             $fontSize="default"
             $fontWeight="normal"
-            onClick={handleCancelClick}
+            onClick={onClickCancelPinUpdate}
           >
             취소
           </Text>
