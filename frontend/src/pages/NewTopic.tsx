@@ -9,12 +9,13 @@ import { Fragment, useState } from 'react';
 import { postApi } from '../utils/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormValuesType } from '../types/FormValues';
+import useFormValues from '../hooks/useFormValues';
 
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
 const NewTopic = () => {
   const [selectedTopicIcon, setSelectedTopicIcon] = useState<string>('');
-  const [formValues, setFormValues] = useState<NewTopicFormValuesType>({
+  const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
     name: '',
     description: '',
   });
@@ -22,16 +23,6 @@ const NewTopic = () => {
 
   const goToBack = () => {
     routePage(-1);
-  };
-
-  const onChangeInput = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues: NewTopicFormValuesType) => ({
-      ...prevValues,
-      [name]: value,
-    }));
   };
 
   const onSubmit = async (e: React.FormEvent) => {

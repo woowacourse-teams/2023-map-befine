@@ -10,9 +10,10 @@ import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { DefaultFormValuesType } from '../types/FormValues';
+import useFormValues from '../hooks/useFormValues';
 
 const NewPin = () => {
-  const [formValues, setFormValues] = useState({
+  const { formValues, onChangeInput } = useFormValues<DefaultFormValuesType>({
     name: '',
     address: '',
     description: '',
@@ -25,22 +26,12 @@ const NewPin = () => {
   };
 
   const postToServer = async () => {
-    const location = await postApi('/pins', {
+    await postApi('/pins', {
       topicId: topic?.id,
       name: formValues.name,
       address: formValues.address,
       description: formValues.description,
     });
-  };
-
-  const onChangeInput = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues: DefaultFormValuesType) => ({
-      ...prevValues,
-      [name]: value,
-    }));
   };
 
   const onSubmit = async (e: React.FormEvent) => {

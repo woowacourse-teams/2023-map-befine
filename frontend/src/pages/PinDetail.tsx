@@ -11,16 +11,19 @@ import { getApi } from '../utils/getApi';
 import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';
+import useFormValues from '../hooks/useFormValues';
+import { DefaultFormValuesType } from '../types/FormValues';
 
 const PinDetail = ({ pinId }: { pinId: string }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState({
-    name: '',
-    address: '',
-    description: '',
-  });
+  const { formValues, setFormValues, onChangeInput } =
+    useFormValues<DefaultFormValuesType>({
+      name: '',
+      address: '',
+      description: '',
+    });
 
   useEffect(() => {
     const getPinData = async () => {
@@ -64,7 +67,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
         setIsEditing={setIsEditing}
         pinId={pinId}
         formValues={formValues}
-        setFormValues={setFormValues}
+        onChangeInput={onChangeInput}
       />
     );
 

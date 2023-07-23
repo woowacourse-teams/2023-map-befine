@@ -15,7 +15,9 @@ interface UpdatedPinDetailProps {
   formValues: DefaultFormValuesType;
   setSearchParams: SetURLSearchParams;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  setFormValues: React.Dispatch<React.SetStateAction<DefaultFormValuesType>>;
+  onChangeInput: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => void;
 }
 
 const UpdatedPinDetail = ({
@@ -24,7 +26,7 @@ const UpdatedPinDetail = ({
   formValues,
   setSearchParams,
   setIsEditing,
-  setFormValues,
+  onChangeInput,
 }: UpdatedPinDetailProps) => {
   const removeQueryString = (key: string) => {
     const updatedSearchParams = { ...Object.fromEntries(searchParams) };
@@ -41,16 +43,6 @@ const UpdatedPinDetail = ({
   const onClickCancelPinUpdate = () => {
     setIsEditing(false);
     removeQueryString('edit');
-  };
-
-  const onChangeInput = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues: DefaultFormValuesType) => ({
-      ...prevValues,
-      [name]: value,
-    }));
   };
 
   return (
