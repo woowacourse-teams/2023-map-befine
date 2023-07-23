@@ -1,11 +1,11 @@
-import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Clipping from '../../assets/clipping.svg';
 import Share from '../../assets/share.svg';
 import Button from '../common/Button';
 import Space from '../common/Space';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import useNavigator from '../../hooks/useNavigator';
 
 export interface TopicCardProps {
   topicParticipant: number;
@@ -22,11 +22,11 @@ const TopicInfo = ({
   topicOwner,
   topicDescription,
 }: TopicCardProps) => {
-  const navigator = useNavigate();
   const { topicId } = useParams();
+  const { routePage } = useNavigator();
 
   const goToNewPin = () => {
-    navigator(`/new-pin?topic-id=${topicId}`);
+    routePage(`/new-pin?topic-id=${topicId}`);
   };
 
   return (

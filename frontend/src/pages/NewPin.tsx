@@ -1,25 +1,24 @@
-import Box from '../components/common/Box';
 import Input from '../components/common/Input';
 import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
-import { useNavigate } from 'react-router-dom';
 import { postApi } from '../utils/postApi';
 import { useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
+import useNavigator from '../hooks/useNavigator';
 
 const NewPin = () => {
   const [pinName, setPinName] = useState<string>('');
   const [pinAddress, setPinAddress] = useState<string>('');
   const [pinDescription, setPinDescription] = useState<string>('');
   const [topic, setTopic] = useState<TopicType | null>(null);
-  const navigator = useNavigate();
+  const { routePage } = useNavigator();
 
   const goToBack = () => {
-    navigator(-1);
+    routePage(-1);
   };
 
   const postToServer = async () => {
@@ -35,7 +34,7 @@ const NewPin = () => {
     e.preventDefault();
 
     await postToServer();
-    navigator(`/topics/${topic?.id}`);
+    routePage(`/topics/${topic?.id}`);
   };
 
   useEffect(() => {

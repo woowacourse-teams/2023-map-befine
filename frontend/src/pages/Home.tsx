@@ -6,21 +6,20 @@ import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
 import { Fragment, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
-import { useNavigate } from 'react-router-dom';
 import { TopicType } from '../types/Topic';
+import useNavigator from '../hooks/useNavigator';
 
 const Home = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
+  const { routePage } = useNavigator();
 
-  const navigator = useNavigate();
+  const goToNewTopic = () => {
+    routePage('new-topic');
+  };
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi('/');
     setTopics(data);
-  };
-
-  const goToNewTopic = () => {
-    navigator('new-topic');
   };
 
   useEffect(() => {

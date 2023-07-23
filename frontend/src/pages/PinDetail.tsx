@@ -1,7 +1,6 @@
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-
 import Plus from '../assets/plus.svg';
 import Clipping from '../assets/clipping.svg';
 import ShowDetail from '../assets/showDetail.svg';
@@ -24,6 +23,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
     address: '',
     description: '',
   });
+
   useEffect(() => {
     const getPinData = async () => {
       const pinData = await getApi(`/pin/${pinId}`);

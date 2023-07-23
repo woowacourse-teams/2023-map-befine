@@ -1,4 +1,3 @@
-import Box from '../components/common/Box';
 import Input from '../components/common/Input';
 import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
@@ -6,9 +5,9 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { styled } from 'styled-components';
-import { Fragment, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Fragment, useState } from 'react';
 import { postApi } from '../utils/postApi';
+import useNavigator from '../hooks/useNavigator';
 
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
@@ -16,10 +15,10 @@ const NewTopic = () => {
   const [selectedTopicIcon, setSelectedTopicIcon] = useState<string>('');
   const [topicName, setTopicName] = useState<string>('');
   const [topicDescription, setTopicDescription] = useState<string>('');
-  const navigator = useNavigate();
+  const { routePage } = useNavigator();
 
   const goToBack = () => {
-    navigator(-1);
+    routePage(-1);
   };
 
   const onChangeTopicName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,11 +34,8 @@ const NewTopic = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formElement = e.currentTarget;
-
     const topicId = await postToServer();
-
-    if (topicId) navigator(`/topics/${topicId}`);
+    if (topicId) routePage(`/topics/${topicId}`);
   };
 
   const postToServer = async () => {

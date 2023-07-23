@@ -1,12 +1,12 @@
-import { useNavigate } from 'react-router-dom';
 import LogoImage from '../../assets/logo.svg';
+import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
 
 const Logo = () => {
-  const navigator = useNavigate();
+  const { routePage } = useNavigator();
 
   const goToHome = () => {
-    navigator('/');
+    routePage('/');
   };
 
   return (
