@@ -9,12 +9,7 @@ import { useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-
-interface NewPinFormValuesType {
-  name: string;
-  address: string;
-  description: string;
-}
+import { DefaultFormValuesType } from '../types/FormValues';
 
 const NewPin = () => {
   const [formValues, setFormValues] = useState({
@@ -42,7 +37,7 @@ const NewPin = () => {
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
-    setFormValues((prevValues: NewPinFormValuesType) => ({
+    setFormValues((prevValues: DefaultFormValuesType) => ({
       ...prevValues,
       [name]: value,
     }));

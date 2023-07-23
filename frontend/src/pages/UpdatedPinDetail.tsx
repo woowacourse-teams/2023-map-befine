@@ -7,22 +7,15 @@ import Textarea from '../components/common/Textarea';
 import Input from '../components/common/Input';
 import { putApi } from '../utils/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
-
-interface UpdatedPinDetailFormValuesType {
-  name: string;
-  address: string;
-  description: string;
-}
+import { DefaultFormValuesType } from '../types/FormValues';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
   pinId: string;
-  formValues: UpdatedPinDetailFormValuesType;
+  formValues: DefaultFormValuesType;
   setSearchParams: SetURLSearchParams;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  setFormValues: React.Dispatch<
-    React.SetStateAction<UpdatedPinDetailFormValuesType>
-  >;
+  setFormValues: React.Dispatch<React.SetStateAction<DefaultFormValuesType>>;
 }
 
 const UpdatedPinDetail = ({
@@ -54,7 +47,7 @@ const UpdatedPinDetail = ({
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
-    setFormValues((prevValues: UpdatedPinDetailFormValuesType) => ({
+    setFormValues((prevValues: DefaultFormValuesType) => ({
       ...prevValues,
       [name]: value,
     }));

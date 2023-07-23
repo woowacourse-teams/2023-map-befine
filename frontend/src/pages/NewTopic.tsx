@@ -8,13 +8,9 @@ import { styled } from 'styled-components';
 import { Fragment, useState } from 'react';
 import { postApi } from '../utils/postApi';
 import useNavigator from '../hooks/useNavigator';
+import { NewTopicFormValuesType } from '../types/FormValues';
 
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
-
-interface NewTopicFormValuesType {
-  name: string;
-  description: string;
-}
 
 const NewTopic = () => {
   const [selectedTopicIcon, setSelectedTopicIcon] = useState<string>('');
