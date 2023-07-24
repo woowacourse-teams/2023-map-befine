@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
-import { useNavigate } from 'react-router-dom';
+import useNavigator from '../../hooks/useNavigator';
 
 export interface TopicCardProps {
   topicId: string;
@@ -18,10 +18,10 @@ const TopicCard = ({
   topicUpdatedAt,
   topicPinCount,
 }: TopicCardProps) => {
-  const navigator = useNavigate();
+  const { routePage } = useNavigator();
 
   const goToSelectedTopic = () => {
-    navigator(`topics/${topicId}`);
+    routePage(`topics/${topicId}`);
   };
 
   return (

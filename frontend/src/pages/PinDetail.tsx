@@ -1,7 +1,6 @@
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-
 import Plus from '../assets/plus.svg';
 import Clipping from '../assets/clipping.svg';
 import ShowDetail from '../assets/showDetail.svg';
@@ -9,21 +8,23 @@ import Share from '../assets/share.svg';
 import { useEffect, useState } from 'react';
 import { PinType } from '../types/Pin';
 import { getApi } from '../utils/getApi';
-import { putApi } from '../utils/putApi';
-import Textarea from '../components/common/Textarea';
-import Input from '../components/common/Input';
 import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
+import UpdatedPinDetail from './UpdatedPinDetail';
+import useFormValues from '../hooks/useFormValues';
+import { DefaultFormValuesType } from '../types/FormValues';
 
 const PinDetail = ({ pinId }: { pinId: string }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formValues, setFormValues] = useState({
-    name: '',
-    address: '',
-    description: '',
-  });
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { formValues, setFormValues, onChangeInput } =
+    useFormValues<DefaultFormValuesType>({
+      name: '',
+      address: '',
+      description: '',
+    });
+
   useEffect(() => {
     const getPinData = async () => {
       const pinData = await getApi(`/pin/${pinId}`);
@@ -42,35 +43,9 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
     setSearchParams({ ...Object.fromEntries(searchParams), [key]: value });
   };
 
-  const removeQueryString = (key: string) => {
-    const updatedSearchParams = { ...Object.fromEntries(searchParams) };
-    delete updatedSearchParams[key];
-    setSearchParams(updatedSearchParams);
-  };
-
-  const handleEditClick = () => {
+  const onClickEditPin = () => {
     setIsEditing(true);
     updateQueryString('edit', 'true');
-  };
-
-  const handleUpdateClick = async () => {
-    await putApi(`/pins/${pinId}`, formValues);
-    setIsEditing(false);
-    removeQueryString('edit');
-  };
-
-  const handleCancelClick = () => {
-    setIsEditing(false);
-  };
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
   };
 
   const copyContent = async () => {
@@ -83,102 +58,17 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
   };
 
   if (!pin) return <></>;
+
   if (isEditing)
     return (
-      <Flex $flexDirection="column">
-        <Flex
-          width="100%"
-          height="180px"
-          $backgroundColor="gray"
-          $alignItems="center"
-          $justifyContent="center"
-          $flexDirection="column"
-          padding={7}
-          $borderRadius="small"
-        >
-          <Plus />
-          <Space size={1} />
-          <Text
-            color="white"
-            $fontSize="default"
-            $fontWeight="normal"
-            $textAlign="center"
-          >
-            사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
-          </Text>
-        </Flex>
-        <Space size={5} />
-        <section>
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              장소 이름
-            </Text>
-          </Flex>
-          <Space size={0} />
-          <Input
-            type="text"
-            name="name"
-            value={formValues.name}
-            onChange={handleInputChange}
-          />
-        </section>
-
-        <Space size={5} />
-
-        <section>
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              장소 위치
-            </Text>
-          </Flex>
-          <Space size={0} />
-          <Input
-            type="text"
-            name="address"
-            value={formValues.address}
-            onChange={handleInputChange}
-            placeholder={formValues.address}
-          />
-        </section>
-
-        <Space size={5} />
-
-        <section>
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              장소 설명
-            </Text>
-          </Flex>
-          <Space size={0} />
-          <Textarea
-            name="description"
-            value={formValues.description}
-            onChange={handleInputChange}
-          />
-        </section>
-
-        <Space size={3} />
-
-        <Flex $justifyContent="end">
-          <Text
-            color="primary"
-            $fontSize="default"
-            $fontWeight="normal"
-            onClick={handleUpdateClick}
-          >
-            <Box cursor="pointer">저장</Box>
-          </Text>
-          <Space size={2} />
-          <Text
-            color="black"
-            $fontSize="default"
-            $fontWeight="normal"
-            onClick={handleCancelClick}
-          >
-            <Box cursor="pointer">취소</Box>
-          </Text>
-        </Flex>
-      </Flex>
+      <UpdatedPinDetail
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+        setIsEditing={setIsEditing}
+        pinId={pinId}
+        formValues={formValues}
+        onChangeInput={onChangeInput}
+      />
     );
 
   return (
@@ -192,7 +82,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
             color="primary"
             $fontSize="default"
             $fontWeight="normal"
-            onClick={handleEditClick}
+            onClick={onClickEditPin}
           >
             수정하기
           </Text>
@@ -252,7 +142,7 @@ const PinDetail = ({ pinId }: { pinId: string }) => {
       <Flex $justifyContent="center">
         <Clipping cursor={'pointer'} />
         <Space size={4} />
-        <Share cursor={'pointer'} onClick={() => copyContent()} />
+        <Share cursor={'pointer'} onClick={copyContent} />
         <Space size={4} />
         <ShowDetail cursor={'pointer'} />
       </Flex>

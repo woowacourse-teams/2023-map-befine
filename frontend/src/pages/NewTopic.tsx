@@ -1,4 +1,3 @@
-import Box from '../components/common/Box';
 import Input from '../components/common/Input';
 import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
@@ -6,47 +5,38 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { styled } from 'styled-components';
-import { Fragment, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Fragment, useState } from 'react';
 import { postApi } from '../utils/postApi';
+import useNavigator from '../hooks/useNavigator';
+import { NewTopicFormValuesType } from '../types/FormValues';
+import useFormValues from '../hooks/useFormValues';
 
 const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
 
 const NewTopic = () => {
   const [selectedTopicIcon, setSelectedTopicIcon] = useState<string>('');
-  const [topicName, setTopicName] = useState<string>('');
-  const [topicDescription, setTopicDescription] = useState<string>('');
-  const navigator = useNavigate();
+  const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
+    name: '',
+    description: '',
+  });
+  const { routePage } = useNavigator();
 
   const goToBack = () => {
-    navigator(-1);
-  };
-
-  const onChangeTopicName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTopicName(e.target.value);
-  };
-
-  const onChangeTopicDescription = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    setTopicDescription(e.target.value);
+    routePage(-1);
   };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formElement = e.currentTarget;
-
     const topicId = await postToServer();
-
-    if (topicId) navigator(`/topics/${topicId}`);
+    if (topicId) routePage(`/topics/${topicId}`);
   };
 
   const postToServer = async () => {
     const response = await postApi('/topics/new', {
       emoji: selectedTopicIcon,
-      name: topicName,
-      description: topicDescription,
+      name: formValues.name,
+      description: formValues.description,
     });
     const location = response.headers.get('Location');
 
@@ -88,7 +78,6 @@ const NewTopic = () => {
                 <label
                   id="radio-label"
                   htmlFor={`checkbox-${idx}`}
-                  data-icon={icon}
                   onClick={() => {
                     setSelectedTopicIcon(icon);
                   }}
@@ -114,8 +103,10 @@ const NewTopic = () => {
           </Flex>
           <Space size={0} />
           <Input
+            name="name"
+            value={formValues.name}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
-            onChange={onChangeTopicName}
+            onChange={onChangeInput}
           />
         </section>
 
@@ -133,8 +124,10 @@ const NewTopic = () => {
           </Flex>
           <Space size={0} />
           <Textarea
+            name="description"
+            value={formValues.description}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
-            onChange={onChangeTopicDescription}
+            onChange={onChangeInput}
           />
         </section>
 
