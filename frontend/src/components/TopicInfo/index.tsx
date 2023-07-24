@@ -50,13 +50,15 @@ const TopicInfo = ({
       <Text color="black" $fontSize="large" $fontWeight="bold">
         {topicTitle}
       </Text>
+      <Space size={0} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicOwner}
       </Text>
+      <Space size={0} />
       <Text color="gray" $fontSize="small" $fontWeight="normal">
         {topicDescription}
       </Text>
-      <Space size={2} />
+      <Space size={3} />
       <Flex $justifyContent="space-between">
         <Flex>
           <Clipping />
