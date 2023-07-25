@@ -1,12 +1,13 @@
 package com.mapbefine.mapbefine.entity;
 
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -29,8 +30,8 @@ public class Pin extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String description;
 
-    @OneToMany(mappedBy = "pin")
-    private List<PinImage> pinImages;
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.PERSIST)
+    private List<PinImage> pinImages = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
@@ -99,6 +100,10 @@ public class Pin extends BaseEntity {
 
         this.name = name;
         this.description = description;
+    }
+
+    public void addPinImage(PinImage pinImage) {
+        pinImages.add(pinImage);
     }
 
     public BigDecimal getLatitude() {
