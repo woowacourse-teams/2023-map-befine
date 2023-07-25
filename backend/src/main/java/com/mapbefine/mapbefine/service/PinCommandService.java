@@ -2,10 +2,7 @@ package com.mapbefine.mapbefine.service;
 
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinUpdateRequest;
-import com.mapbefine.mapbefine.entity.Coordinate;
-import com.mapbefine.mapbefine.entity.Location;
-import com.mapbefine.mapbefine.entity.Pin;
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.*;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
@@ -52,7 +49,7 @@ public class PinCommandService {
         // 주소까지 동일하다면 해당 Pin 사용
         // select p from Pin p where p.longitude > :longitude - 0.0001 and p.longitude < longitude + 0.0001 and p.latitude - 0.0001 ㅅㅂ이따가해
 
-        Coordinate coordinate = Coordinate.From(request.latitude(),request.longitude());
+        Coordinate coordinate = Coordinate.From(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
 
@@ -68,6 +65,10 @@ public class PinCommandService {
                 .orElseGet(() -> saveLocation(request, coordinate));
 
         Pin pin = Pin.createPinAssociatedWithLocationAndTopic(request.name(), request.description(), pinLocation, topic);
+
+        for (String pinImage : request.images()) {
+            PinImage.createPinImageAssociatedWithPin(pinImage, pin);
+        }
 
         return pinRepository.save(pin).getId();
     }

@@ -22,7 +22,7 @@ class PinTest {
             ),
             "legalDongCode"
     );
-    private static final Topic topic = new Topic("topicName", "topicDescription");
+    private static final Topic topic = new Topic("topicName", "topicDescription", null);
 
     @ParameterizedTest
     @MethodSource(value = "validNameAndDescription")
