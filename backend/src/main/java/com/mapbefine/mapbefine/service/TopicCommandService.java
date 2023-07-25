@@ -74,7 +74,7 @@ public class TopicCommandService {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
 
-        topic.update(request.name(), request.description());
+        topic.update(request.name(), request.description(), request.image());
     }
 
     public void delete(Long id) {

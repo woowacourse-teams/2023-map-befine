@@ -109,7 +109,7 @@ public class TopicIntegrationTest extends IntegrationTest {
         long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
 
         // when
-        TopicUpdateRequest 송파_데이트코스 = new TopicUpdateRequest("송파 데이트코스", "수정한 토픽");
+        TopicUpdateRequest 송파_데이트코스 = new TopicUpdateRequest("송파 데이트코스", "https://map-befine-official.github.io/favicon.png", "수정한 토픽");
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
