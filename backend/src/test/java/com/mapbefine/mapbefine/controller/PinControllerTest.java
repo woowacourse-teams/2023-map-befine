@@ -21,6 +21,7 @@ import static org.mockito.BDDMockito.given;
 
 
 class PinControllerTest extends RestDocsIntegration {
+    private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     @MockBean
     private PinCommandService pinCommandService;
@@ -40,7 +41,8 @@ class PinControllerTest extends RestDocsIntegration {
                 "지번 주소",
                 "법정동 코드",
                 "37",
-                "127"
+                "127",
+                BASE_IMAGES
         );
 
         mockMvc.perform(
@@ -54,7 +56,11 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 수정")
     void update() throws Exception {
 
-        PinUpdateRequest pinUpdateRequest = new PinUpdateRequest("매튜의 안갈집", "매튜가 다신 안 갈 집");
+        PinUpdateRequest pinUpdateRequest = new PinUpdateRequest(
+                "매튜의 안갈집",
+                "매튜가 다신 안 갈 집",
+                BASE_IMAGES
+        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/pins/1")
@@ -83,7 +89,8 @@ class PinControllerTest extends RestDocsIntegration {
                 "매튜가 사랑하는 산스장",
                 new BigDecimal(37).toString(),
                 new BigDecimal(127).toString(),
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                BASE_IMAGES
         );
 
         given(pinQueryService.findById(any())).willReturn(pinDetailResponse);

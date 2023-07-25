@@ -1,34 +1,30 @@
 package com.mapbefine.mapbefine.service;
 
-import static org.assertj.core.api.Assertions.as;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.extractProperty;
-
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinResponse;
-import com.mapbefine.mapbefine.entity.Coordinate;
-import com.mapbefine.mapbefine.entity.Location;
-import com.mapbefine.mapbefine.entity.Pin;
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.*;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import jakarta.transaction.Transactional;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @Transactional
 @SpringBootTest
 class PinQueryServiceTest {
+    private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     @Autowired
     private PinQueryService pinQueryService;
@@ -72,7 +68,7 @@ class PinQueryServiceTest {
                     "description",
                     coordinate.getLatitude().toString(),
                     coordinate.getLongitude().toString()
-                    ));
+            ));
         }
 
         // when
@@ -88,6 +84,7 @@ class PinQueryServiceTest {
     void findById_Success() {
         // given
         Pin pin = Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+        PinImage.createPinImageAssociatedWithPin(BASE_IMAGES.get(0), pin);
         Long savedId = pinRepository.save(pin).getId();
 
         // when
@@ -98,7 +95,8 @@ class PinQueryServiceTest {
                 "description",
                 coordinate.getLatitude().toString(),
                 coordinate.getLongitude().toString(),
-                null
+                null,
+                BASE_IMAGES
         );
         PinDetailResponse actual = pinQueryService.findById(savedId);
 

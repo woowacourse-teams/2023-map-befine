@@ -17,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PinIntegrationTest extends IntegrationTest {
-
+    private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
     private Topic topic;
     private Location location;
 
@@ -47,7 +49,8 @@ public class PinIntegrationTest extends IntegrationTest {
                 location.getRoadBaseAddress(),
                 "legalDongCode",
                 "37.5152933",
-                "127.1029866"
+                "127.1029866",
+                BASE_IMAGES
         );
 
         //when
@@ -78,7 +81,8 @@ public class PinIntegrationTest extends IntegrationTest {
                 "기존에 없는 주소",
                 "legalDongCode",
                 "37",
-                "126"
+                "126",
+                BASE_IMAGES
         );
 
         //when
@@ -100,7 +104,8 @@ public class PinIntegrationTest extends IntegrationTest {
                 "기존에 없는 주소",
                 "legalDongCode",
                 "37",
-                "126"
+                "126",
+                BASE_IMAGES
         );
 
         PinCreateRequest request2 = new PinCreateRequest(
@@ -110,7 +115,8 @@ public class PinIntegrationTest extends IntegrationTest {
                 "기존에 없는 주소",
                 "legalDongCode",
                 "37.12345",
-                "126.12345"
+                "126.12345",
+                BASE_IMAGES
         );
 
         createPin(request1);
@@ -142,7 +148,8 @@ public class PinIntegrationTest extends IntegrationTest {
                 "기존에 없는 주소",
                 "legalDongCode",
                 "37",
-                "126"
+                "126",
+                BASE_IMAGES
         );
         ExtractableResponse<Response> createResponse = createPin(request);
         String locationHeader = createResponse.header("Location");
