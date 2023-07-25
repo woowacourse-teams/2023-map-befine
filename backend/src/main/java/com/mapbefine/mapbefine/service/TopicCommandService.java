@@ -7,11 +7,12 @@ import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service
@@ -46,7 +47,7 @@ public class TopicCommandService {
 
     private List<Pin> duplicateUserPins(List<Pin> pins, Topic topic) {
         return pins.stream()
-                .map(original -> original.duplicate(topic))
+                .map(original -> original.copy(topic))
                 .collect(Collectors.toList());
     }
 
