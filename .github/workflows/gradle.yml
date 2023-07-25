@@ -1,0 +1,45 @@
+name: Java CI with Gradle
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+    paths: backend/**
+
+permissions:
+  pull-requests: write
+  checks: write
+  contents: write
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: gradlew 실행 권한 부여
+      run: chmod +x gradlew
+      working-directory: backend
+
+    - name: Gradle build 시작
+      run: ./gradlew build
+      working-directory: backend
+
+    - name: 테스트 결과를 PR에 코멘트로 등록합니다
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: 'backend/build/test-results/test/TEST-*.xml'
+
+    - name: 테스트 실패 시, 실패한 코드 라인에 Check 코멘트를 등록합니다
+      uses: mikepenz/action-junit-report@v3
+      if: always()
+      with:
+        report_paths: '**/build/test-results/test/TEST-*.xml'
+        token: ${{ github.token }}

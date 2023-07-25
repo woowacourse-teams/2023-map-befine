@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import java.net.URI;
 import java.util.List;
 
@@ -56,13 +57,18 @@ public class PinController {
 
     @GetMapping("/{pinId}")
     public ResponseEntity<PinDetailResponse> findById(@PathVariable Long pinId) {
-        return ResponseEntity.ok(pinQueryService.findById(pinId));
+        PinDetailResponse response = pinQueryService.findById(pinId);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<List<PinResponse>> findAll() {
-        return ResponseEntity.ok(pinQueryService.findAll());
+        List<PinResponse> allResponses = pinQueryService.findAll();
+
+        return ResponseEntity.ok(allResponses);
     }
 
 }
+
 

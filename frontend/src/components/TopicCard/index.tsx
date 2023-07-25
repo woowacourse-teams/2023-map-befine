@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
-import { useNavigate } from 'react-router-dom';
+import useNavigator from '../../hooks/useNavigator';
 
 export interface TopicCardProps {
   topicId: string;
@@ -18,42 +18,44 @@ const TopicCard = ({
   topicUpdatedAt,
   topicPinCount,
 }: TopicCardProps) => {
-  const navigator = useNavigate();
+  const { routePage } = useNavigator();
 
   const goToSelectedTopic = () => {
-    navigator(`topics/${topicId}`);
+    routePage(`topics/${topicId}`);
   };
 
   return (
-    <Flex
-      width="360px"
-      height="140px"
-      position="relative"
-      $flexDirection="column"
-      $alignItems="center"
-      $justifyContent="center"
-      $backgroundColor="whiteGray"
-      $borderRadius="small"
-    >
-      <MultiSelectButton type="checkbox"></MultiSelectButton>
+    <li>
       <Flex
+        width="360px"
+        height="140px"
+        position="relative"
         $flexDirection="column"
         $alignItems="center"
         $justifyContent="center"
-        cursor="pointer"
-        onClick={goToSelectedTopic}
+        $backgroundColor="whiteGray"
+        $borderRadius="small"
       >
-        <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
-          {topicEmoji}
-        </Text>
-        <Text color="black" $fontSize="medium" $fontWeight="normal">
-          {topicTitle}
-        </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {`업데이트 : ${topicUpdatedAt} | 핀 개수 : ${topicPinCount}`}
-        </Text>
+        <MultiSelectButton type="checkbox"></MultiSelectButton>
+        <Flex
+          $flexDirection="column"
+          $alignItems="center"
+          $justifyContent="center"
+          cursor="pointer"
+          onClick={goToSelectedTopic}
+        >
+          <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
+            {topicEmoji}
+          </Text>
+          <Text color="black" $fontSize="medium" $fontWeight="normal">
+            {topicTitle}
+          </Text>
+          <Text color="gray" $fontSize="small" $fontWeight="normal">
+            {`업데이트 : ${topicUpdatedAt} | 핀 개수 : ${topicPinCount}`}
+          </Text>
+        </Flex>
       </Flex>
-    </Flex>
+    </li>
   );
 };
 

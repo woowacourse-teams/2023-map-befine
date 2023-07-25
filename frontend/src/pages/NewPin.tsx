@@ -1,33 +1,36 @@
-import Box from '../components/common/Box';
 import Input from '../components/common/Input';
 import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
-import { useNavigate } from 'react-router-dom';
 import { postApi } from '../utils/postApi';
 import { useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
+import useNavigator from '../hooks/useNavigator';
+import { DefaultFormValuesType } from '../types/FormValues';
+import useFormValues from '../hooks/useFormValues';
 
 const NewPin = () => {
-  const [pinName, setPinName] = useState<string>('');
-  const [pinAddress, setPinAddress] = useState<string>('');
-  const [pinDescription, setPinDescription] = useState<string>('');
   const [topic, setTopic] = useState<TopicType | null>(null);
-  const navigator = useNavigate();
+  const { formValues, onChangeInput } = useFormValues<DefaultFormValuesType>({
+    name: '',
+    address: '',
+    description: '',
+  });
+  const { routePage } = useNavigator();
 
   const goToBack = () => {
-    navigator(-1);
+    routePage(-1);
   };
 
   const postToServer = async () => {
-    const location = await postApi('/pins', {
-      topicId: topic?.id,
-      name: pinName,
-      address: pinAddress,
-      description: pinDescription,
+    await postApi('/pins', {
+      topicId: topic?.id || 'error',
+      name: formValues.name,
+      address: formValues.address,
+      description: formValues.description,
     });
   };
 
@@ -35,7 +38,7 @@ const NewPin = () => {
     e.preventDefault();
 
     await postToServer();
-    navigator(`/topics/${topic?.id}`);
+    routePage(`/topics/${topic?.id}`);
   };
 
   useEffect(() => {
@@ -64,7 +67,7 @@ const NewPin = () => {
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               토픽 선택
@@ -79,11 +82,11 @@ const NewPin = () => {
             type="button"
             variant="primary"
           >{`${topic.emoji} ${topic.name}`}</Button>
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 이름
@@ -95,17 +98,16 @@ const NewPin = () => {
           </Flex>
           <Space size={0} />
           <Input
-            value={pinName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setPinName(e.target.value);
-            }}
+            name="name"
+            value={formValues.name}
+            onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
           />
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 위치
@@ -117,17 +119,16 @@ const NewPin = () => {
           </Flex>
           <Space size={0} />
           <Input
-            value={pinAddress}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setPinAddress(e.target.value);
-            }}
+            name="address"
+            value={formValues.address}
+            onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
-        </Box>
+        </section>
 
         <Space size={5} />
 
-        <Box>
+        <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
               장소 설명
@@ -139,13 +140,12 @@ const NewPin = () => {
           </Flex>
           <Space size={0} />
           <Textarea
-            value={pinDescription}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-              setPinDescription(e.target.value);
-            }}
+            name="description"
+            value={formValues.description}
+            onChange={onChangeInput}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
           />
-        </Box>
+        </section>
 
         <Space size={6} />
 
