@@ -54,7 +54,7 @@ class PinQueryServiceTest {
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
         coordinate = new Coordinate(latitude, longitude);
         location = saveLocation(coordinate);
-        topic = topicRepository.save(new Topic("topicName", "topicDescription"));
+        topic = topicRepository.save(new Topic("topicName", "topicDescription", "https://map-befine-official.github.io/favicon.png"));
     }
 
     @Test

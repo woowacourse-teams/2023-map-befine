@@ -4,22 +4,23 @@ import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
 import TopicInfo from '../components/TopicInfo';
 import { TopicInfoType } from '../types/Topic';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
+import useNavigator from '../hooks/useNavigator';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
+  const { routePage } = useNavigator();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigator = useNavigate();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType | null>(null);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
 
   const onClickSetSelectedPinId = (pinId: string) => {
     setSelectedPinId(pinId);
 
-    navigator(`/topics/${topicId}?pinDetail=${pinId}`);
+    routePage(`/topics/${topicId}?pinDetail=${pinId}`);
   };
 
   const getAndSetDataFromServer = async () => {
@@ -36,38 +37,35 @@ const SelectedTopic = () => {
     }
   }, [searchParams]);
 
-  if (!topicId) return <></>;
   if (!topicDetail) return <></>;
 
   return (
     <>
-      <Space size={3} />
       <Flex $flexDirection="column">
-        <TopicInfo
-          topicParticipant={12}
-          pinNumber={topicDetail.pinCount}
-          topicTitle={topicDetail.name}
-          topicOwner={'하지원'}
-          topicDescription={topicDetail.description}
-        />
-        <Space size={3} />
-        <div>
+        <ul>
+          <TopicInfo
+            topicParticipant={12}
+            pinNumber={topicDetail.pinCount}
+            topicTitle={topicDetail.name}
+            topicOwner={'하지원'}
+            topicDescription={topicDetail.description}
+          />
           {topicDetail.pins.map((pin) => (
-            <div
+            <li
               key={pin.id}
               onClick={() => {
                 onClickSetSelectedPinId(pin.id);
               }}
             >
+              <Space size={3} />
               <PinPreview
                 pinTitle={pin.name}
                 pinLocation={pin.address}
                 pinInformation={pin.description}
               />
-              <Space size={3} />
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
 
         {selectedPinId && (
           <Flex
@@ -84,8 +82,6 @@ const SelectedTopic = () => {
             <PinDetail pinId={selectedPinId} />
           </Flex>
         )}
-
-        <Space size={4} />
       </Flex>
     </>
   );

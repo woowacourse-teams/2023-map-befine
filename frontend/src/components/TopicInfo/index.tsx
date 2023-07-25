@@ -1,11 +1,11 @@
-import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Clipping from '../../assets/clipping.svg';
 import Share from '../../assets/share.svg';
 import Button from '../common/Button';
 import Space from '../common/Space';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import useNavigator from '../../hooks/useNavigator';
 
 export interface TopicCardProps {
   topicParticipant: number;
@@ -22,22 +22,22 @@ const TopicInfo = ({
   topicOwner,
   topicDescription,
 }: TopicCardProps) => {
-  const navigator = useNavigate();
   const { topicId } = useParams();
+  const { routePage } = useNavigator();
 
   const goToNewPin = () => {
-    navigator(`/new-pin?topic-id=${topicId}`);
+    routePage(`/new-pin?topic-id=${topicId}`);
   };
 
   return (
     <Flex
       width="360px"
-      height="195px"
       position="relative"
       $flexDirection="column"
       $backgroundColor="white"
       $borderBottom="1px solid #E7E7E7"
     >
+      <Space size={3} />
       <Flex>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
           · {topicParticipant}명의 참가자
@@ -50,13 +50,15 @@ const TopicInfo = ({
       <Text color="black" $fontSize="large" $fontWeight="bold">
         {topicTitle}
       </Text>
+      <Space size={0} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicOwner}
       </Text>
+      <Space size={0} />
       <Text color="gray" $fontSize="small" $fontWeight="normal">
         {topicDescription}
       </Text>
-      <Space size={2} />
+      <Space size={3} />
       <Flex $justifyContent="space-between">
         <Flex>
           <Clipping />

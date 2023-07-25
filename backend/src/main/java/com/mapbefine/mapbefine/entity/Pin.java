@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -27,6 +28,9 @@ public class Pin extends BaseEntity {
     @Lob
     @Column(nullable = false, length = 1000)
     private String description;
+
+    @OneToMany(mappedBy = "pin")
+    private List<PinImage> pinImages;
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)

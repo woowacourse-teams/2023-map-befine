@@ -21,7 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-class TopicControllerTest extends RestDocsIntegration {
+class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Image 칼람 추가됨으로 인해 수정 필요
 
     @MockBean
     private TopicCommandService topicCommandService;
@@ -34,7 +34,7 @@ class TopicControllerTest extends RestDocsIntegration {
     @DisplayName("토픽 새로 생성")
     void create() throws Exception {
         given(topicCommandService.createNew(any())).willReturn(1L);
-        TopicCreateRequest topicCreateRequest = new TopicCreateRequest("준팍의 안갈집", "준팍이 두번 다시 안갈집", List.of(1L, 2L, 3L));
+        TopicCreateRequest topicCreateRequest = new TopicCreateRequest("준팍의 안갈집", "https://map-befine-official.github.io/favicon.png", "준팍이 두번 다시 안갈집", List.of(1L, 2L, 3L));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/topics/new")
@@ -47,7 +47,7 @@ class TopicControllerTest extends RestDocsIntegration {
     @DisplayName("토픽 병합 생성")
     void mergeAndCreate() throws Exception {
         given(topicCommandService.createMerge(any())).willReturn(1L);
-        TopicMergeRequest topicMergeRequest = new TopicMergeRequest("준팍의 안갈집", "준팍이 두번 다시 안갈집", List.of(1L, 2L, 3L));
+        TopicMergeRequest topicMergeRequest = new TopicMergeRequest("준팍의 안갈집", "https://map-befine-official.github.io/favicon.png", "준팍이 두번 다시 안갈집", List.of(1L, 2L, 3L));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/topics/merge")
@@ -106,6 +106,7 @@ class TopicControllerTest extends RestDocsIntegration {
                 1L,
                 "준팍의 두번째 토픽",
                 "준팍이 막 만든 두번째 토픽",
+                "https://map-befine-official.github.io/favicon.png",
                 2,
                 LocalDateTime.now(),
                 List.of(

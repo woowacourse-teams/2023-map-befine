@@ -45,7 +45,7 @@ class PinCommandServiceTest {
 
     @BeforeEach
     void setUp() {
-        topic = topicRepository.save(new Topic("topicName", "topicDescription"));
+        topic = topicRepository.save(new Topic("topicName", "topicDescription", "https://map-befine-official.github.io/favicon.png"));
     }
 
     @Test

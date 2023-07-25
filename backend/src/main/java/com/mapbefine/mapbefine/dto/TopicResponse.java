@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public record TopicResponse(
         long id,
         String name,
-        String description,
+        String image,
         int pinCount,
         LocalDateTime updatedAt
 ) {
@@ -14,7 +14,7 @@ public record TopicResponse(
         return new TopicResponse(
                 topic.getId(),
                 topic.getName(),
-                topic.getDescription(),
+                topic.getImageUrl(),
                 topic.countPins(),
                 topic.getUpdatedAt()
         );
