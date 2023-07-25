@@ -78,6 +78,7 @@ const SelectedTopic = () => {
             padding={4}
             $flexDirection="column"
             $borderLeft={`1px solid ${theme.color.gray}`}
+            $zIndex={99}
           >
             <PinDetail pinId={selectedPinId} />
           </Flex>

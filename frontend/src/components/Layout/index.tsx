@@ -1,3 +1,4 @@
+import Map from '../Map';
 import Flex from '../common/Flex';
 import Input from '../common/Input';
 import Space from '../common/Space';
@@ -9,23 +10,26 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <Flex
-      $flexDirection="column"
-      width="400px"
-      height="100vh"
-      $backgroundColor="white"
-      padding={4}
-    >
-      <Logo />
-      <Space size={5} />
-      <Input placeholder="검색어를 입력하세요." />
+    <Flex height="100vh" width="100vw">
       <Flex
-        height="calc(100vh - 120px)"
         $flexDirection="column"
-        overflow="auto"
+        width="400px"
+        height="100vh"
+        $backgroundColor="white"
+        padding={4}
       >
-        {children}
+        <Logo />
+        <Space size={5} />
+        <Input placeholder="검색어를 입력하세요." />
+        <Flex
+          height="calc(100vh - 120px)"
+          $flexDirection="column"
+          overflow="auto"
+        >
+          {children}
+        </Flex>
       </Flex>
+      <Map />
     </Flex>
   );
 };
