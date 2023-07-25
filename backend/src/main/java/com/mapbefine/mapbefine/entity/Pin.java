@@ -90,8 +90,8 @@ public class Pin extends BaseEntity {
         }
     }
 
-    public Pin duplicate(Topic topic) {
-        return Pin.createPinAssociatedWithLocationAndTopic(this.name, this.description, this.location, topic);
+    public Pin copy(Topic topic) {
+        return Pin.createPinAssociatedWithLocationAndTopic(name, description, location, topic);
     }
 
     public void update(String name, String description) {

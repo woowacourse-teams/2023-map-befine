@@ -1,12 +1,7 @@
 package com.mapbefine.mapbefine.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mapbefine.mapbefine.entity.Coordinate;
 import com.mapbefine.mapbefine.entity.Location;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,15 +9,21 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DataJpaTest
 class LocationRepositoryTest {
 
     @Autowired
     private LocationRepository locationRepository;
 
-    @DisplayName("범위 내의 Pin을 검색한다.")
     @ParameterizedTest
     @MethodSource(value = "coordinates_Success")
+    @DisplayName("범위 내의 Pin을 검색한다.")
     void findAllByRectangle_Success(BigDecimal latitude, BigDecimal longitude) {
         // given
         BigDecimal distance = BigDecimal.valueOf(0.0001);
@@ -55,9 +56,9 @@ class LocationRepositoryTest {
         );
     }
 
-    @DisplayName("범위 내의 Pin을 검색한다.")
     @ParameterizedTest
     @MethodSource(value = "coordinates_Fail")
+    @DisplayName("범위 내의 Pin을 검색한다.")
     void findAllByRectangle_Fail(BigDecimal latitude, BigDecimal longitude) {
         // given
         BigDecimal distance = BigDecimal.valueOf(0.0001);
@@ -71,8 +72,11 @@ class LocationRepositoryTest {
         locationRepository.save(location);
 
         // when
-        List<Location> locations = locationRepository.findAllByRectangle(BigDecimal.valueOf(35),
-                BigDecimal.valueOf(127), distance);
+        List<Location> locations = locationRepository.findAllByRectangle(
+                BigDecimal.valueOf(35),
+                BigDecimal.valueOf(127),
+                distance
+        );
 
         // then
         assertThat(locations).isEmpty();
