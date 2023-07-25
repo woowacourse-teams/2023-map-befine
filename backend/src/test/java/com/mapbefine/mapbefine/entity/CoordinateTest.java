@@ -18,7 +18,7 @@ class CoordinateTest {
     @ParameterizedTest
     @ValueSource(strings = {"32.9", "43.1"})
     @DisplayName("위도의 값이 33~43사이의 값이 아니면 실패한다.")
-    void validateLatitude_Fail(String input) {
+    void createCoordinate_FailByInvalidLatitude(String input) {
         BigDecimal latitude = new BigDecimal(input);
 
         assertThatThrownBy(() -> new Coordinate(latitude, BigDecimal.valueOf(127)))
@@ -29,7 +29,7 @@ class CoordinateTest {
     @ParameterizedTest
     @ValueSource(strings = {"33.1", "42.9"})
     @DisplayName("위도의 값이 33~43사이의 값이면 통과한다.")
-    void validateLatitude_Success(String input) {
+    void createLatitude_Success(String input) {
         BigDecimal latitude = new BigDecimal(input);
 
         assertDoesNotThrow(() -> new Coordinate(latitude, BigDecimal.valueOf(127)));
@@ -38,7 +38,7 @@ class CoordinateTest {
     @ParameterizedTest
     @ValueSource(strings = {"124.1", "131.9"})
     @DisplayName("경도의 값이 124~132사이의 값이면 통과한다.")
-    void validateLongitude_Success(String input) {
+    void createLongitude_Success(String input) {
         BigDecimal longitude = new BigDecimal(input);
 
         assertDoesNotThrow(() -> new Coordinate(BigDecimal.valueOf(37), longitude));
@@ -47,7 +47,7 @@ class CoordinateTest {
     @ParameterizedTest
     @ValueSource(strings = {"123.9", "132.1"})
     @DisplayName("경도의 값이 124~132사이의 값이 아니면 실패한다.")
-    void validateLongitude_Fail(String input) {
+    void createCoordinate_FailByInvalidLongitude(String input) {
         BigDecimal longitude = new BigDecimal(input);
 
         assertThatThrownBy(() -> new Coordinate(BigDecimal.valueOf(37), longitude))
