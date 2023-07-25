@@ -16,10 +16,10 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 public class Coordinate {
 
-    public static final BigDecimal LATITUDE_LOWER_BOUND = BigDecimal.valueOf(33);
-    public static final BigDecimal LATITUDE_UPPER_BOUND = BigDecimal.valueOf(43);
-    public static final BigDecimal LONGITUDE_LOWER_BOUND = BigDecimal.valueOf(124);
-    public static final BigDecimal LONGITUDE_UPPER_BOUND = BigDecimal.valueOf(132);
+    private static final BigDecimal LATITUDE_LOWER_BOUND = BigDecimal.valueOf(33);
+    private static final BigDecimal LATITUDE_UPPER_BOUND = BigDecimal.valueOf(43);
+    private static final BigDecimal LONGITUDE_LOWER_BOUND = BigDecimal.valueOf(124);
+    private static final BigDecimal LONGITUDE_UPPER_BOUND = BigDecimal.valueOf(132);
 
     private static final BigDecimal EARTH_RADIUS = BigDecimal.valueOf(6371);
     private static final BigDecimal UNIT_FOR_CONVERT_RADIAN = BigDecimal.valueOf(Math.PI / 180);
@@ -38,7 +38,7 @@ public class Coordinate {
         this.longitude = longitude;
     }
 
-    public static Coordinate From(String latitude, String longitude) {
+    public static Coordinate from(String latitude, String longitude) {
         return new Coordinate(
                 new BigDecimal(latitude),
                 new BigDecimal(longitude)
