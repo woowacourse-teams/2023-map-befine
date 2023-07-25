@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @Transactional
 @SpringBootTest
 class PinCommandServiceTest {
+    private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     @Autowired
     private PinCommandService pinCommandService;
@@ -46,7 +47,7 @@ class PinCommandServiceTest {
 
     @BeforeEach
     void setUp() {
-        topic = topicRepository.save(new Topic("topicName", "topicDescription"));
+        topic = topicRepository.save(new Topic("topicName", "topicDescription", "https://map-befine-official.github.io/favicon.png"));
     }
 
     @Test
@@ -66,7 +67,8 @@ class PinCommandServiceTest {
                 "road",
                 "legalDongCode",
                 latitude.toString(),
-                longitude.toString()
+                longitude.toString(),
+                BASE_IMAGES
         );
         Long savedPinId = pinCommandService.save(request);
 
@@ -79,7 +81,8 @@ class PinCommandServiceTest {
                 "description",
                 latitude.toString(),
                 longitude.toString(),
-                null
+                null,
+                BASE_IMAGES
         );
 
         assertThat(location.getPins()).extractingResultOf("getId")
@@ -115,7 +118,8 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude.toString(),
-                longitude.toString()
+                longitude.toString(),
+                BASE_IMAGES
         );
         Long savedPinId = pinCommandService.save(request);
 
@@ -128,11 +132,11 @@ class PinCommandServiceTest {
                 "description",
                 latitude.toString(),
                 longitude.toString(),
-                null
+                null,
+                BASE_IMAGES
         );
 
         List<Location> locations = locationRepository.findAll();
-
         assertThat(locations).hasSize(1);
         assertThat(locations.get(0).getPins()).hasSize(1);
         assertThat(locations.get(0).getPins())
@@ -159,12 +163,17 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude.toString(),
-                longitude.toString()
+                longitude.toString(),
+                BASE_IMAGES
         );
         Long savedPinId = pinCommandService.save(createRequest);
 
         // when
-        PinUpdateRequest updateRequest = new PinUpdateRequest("updatedName", "updatedDescription");
+        PinUpdateRequest updateRequest = new PinUpdateRequest(
+                "updatedName",
+                "updatedDescription",
+                BASE_IMAGES
+        );
         pinCommandService.update(savedPinId, updateRequest);
 
         // then
@@ -176,7 +185,8 @@ class PinCommandServiceTest {
                 "updatedDescription",
                 latitude.toString(),
                 longitude.toString(),
-                null
+                null,
+                BASE_IMAGES
         );
 
         assertThat(actual).usingRecursiveComparison()
@@ -200,13 +210,13 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude.toString(),
-                longitude.toString()
+                longitude.toString(),
+                BASE_IMAGES
         );
         Long savedPinId = pinCommandService.save(createRequest);
 
         // when then
-        PinUpdateRequest updateRequest = new PinUpdateRequest("", "updatedDescription");
-
+        PinUpdateRequest updateRequest = new PinUpdateRequest("", "updatedDescription",BASE_IMAGES);
         assertThatThrownBy(() -> pinCommandService.update(savedPinId, updateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -227,7 +237,8 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude.toString(),
-                longitude.toString()
+                longitude.toString(),
+                BASE_IMAGES
         );
         Long savedPinId = pinCommandService.save(createRequest);
 
@@ -259,7 +270,8 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude.toString(),
-                longitude.toString()
+                longitude.toString(),
+                BASE_IMAGES
         );
 
         for (int i = 0; i < 10; i++) {

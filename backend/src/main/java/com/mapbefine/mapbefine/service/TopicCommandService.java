@@ -27,7 +27,7 @@ public class TopicCommandService {
     }
 
     public long createNew(final TopicCreateRequest request) {
-        Topic topic = new Topic(request.name(), request.description());
+        Topic topic = new Topic(request.name(), request.description(), request.image());
         topicRepository.save(topic);
 
         List<Long> pinIds = request.pins();
@@ -57,7 +57,7 @@ public class TopicCommandService {
 
         validateExist(topicIds.size(), topics.size());
 
-        Topic topic = new Topic(request.name(), request.description());
+        Topic topic = new Topic(request.name(), request.description(), request.image());
         topicRepository.save(topic);
 
         List<Pin> original = topics.stream()

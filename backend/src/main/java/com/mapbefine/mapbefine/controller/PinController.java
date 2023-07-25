@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,14 +32,14 @@ public class PinController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> add(PinCreateRequest request) {
+    public ResponseEntity<Void> add(@RequestBody PinCreateRequest request) {
         Long savedId = pinCommandService.save(request);
 
         return ResponseEntity.created(URI.create("/pins/" + savedId)).build();
     }
 
     @PutMapping("/{pinId}")
-    public ResponseEntity<Void> update(@PathVariable Long pinId, PinUpdateRequest request) {
+    public ResponseEntity<Void> update(@PathVariable Long pinId, @RequestBody PinUpdateRequest request) {
         pinCommandService.update(pinId, request);
 
         return ResponseEntity.ok()
@@ -55,16 +56,12 @@ public class PinController {
 
     @GetMapping("/{pinId}")
     public ResponseEntity<PinDetailResponse> findById(@PathVariable Long pinId) {
-        PinDetailResponse response = pinQueryService.findById(pinId);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(pinQueryService.findById(pinId));
     }
 
     @GetMapping
     public ResponseEntity<List<PinResponse>> findAll() {
-        List<PinResponse> allResponses = pinQueryService.findAll();
-
-        return ResponseEntity.ok(allResponses);
+        return ResponseEntity.ok(pinQueryService.findAll());
     }
 
 }
