@@ -82,13 +82,13 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         List<TopicResponse> responses = List.of(new TopicResponse(
                 1L,
                 "준팍의 또 토픽",
-                "준팍이 막 만든 토픽",
+                "https://map-befine-official.github.io/favicon.png",
                 3,
                 LocalDateTime.now()
         ), new TopicResponse(
                 2L,
                 "준팍의 두번째 토픽",
-                "준팍이 막 만든 두번째 토픽",
+                "https://map-befine-official.github.io/favicon.png",
                 5,
                 LocalDateTime.now()
         ));
@@ -140,13 +140,13 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         List<TopicResponse> responses = List.of(new TopicResponse(
                 1L,
                 "준팍의 또 토픽",
-                "준팍이 막 만든 토픽",
+                "https://map-befine-official.github.io/favicon.png",
                 5,
                 LocalDateTime.now()
         ), new TopicResponse(
                 2L,
                 "준팍의 두번째 토픽",
-                "준팍이 막 만든 두번째 토픽",
+                "https://map-befine-official.github.io/favicon.png",
                 3,
                 LocalDateTime.now()
         ));
