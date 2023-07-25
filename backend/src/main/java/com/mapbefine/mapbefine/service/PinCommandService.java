@@ -44,7 +44,7 @@ public class PinCommandService {
     }
 
     private Location findDuplicateLocationFor(PinCreateRequest request) {
-        Coordinate coordinate = Coordinate.From(request.latitude(), request.longitude());
+        Coordinate coordinate = Coordinate.from(request.latitude(), request.longitude());
         List<Location> locationsInRectangle = locationRepository.findAllByRectangle(
                 coordinate.getLatitude(),
                 coordinate.getLongitude(),
