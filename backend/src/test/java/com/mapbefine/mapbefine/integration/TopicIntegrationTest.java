@@ -1,7 +1,5 @@
 package com.mapbefine.mapbefine.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
@@ -9,18 +7,20 @@ import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TopicIntegrationTest extends IntegrationTest {
 
@@ -159,9 +159,16 @@ public class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic 상세 정보를 조회하면 200을 반환한다")
     void findTopicDetail_Success() {
-        List<Topic> all = topicRepository.findAll();
-        Topic topic = all.get(0);
-        Long topicId = topic.getId();
+        //given
+        TopicCreateRequest request = new TopicCreateRequest(
+                "topicName",
+                "image",
+                "description",
+                Collections.emptyList()
+        );
+        ExtractableResponse<Response> createResponse = createNewTopic(request);
+        String locationHeader = createResponse.header("Location");
+        long topicId = Long.parseLong(locationHeader.split("/")[2]);
 
         // when
         ExtractableResponse<Response> response = RestAssured
