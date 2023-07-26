@@ -3,17 +3,24 @@ import Flex from './common/Flex';
 
 declare global {
   interface Window {
-    Tmapv2: any;
+    Tmapv3: any;
   }
 }
 
 const Map = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const map = new window.Tmapv2.Map(mapContainer.current, {
-      center: new window.Tmapv2.LatLng(37.5055, 127.0509),
-      zoom: 15,
+    // map 생성, zoom level 설정, center 좌표 설정
+    const map = new window.Tmapv3.Map(mapContainer.current, {
+      center: new window.Tmapv3.LatLng(37.5055, 127.0509),
+      zoom: 13,
     });
+
+    // 현재 위치 마커
+    // const marker = new window.Tmapv3.Marker({
+    //   position: new window.Tmapv3.LatLng(37.5055, 127.0509),
+    //   map,
+    // });
 
     return () => {
       map.destroy();
