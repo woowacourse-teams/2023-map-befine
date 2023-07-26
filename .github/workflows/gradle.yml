@@ -69,6 +69,7 @@ jobs:
         run: /home/ubuntu/backend/build/deploy.sh
 
       - name: 슬랙 메시지 보내기
+
         uses: 8398a7/action-slack@v3
         with:
           mention: 'here'
