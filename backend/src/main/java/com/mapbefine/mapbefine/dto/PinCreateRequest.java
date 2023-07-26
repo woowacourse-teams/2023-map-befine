@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.dto;
 
+import java.util.List;
+
 public record PinCreateRequest(
         Long topicId,
         String name,
@@ -7,6 +9,7 @@ public record PinCreateRequest(
         String address,
         String legalDongCode,
         String latitude,
-        String longitude
+        String longitude,
+        List<String> images
 ) {
 }

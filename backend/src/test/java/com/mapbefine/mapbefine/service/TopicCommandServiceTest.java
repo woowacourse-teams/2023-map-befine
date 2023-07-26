@@ -60,12 +60,14 @@ class TopicCommandServiceTest {
         //when
         String name = "준팍의 안갈 집";
         String description = "다시는 안갈 집";
-        topicCommandService.update(id, new TopicUpdateRequest(name, description));
+        String imageUrl = "https://map-befine-official.github.io/favicon.png";
+        topicCommandService.update(id, new TopicUpdateRequest(name, imageUrl, description));
 
         //then
         Topic topic = topicRepository.findById(id).get();
         assertThat(topic.getName()).isEqualTo(name);
         assertThat(topic.getDescription()).isEqualTo(description);
+        assertThat(topic.getImageUrl()).isEqualTo(imageUrl);
     }
 
     @Test
