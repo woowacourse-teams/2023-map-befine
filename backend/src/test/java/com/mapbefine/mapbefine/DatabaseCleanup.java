@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine;
 
-import com.google.common.base.CaseFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
