@@ -74,12 +74,18 @@ public class Topic extends BaseEntity {
         }
     }
 
-    public void update(String name, String description) {
+    public void update(String name,
+                       String description,
+                       String imageUrl) {
         validateName(name);
         validateDescription(description);
+        // TODO : URL 형식 검증 필요?
 
         this.name = name;
         this.description = description;
+        if (imageUrl != null) { // TODO : 생성자와 중복 코드
+            this.imageUrl = imageUrl;
+        }
     }
 
     public int countPins() {
