@@ -1,8 +1,10 @@
-name: Java CI with Gradle
+name: Backend CI/CD
 
 on:
+  workflow_dispatch:
+  
   pull_request:
-    branches: [ develop, main ]
+    branches: [ develop ]
     paths: backend/**
 
 permissions:
@@ -11,9 +13,9 @@ permissions:
   contents: write
   
 jobs:
-  build:
+  build-and-upload:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -28,7 +30,7 @@ jobs:
       working-directory: backend
 
     - name: Gradle build 시작
-      run: ./gradlew build
+      run: ./gradlew clean build
       working-directory: backend
 
     - name: 테스트 결과를 PR에 코멘트로 등록합니다
@@ -43,3 +45,36 @@ jobs:
       with:
         report_paths: '**/build/test-results/test/TEST-*.xml'
         token: ${{ github.token }}
+        
+    - name: jar 파일 artifact에 업로드
+      uses: actions/upload-artifact@v3
+      with:
+        name: BackendApplication
+        path: backend/build/libs/*.jar
+
+  deploy:
+    runs-on: self-hosted
+    needs: build-and-upload
+    steps:
+      - name: 구버전 jar 파일 삭제
+        run: rm -rf /home/ubuntu/backend/build/*.jar 
+
+      - name: jar파일 artifact에서 다운로드
+        uses: actions/download-artifact@v3 
+        with:
+          name: BackendApplication
+          path: /home/ubuntu/backend/build/
+
+      - name: 배포하기
+        run: /home/ubuntu/backend/build/deploy.sh
+
+      - name: 슬랙 메시지 보내기  // secrets 키 설정만 하면 됨 
+        uses: 8398a7/action-slack@v3
+        with:
+          mention: 'here'
+          if_mention: always
+          status: ${{ job.status }}
+          fields: workflow,job,commit,message,ref,author,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
