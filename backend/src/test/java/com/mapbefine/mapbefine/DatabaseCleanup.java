@@ -6,11 +6,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Service
+@Component
 public class DatabaseCleanup implements InitializingBean {
 
     private static final String SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE = "SET REFERENTIAL_INTEGRITY %s";
@@ -25,10 +25,11 @@ public class DatabaseCleanup implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        tableNames = entityManager.getMetamodel().getEntities().stream()
+        tableNames = entityManager.getMetamodel()
+                .getEntities()
+                .stream()
                 .filter(entityType -> entityType.getJavaType().getAnnotation(Entity.class) != null)
-                .map(entity -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entity.getName()))
-//                .map(entityType -> convertTableNameFromCamelCaseToSnakeCase(entityType.getName()))
+                .map(entityType -> convertTableNameFromCamelCaseToSnakeCase(entityType.getName()))
                 .toList();
     }
 
