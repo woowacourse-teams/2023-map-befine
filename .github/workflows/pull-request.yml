@@ -1,4 +1,4 @@
-name: Backend CI/CD
+name: Backend Automatically Build On Pull request 
 
 on:
   workflow_dispatch:
@@ -45,37 +45,3 @@ jobs:
       with:
         report_paths: '**/build/test-results/test/TEST-*.xml'
         token: ${{ github.token }}
-        
-    - name: jar 파일 artifact에 업로드
-      uses: actions/upload-artifact@v3
-      with:
-        name: BackendApplication
-        path: backend/build/libs/mapbefine.jar
-
-  deploy:
-    runs-on: self-hosted
-    needs: build-and-upload
-    steps:
-      - name: 구버전 jar 파일 삭제
-        run: rm -rf /home/ubuntu/backend/build/*.jar 
-
-      - name: jar파일 artifact에서 다운로드
-        uses: actions/download-artifact@v3 
-        with:
-          name: BackendApplication
-          path: /home/ubuntu/backend/build/
-
-      - name: 배포하기
-        run: /home/ubuntu/backend/build/deploy.sh
-
-      - name: 슬랙 메시지 보내기
-
-        uses: 8398a7/action-slack@v3
-        with:
-          mention: 'here'
-          if_mention: always
-          status: ${{ job.status }}
-          fields: workflow,job,commit,message,ref,author,took
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
