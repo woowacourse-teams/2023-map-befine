@@ -3,6 +3,7 @@ import App from './App';
 import { ThemeProvider } from 'styled-components';
 import theme from './themes';
 import GlobalStyle from './GlobalStyle';
+import { StrictMode } from 'react';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
@@ -14,8 +15,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 root.render(
-  <ThemeProvider theme={theme}>
-    <GlobalStyle />
-    <App />
-  </ThemeProvider>,
+  <StrictMode>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <App />
+    </ThemeProvider>
+  </StrictMode>,
 );

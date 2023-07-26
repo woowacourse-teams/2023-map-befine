@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import Box from './common/Box';
+import Flex from './common/Flex';
 
 declare global {
   interface Window {
@@ -14,17 +14,22 @@ const Map = () => {
       center: new window.Tmapv2.LatLng(37.5055, 127.0509),
       zoom: 15,
     });
+
+    return () => {
+      map.destroy();
+    };
   }, []);
 
   return (
-    <Box
+    <Flex
+      flex="1"
       id="map"
       ref={mapContainer}
       style={{
         height: '100vh',
-        width: 'calc(100vw - 400px)',
+        width: '100%',
       }}
-    ></Box>
+    />
   );
 };
 

@@ -12,6 +12,7 @@ type FlexProps = BoxProps & {
   $justifyContent?: string;
   $justifyItems?: string;
   $zIndex?: number;
+  flex?: string;
 };
 
 const Flex = styled(Box) <FlexProps>`
@@ -28,6 +29,7 @@ const Flex = styled(Box) <FlexProps>`
     $justifyContent && `justify-content: ${$justifyContent};`}
   ${({ $justifyItems }) => $justifyItems && `justify-items: ${$justifyItems};`}
   z-index: ${({ $zIndex }) => $zIndex};
+  ${({ flex }) => flex && `flex: ${flex};`}})}
 `;
 
 export default Flex;
