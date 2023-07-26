@@ -30,7 +30,7 @@ jobs:
       working-directory: backend
 
     - name: Gradle build 시작
-      run: ./gradlew clean build
+      run: ./gradlew clean bootJar
       working-directory: backend
 
     - name: 테스트 결과를 PR에 코멘트로 등록합니다
@@ -68,7 +68,7 @@ jobs:
       - name: 배포하기
         run: /home/ubuntu/backend/build/deploy.sh
 
-      - name: 슬랙 메시지 보내기  // secrets 키 설정만 하면 됨 
+      - name: 슬랙 메시지 보내기
         uses: 8398a7/action-slack@v3
         with:
           mention: 'here'
