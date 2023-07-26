@@ -29,7 +29,8 @@ const Flex = styled(Box) <FlexProps>`
     $justifyContent && `justify-content: ${$justifyContent};`}
   ${({ $justifyItems }) => $justifyItems && `justify-items: ${$justifyItems};`}
   z-index: ${({ $zIndex }) => $zIndex};
-  ${({ flex }) => flex && `flex: ${flex};`}})}
+  ${({ flex }) => flex && `flex: ${flex};`};
+
 `;
 
 export default Flex;
