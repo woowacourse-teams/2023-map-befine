@@ -3,11 +3,12 @@ package com.mapbefine.mapbefine;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.metamodel.EntityType;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Component
 public class DatabaseCleanup implements InitializingBean {
@@ -24,31 +25,25 @@ public class DatabaseCleanup implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        tableNames = entityManager.getMetamodel()
-                .getEntities()
-                .stream()
-                .filter(entityType -> entityType.getJavaType().getAnnotation(Entity.class) != null)
-                .map(entityType -> convertTableNameFromCamelCaseToSnakeCase(entityType.getName()))
+        Set<EntityType<?>> entities = entityManager.getMetamodel()
+                .getEntities();
+        
+        tableNames = entities.stream()
+                .filter(this::isEntity)
+                .map(this::convertTableNameFromCamelCaseToSnakeCase)
                 .toList();
     }
 
-    @Transactional
-    public void execute() {
-        entityManager.flush();
-        entityManager.createNativeQuery(String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, false)).executeUpdate();
-
-        for (String tableName : tableNames) {
-            entityManager.createNativeQuery(String.format(TRUNCATE_SQL_MESSAGE, tableName)).executeUpdate();
-            entityManager.createNativeQuery(String.format(ID_RESET_SQL_MESSAGE, tableName)).executeUpdate() ;
-        }
-
-        entityManager.createNativeQuery(String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, true)).executeUpdate();
+    private boolean isEntity(final EntityType<?> entityType) {
+        return entityType.getJavaType()
+                .getAnnotation(Entity.class) != null;
     }
 
-    private String convertTableNameFromCamelCaseToSnakeCase(String tableName) {
+    private String convertTableNameFromCamelCaseToSnakeCase(EntityType<?> entityType) {
         StringBuilder tableNameSnake = new StringBuilder();
+        String classNameOfEntity = entityType.getName();
 
-        for (char letter : tableName.toCharArray()) {
+        for (char letter : classNameOfEntity.toCharArray()) {
             addUnderScoreForCapitalLetter(tableNameSnake, letter);
             tableNameSnake.append(letter);
         }
@@ -59,6 +54,38 @@ public class DatabaseCleanup implements InitializingBean {
     private void addUnderScoreForCapitalLetter(StringBuilder tableNameSnake, char letter) {
         if (Character.isUpperCase(letter)) {
             tableNameSnake.append(UNDERSCORE);
+        }
+    }
+
+    @Transactional
+    public void execute() {
+        executeSqlWithReferentialIntegrityDisabled(this::executeTruncate);
+    }
+
+    private void executeSqlWithReferentialIntegrityDisabled(Runnable sqlExecutor) {
+        disableReferentialIntegrity();
+        sqlExecutor.run();
+        enableReferentialIntegrity();
+    }
+
+    private void disableReferentialIntegrity() {
+        entityManager.flush();
+
+        entityManager.createNativeQuery(String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, false))
+                .executeUpdate();
+    }
+
+    private void enableReferentialIntegrity() {
+        entityManager.createNativeQuery(String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, true))
+                .executeUpdate();
+    }
+
+    private void executeTruncate() {
+        for (String tableName : tableNames) {
+            entityManager.createNativeQuery(String.format(TRUNCATE_SQL_MESSAGE, tableName))
+                    .executeUpdate();
+            entityManager.createNativeQuery(String.format(ID_RESET_SQL_MESSAGE, tableName))
+                    .executeUpdate();
         }
     }
 

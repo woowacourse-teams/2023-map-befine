@@ -23,8 +23,7 @@ public class IntegrationTest {
     }
 
     @AfterEach
-    public void setDown() {
-        databaseCleanup.afterPropertiesSet();
+    public void tearDown() {
         databaseCleanup.execute();
     }
 
