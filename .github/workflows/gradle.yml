@@ -30,7 +30,7 @@ jobs:
       working-directory: backend
 
     - name: Gradle build 시작
-      run: ./gradlew clean bootJar
+      run: ./gradlew clean build
       working-directory: backend
 
     - name: 테스트 결과를 PR에 코멘트로 등록합니다
@@ -50,7 +50,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: BackendApplication
-        path: backend/build/libs/*.jar
+        path: backend/build/libs/mapbefine.jar
 
   deploy:
     runs-on: self-hosted
