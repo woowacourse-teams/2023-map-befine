@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -27,6 +29,9 @@ public class Pin extends BaseEntity {
     @Lob
     @Column(nullable = false, length = 1000)
     private String description;
+
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.PERSIST)
+    private List<PinImage> pinImages = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
@@ -85,8 +90,8 @@ public class Pin extends BaseEntity {
         }
     }
 
-    public Pin duplicate(Topic topic) {
-        return Pin.createPinAssociatedWithLocationAndTopic(this.name, this.description, this.location, topic);
+    public Pin copy(Topic topic) {
+        return Pin.createPinAssociatedWithLocationAndTopic(name, description, location, topic);
     }
 
     public void update(String name, String description) {
@@ -95,6 +100,10 @@ public class Pin extends BaseEntity {
 
         this.name = name;
         this.description = description;
+    }
+
+    public void addPinImage(PinImage pinImage) {
+        pinImages.add(pinImage);
     }
 
     public BigDecimal getLatitude() {

@@ -15,6 +15,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 public class Topic extends BaseEntity {
 
+    private static final String DEFAULT_IMAGE_URL = "https://map-befine-official.github.io/favicon.png";
     private static final int MAX_DESCRIPTION_LENGTH = 1000;
     private static final int MAX_NAME_LENGTH = 20;
 
@@ -29,6 +30,9 @@ public class Topic extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String description;
 
+    @Column(nullable = false, length = 2048)
+    private String imageUrl = DEFAULT_IMAGE_URL;
+
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
 
@@ -38,13 +42,18 @@ public class Topic extends BaseEntity {
 
     public Topic(
             String name,
-            String description
+            String description,
+            String imageUrl
     ) {
         validateName(name);
         validateDescription(description);
 
         this.name = name;
         this.description = description;
+
+        if (imageUrl != null) { // TODO : 정팩매 레츠기릿
+            this.imageUrl = imageUrl;
+        }
     }
 
     private void validateName(String name) {
@@ -65,12 +74,18 @@ public class Topic extends BaseEntity {
         }
     }
 
-    public void update(String name, String description) {
+    public void update(String name,
+                       String description,
+                       String imageUrl) {
         validateName(name);
         validateDescription(description);
+        // TODO : URL 형식 검증 필요?
 
         this.name = name;
         this.description = description;
+        if (imageUrl != null) { // TODO : 생성자와 중복 코드
+            this.imageUrl = imageUrl;
+        }
     }
 
     public int countPins() {
