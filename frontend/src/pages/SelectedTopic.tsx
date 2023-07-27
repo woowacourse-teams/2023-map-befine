@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
@@ -9,6 +9,7 @@ import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
 import useNavigator from '../hooks/useNavigator';
+import { CoordinatesContext } from '../context/CoordinatesContext';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
@@ -16,6 +17,7 @@ const SelectedTopic = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType | null>(null);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
+  const { setCoordinates } = useContext(CoordinatesContext);
 
   const onClickSetSelectedPinId = (pinId: string) => {
     setSelectedPinId(pinId);
@@ -25,6 +27,10 @@ const SelectedTopic = () => {
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(`/topics/${topicId}`);
+    console.log('SELECTEDTOPIC', data.pins);
+    // context coordinates에 data.pins의 좌표들을 넣어주기
+    setCoordinates(data.pins);
+
     setTopicDetail(data);
   };
 

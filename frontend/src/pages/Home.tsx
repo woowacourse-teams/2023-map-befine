@@ -4,14 +4,17 @@ import TopicCard from '../components/TopicCard';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
+import useGeolocation from '../hooks/useGeolocation';
+import { CoordinatesContext } from '../context/CoordinatesContext';
 
 const Home = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
   const { routePage } = useNavigator();
+  const { setCoordinates } = useContext(CoordinatesContext);
 
   const goToNewTopic = () => {
     routePage('new-topic');
@@ -22,8 +25,11 @@ const Home = () => {
     setTopics(topics);
   };
 
+  // 현재 위치 받아오기
+
   useEffect(() => {
     getAndSetDataFromServer();
+    setCoordinates([{ latitude: 37.5055, longitude: 127.0509 }]);
   }, []);
 
   return (
