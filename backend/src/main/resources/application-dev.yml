@@ -10,7 +10,7 @@ spring:
         format_sql: true
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 logging:
   level:
     org:
