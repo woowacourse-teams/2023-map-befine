@@ -9,6 +9,8 @@ export interface TopicCardProps {
   topicTitle: string;
   topicUpdatedAt: string;
   topicPinCount: number;
+  tagTopics: string[];
+  setTagTopics: (value: string[]) => void;
 }
 
 const TopicCard = ({
@@ -17,11 +19,18 @@ const TopicCard = ({
   topicTitle,
   topicUpdatedAt,
   topicPinCount,
+  tagTopics,
+  setTagTopics,
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
 
   const goToSelectedTopic = () => {
     routePage(`topics/${topicId}`);
+  };
+
+  const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) setTagTopics([...tagTopics, topicTitle]);
+    else setTagTopics(tagTopics.filter((value) => value !== topicTitle));
   };
 
   return (
@@ -36,7 +45,12 @@ const TopicCard = ({
         $backgroundColor="whiteGray"
         $borderRadius="small"
       >
-        <MultiSelectButton type="checkbox"></MultiSelectButton>
+        <MultiSelectButton
+          type="checkbox"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onAddTagOfTopic(e)
+          }
+        />
         <Flex
           $flexDirection="column"
           $alignItems="center"
