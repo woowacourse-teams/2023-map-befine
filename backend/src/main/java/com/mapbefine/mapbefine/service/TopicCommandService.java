@@ -7,6 +7,7 @@ import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +42,7 @@ public class TopicCommandService {
 
     private void validateExist(int idCount, int existCount) {
         if (idCount != existCount) {
-            throw new IllegalArgumentException("찾을 수 없는 ID가 포함되어 있습니다.");
+            throw new NoSuchElementException("존재하지 않는 핀으로 토픽을 만들 수 없습니다.");
         }
     }
 
@@ -72,15 +73,16 @@ public class TopicCommandService {
 
     public void update(Long id, TopicUpdateRequest request) {
         Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
 
         topic.update(request.name(), request.description(), request.image());
     }
 
     public void delete(Long id) {
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
+        topicRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
 
+        // TODO PinCommandService의 removeAllByTopicId가 아니라 repository의 메서드를 직접 사용할 것인지?
         pinRepository.deleteAllByTopicId(id);
         topicRepository.deleteById(id);
     }

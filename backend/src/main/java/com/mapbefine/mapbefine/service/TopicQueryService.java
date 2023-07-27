@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,7 @@ public class TopicQueryService {
 
     public TopicDetailResponse findById(Long id) {
         Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
 
         return TopicDetailResponse.from(topic);
     }

@@ -36,7 +36,7 @@ public class PinCommandService {
     public Long save(PinCreateRequest request) {
         Coordinate coordinate = Coordinate.from(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
 
         Location pinLocation = locationRepository.findAllByRectangle(
                         coordinate.getLatitude(),
@@ -70,14 +70,19 @@ public class PinCommandService {
     }
 
     public void update(Long pinId, PinUpdateRequest request) {
-        Pin pin = pinRepository.findById(pinId).orElseThrow(NoSuchElementException::new);
+        Pin pin = pinRepository.findById(pinId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
 
         pin.update(request.name(), request.description());
 
+        // TODO save 호출 필요?
         pinRepository.save(pin);
     }
 
     public void removeById(Long pinId) {
+        pinRepository.findById(pinId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+
         pinRepository.deleteById(pinId);
     }
 

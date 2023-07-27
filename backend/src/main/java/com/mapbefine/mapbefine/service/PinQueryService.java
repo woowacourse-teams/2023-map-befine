@@ -27,7 +27,7 @@ public class PinQueryService {
 
     public PinDetailResponse findById(Long pinId) {
         Pin pin = pinRepository.findById(pinId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
 
         return PinDetailResponse.from(pin);
     }
