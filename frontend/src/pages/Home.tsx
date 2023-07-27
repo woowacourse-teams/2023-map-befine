@@ -8,9 +8,11 @@ import { Fragment, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
+import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 
 const Home = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
+  const [tagTopics, setTagTopics] = useState<string[]>([]);
   const { routePage } = useNavigator();
 
   const goToNewTopic = () => {
@@ -28,6 +30,10 @@ const Home = () => {
 
   return (
     <Box position="relative">
+      <Space size={2} />
+      {tagTopics.length > 0 ? (
+        <MergeOrSeeTogether tag={tagTopics} confirmButton="같이보기" />
+      ) : null}
       <Space size={6} />
       <Text color="black" $fontSize="large" $fontWeight="bold">
         내 주변 인기 있는 토픽
@@ -44,6 +50,8 @@ const Home = () => {
                   topicTitle={topic.name}
                   topicUpdatedAt={topic.updatedAt}
                   topicPinCount={topic.pinCount}
+                  tagTopics={tagTopics}
+                  setTagTopics={setTagTopics}
                 />
                 <Space size={4} />
               </Fragment>
