@@ -1,21 +1,16 @@
-import {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  useContext,
-  useState,
-} from 'react';
+import { createContext, useContext, useState } from 'react';
 import { CoordinatesContext } from './CoordinatesContext';
-import { c } from 'msw/lib/glossary-de6278a9';
 
 type MarkerContextType = {
   markers: any[];
-  setMarkers: Dispatch<SetStateAction<any[]>>;
+  createMarkers: (map: any) => void;
+  removeMarkers: () => void;
 };
 
 export const MarkerContext = createContext<MarkerContextType>({
   markers: [],
-  setMarkers: () => {},
+  createMarkers: () => {},
+  removeMarkers: () => {},
 });
 
 interface Props {
@@ -38,16 +33,21 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         map,
       });
     });
+
     setMarkers(newMarkers);
   };
-  //coordinates가 바뀔 때마다 markers 배열을 초기화하고 새로운 marker들을 생성
-  //coordinates가 바뀔 때마다 지도의 중심과 확대 정도를 조절
+
+  const removeMarkers = () => {
+    markers.forEach((marker: any) => marker.setMap(null));
+    setMarkers([]);
+  };
 
   return (
     <MarkerContext.Provider
       value={{
         markers,
-        setMarkers,
+        removeMarkers,
+        createMarkers,
       }}
     >
       {children}

@@ -1,5 +1,4 @@
 import { createContext, Dispatch, SetStateAction, useState } from 'react';
-import useGeolocation from '../hooks/useGeolocation';
 
 export interface Coordinate {
   latitude: number;
