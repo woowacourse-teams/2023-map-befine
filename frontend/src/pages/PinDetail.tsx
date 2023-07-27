@@ -12,27 +12,37 @@ import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';
 import useFormValues from '../hooks/useFormValues';
-import { DefaultFormValuesType } from '../types/FormValues';
+import { DefaultPinValuesType } from '../types/FormValues';
 
 const PinDetail = ({ pinId }: { pinId: string }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const { formValues, setFormValues, onChangeInput } =
-    useFormValues<DefaultFormValuesType>({
+    useFormValues<DefaultPinValuesType>({
+      id: 0,
       name: '',
-      address: '',
+      images: [],
       description: '',
+      address: '',
+      latitude: '',
+      longitude: '',
+      updatedAt: '',
     });
 
   useEffect(() => {
     const getPinData = async () => {
-      const pinData = await getApi(`/pin/${pinId}`);
+      const pinData = await getApi(`/pins/${pinId}`);
       setPin(pinData);
       setFormValues({
+        id: pinData.id,
         name: pinData.name,
-        address: pinData.address,
+        images: pinData.images,
         description: pinData.description,
+        address: pinData.address,
+        latitude: pinData.latitude,
+        longitude: pinData.longitude,
+        updatedAt: pinData.updatedAt,
       });
     };
 
