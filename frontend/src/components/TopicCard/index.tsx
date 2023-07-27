@@ -5,7 +5,7 @@ import useNavigator from '../../hooks/useNavigator';
 
 export interface TopicCardProps {
   topicId: string;
-  topicEmoji: string;
+  topicImage: string;
   topicTitle: string;
   topicUpdatedAt: string;
   topicPinCount: number;
@@ -13,7 +13,7 @@ export interface TopicCardProps {
 
 const TopicCard = ({
   topicId,
-  topicEmoji,
+  topicImage,
   topicTitle,
   topicUpdatedAt,
   topicPinCount,
@@ -45,7 +45,7 @@ const TopicCard = ({
           onClick={goToSelectedTopic}
         >
           <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
-            {topicEmoji}
+            {topicImage}
           </Text>
           <Text color="black" $fontSize="medium" $fontWeight="normal">
             {topicTitle}

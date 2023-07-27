@@ -5,19 +5,17 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { styled } from 'styled-components';
-import { Fragment, useState } from 'react';
 import { postApi } from '../utils/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 
-const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
-
 const NewTopic = () => {
-  const [selectedTopicIcon, setSelectedTopicIcon] = useState<string>('');
   const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
     name: '',
     description: '',
+    image: '',
+    pins: [],
   });
   const { routePage } = useNavigator();
 
@@ -34,10 +32,12 @@ const NewTopic = () => {
 
   const postToServer = async () => {
     const response = await postApi('/topics/new', {
-      emoji: selectedTopicIcon,
+      image: formValues.image,
       name: formValues.name,
       description: formValues.description,
+      pins: [],
     });
+
     const location = response.headers.get('Location');
 
     if (location) {
@@ -59,7 +59,7 @@ const NewTopic = () => {
         <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
-              토픽 아이콘
+              토픽 이미지
             </Text>
             <Space size={0} />
             <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
@@ -67,28 +67,13 @@ const NewTopic = () => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Flex $justifyContent="space-between">
-            {icons.map((icon, idx) => (
-              <Fragment key={idx}>
-                <TopicIcon
-                  type="radio"
-                  id={`checkbox-${idx}`}
-                  name="topic-icon-radio"
-                />
-                <label
-                  id="radio-label"
-                  htmlFor={`checkbox-${idx}`}
-                  onClick={() => {
-                    setSelectedTopicIcon(icon);
-                  }}
-                >
-                  {icon}
-                </label>
-              </Fragment>
-            ))}
-          </Flex>
+          <Input
+            name="image"
+            value={formValues.image}
+            placeholder="이미지 링크를 남겨주세요."
+            onChange={onChangeInput}
+          />
         </section>
-
         <Space size={5} />
 
         <section>
