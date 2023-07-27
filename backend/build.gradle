@@ -75,6 +75,7 @@ bootJar {
     from("${asciidoctor.outputDir}") {
         into 'static/docs'
     }
+    archiveFileName = 'mapbefine.jar'
 }
 
 build {
