@@ -3,16 +3,18 @@ name: Backend develop CI/CD
 on:
   workflow_dispatch:
   
-  push:
+  pull_request:
     branches: [ develop ]
+    types: [closed]
     paths: backend/**
 
 permissions:
   contents: read
   
 jobs:
-  build-and-upload:
-
+  build-and-upload:    
+    if: github.event.pull_request.merged
+    
     runs-on: ubuntu-22.04
 
     steps:
@@ -40,6 +42,9 @@ jobs:
   deploy:
     runs-on: self-hosted
     needs: build-and-upload
+  
+    if: github.event.pull_request.merged
+    
     steps:
       - name: 구버전 jar 파일 삭제
         run: rm -rf /home/ubuntu/backend/build/*.jar 
