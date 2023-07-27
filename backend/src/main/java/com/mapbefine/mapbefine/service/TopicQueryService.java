@@ -7,6 +7,7 @@ import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
 import com.mapbefine.mapbefine.entity.Location;
+import com.mapbefine.mapbefine.entity.Member;
 import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
@@ -32,10 +33,17 @@ public class TopicQueryService {
         this.locationRepository = locationRepository;
     }
 
-    public List<TopicResponse> findAll() {
+    public List<TopicResponse> findAll(Member member) {
+        List<Topic> allTopicsWithPermission = member.getAllTopicsWithPermission();
+
         return topicRepository.findAll().stream()
+                .filter(topic -> hasPermission(allTopicsWithPermission, topic, member))
                 .map(TopicResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private boolean hasPermission(List<Topic> allTopicsWithPermission, Topic topic, Member member) {
+        return member.isAdmin() || topic.isPublic() || allTopicsWithPermission.contains(topic);
     }
 
     public TopicDetailResponse findById(Long id) {

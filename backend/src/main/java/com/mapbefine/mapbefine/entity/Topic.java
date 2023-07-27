@@ -2,8 +2,16 @@ package com.mapbefine.mapbefine.entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -40,6 +48,10 @@ public class Topic extends BaseEntity {
     @ColumnDefault(value = "false")
     private boolean isDeleted = false;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TopicStatus topicStatus;
+
     public Topic(
             String name,
             String description,
@@ -74,9 +86,11 @@ public class Topic extends BaseEntity {
         }
     }
 
-    public void update(String name,
-                       String description,
-                       String imageUrl) {
+    public void update(
+            String name,
+            String description,
+            String imageUrl
+    ) {
         validateName(name);
         validateDescription(description);
         // TODO : URL 형식 검증 필요?
@@ -94,6 +108,14 @@ public class Topic extends BaseEntity {
 
     public void addPin(Pin pin) {
         pins.add(pin);
+    }
+
+    public boolean isPublic() {
+        return topicStatus == TopicStatus.PUBLIC;
+    }
+
+    public boolean isPrivate() {
+        return topicStatus == TopicStatus.PRIVATE;
     }
 
 }
