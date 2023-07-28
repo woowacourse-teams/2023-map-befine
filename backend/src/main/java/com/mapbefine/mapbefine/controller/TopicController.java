@@ -6,6 +6,7 @@ import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
+import com.mapbefine.mapbefine.entity.Member;
 import com.mapbefine.mapbefine.service.TopicCommandService;
 import com.mapbefine.mapbefine.service.TopicQueryService;
 import java.net.URI;
@@ -33,7 +34,8 @@ public class TopicController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> create(@RequestBody TopicCreateRequest request) {
+    public ResponseEntity<Void> create(Member member, @RequestBody TopicCreateRequest request) {
+        System.out.println(member);
         long topicId = topicCommandService.createNew(request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
@@ -63,8 +65,9 @@ public class TopicController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TopicResponse>> findAll() {
-        List<TopicResponse> topics = topicQueryService.findAll();
+    public ResponseEntity<List<TopicResponse>> findAll(Member member) {
+        System.out.println(member);
+        List<TopicResponse> topics = topicQueryService.findAll(member);
 
         return ResponseEntity.ok(topics);
     }

@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
+@Table(name = "member")
 public class Member extends BaseEntity {
 
     @Id
@@ -38,7 +40,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "creator")
     private List<Topic> createdTopic = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
@@ -66,7 +68,7 @@ public class Member extends BaseEntity {
     }
 
     public String getRoleKey() {
-        return this.role.getKey();
+        return role.getKey();
     }
 
     public List<Topic> getAllTopicsWithPermission() {
@@ -82,4 +84,16 @@ public class Member extends BaseEntity {
         return role == Role.ADMIN;
     }
 
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", role=" + role +
+                ", createdTopic=" + createdTopic +
+                ", topicsWithPermission=" + topicsWithPermission +
+                '}';
+    }
 }
