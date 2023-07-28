@@ -1,25 +1,23 @@
 package com.mapbefine.mapbefine.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.mapbefine.mapbefine.LocationFixture;
 import com.mapbefine.mapbefine.TopicFixture;
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
-import com.mapbefine.mapbefine.entity.Location;
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.pin.Location;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.*;
+import io.restassured.response.*;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PinIntegrationTest extends IntegrationTest {
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");

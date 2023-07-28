@@ -1,25 +1,28 @@
 package com.mapbefine.mapbefine.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinResponse;
-import com.mapbefine.mapbefine.entity.*;
+import com.mapbefine.mapbefine.entity.pin.Coordinate;
+import com.mapbefine.mapbefine.entity.pin.Location;
+import com.mapbefine.mapbefine.entity.pin.Pin;
+import com.mapbefine.mapbefine.entity.pin.PinImage;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SpringBootTest
@@ -50,7 +53,8 @@ class PinQueryServiceTest {
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
         coordinate = new Coordinate(latitude, longitude);
         location = saveLocation(coordinate);
-        topic = topicRepository.save(new Topic("topicName", "topicDescription", "https://map-befine-official.github.io/favicon.png"));
+        topic = topicRepository.save(
+                new Topic("topicName", "topicDescription", "https://map-befine-official.github.io/favicon.png"));
     }
 
     @Test

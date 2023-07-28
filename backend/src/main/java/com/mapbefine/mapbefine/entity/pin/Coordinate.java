@@ -1,15 +1,14 @@
-package com.mapbefine.mapbefine.entity;
+package com.mapbefine.mapbefine.entity.pin;
+
+import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.function.DoubleUnaryOperator;
-
-import static lombok.AccessLevel.PROTECTED;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)

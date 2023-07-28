@@ -1,15 +1,25 @@
-package com.mapbefine.mapbefine.entity;
+package com.mapbefine.mapbefine.entity.pin;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.entity.BaseEntity;
+import com.mapbefine.mapbefine.entity.topic.Topic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static lombok.AccessLevel.PROTECTED;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)

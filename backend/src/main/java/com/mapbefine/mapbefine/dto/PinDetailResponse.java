@@ -1,8 +1,7 @@
 package com.mapbefine.mapbefine.dto;
 
-import com.mapbefine.mapbefine.entity.Pin;
-import com.mapbefine.mapbefine.entity.PinImage;
-
+import com.mapbefine.mapbefine.entity.pin.Pin;
+import com.mapbefine.mapbefine.entity.pin.PinImage;
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package com.mapbefine.mapbefine;
 
-import com.mapbefine.mapbefine.entity.Location;
-import com.mapbefine.mapbefine.entity.Pin;
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.pin.Location;
+import com.mapbefine.mapbefine.entity.pin.Pin;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 
 public class PinFixture {
 
