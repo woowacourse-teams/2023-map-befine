@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.service;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
+import com.mapbefine.mapbefine.config.auth.AuthMember;
+import com.mapbefine.mapbefine.dto.AuthTopic;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
@@ -33,17 +35,15 @@ public class TopicQueryService {
         this.locationRepository = locationRepository;
     }
 
-    public List<TopicResponse> findAll(Member member) {
-        List<Topic> allTopicsWithPermission = member.getAllTopicsWithPermission();
+    public List<TopicResponse> findAll(AuthMember member) {
+        // 여기서 사실 Member -> AuthMember 여야한다.
+        // AuthMember 의 canRead 에다가 AuthTopic 을 넘겨야 한다.
+        // 여기에는 Permision 등등ㄷ이 필요하다.
 
         return topicRepository.findAll().stream()
-                .filter(topic -> hasPermission(allTopicsWithPermission, topic, member))
+                .filter(topic -> member.canRead(AuthTopic.from(topic)))
                 .map(TopicResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    private boolean hasPermission(List<Topic> allTopicsWithPermission, Topic topic, Member member) {
-        return member.isAdmin() || topic.isPublic() || allTopicsWithPermission.contains(topic);
+                .toList();
     }
 
     public TopicDetailResponse findById(Long id) {

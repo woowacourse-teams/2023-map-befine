@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.config.auth;
 
-import com.mapbefine.mapbefine.entity.topic.Publicity;
+import com.mapbefine.mapbefine.dto.AuthTopic;
+import com.mapbefine.mapbefine.entity.topic.Permission;
 import java.util.List;
 
 public class User extends AuthMember {
@@ -18,28 +19,32 @@ public class User extends AuthMember {
     }
 
     @Override
-    public boolean canRead(Long topicId, Publicity publicity) {
-        return isPublic(publicity) || isGroup(topicId);
+    public boolean canRead(AuthTopic authTopic) {
+        return isPublic(authTopic.publicity()) || isGroup(authTopic.topicId());
     }
 
     @Override
-    public boolean canDelete(Long topicId, Publicity publicity) {
-        return isPrivate(publicity) && isCreator(topicId);
+    public boolean canDelete(AuthTopic authTopic) {
+        return isPrivate(authTopic.publicity()) && isCreator(authTopic.topicId());
     }
 
     @Override
-    public boolean canTopicCreate(Long topicId, Publicity publicity) {
+    public boolean canTopicCreate(AuthTopic authTopic) {
         return true;
     }
 
     @Override
-    public boolean canTopicUpdate(Long topicId, Publicity publicity) {
-        return isCreator(topicId);
+    public boolean canTopicUpdate(AuthTopic authTopic) {
+        return isCreator(authTopic.topicId());
     }
 
     @Override
-    public boolean canPinCreateOrUpdate(Long topicId, Publicity publicity) {
-        return isPublic(publicity) || isGroup(topicId);
+    public boolean canPinCreateOrUpdate(AuthTopic authTopic) {
+        return isAllMembers(authTopic) || hasPermission(authTopic.topicId());
+    }
+
+    private boolean isAllMembers(final AuthTopic authTopic) {
+        return authTopic.permission() == Permission.ALL_MEMBERS;
     }
 
     private boolean isGroup(Long topicId) {

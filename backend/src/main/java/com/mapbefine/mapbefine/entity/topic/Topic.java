@@ -116,12 +116,4 @@ public class Topic extends BaseEntity {
         pins.add(pin);
     }
 
-    public boolean isPublic() {
-        return publicity == Publicity.PUBLIC;
-    }
-
-    public boolean isPrivate() {
-        return publicity == Publicity.PRIVATE;
-    }
-
 }

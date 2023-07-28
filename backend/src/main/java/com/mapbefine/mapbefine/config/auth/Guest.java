@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.config.auth;
 
+import com.mapbefine.mapbefine.dto.AuthTopic;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
 
 public class Guest extends AuthMember {
@@ -14,27 +15,27 @@ public class Guest extends AuthMember {
     }
 
     @Override
-    public boolean canRead(Long topicId, Publicity publicity) {
+    public boolean canRead(AuthTopic authTopic) {
         return isPublic(publicity);
     }
 
     @Override
-    public boolean canDelete(Long topicId, Publicity publicity) {
+    public boolean canDelete(AuthTopic authTopic) {
         return false;
     }
 
     @Override
-    public boolean canTopicCreate(Long topicId, Publicity publicity) {
+    public boolean canTopicCreate(AuthTopic authTopic) {
         return false;
     }
 
     @Override
-    public boolean canTopicUpdate(Long topicId, Publicity publicity) {
+    public boolean canTopicUpdate(AuthTopic authTopic) {
         return false;
     }
 
     @Override
-    public boolean canPinCreateOrUpdate(Long topicId, Publicity publicity) {
+    public boolean canPinCreateOrUpdate(AuthTopic authTopic) {
         return false;
     }
 
