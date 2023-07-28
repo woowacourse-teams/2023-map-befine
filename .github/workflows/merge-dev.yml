@@ -40,7 +40,7 @@ jobs:
         path: backend/build/libs/mapbefine.jar
 
   deploy:
-    runs-on: self-hosted
+    runs-on: [ self-hosted, dev ]
     needs: build-and-upload
   
     if: github.event.pull_request.merged
