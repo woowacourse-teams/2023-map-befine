@@ -29,15 +29,25 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
   const createMarkers = (map: any) => {
     const newMarkers = coordinates.map((coordinate: any) => {
       //console.log(coordinate);
+      let tag = '';
+      if (!topicId) {
+        tag = 'A';
+      } else {
+        tag = String.fromCharCode(97 + parseInt(topicId, 10));
+      }
+      console.log(tag);
       const marker = new window.Tmapv2.Marker({
         position: new window.Tmapv2.LatLng(
           coordinate.latitude,
           coordinate.longitude,
         ),
-        icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_${topicId}.png`,
+        icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_b_${tag}.png`,
         map,
       });
       marker.id = coordinate.id;
+      console.log(
+        `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_g_${tag}.png`,
+      );
       return marker;
     });
 
