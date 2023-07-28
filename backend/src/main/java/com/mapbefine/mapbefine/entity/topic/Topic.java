@@ -12,7 +12,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,10 @@ public class Topic extends BaseEntity {
     @Column(nullable = false)
     @ColumnDefault(value = "false")
     private boolean isDeleted = false;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member creator;
 
     public Topic(
             String name,
