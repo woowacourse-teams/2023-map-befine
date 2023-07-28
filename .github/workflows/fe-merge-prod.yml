@@ -1,7 +1,8 @@
-name: Frontend develop CI/CD
+name: Frontend production CI/CD
 
 on:
   workflow_dispatch:
+
   pull_request:
     branches: [ develop ]
     types: [closed]
@@ -22,10 +23,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: “npm”
+          cache: "npm"
 
       - name: Install npm
         run: npm install --force
+
+      - name: grant excute access
+        run: chmod +x npm
 
       - name: Build project
         run: npm run build
@@ -37,10 +41,10 @@ jobs:
           path: frontend/dist/main.bundle.js
 
     deploy:
-      if: github.event.pull_request.merged
-
-      runs-on: [ self-hosted, prod ]
+      runs-on: [ self-hosted, prod]
       needs: build-and-upload
+
+      if: github.event.pull_request.merged
 
       steps:
         - name: delete old js file
@@ -56,13 +60,13 @@ jobs:
           runs: /home/ubuntu/frontend/build/deploy.sh
 
         - name: send slack message
+
           uses: 8398a7/action-slack@v3
           with:
-            mention: ‘here’
+            mention: 'here'
             if_mention: always
             status: ${{ job.status }}
             fields: workflow,job,commit,message,ref,author,took
           env:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           if: always()
-          
