@@ -8,7 +8,6 @@ import { Fragment, useContext, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import useGeolocation from '../hooks/useGeolocation';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 
 const Home = () => {
@@ -29,6 +28,7 @@ const Home = () => {
 
   useEffect(() => {
     getAndSetDataFromServer();
+
     setCoordinates([{ latitude: 37.5055, longitude: 127.0509 }]);
   }, []);
 
