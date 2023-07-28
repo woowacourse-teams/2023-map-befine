@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ProvidePlugin } = require('webpack');
+const { ProvidePlugin, EnvironmentPlugin } = require('webpack');
 
 module.exports = {
   entry: {
@@ -17,7 +17,11 @@ module.exports = {
     }),
     new ProvidePlugin({
       React: 'react',
+      process: 'process/browser.js',
     }),
+    new EnvironmentPlugin({
+      REACT_APP_API_DEFAULT: 'http://43.202.63.81:80'
+    })
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],

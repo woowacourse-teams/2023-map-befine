@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.repository;
 
-import com.mapbefine.mapbefine.entity.Location;
+import com.mapbefine.mapbefine.entity.pin.Location;
 import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

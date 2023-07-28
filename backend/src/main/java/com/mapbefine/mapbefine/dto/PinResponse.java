@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.dto;
 
-import com.mapbefine.mapbefine.entity.Pin;
+import com.mapbefine.mapbefine.entity.pin.Pin;
 
 public record PinResponse(
         Long id,

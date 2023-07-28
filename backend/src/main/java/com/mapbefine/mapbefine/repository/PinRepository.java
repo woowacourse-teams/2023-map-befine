@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.repository;
 
-import com.mapbefine.mapbefine.entity.Pin;
+import com.mapbefine.mapbefine.entity.pin.Pin;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

@@ -9,15 +9,20 @@ import { useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { DefaultFormValuesType } from '../types/FormValues';
+import { NewPinValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 
 const NewPin = () => {
   const [topic, setTopic] = useState<TopicType | null>(null);
-  const { formValues, onChangeInput } = useFormValues<DefaultFormValuesType>({
+  const { formValues, onChangeInput } = useFormValues<NewPinValuesType>({
+    topicId: 0,
     name: '',
     address: '',
     description: '',
+    latitude: '',
+    longitude: '',
+    legalDongCode: '',
+    images: [],
   });
   const { routePage } = useNavigator();
 
@@ -31,6 +36,10 @@ const NewPin = () => {
       name: formValues.name,
       address: formValues.address,
       description: formValues.description,
+      latitude: '37',
+      longitude: '127',
+      legalDongCode: '',
+      images: []
     });
   };
 
@@ -47,7 +56,7 @@ const NewPin = () => {
     const getTopicId = async () => {
       if (queryParams.has('topic-id')) {
         const topicId = queryParams.get('topic-id');
-        const data = await getApi(`topics/${topicId}`);
+        const data = await getApi(`/topics/${topicId}`);
         setTopic(data);
       }
     };
@@ -81,7 +90,7 @@ const NewPin = () => {
           <Button
             type="button"
             variant="primary"
-          >{`${topic.emoji} ${topic.name}`}</Button>
+          >{`${topic.name}`}</Button>
         </section>
 
         <Space size={5} />

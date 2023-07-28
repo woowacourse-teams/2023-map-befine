@@ -18,7 +18,7 @@ const Home = () => {
   };
 
   const getAndSetDataFromServer = async () => {
-    const topics = await getApi('/');
+    const topics = await getApi('/topics');
     setTopics(topics);
   };
 
@@ -40,7 +40,7 @@ const Home = () => {
               <Fragment key={index}>
                 <TopicCard
                   topicId={topic.id}
-                  topicEmoji={topic.emoji}
+                  topicImage={topic.image}
                   topicTitle={topic.name}
                   topicUpdatedAt={topic.updatedAt}
                   topicPinCount={topic.pinCount}

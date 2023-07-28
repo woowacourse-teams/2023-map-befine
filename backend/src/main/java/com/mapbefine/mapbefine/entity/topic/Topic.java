@@ -1,9 +1,19 @@
-package com.mapbefine.mapbefine.entity;
+package com.mapbefine.mapbefine.entity.topic;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.*;
-
+import com.mapbefine.mapbefine.entity.BaseEntity;
+import com.mapbefine.mapbefine.entity.pin.Pin;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -35,6 +45,14 @@ public class Topic extends BaseEntity {
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Publicity publicity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Permission permission;
 
     @Column(nullable = false)
     @ColumnDefault(value = "false")
@@ -74,9 +92,11 @@ public class Topic extends BaseEntity {
         }
     }
 
-    public void update(String name,
-                       String description,
-                       String imageUrl) {
+    public void update(
+            String name,
+            String description,
+            String imageUrl
+    ) {
         validateName(name);
         validateDescription(description);
         // TODO : URL 형식 검증 필요?
@@ -94,6 +114,14 @@ public class Topic extends BaseEntity {
 
     public void addPin(Pin pin) {
         pins.add(pin);
+    }
+
+    public boolean isPublic() {
+        return publicity == Publicity.PUBLIC;
+    }
+
+    public boolean isPrivate() {
+        return publicity == Publicity.PRIVATE;
     }
 
 }

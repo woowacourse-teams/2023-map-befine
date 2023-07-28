@@ -2,18 +2,17 @@ package com.mapbefine.mapbefine.service;
 
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinUpdateRequest;
-import com.mapbefine.mapbefine.entity.Coordinate;
-import com.mapbefine.mapbefine.entity.Location;
-import com.mapbefine.mapbefine.entity.Pin;
-import com.mapbefine.mapbefine.entity.PinImage;
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.pin.Coordinate;
+import com.mapbefine.mapbefine.entity.pin.Location;
+import com.mapbefine.mapbefine.entity.pin.Pin;
+import com.mapbefine.mapbefine.entity.pin.PinImage;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Transactional
 @Service
@@ -49,7 +48,8 @@ public class PinCommandService {
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
 
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(request.name(), request.description(), pinLocation, topic);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(request.name(), request.description(), pinLocation,
+                topic);
 
         for (String pinImage : request.images()) {
             PinImage.createPinImageAssociatedWithPin(pinImage, pin);
