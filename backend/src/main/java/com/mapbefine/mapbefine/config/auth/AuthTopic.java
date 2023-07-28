@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.dto;
+package com.mapbefine.mapbefine.config.auth;
 
 import com.mapbefine.mapbefine.entity.topic.Permission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;

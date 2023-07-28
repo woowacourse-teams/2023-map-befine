@@ -3,12 +3,9 @@ package com.mapbefine.mapbefine.service;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
-import com.mapbefine.mapbefine.config.auth.AuthMember;
-import com.mapbefine.mapbefine.dto.AuthTopic;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
-import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.pin.Location;
 import com.mapbefine.mapbefine.entity.pin.Pin;
 import com.mapbefine.mapbefine.entity.topic.Topic;
@@ -35,16 +32,19 @@ public class TopicQueryService {
         this.locationRepository = locationRepository;
     }
 
-    public List<TopicResponse> findAll(AuthMember member) {
-        // 여기서 사실 Member -> AuthMember 여야한다.
-        // AuthMember 의 canRead 에다가 AuthTopic 을 넘겨야 한다.
-        // 여기에는 Permision 등등ㄷ이 필요하다.
-
-        return topicRepository.findAll().stream()
-                .filter(topic -> member.canRead(AuthTopic.from(topic)))
+    public List<TopicResponse> findAll() {
+        return topicRepository.findAll()
+                .stream()
                 .map(TopicResponse::from)
                 .toList();
     }
+
+//    public List<TopicResponse> findAll(AuthMember member) {
+//        return topicRepository.findAll().stream()
+//                .filter(topic -> member.canRead(AuthTopic.from(topic)))
+//                .map(TopicResponse::from)
+//                .toList();
+//    }
 
     public TopicDetailResponse findById(Long id) {
         Topic topic = topicRepository.findById(id)

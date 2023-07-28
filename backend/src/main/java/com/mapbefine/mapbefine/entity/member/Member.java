@@ -40,7 +40,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "creator")
     private List<Topic> createdTopic = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")

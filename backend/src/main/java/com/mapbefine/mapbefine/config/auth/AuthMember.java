@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.config.auth;
 
-import com.mapbefine.mapbefine.dto.AuthTopic;
 import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.member.MemberTopicPermission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
@@ -32,7 +31,7 @@ public abstract class AuthMember {
             return new User(member.getId(), getCreatedTopics(member), getTopicsWithPermission(member));
         }
 
-        return new Admin(member.getId(), getCreatedTopics(member), getTopicsWithPermission(member));
+        return new Admin();
     }
 
     private static List<Long> getTopicsWithPermission(Member member) {

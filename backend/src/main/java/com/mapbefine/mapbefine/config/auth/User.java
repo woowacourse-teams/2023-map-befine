@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.config.auth;
 
-import com.mapbefine.mapbefine.dto.AuthTopic;
 import com.mapbefine.mapbefine.entity.topic.Permission;
 import java.util.List;
 

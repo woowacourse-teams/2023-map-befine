@@ -1,8 +1,5 @@
 package com.mapbefine.mapbefine.config.auth;
 
-import com.mapbefine.mapbefine.dto.AuthTopic;
-import com.mapbefine.mapbefine.entity.topic.Publicity;
-
 public class Guest extends AuthMember {
 
 
@@ -16,7 +13,7 @@ public class Guest extends AuthMember {
 
     @Override
     public boolean canRead(AuthTopic authTopic) {
-        return isPublic(publicity);
+        return isPublic(authTopic.publicity());
     }
 
     @Override

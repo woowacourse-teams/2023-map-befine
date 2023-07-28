@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.entity.topic;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.entity.BaseEntity;
+import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.pin.Pin;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -56,31 +57,53 @@ public class Topic extends BaseEntity {
     @Column(nullable = false)
     private Permission permission;
 
-    @Column(nullable = false)
-    @ColumnDefault(value = "false")
-    private boolean isDeleted = false;
-
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member creator;
 
+    @Column(nullable = false)
+    @ColumnDefault(value = "false")
+    private boolean isDeleted = false;
+
     public Topic(
             String name,
             String description,
-            String imageUrl
+            String imageUrl,
+            Publicity publicity,
+            Permission permission,
+            Member creator
+    ) {
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.publicity = publicity;
+        this.permission = permission;
+        this.creator = creator;
+    }
+
+    public static Topic of(
+            String name,
+            String description,
+            String imageUrl,
+            Publicity publicity,
+            Permission permission,
+            Member creator
     ) {
         validateName(name);
         validateDescription(description);
 
-        this.name = name;
-        this.description = description;
+        return new Topic(
+                name,
+                description,
+                validateImageUrl(imageUrl),
+                publicity,
+                permission,
+                creator
+        );
 
-        if (imageUrl != null) { // TODO : 정팩매 레츠기릿
-            this.imageUrl = imageUrl;
-        }
     }
 
-    private void validateName(String name) {
+    private static void validateName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("name null");
         }
@@ -89,13 +112,20 @@ public class Topic extends BaseEntity {
         }
     }
 
-    private void validateDescription(String description) {
+    private static void validateDescription(String description) {
         if (description == null) {
             throw new IllegalArgumentException("description null");
         }
         if (description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
             throw new IllegalArgumentException("description 길이 이상");
         }
+    }
+
+    private static String validateImageUrl(String imageUrl) {
+        if (imageUrl == null) { // TODO: 2023/07/28 URL 검증
+            return DEFAULT_IMAGE_URL;
+        }
+        return imageUrl;
     }
 
     public void update(
@@ -105,13 +135,10 @@ public class Topic extends BaseEntity {
     ) {
         validateName(name);
         validateDescription(description);
-        // TODO : URL 형식 검증 필요?
 
         this.name = name;
         this.description = description;
-        if (imageUrl != null) { // TODO : 생성자와 중복 코드
-            this.imageUrl = imageUrl;
-        }
+        this.imageUrl = validateImageUrl(imageUrl);
     }
 
     public int countPins() {

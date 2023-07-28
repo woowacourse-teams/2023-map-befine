@@ -1,20 +1,12 @@
 package com.mapbefine.mapbefine.config.auth;
 
-import com.mapbefine.mapbefine.dto.AuthTopic;
-import com.mapbefine.mapbefine.entity.topic.Publicity;
-import java.util.List;
-
 public class Admin extends AuthMember {
 
-    protected Admin(
-            Long memberId,
-            List<Long> createdTopic,
-            List<Long> topicsWithPermission
-    ) {
+    protected Admin() {
         super(
-                memberId,
-                createdTopic,
-                topicsWithPermission
+                null,
+                null,
+                null
         );
     }
 
