@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.controller;
 
+import com.mapbefine.mapbefine.config.auth.AuthMember;
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
@@ -33,16 +34,16 @@ public class TopicController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> create(@RequestBody TopicCreateRequest request) {
-        long topicId = topicCommandService.createNew(request);
+    public ResponseEntity<Void> create(AuthMember authMember, @RequestBody TopicCreateRequest request) {
+        long topicId = topicCommandService.createNew(authMember, request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();
     }
 
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeAndCreate(@RequestBody TopicMergeRequest request) {
-        long topicId = topicCommandService.createMerge(request);
+    public ResponseEntity<Void> mergeAndCreate(AuthMember authMember, @RequestBody TopicMergeRequest request) {
+        long topicId = topicCommandService.createMerge(authMember, request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();

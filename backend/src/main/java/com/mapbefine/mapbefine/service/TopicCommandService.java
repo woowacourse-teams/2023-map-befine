@@ -1,14 +1,18 @@
 package com.mapbefine.mapbefine.service;
 
+import com.mapbefine.mapbefine.config.auth.AuthMember;
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
+import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.pin.Pin;
 import com.mapbefine.mapbefine.entity.topic.Topic;
+import com.mapbefine.mapbefine.repository.MemberRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +23,28 @@ public class TopicCommandService {
 
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
+    private final MemberRepository memberRepository;
 
-    public TopicCommandService(final TopicRepository topicRepository, final PinRepository pinRepository) {
+    public TopicCommandService(
+            TopicRepository topicRepository,
+            PinRepository pinRepository,
+            MemberRepository memberRepository
+    ) {
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
+        this.memberRepository = memberRepository;
     }
 
-    public long createNew(final TopicCreateRequest request) {
-        Topic topic = new Topic(request.name(), request.description(), request.image());
+    public long createNew(AuthMember authMember, TopicCreateRequest request) {
+        Topic topic = new Topic(
+                request.name(),
+                request.description(),
+                request.image(),
+                request.publicity(),
+                request.permission(),
+                findCreatorByAuthMember(authMember)
+        );
+
         topicRepository.save(topic);
 
         List<Long> pinIds = request.pins();
@@ -36,6 +54,11 @@ public class TopicCommandService {
         pinRepository.saveAll(duplicateUserPins(original, topic));
 
         return topic.getId();
+    }
+
+    private Member findCreatorByAuthMember(final AuthMember authMember) {
+        return memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(NoSuchElementException::new);
     }
 
     private void validateExist(int idCount, int existCount) {
@@ -50,13 +73,20 @@ public class TopicCommandService {
                 .collect(Collectors.toList());
     }
 
-    public long createMerge(TopicMergeRequest request) {
+    public long createMerge(AuthMember authMember, TopicMergeRequest request) {
         List<Long> topicIds = request.topics();
         List<Topic> topics = topicRepository.findAllById(topicIds);
 
         validateExist(topicIds.size(), topics.size());
 
-        Topic topic = new Topic(request.name(), request.description(), request.image());
+        Topic topic = new Topic(
+                request.name(),
+                request.description(),
+                request.image(),
+                request.publicity(),
+                request.permission(),
+                findCreatorByAuthMember(authMember)
+        );
         topicRepository.save(topic);
 
         List<Pin> original = topics.stream()

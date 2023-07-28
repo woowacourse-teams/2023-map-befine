@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mapbefine.mapbefine.LocationFixture;
 import com.mapbefine.mapbefine.PinFixture;
 import com.mapbefine.mapbefine.TopicFixture;
+import com.mapbefine.mapbefine.annotation.ServiceTest;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
@@ -17,20 +18,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ServiceTest
 class TopicQueryServiceTest {
 
     @Autowired
     private LocationRepository locationRepository;
 
     @Autowired
+    private TopicQueryService topicQueryService;
+
+    @Autowired
     private TopicRepository topicRepository;
 
-    private com.mapbefine.mapbefine.service.TopicQueryService topicQueryService;
     private Topic TOPIC_BEST_3RD;
     private Topic TOPIC_BEST_2ND;
     private Topic TOPIC_BEST_1ST;
@@ -38,8 +38,6 @@ class TopicQueryServiceTest {
 
     @BeforeEach
     void setup() {
-        topicQueryService = new com.mapbefine.mapbefine.service.TopicQueryService(topicRepository, locationRepository);
-
         ALL_PINS_LOCATION = LocationFixture.createByCoordinate(35.0, 127.0);
         locationRepository.save(ALL_PINS_LOCATION);
 

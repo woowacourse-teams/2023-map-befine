@@ -10,6 +10,8 @@ import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
+import com.mapbefine.mapbefine.entity.topic.Permission;
+import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.service.TopicCommandService;
 import com.mapbefine.mapbefine.service.TopicQueryService;
 import java.math.BigDecimal;
@@ -33,8 +35,15 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 새로 생성")
     void create() throws Exception {
-        given(topicCommandService.createNew(any())).willReturn(1L);
-        TopicCreateRequest topicCreateRequest = new TopicCreateRequest("준팍의 안갈집", "https://map-befine-official.github.io/favicon.png", "준팍이 두번 다시 안갈집", List.of(1L, 2L, 3L));
+        given(topicCommandService.createNew(any(), any())).willReturn(1L);
+        TopicCreateRequest topicCreateRequest = new TopicCreateRequest(
+                "준팍의 안갈집",
+                "https://map-befine-official.github.io/favicon.png",
+                "준팍이 두번 다시 안갈집",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS,
+                List.of(1L, 2L, 3L)
+        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/topics/new")
@@ -46,8 +55,15 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 병합 생성")
     void mergeAndCreate() throws Exception {
-        given(topicCommandService.createMerge(any())).willReturn(1L);
-        TopicMergeRequest topicMergeRequest = new TopicMergeRequest("준팍의 안갈집", "https://map-befine-official.github.io/favicon.png", "준팍이 두번 다시 안갈집", List.of(1L, 2L, 3L));
+        given(topicCommandService.createMerge(any(), any())).willReturn(1L);
+        TopicMergeRequest topicMergeRequest = new TopicMergeRequest(
+                "준팍의 안갈집",
+                "https://map-befine-official.github.io/favicon.png",
+                "준팍이 두번 다시 안갈집",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS,
+                List.of(1L, 2L, 3L)
+        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/topics/merge")

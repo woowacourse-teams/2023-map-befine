@@ -5,7 +5,9 @@ import com.mapbefine.mapbefine.entity.member.MemberTopicPermission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public abstract class AuthMember {
 
     protected Long memberId;

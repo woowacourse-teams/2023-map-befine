@@ -4,9 +4,13 @@ import static com.mapbefine.mapbefine.entity.pin.Pin.createPinAssociatedWithLoca
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.MemberFixture;
+import com.mapbefine.mapbefine.entity.member.Role;
 import com.mapbefine.mapbefine.entity.pin.Coordinate;
 import com.mapbefine.mapbefine.entity.pin.Location;
 import com.mapbefine.mapbefine.entity.pin.Pin;
+import com.mapbefine.mapbefine.entity.topic.Permission;
+import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import java.math.BigDecimal;
 import java.util.stream.Stream;
@@ -26,7 +30,14 @@ class PinTest {
             ),
             "legalDongCode"
     );
-    private static final Topic topic = new Topic("topicName", "topicDescription", null);
+    private static final Topic topic = new Topic(
+            "topicName",
+            "topicDescription",
+            null,
+            Publicity.PUBLIC,
+            Permission.ALL_MEMBERS,
+            MemberFixture.create(Role.ADMIN)
+    );
 
     @ParameterizedTest
     @MethodSource(value = "validNameAndDescription")

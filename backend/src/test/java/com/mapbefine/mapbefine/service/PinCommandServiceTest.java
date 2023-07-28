@@ -3,27 +3,29 @@ package com.mapbefine.mapbefine.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.MemberFixture;
+import com.mapbefine.mapbefine.annotation.ServiceTest;
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinUpdateRequest;
+import com.mapbefine.mapbefine.entity.member.Role;
 import com.mapbefine.mapbefine.entity.pin.Coordinate;
 import com.mapbefine.mapbefine.entity.pin.Location;
 import com.mapbefine.mapbefine.entity.pin.Pin;
+import com.mapbefine.mapbefine.entity.topic.Permission;
+import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
-import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@Transactional
-@SpringBootTest
+@ServiceTest
 class PinCommandServiceTest {
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
@@ -47,7 +49,15 @@ class PinCommandServiceTest {
     @BeforeEach
     void setUp() {
         topic = topicRepository.save(
-                new Topic("topicName", "topicDescription", "https://map-befine-official.github.io/favicon.png"));
+                new Topic(
+                        "topicName",
+                        "topicDescription",
+                        "https://map-befine-official.github.io/favicon.png",
+                        Publicity.PUBLIC,
+                        Permission.ALL_MEMBERS,
+                        MemberFixture.create(Role.ADMIN)
+                )
+        );
     }
 
     @Test

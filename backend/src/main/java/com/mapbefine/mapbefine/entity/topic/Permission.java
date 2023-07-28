@@ -18,14 +18,14 @@ public enum Permission {
     }
 
     @JsonCreator
-    public static Publicity from(String input) {
+    public static Permission from(String input) {
         return Arrays.stream(values())
                 .filter(permission -> isSameName(input, permission))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    private static boolean isSameName(String input, Publicity permission) {
+    private static boolean isSameName(String input, Permission permission) {
         return permission.name()
                 .equalsIgnoreCase(input);
     }

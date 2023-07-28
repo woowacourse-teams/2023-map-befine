@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mapbefine.mapbefine.LocationFixture;
 import com.mapbefine.mapbefine.PinFixture;
 import com.mapbefine.mapbefine.TopicFixture;
+import com.mapbefine.mapbefine.annotation.ServiceTest;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
 import com.mapbefine.mapbefine.entity.pin.Location;
 import com.mapbefine.mapbefine.entity.pin.Pin;
@@ -18,13 +19,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.stereotype.Service;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ServiceTest
 class TopicCommandServiceTest {
-
-    @Autowired
-    private PinRepository pinRepository;
 
     @Autowired
     private TopicRepository topicRepository;
@@ -32,14 +32,13 @@ class TopicCommandServiceTest {
     @Autowired
     private LocationRepository locationRepository;
 
+    @Autowired
     private TopicCommandService topicCommandService;
 
     private Topic TOPIC_WITH_TWO_PINS;
 
     @BeforeEach
     void setup() {
-        topicCommandService = new TopicCommandService(topicRepository, pinRepository);
-
         TOPIC_WITH_TWO_PINS = TopicFixture.createByName("준팍의 또간집");
 
         Location location = LocationFixture.create();
