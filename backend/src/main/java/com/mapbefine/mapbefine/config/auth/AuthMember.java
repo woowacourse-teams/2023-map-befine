@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.config.auth;
 
+import com.mapbefine.mapbefine.dto.AuthTopic;
 import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.member.MemberTopicPermission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
@@ -49,15 +50,15 @@ public abstract class AuthMember {
                 .toList();
     }
 
-    public abstract boolean canRead(Long topicId, Publicity publicity);
+    public abstract boolean canRead(AuthTopic authTopic);
 
-    public abstract boolean canDelete(Long topicId, Publicity publicity);
+    public abstract boolean canDelete(AuthTopic authTopic);
 
-    public abstract boolean canTopicCreate(Long topicId, Publicity publicity);
+    public abstract boolean canTopicCreate(AuthTopic authTopic);
 
-    public abstract boolean canTopicUpdate(Long topicId, Publicity publicity);
+    public abstract boolean canTopicUpdate(AuthTopic authTopic);
 
-    public abstract boolean canPinCreateOrUpdate(Long topicId, Publicity publicity);
+    public abstract boolean canPinCreateOrUpdate(AuthTopic authTopic);
 
     protected boolean isPublic(Publicity publicity) {
         return publicity == Publicity.PUBLIC;
