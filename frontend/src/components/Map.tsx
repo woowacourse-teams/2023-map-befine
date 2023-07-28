@@ -11,27 +11,47 @@ const Map = (props: any, ref: any) => {
   useEffect(() => {
     // 마커들을 모두 지도에서 제거
     if (markers.length > 0) {
-      // 이전 마커 제거
       removeMarkers();
     }
+
     // 새로운 마커 추가
     if (coordinates.length > 0) {
       createMarkers(map);
-
-      // 마커들을 모두 포함하는 경계를 계산
     }
-  }, [coordinates, map]);
+  }, [coordinates]);
 
   useEffect(() => {
+    // 마커가 하나만 있으면 해당 마커로 지도의 중심을 이동
+    if (markers.length === 1) {
+      map.panTo(markers[0].getPosition());
+    }
+
     // 마커들을 모두 포함하는 경계를 계산
-    if (markers.length > 0) {
+    if (markers.length > 1) {
       bounds.current = new window.Tmapv2.LatLngBounds();
       markers.forEach((marker: any) => {
         bounds.current.extend(marker.getPosition());
       });
       map.fitBounds(bounds.current);
     }
-  }, [markers, map]);
+  }, [markers]);
+
+  // url 파라미터에 pinDetail이 있으면 해당 pin으로 지도의 중심을 이동
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.has('pinDetail')) {
+      const pinId = queryParams.get('pinDetail');
+
+      const marker = markers.find((marker: any) => marker.id === pinId);
+      if (marker) {
+        map.panTo(marker.getPosition());
+        //marker 객체의 animation 속성을 변경
+        marker._marker_data.options.animation =
+          window.Tmapv2.MarkerOptions.ANIMATE_BOUNCE;
+        marker._marker_data.options.animationLength = 500;
+      }
+    }
+  }, [markers]);
 
   return <Flex flex="1" id="map" ref={ref} height="100vh" width="100%" />;
 };

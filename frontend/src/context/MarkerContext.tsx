@@ -45,9 +45,9 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
     newMarkers.forEach((marker: any) => {
       marker.addListener('click', () => {
         routePage(`/topics/${topicId}?pinDetail=${marker.id}`);
-        map.panTo(marker.getPosition());
       });
     });
+
     setMarkers(newMarkers);
   };
 
