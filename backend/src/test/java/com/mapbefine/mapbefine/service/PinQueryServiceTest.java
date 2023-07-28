@@ -7,6 +7,7 @@ import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.annotation.ServiceTest;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinResponse;
+import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.member.Role;
 import com.mapbefine.mapbefine.entity.pin.Coordinate;
 import com.mapbefine.mapbefine.entity.pin.Location;
@@ -16,6 +17,7 @@ import com.mapbefine.mapbefine.entity.topic.Permission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
+import com.mapbefine.mapbefine.repository.MemberRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import jakarta.transaction.Transactional;
@@ -45,11 +47,15 @@ class PinQueryServiceTest {
     @Autowired
     private LocationRepository locationRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     private Location location;
 
     private Coordinate coordinate;
 
     private Topic topic;
+    private Member member;
 
     @BeforeEach
     void setUp() {
@@ -57,6 +63,7 @@ class PinQueryServiceTest {
         BigDecimal longitude = BigDecimal.valueOf(127.123456);
         coordinate = new Coordinate(latitude, longitude);
         location = saveLocation(coordinate);
+        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
         topic = topicRepository.save(
                 new Topic(
                         "topicName",
@@ -64,7 +71,7 @@ class PinQueryServiceTest {
                         "https://map-befine-official.github.io/favicon.png",
                         Publicity.PUBLIC,
                         Permission.ALL_MEMBERS,
-                        MemberFixture.create(Role.ADMIN)
+                        member
                 )
         );
     }

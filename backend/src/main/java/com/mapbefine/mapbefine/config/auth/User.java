@@ -6,7 +6,7 @@ import java.util.List;
 
 public class User extends AuthMember {
 
-    protected User(
+    public User(
             Long memberId,
             List<Long> createdTopic,
             List<Long> topicsWithPermission

@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.MemberFixture;
+import com.mapbefine.mapbefine.TopicFixture;
+import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.member.Role;
 import com.mapbefine.mapbefine.entity.pin.Coordinate;
 import com.mapbefine.mapbefine.entity.pin.Location;
@@ -31,18 +33,15 @@ class PinRepositoryTest {
     @Autowired
     private LocationRepository locationRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Test
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
     void deleteById_Success() {
         // given
-        Topic topic = new Topic(
-                "topicName",
-                "topicDescription",
-                null,
-                Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
-                MemberFixture.create(Role.ADMIN)
-        );
+        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Topic topic = TopicFixture.createByName("name", member);
         Location location = new Location(
                 "parcel",
                 "road",
@@ -68,14 +67,8 @@ class PinRepositoryTest {
     @DisplayName("토픽 ID로 핀을 삭제하면 soft-deleting 된다.")
     void deleteAllByTopicId_Success() {
         // given
-        Topic topic = new Topic(
-                "topicName",
-                "topicDescription",
-                null,
-                Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
-                MemberFixture.create(Role.ADMIN)
-        );
+        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Topic topic = TopicFixture.createByName("name", member);
         Location location = new Location(
                 "parcel",
                 "road",

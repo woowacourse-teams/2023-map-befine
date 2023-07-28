@@ -3,7 +3,7 @@ package com.mapbefine.mapbefine.config.auth;
 public class Guest extends AuthMember {
 
 
-    protected Guest() {
+    public Guest() {
         super(
                 null,
                 null,

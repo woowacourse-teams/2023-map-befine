@@ -33,7 +33,7 @@ public abstract class AuthMember {
             return new User(member.getId(), getCreatedTopics(member), getTopicsWithPermission(member));
         }
 
-        return new Admin();
+        return new Admin(member.getId());
     }
 
     private static List<Long> getTopicsWithPermission(Member member) {
@@ -67,6 +67,15 @@ public abstract class AuthMember {
 
     protected boolean isPrivate(Publicity publicity) {
         return publicity == Publicity.PRIVATE;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthMember{" +
+                "memberId=" + memberId +
+                ", createdTopic=" + createdTopic +
+                ", topicsWithPermission=" + topicsWithPermission +
+                '}';
     }
 
 }

@@ -3,11 +3,15 @@ package com.mapbefine.mapbefine.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.LocationFixture;
+import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.TopicFixture;
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
+import com.mapbefine.mapbefine.entity.member.Member;
+import com.mapbefine.mapbefine.entity.member.Role;
 import com.mapbefine.mapbefine.entity.pin.Location;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
+import com.mapbefine.mapbefine.repository.MemberRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import io.restassured.*;
 import io.restassured.response.*;
@@ -20,9 +24,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class PinIntegrationTest extends IntegrationTest {
+
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
     private Topic topic;
     private Location location;
+    private Member member;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Autowired
     private TopicRepository topicRepository;
@@ -32,7 +41,8 @@ public class PinIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void saveTopicAndLocation() {
-        topic = topicRepository.save(TopicFixture.createByName("PinIntegration 토픽"));
+        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        topic = topicRepository.save(TopicFixture.createByName("PinIntegration 토픽", member));
         location = locationRepository.save(LocationFixture.createByCoordinate(37.5152933, 127.1029866));
     }
 

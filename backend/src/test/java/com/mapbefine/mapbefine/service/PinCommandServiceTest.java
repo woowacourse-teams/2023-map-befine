@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.MemberFixture;
-import com.mapbefine.mapbefine.annotation.ServiceTest;
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinUpdateRequest;
+import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.member.Role;
 import com.mapbefine.mapbefine.entity.pin.Coordinate;
 import com.mapbefine.mapbefine.entity.pin.Location;
@@ -16,6 +16,7 @@ import com.mapbefine.mapbefine.entity.topic.Permission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
+import com.mapbefine.mapbefine.repository.MemberRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import java.math.BigDecimal;
@@ -24,9 +25,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-@ServiceTest
+@Transactional
+@SpringBootTest
 class PinCommandServiceTest {
+    // TODO : Custom Annotation 인 @ServiceTest 를 붙여서 동작시키면, 중복된 Location 을 전혀 찾아오지 못하는 문제가 발생 (터지는 테스트는 @DisplayName("핀을 저장하려는 위치(Location)가 존재하면 해당 위치에 핀을 저장한다." 이 테스트))
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     @Autowired
@@ -44,10 +49,17 @@ class PinCommandServiceTest {
     @Autowired
     private TopicRepository topicRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
+
     private Topic topic;
+    private Member member;
 
     @BeforeEach
     void setUp() {
+        locationRepository.deleteAll();
+        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
         topic = topicRepository.save(
                 new Topic(
                         "topicName",
@@ -55,7 +67,7 @@ class PinCommandServiceTest {
                         "https://map-befine-official.github.io/favicon.png",
                         Publicity.PUBLIC,
                         Permission.ALL_MEMBERS,
-                        MemberFixture.create(Role.ADMIN)
+                        member
                 )
         );
     }
@@ -80,6 +92,7 @@ class PinCommandServiceTest {
                 longitude.toString(),
                 BASE_IMAGES
         );
+
         Long savedPinId = pinCommandService.save(request);
 
         // then

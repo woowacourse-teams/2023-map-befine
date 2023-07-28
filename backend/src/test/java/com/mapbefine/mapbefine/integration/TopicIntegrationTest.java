@@ -2,13 +2,17 @@ package com.mapbefine.mapbefine.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
+import com.mapbefine.mapbefine.entity.member.Member;
+import com.mapbefine.mapbefine.entity.member.Role;
 import com.mapbefine.mapbefine.entity.pin.Pin;
 import com.mapbefine.mapbefine.entity.topic.Permission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.entity.topic.Topic;
+import com.mapbefine.mapbefine.repository.MemberRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import io.restassured.*;
@@ -22,13 +26,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class TopicIntegrationTest extends IntegrationTest {
+class TopicIntegrationTest extends IntegrationTest {
+
+    private static final String AUTHORIZATION = "Authorization";
 
     @Autowired
     private PinRepository pinRepository;
 
     @Autowired
     private TopicRepository topicRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("Pin 목록 없이 Topic을 생성하면 201을 반환한다")
@@ -51,8 +60,10 @@ public class TopicIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> createNewTopic(TopicCreateRequest request) {
+        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
         return RestAssured.given()
                 .log().all()
+                .header(AUTHORIZATION, member.getEmail())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/topics/new")
@@ -63,7 +74,6 @@ public class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록과 함께 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithPins_Success() {
-
         List<Pin> pins = pinRepository.findAll();
         List<Long> pinIds = pins.stream()
                 .map(Pin::getId)
@@ -160,7 +170,9 @@ public class TopicIntegrationTest extends IntegrationTest {
                         "준팍이 두번 간집 ",
                         Publicity.PUBLIC,
                         Permission.ALL_MEMBERS,
-                        Collections.emptyList()));
+                        Collections.emptyList()
+                )
+        );
         long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
 
         // when

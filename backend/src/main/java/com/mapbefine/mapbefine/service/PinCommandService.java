@@ -48,8 +48,12 @@ public class PinCommandService {
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
 
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(request.name(), request.description(), pinLocation,
-                topic);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(
+                request.name(),
+                request.description(),
+                pinLocation,
+                topic
+        );
 
         for (String pinImage : request.images()) {
             PinImage.createPinImageAssociatedWithPin(pinImage, pin);

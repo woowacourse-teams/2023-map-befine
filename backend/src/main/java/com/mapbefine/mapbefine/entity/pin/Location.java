@@ -68,8 +68,20 @@ public class Location extends BaseEntity {
         return coordinate.getLatitude();
     }
 
+
     public BigDecimal getLongitude() {
         return coordinate.getLongitude();
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id=" + id +
+                ", parcelBaseAddress='" + parcelBaseAddress + '\'' +
+                ", roadBaseAddress='" + roadBaseAddress + '\'' +
+                ", coordinate=" + coordinate +
+                ", legalDongCode='" + legalDongCode + '\'' +
+                '}';
     }
 
 }

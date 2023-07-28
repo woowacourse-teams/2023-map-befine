@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import com.mapbefine.mapbefine.config.MemberArgumentResolver;
+import com.mapbefine.mapbefine.config.auth.Admin;
 import com.mapbefine.mapbefine.dto.PinResponse;
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,11 +34,15 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @MockBean
     private TopicQueryService topicQueryService;
 
+    @MockBean
+    private MemberArgumentResolver memberArgumentResolver;
+
 
     @Test
     @DisplayName("토픽 새로 생성")
     void create() throws Exception {
         given(topicCommandService.createNew(any(), any())).willReturn(1L);
+
         TopicCreateRequest topicCreateRequest = new TopicCreateRequest(
                 "준팍의 안갈집",
                 "https://map-befine-official.github.io/favicon.png",

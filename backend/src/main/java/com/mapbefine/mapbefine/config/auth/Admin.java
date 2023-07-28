@@ -2,9 +2,9 @@ package com.mapbefine.mapbefine.config.auth;
 
 public class Admin extends AuthMember {
 
-    protected Admin() {
+    public Admin(Long memberId) { // 준팍 여기에 memberId 는 넣어야지 찾을 수 있더라고요
         super(
-                null,
+                memberId,
                 null,
                 null
         );

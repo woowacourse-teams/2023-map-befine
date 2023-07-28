@@ -3,15 +3,19 @@ package com.mapbefine.mapbefine.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.LocationFixture;
+import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.PinFixture;
 import com.mapbefine.mapbefine.TopicFixture;
 import com.mapbefine.mapbefine.annotation.ServiceTest;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
+import com.mapbefine.mapbefine.entity.member.Member;
+import com.mapbefine.mapbefine.entity.member.Role;
 import com.mapbefine.mapbefine.entity.pin.Location;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
+import com.mapbefine.mapbefine.repository.MemberRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
 class TopicQueryServiceTest {
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -35,9 +42,11 @@ class TopicQueryServiceTest {
     private Topic TOPIC_BEST_2ND;
     private Topic TOPIC_BEST_1ST;
     private Location ALL_PINS_LOCATION;
+    private Member member;
 
     @BeforeEach
     void setup() {
+        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
         ALL_PINS_LOCATION = LocationFixture.createByCoordinate(35.0, 127.0);
         locationRepository.save(ALL_PINS_LOCATION);
 
@@ -47,7 +56,7 @@ class TopicQueryServiceTest {
     }
 
     private Topic createAndSaveByNameAndPinCounts(String topicName, int pinCounts) {
-        Topic topic = TopicFixture.createByName(topicName);
+        Topic topic = TopicFixture.createByName(topicName, member);
         for (int i = 0; i < pinCounts; i++) {
             PinFixture.create(ALL_PINS_LOCATION, topic);
         }
