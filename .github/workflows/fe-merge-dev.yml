@@ -48,16 +48,16 @@ jobs:
 
       steps:
         - name: delete old js file
-          run: rm -rf /home/ubuntu/frontend/build/dist
+          run: rm -rf /home/ubuntu/frontend/dist
 
         - name: download js file from artifact
           uses: actions/download-artifact@v3
           with:
             name: FrontendApplication
-            path: /home/ubuntu/frontend/build/
+            path: /home/ubuntu/frontend
 
         - name: deploy
-          run: /home/ubuntu/frontend/build/deploy.sh
+          run: /home/ubuntu/frontend/deploy.sh
 
         - name: send slack message
 
