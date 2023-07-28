@@ -38,9 +38,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: FrontendApplication
-          path: frontend/dist/main.bundle.js
+          path: frontend/dist
 
-    deploy:
+  deploy:
       runs-on: [ self-hosted, prod]
       needs: build-and-upload
 
@@ -48,16 +48,16 @@ jobs:
 
       steps:
         - name: delete old js file
-          run: rm -rf /home/ubuntu/frontend/build/*.js
+          run: rm -rf /home/ubuntu/frontend/dist
 
         - name: download js file from artifact
           uses: actions/download-artifact@v3
           with:
             name: FrontendApplication
-            path: /home/ubuntu/frontend/build/
+            path: /home/ubuntu/frontend/
 
         - name: deploy
-          runs: /home/ubuntu/frontend/build/deploy.sh
+          run: /home/ubuntu/frontend/deploy.sh
 
         - name: send slack message
 
