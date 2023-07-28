@@ -1,5 +1,8 @@
 package com.mapbefine.mapbefine.entity.topic;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 import lombok.Getter;
 
 @Getter
@@ -13,4 +16,18 @@ public enum Permission {
     Permission(String title) {
         this.title = title;
     }
+
+    @JsonCreator
+    public static Publicity from(String input) {
+        return Arrays.stream(values())
+                .filter(permission -> isSameName(input, permission))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private static boolean isSameName(String input, Publicity permission) {
+        return permission.name()
+                .equalsIgnoreCase(input);
+    }
+
 }
