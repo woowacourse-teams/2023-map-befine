@@ -1,7 +1,9 @@
-package com.mapbefine.mapbefine.entity;
+package com.mapbefine.mapbefine.entity.member;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.entity.BaseEntity;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,7 +44,7 @@ public class Member extends BaseEntity {
     private List<Topic> createdTopic = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<TopicPermissionMember> topicsWithPermission = new ArrayList<>();
+    private List<MemberTopicPermission> topicsWithPermission = new ArrayList<>();
 
     public Member(
             String name,
@@ -71,7 +73,7 @@ public class Member extends BaseEntity {
 
     public List<Topic> getAllTopicsWithPermission() {
         List<Topic> allTopicsWithPermission = topicsWithPermission.stream()
-                .map(TopicPermissionMember::getTopic)
+                .map(MemberTopicPermission::getTopic)
                 .collect(Collectors.toList());
 
         allTopicsWithPermission.addAll(createdTopic);
@@ -80,6 +82,10 @@ public class Member extends BaseEntity {
 
     public boolean isAdmin() {
         return role == Role.ADMIN;
+    }
+
+    public boolean isUser() {
+        return role == Role.USER;
     }
 
 }

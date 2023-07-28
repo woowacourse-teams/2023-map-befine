@@ -1,7 +1,9 @@
-package com.mapbefine.mapbefine.entity;
+package com.mapbefine.mapbefine.entity.topic;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.entity.BaseEntity;
+import com.mapbefine.mapbefine.entity.pin.Pin;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,13 +46,17 @@ public class Topic extends BaseEntity {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @ColumnDefault(value = "false")
-    private boolean isDeleted = false;
+    private Publicity publicity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TopicStatus topicStatus;
+    private Permission permission;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "false")
+    private boolean isDeleted = false;
 
     public Topic(
             String name,
@@ -111,11 +117,11 @@ public class Topic extends BaseEntity {
     }
 
     public boolean isPublic() {
-        return topicStatus == TopicStatus.PUBLIC;
+        return publicity == Publicity.PUBLIC;
     }
 
     public boolean isPrivate() {
-        return topicStatus == TopicStatus.PRIVATE;
+        return publicity == Publicity.PRIVATE;
     }
 
 }

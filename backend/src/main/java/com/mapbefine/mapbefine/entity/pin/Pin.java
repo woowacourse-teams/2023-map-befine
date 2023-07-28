@@ -1,7 +1,9 @@
-package com.mapbefine.mapbefine.entity;
+package com.mapbefine.mapbefine.entity.pin;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.entity.BaseEntity;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

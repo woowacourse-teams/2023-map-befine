@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.dto;
 
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 import java.time.LocalDateTime;
 
 public record TopicResponse(

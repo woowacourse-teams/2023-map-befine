@@ -1,16 +1,16 @@
-package com.mapbefine.mapbefine.entity;
+package com.mapbefine.mapbefine.entity.topic;
 
 import lombok.Getter;
 
 @Getter
-public enum TopicStatus {
+public enum Publicity {
 
     PUBLIC("같이 볼 지도"),
     PRIVATE("혼자 볼 지도");
 
     private final String title;
 
-    TopicStatus(String title) {
+    Publicity(String title) {
         this.title = title;
     }
 

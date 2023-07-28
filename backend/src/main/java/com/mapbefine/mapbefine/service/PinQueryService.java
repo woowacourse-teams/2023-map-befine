@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.service;
 
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinResponse;
-import com.mapbefine.mapbefine.entity.Pin;
+import com.mapbefine.mapbefine.entity.pin.Pin;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import java.util.List;
 import java.util.NoSuchElementException;

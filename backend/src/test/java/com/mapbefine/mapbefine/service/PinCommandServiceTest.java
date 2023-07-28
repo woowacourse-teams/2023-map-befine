@@ -1,27 +1,26 @@
 package com.mapbefine.mapbefine.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinUpdateRequest;
-import com.mapbefine.mapbefine.entity.Coordinate;
-import com.mapbefine.mapbefine.entity.Location;
-import com.mapbefine.mapbefine.entity.Pin;
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.pin.Coordinate;
+import com.mapbefine.mapbefine.entity.pin.Location;
+import com.mapbefine.mapbefine.entity.pin.Pin;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SpringBootTest
@@ -47,7 +46,8 @@ class PinCommandServiceTest {
 
     @BeforeEach
     void setUp() {
-        topic = topicRepository.save(new Topic("topicName", "topicDescription", "https://map-befine-official.github.io/favicon.png"));
+        topic = topicRepository.save(
+                new Topic("topicName", "topicDescription", "https://map-befine-official.github.io/favicon.png"));
     }
 
     @Test
@@ -216,7 +216,7 @@ class PinCommandServiceTest {
         Long savedPinId = pinCommandService.save(createRequest);
 
         // when then
-        PinUpdateRequest updateRequest = new PinUpdateRequest("", "updatedDescription",BASE_IMAGES);
+        PinUpdateRequest updateRequest = new PinUpdateRequest("", "updatedDescription", BASE_IMAGES);
         assertThatThrownBy(() -> pinCommandService.update(savedPinId, updateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }

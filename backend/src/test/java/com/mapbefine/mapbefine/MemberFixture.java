@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine;
 
-import com.mapbefine.mapbefine.entity.Member;
-import com.mapbefine.mapbefine.entity.Role;
+import com.mapbefine.mapbefine.entity.member.Member;
+import com.mapbefine.mapbefine.entity.member.Role;
 
 public class MemberFixture {
 

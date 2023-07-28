@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.entity;
+package com.mapbefine.mapbefine.entity.member;
 
 import lombok.Getter;
 

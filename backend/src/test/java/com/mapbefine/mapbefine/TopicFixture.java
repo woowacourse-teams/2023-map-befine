@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine;
 
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 
 public class TopicFixture {
 

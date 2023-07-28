@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.repository;
 
-import com.mapbefine.mapbefine.entity.Topic;
+import com.mapbefine.mapbefine.entity.topic.Topic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
