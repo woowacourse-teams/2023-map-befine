@@ -70,13 +70,4 @@ public abstract class AuthMember {
         return publicity == Publicity.PRIVATE;
     }
 
-    @Override
-    public String toString() {
-        return "AuthMember{" +
-                "memberId=" + memberId +
-                ", createdTopic=" + createdTopic +
-                ", topicsWithPermission=" + topicsWithPermission +
-                '}';
-    }
-
 }

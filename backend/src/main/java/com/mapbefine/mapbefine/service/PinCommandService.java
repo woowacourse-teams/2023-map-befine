@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.service;
 
+import com.mapbefine.mapbefine.config.auth.AuthMember;
+import com.mapbefine.mapbefine.config.auth.AuthTopic;
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinUpdateRequest;
 import com.mapbefine.mapbefine.entity.pin.Coordinate;
@@ -32,10 +34,11 @@ public class PinCommandService {
         this.topicRepository = topicRepository;
     }
 
-    public Long save(PinCreateRequest request) {
+    public Long save(AuthMember member, PinCreateRequest request) {
         Coordinate coordinate = Coordinate.from(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
+        member.canPinCreateOrUpdate(AuthTopic.from(topic));
 
         Location pinLocation = locationRepository.findAllByRectangle(
                         coordinate.getLatitude(),
@@ -73,19 +76,29 @@ public class PinCommandService {
         return locationRepository.save(location);
     }
 
-    public void update(Long pinId, PinUpdateRequest request) {
-        Pin pin = pinRepository.findById(pinId).orElseThrow(NoSuchElementException::new);
+    public void update(
+            AuthMember member,
+            Long pinId,
+            PinUpdateRequest request
+    ) {
+        Pin pin = pinRepository.findById(pinId)
+                .orElseThrow(NoSuchElementException::new);
+        member.canPinCreateOrUpdate(AuthTopic.from(pin.getTopic()));
 
         pin.update(request.name(), request.description());
 
         pinRepository.save(pin);
     }
 
-    public void removeById(Long pinId) {
+    public void removeById(AuthMember member, Long pinId) {
+        Pin pin = pinRepository.findById(pinId)
+                .orElseThrow(NoSuchElementException::new);
+        member.canDelete(AuthTopic.from(pin.getTopic()));
         pinRepository.deleteById(pinId);
     }
 
-    public void removeAllByTopicId(Long topicId) {
-        pinRepository.deleteAllByTopicId(topicId);
+    public void removeAllByTopicId(Long topicId) { // TODO : pinCommandService 에는 필요없는 메서드 인 것 같음
+//        pinRepository.deleteAllByTopicId(topicId);
     }
+
 }

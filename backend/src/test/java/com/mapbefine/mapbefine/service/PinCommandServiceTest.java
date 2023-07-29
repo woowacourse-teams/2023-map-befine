@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.MemberFixture;
+import com.mapbefine.mapbefine.config.auth.AuthMember;
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinUpdateRequest;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class PinCommandServiceTest {
     // TODO : Custom Annotation 인 @ServiceTest 를 붙여서 동작시키면, 중복된 Location 을 전혀 찾아오지 못하는 문제가 발생 (터지는 테스트는 @DisplayName("핀을 저장하려는 위치(Location)가 존재하면 해당 위치에 핀을 저장한다." 이 테스트))
+
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     @Autowired
@@ -55,11 +57,13 @@ class PinCommandServiceTest {
 
     private Topic topic;
     private Member member;
+    private AuthMember authMember;
 
     @BeforeEach
     void setUp() {
         locationRepository.deleteAll();
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        authMember = AuthMember.from(member);
         topic = topicRepository.save(
                 new Topic(
                         "topicName",
@@ -93,10 +97,10 @@ class PinCommandServiceTest {
                 BASE_IMAGES
         );
 
-        Long savedPinId = pinCommandService.save(request);
+        Long savedPinId = pinCommandService.save(authMember, request);
 
         // then
-        PinDetailResponse actual = pinQueryService.findById(savedPinId);
+        PinDetailResponse actual = pinQueryService.findById(authMember, savedPinId);
         PinDetailResponse expected = new PinDetailResponse(
                 savedPinId,
                 "name",
@@ -144,10 +148,10 @@ class PinCommandServiceTest {
                 longitude.toString(),
                 BASE_IMAGES
         );
-        Long savedPinId = pinCommandService.save(request);
+        Long savedPinId = pinCommandService.save(authMember, request);
 
         // then
-        PinDetailResponse actual = pinQueryService.findById(savedPinId);
+        PinDetailResponse actual = pinQueryService.findById(authMember, savedPinId);
         PinDetailResponse expected = new PinDetailResponse(
                 savedPinId,
                 "name",
@@ -189,7 +193,7 @@ class PinCommandServiceTest {
                 longitude.toString(),
                 BASE_IMAGES
         );
-        Long savedPinId = pinCommandService.save(createRequest);
+        Long savedPinId = pinCommandService.save(authMember, createRequest);
 
         // when
         PinUpdateRequest updateRequest = new PinUpdateRequest(
@@ -197,10 +201,10 @@ class PinCommandServiceTest {
                 "updatedDescription",
                 BASE_IMAGES
         );
-        pinCommandService.update(savedPinId, updateRequest);
+        pinCommandService.update(authMember, savedPinId, updateRequest);
 
         // then
-        PinDetailResponse actual = pinQueryService.findById(savedPinId);
+        PinDetailResponse actual = pinQueryService.findById(authMember, savedPinId);
         PinDetailResponse expected = new PinDetailResponse(
                 savedPinId,
                 "updatedName",
@@ -236,11 +240,11 @@ class PinCommandServiceTest {
                 longitude.toString(),
                 BASE_IMAGES
         );
-        Long savedPinId = pinCommandService.save(createRequest);
+        Long savedPinId = pinCommandService.save(authMember, createRequest);
 
         // when then
         PinUpdateRequest updateRequest = new PinUpdateRequest("", "updatedDescription", BASE_IMAGES);
-        assertThatThrownBy(() -> pinCommandService.update(savedPinId, updateRequest))
+        assertThatThrownBy(() -> pinCommandService.update(authMember, savedPinId, updateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -263,13 +267,13 @@ class PinCommandServiceTest {
                 longitude.toString(),
                 BASE_IMAGES
         );
-        Long savedPinId = pinCommandService.save(createRequest);
+        Long savedPinId = pinCommandService.save(authMember, createRequest);
 
         // when
         Pin pin = pinRepository.findById(savedPinId).get();
         assertThat(pin.isDeleted()).isFalse();
 
-        pinCommandService.removeById(savedPinId);
+        pinCommandService.removeById(authMember, savedPinId);
 
         // then
         Pin deletedPin = pinRepository.findById(savedPinId).get();
@@ -298,14 +302,15 @@ class PinCommandServiceTest {
         );
 
         for (int i = 0; i < 10; i++) {
-            pinCommandService.save(createRequest);
+            pinCommandService.save(authMember, createRequest);
         }
 
         // when
         Topic findTopicBeforeDeleting = topicRepository.findById(topic.getId()).get();
         assertThat(findTopicBeforeDeleting.getPins()).extractingResultOf("isDeleted")
                 .doesNotContain(true);
-        pinCommandService.removeAllByTopicId(topic.getId());
+//        pinCommandService.removeAllByTopicId(topic.getId()); // TODO : 이 메서드는 현재 테스트에서만 사용되고 있는 메서드 ??
+        pinRepository.deleteAllByTopicId(topic.getId());
 
         // then
         Topic findTopicAfterDeleting = topicRepository.findById(topic.getId()).get();

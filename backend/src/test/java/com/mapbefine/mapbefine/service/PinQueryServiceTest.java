@@ -2,9 +2,11 @@ package com.mapbefine.mapbefine.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 
 import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.annotation.ServiceTest;
+import com.mapbefine.mapbefine.config.auth.AuthMember;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinResponse;
 import com.mapbefine.mapbefine.entity.member.Member;
@@ -20,7 +22,6 @@ import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.MemberRepository;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
-import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 @ServiceTest
 class PinQueryServiceTest {
@@ -56,6 +56,7 @@ class PinQueryServiceTest {
 
     private Topic topic;
     private Member member;
+    private AuthMember authMember;
 
     @BeforeEach
     void setUp() {
@@ -64,6 +65,7 @@ class PinQueryServiceTest {
         coordinate = new Coordinate(latitude, longitude);
         location = saveLocation(coordinate);
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        authMember = AuthMember.from(member);
         topic = topicRepository.save(
                 new Topic(
                         "topicName",
@@ -95,7 +97,7 @@ class PinQueryServiceTest {
         }
 
         // when
-        List<PinResponse> responses = pinQueryService.findAll();
+        List<PinResponse> responses = pinQueryService.findAll(authMember);
 
         // then
         assertThat(responses).usingRecursiveComparison()
@@ -121,7 +123,7 @@ class PinQueryServiceTest {
                 null,
                 BASE_IMAGES
         );
-        PinDetailResponse actual = pinQueryService.findById(savedId);
+        PinDetailResponse actual = pinQueryService.findById(authMember, savedId);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -133,7 +135,7 @@ class PinQueryServiceTest {
     @DisplayName("존재하지 않는 핀의 Id 를 넘기면 예외를 발생시킨다.")
     void findById_Fail() {
         // given when then
-        assertThatThrownBy(() -> pinQueryService.findById(1L))
+        assertThatThrownBy(() -> pinQueryService.findById(authMember, 1L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 

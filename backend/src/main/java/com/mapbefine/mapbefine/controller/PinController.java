@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.controller;
 
+import com.mapbefine.mapbefine.config.auth.AuthMember;
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.dto.PinDetailResponse;
 import com.mapbefine.mapbefine.dto.PinResponse;
@@ -33,15 +34,19 @@ public class PinController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> add(@RequestBody PinCreateRequest request) {
-        Long savedId = pinCommandService.save(request);
+    public ResponseEntity<Void> add(AuthMember member, @RequestBody PinCreateRequest request) {
+        Long savedId = pinCommandService.save(member, request);
 
         return ResponseEntity.created(URI.create("/pins/" + savedId)).build();
     }
 
     @PutMapping("/{pinId}")
-    public ResponseEntity<Void> update(@PathVariable Long pinId, @RequestBody PinUpdateRequest request) {
-        pinCommandService.update(pinId, request);
+    public ResponseEntity<Void> update(
+            AuthMember member,
+            @PathVariable Long pinId,
+            @RequestBody PinUpdateRequest request
+    ) {
+        pinCommandService.update(member, pinId, request);
 
         return ResponseEntity.ok()
                 .header("Location", "/pins/" + pinId)
@@ -49,22 +54,22 @@ public class PinController {
     }
 
     @DeleteMapping("/{pinId}")
-    public ResponseEntity<Void> delete(@PathVariable Long pinId) {
-        pinCommandService.removeById(pinId);
+    public ResponseEntity<Void> delete(AuthMember member, @PathVariable Long pinId) {
+        pinCommandService.removeById(member, pinId);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{pinId}")
-    public ResponseEntity<PinDetailResponse> findById(@PathVariable Long pinId) {
-        PinDetailResponse response = pinQueryService.findById(pinId);
+    public ResponseEntity<PinDetailResponse> findById(AuthMember member, @PathVariable Long pinId) {
+        PinDetailResponse response = pinQueryService.findById(member, pinId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<PinResponse>> findAll() {
-        List<PinResponse> allResponses = pinQueryService.findAll();
+    public ResponseEntity<List<PinResponse>> findAll(AuthMember member) {
+        List<PinResponse> allResponses = pinQueryService.findAll(member);
 
         return ResponseEntity.ok(allResponses);
     }

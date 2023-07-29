@@ -43,9 +43,7 @@ public class TopicQueryService {
 
     public TopicDetailResponse findById(AuthMember member, Long id) {
         Topic topic = topicRepository.findById(id)
-                .stream()
                 .filter(presentTopic -> member.canRead(AuthTopic.from(presentTopic)))
-                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
 
         return TopicDetailResponse.from(topic);

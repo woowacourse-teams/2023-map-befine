@@ -32,7 +32,7 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 추가")
     void add() throws Exception {
-        given(pinCommandService.save(any())).willReturn(1L);
+        given(pinCommandService.save(any(), any())).willReturn(1L);
 
         PinCreateRequest pinCreateRequest = new PinCreateRequest(
                 1L,
@@ -93,7 +93,7 @@ class PinControllerTest extends RestDocsIntegration {
                 BASE_IMAGES
         );
 
-        given(pinQueryService.findById(any())).willReturn(pinDetailResponse);
+        given(pinQueryService.findById(any(), any())).willReturn(pinDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins/1")
@@ -123,7 +123,7 @@ class PinControllerTest extends RestDocsIntegration {
                 )
         );
 
-        given(pinQueryService.findAll()).willReturn(pinResponses);
+        given(pinQueryService.findAll(any())).willReturn(pinResponses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins")

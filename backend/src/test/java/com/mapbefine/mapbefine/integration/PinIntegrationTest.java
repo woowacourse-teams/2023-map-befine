@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mapbefine.mapbefine.LocationFixture;
 import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.TopicFixture;
+import com.mapbefine.mapbefine.config.auth.AuthMember;
 import com.mapbefine.mapbefine.dto.PinCreateRequest;
 import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.member.Role;
@@ -25,10 +26,13 @@ import org.springframework.http.MediaType;
 
 public class PinIntegrationTest extends IntegrationTest {
 
+    private static final String AUTHORIZATION = "Authorization";
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
+
     private Topic topic;
     private Location location;
     private Member member;
+    private AuthMember authMember;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -42,6 +46,7 @@ public class PinIntegrationTest extends IntegrationTest {
     @BeforeEach
     void saveTopicAndLocation() {
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        authMember = AuthMember.from(member);
         topic = topicRepository.save(TopicFixture.createByName("PinIntegration 토픽", member));
         location = locationRepository.save(LocationFixture.createByCoordinate(37.5152933, 127.1029866));
     }
@@ -71,6 +76,7 @@ public class PinIntegrationTest extends IntegrationTest {
 
     private ExtractableResponse<Response> createPin(PinCreateRequest request) {
         return RestAssured.given().log().all()
+                .header(AUTHORIZATION, member.getEmail())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/pins")
