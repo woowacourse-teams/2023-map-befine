@@ -24,23 +24,28 @@ public class User extends AuthMember {
     }
 
     @Override
-    public boolean canDelete(AuthTopic authTopic) {
-        return isPrivate(authTopic.publicity()) && isCreator(authTopic.topicId());
+    public void canDelete(AuthTopic authTopic) {
+        if (isPrivate(authTopic.publicity()) && isCreator(authTopic.topicId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
     }
 
     @Override
-    public boolean canTopicCreate(AuthTopic authTopic) {
-        return true;
+    public void canTopicCreate() {
     }
 
     @Override
-    public boolean canTopicUpdate(AuthTopic authTopic) {
-        return isCreator(authTopic.topicId());
+    public void canTopicUpdate(AuthTopic authTopic) {
+        if (isCreator(authTopic.topicId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
     }
 
     @Override
-    public boolean canPinCreateOrUpdate(AuthTopic authTopic) {
-        return isAllMembers(authTopic) || hasPermission(authTopic.topicId());
+    public void canPinCreateOrUpdate(AuthTopic authTopic) {
+        if (isAllMembers(authTopic) || hasPermission(authTopic.topicId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
     }
 
     private boolean isAllMembers(final AuthTopic authTopic) {

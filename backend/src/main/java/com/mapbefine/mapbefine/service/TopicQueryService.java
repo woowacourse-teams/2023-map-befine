@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.service;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
+import com.mapbefine.mapbefine.config.auth.AuthMember;
+import com.mapbefine.mapbefine.config.auth.AuthTopic;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
@@ -32,32 +34,28 @@ public class TopicQueryService {
         this.locationRepository = locationRepository;
     }
 
-    public List<TopicResponse> findAll() {
-        return topicRepository.findAll()
-                .stream()
+    public List<TopicResponse> findAll(AuthMember member) {
+        return topicRepository.findAll().stream()
+                .filter(topic -> member.canRead(AuthTopic.from(topic)))
                 .map(TopicResponse::from)
                 .toList();
     }
 
-//    public List<TopicResponse> findAll(AuthMember member) {
-//        return topicRepository.findAll().stream()
-//                .filter(topic -> member.canRead(AuthTopic.from(topic)))
-//                .map(TopicResponse::from)
-//                .toList();
-//    }
-
-    public TopicDetailResponse findById(Long id) {
+    public TopicDetailResponse findById(AuthMember member, Long id) {
         Topic topic = topicRepository.findById(id)
+                .stream()
+                .filter(presentTopic -> member.canRead(AuthTopic.from(presentTopic)))
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
 
         return TopicDetailResponse.from(topic);
     }
 
-    public List<TopicResponse> findBests(TopicFindBestRequest request) {
+    public List<TopicResponse> findBests(AuthMember member, TopicFindBestRequest request) {
         List<Location> locations = findLocationsInRectangle(request);
         Map<Topic, Long> topicCounts = countTopicsInLocations(locations);
 
-        return sortTopicsByCounts(topicCounts);
+        return sortTopicsByCounts(topicCounts, member);
     }
 
     private List<Location> findLocationsInRectangle(TopicFindBestRequest request) {
@@ -75,8 +73,9 @@ public class TopicQueryService {
                 .collect(groupingBy(Pin::getTopic, counting()));
     }
 
-    private List<TopicResponse> sortTopicsByCounts(Map<Topic, Long> topicCounts) {
+    private List<TopicResponse> sortTopicsByCounts(Map<Topic, Long> topicCounts, AuthMember member) {
         return topicCounts.entrySet().stream()
+                .filter(topicEntry -> member.canRead(AuthTopic.from(topicEntry.getKey()))) // TODO : 볼 수 있는 토픽만 걸러내는 과정
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .map(Map.Entry::getKey)
                 .map(TopicResponse::from)

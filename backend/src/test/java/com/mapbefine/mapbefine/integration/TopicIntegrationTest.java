@@ -176,6 +176,7 @@ class TopicIntegrationTest extends IntegrationTest {
         );
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
+                .header(AUTHORIZATION, member.getEmail())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(송파_데이트코스)
                 .when().put("/topics/{id}", topicId)
@@ -206,6 +207,7 @@ class TopicIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
+                .header(AUTHORIZATION, member.getEmail())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/topics/{id}", topicId)
                 .then().log().all()

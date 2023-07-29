@@ -38,6 +38,6 @@ public class MemberArgumentResolver implements HandlerMethodArgumentResolver {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElse(null);
 
-        return AuthMember.from(member); // 이런 식으로 하면 바로 Guest, User, Admin 이 가능하지 않을까
+        return AuthMember.from(member);
     }
 }

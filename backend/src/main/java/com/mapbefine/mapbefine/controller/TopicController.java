@@ -34,52 +34,59 @@ public class TopicController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<Void> create(AuthMember authMember, @RequestBody TopicCreateRequest request) {
-        long topicId = topicCommandService.createNew(authMember, request);
+    public ResponseEntity<Void> create(AuthMember member, @RequestBody TopicCreateRequest request) {
+        long topicId = topicCommandService.createNew(member, request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();
     }
 
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeAndCreate(AuthMember authMember, @RequestBody TopicMergeRequest request) {
-        long topicId = topicCommandService.createMerge(authMember, request);
+    public ResponseEntity<Void> mergeAndCreate(AuthMember member, @RequestBody TopicMergeRequest request) {
+        long topicId = topicCommandService.createMerge(member, request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();
     }
 
     @PutMapping("/{topicId}")
-    public ResponseEntity<Void> update(@PathVariable Long topicId, @RequestBody TopicUpdateRequest request) {
-        topicCommandService.update(topicId, request);
+    public ResponseEntity<Void> update(
+            AuthMember member,
+            @PathVariable Long topicId,
+            @RequestBody TopicUpdateRequest request
+    ) {
+        topicCommandService.update(member, topicId, request);
 
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{topicId}")
-    public ResponseEntity<Void> delete(@PathVariable Long topicId) {
-        topicCommandService.delete(topicId);
+    public ResponseEntity<Void> delete(AuthMember member, @PathVariable Long topicId) {
+        topicCommandService.delete(member, topicId);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<TopicResponse>> findAll() {
-        List<TopicResponse> topics = topicQueryService.findAll();
+    public ResponseEntity<List<TopicResponse>> findAll(AuthMember member)  {
+        List<TopicResponse> topics = topicQueryService.findAll(member);
 
         return ResponseEntity.ok(topics);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TopicDetailResponse> findById(@PathVariable Long id) {
-        TopicDetailResponse response = topicQueryService.findById(id);
+    public ResponseEntity<TopicDetailResponse> findById(AuthMember member, @PathVariable Long id) {
+        TopicDetailResponse response = topicQueryService.findById(member, id);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/best")
-    public ResponseEntity<List<TopicResponse>> findBests(@RequestBody TopicFindBestRequest request) {
-        List<TopicResponse> responses = topicQueryService.findBests(request);
+    public ResponseEntity<List<TopicResponse>> findBests(
+            AuthMember member,
+            @RequestBody TopicFindBestRequest request
+    ) {
+        List<TopicResponse> responses = topicQueryService.findBests(member, request);
 
         return ResponseEntity.ok(responses);
     }

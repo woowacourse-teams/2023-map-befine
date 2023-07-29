@@ -17,23 +17,23 @@ public class Guest extends AuthMember {
     }
 
     @Override
-    public boolean canDelete(AuthTopic authTopic) {
-        return false;
+    public void canDelete(AuthTopic authTopic) {
+        throw new IllegalArgumentException("권한이 없습니다.");
     }
 
     @Override
-    public boolean canTopicCreate(AuthTopic authTopic) {
-        return false;
+    public void canTopicCreate() {
+        throw new IllegalArgumentException("권한이 없습니다.");
     }
 
     @Override
-    public boolean canTopicUpdate(AuthTopic authTopic) {
-        return false;
+    public void canTopicUpdate(AuthTopic authTopic) {
+        throw new IllegalArgumentException("권한이 없습니다.");
     }
 
     @Override
-    public boolean canPinCreateOrUpdate(AuthTopic authTopic) {
-        return false;
+    public void canPinCreateOrUpdate(AuthTopic authTopic) {
+        throw new IllegalArgumentException("권한이 없습니다.");
     }
 
 }

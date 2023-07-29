@@ -7,6 +7,7 @@ import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.PinFixture;
 import com.mapbefine.mapbefine.TopicFixture;
 import com.mapbefine.mapbefine.annotation.ServiceTest;
+import com.mapbefine.mapbefine.config.auth.AuthMember;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
 import com.mapbefine.mapbefine.dto.TopicFindBestRequest;
 import com.mapbefine.mapbefine.dto.TopicResponse;
@@ -43,10 +44,12 @@ class TopicQueryServiceTest {
     private Topic TOPIC_BEST_1ST;
     private Location ALL_PINS_LOCATION;
     private Member member;
+    private AuthMember authMember;
 
     @BeforeEach
     void setup() {
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        authMember = AuthMember.from(member);
         ALL_PINS_LOCATION = LocationFixture.createByCoordinate(35.0, 127.0);
         locationRepository.save(ALL_PINS_LOCATION);
 
@@ -68,7 +71,7 @@ class TopicQueryServiceTest {
     void findAll() {
         // given
         // when
-        List<TopicResponse> topics = topicQueryService.findAll();
+        List<TopicResponse> topics = topicQueryService.findAll(authMember);
 
         // then
         assertThat(topics).contains(TopicResponse.from(TOPIC_BEST_3RD));
@@ -79,7 +82,7 @@ class TopicQueryServiceTest {
     void findById() {
         // given
         // when
-        TopicDetailResponse actual = topicQueryService.findById(TOPIC_BEST_3RD.getId());
+        TopicDetailResponse actual = topicQueryService.findById(authMember, TOPIC_BEST_3RD.getId());
 
         // then
         assertThat(actual).isEqualTo(TopicDetailResponse.from(TOPIC_BEST_3RD));
@@ -96,7 +99,7 @@ class TopicQueryServiceTest {
         );
 
         // when
-        List<TopicResponse> currentTopics = topicQueryService.findBests(currentLocation);
+        List<TopicResponse> currentTopics = topicQueryService.findBests(authMember, currentLocation);
 
         // then
         assertThat(currentTopics.get(0)).isEqualTo(TopicResponse.from(TOPIC_BEST_1ST));

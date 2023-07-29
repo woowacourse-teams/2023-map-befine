@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.config.auth;
 
 public class Admin extends AuthMember {
 
-    public Admin(Long memberId) { // 준팍 여기에 memberId 는 넣어야지 찾을 수 있더라고요
+    public Admin(Long memberId) { // TODO : 준팍 여기에 memberId 는 넣어야지 찾을 수 있더라고요
         super(
                 memberId,
                 null,
@@ -16,23 +16,19 @@ public class Admin extends AuthMember {
     }
 
     @Override
-    public boolean canDelete(AuthTopic authTopic) {
-        return true;
+    public void canDelete(AuthTopic authTopic) {
     }
 
     @Override
-    public boolean canTopicCreate(AuthTopic authTopic) {
-        return true;
+    public void canTopicCreate() {
     }
 
     @Override
-    public boolean canTopicUpdate(AuthTopic authTopic) {
-        return true;
+    public void canTopicUpdate(AuthTopic authTopic) {
     }
 
     @Override
-    public boolean canPinCreateOrUpdate(AuthTopic authTopic) {
-        return true;
+    public void canPinCreateOrUpdate(AuthTopic authTopic) {
     }
 
 }

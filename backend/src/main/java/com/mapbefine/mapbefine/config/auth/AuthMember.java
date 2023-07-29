@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.entity.member.MemberTopicPermission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import java.util.List;
+import java.util.function.Predicate;
 import lombok.Getter;
 
 @Getter
@@ -53,13 +54,13 @@ public abstract class AuthMember {
 
     public abstract boolean canRead(AuthTopic authTopic);
 
-    public abstract boolean canDelete(AuthTopic authTopic);
+    public abstract void canDelete(AuthTopic authTopic);
 
-    public abstract boolean canTopicCreate(AuthTopic authTopic);
+    public abstract void canTopicCreate();
 
-    public abstract boolean canTopicUpdate(AuthTopic authTopic);
+    public abstract void canTopicUpdate(AuthTopic authTopic);
 
-    public abstract boolean canPinCreateOrUpdate(AuthTopic authTopic);
+    public abstract void canPinCreateOrUpdate(AuthTopic authTopic);
 
     protected boolean isPublic(Publicity publicity) {
         return publicity == Publicity.PUBLIC;

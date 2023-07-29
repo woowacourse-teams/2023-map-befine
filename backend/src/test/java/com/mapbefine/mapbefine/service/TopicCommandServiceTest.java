@@ -7,6 +7,7 @@ import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.PinFixture;
 import com.mapbefine.mapbefine.TopicFixture;
 import com.mapbefine.mapbefine.annotation.ServiceTest;
+import com.mapbefine.mapbefine.config.auth.AuthMember;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
 import com.mapbefine.mapbefine.entity.member.Member;
 import com.mapbefine.mapbefine.entity.member.Role;
@@ -37,10 +38,13 @@ class TopicCommandServiceTest {
     private TopicCommandService topicCommandService;
 
     private Topic TOPIC_WITH_TWO_PINS;
+    private Member member;
+    private AuthMember authMember;
 
     @BeforeEach
     void setup() {
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        authMember = AuthMember.from(member);
         TOPIC_WITH_TWO_PINS = TopicFixture.createByName("준팍의 또간집", member);
 
         Location location = LocationFixture.create();
@@ -62,7 +66,7 @@ class TopicCommandServiceTest {
         String name = "준팍의 안갈 집";
         String description = "다시는 안갈 집";
         String imageUrl = "https://map-befine-official.github.io/favicon.png";
-        topicCommandService.update(id, new TopicUpdateRequest(name, imageUrl, description));
+        topicCommandService.update(authMember, id, new TopicUpdateRequest(name, imageUrl, description));
 
         //then
         Topic topic = topicRepository.findById(id).get();
@@ -78,7 +82,7 @@ class TopicCommandServiceTest {
         Long id = TOPIC_WITH_TWO_PINS.getId();
 
         //when
-        topicCommandService.delete(id);
+        topicCommandService.delete(authMember, id);
 
         //then
         Topic deletedTopic = topicRepository.findById(id).get();

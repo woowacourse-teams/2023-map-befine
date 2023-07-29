@@ -3,8 +3,6 @@ package com.mapbefine.mapbefine.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import com.mapbefine.mapbefine.config.MemberArgumentResolver;
-import com.mapbefine.mapbefine.config.auth.Admin;
 import com.mapbefine.mapbefine.dto.PinResponse;
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicDetailResponse;
@@ -21,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,10 +30,6 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
     @MockBean
     private TopicQueryService topicQueryService;
-
-    @MockBean
-    private MemberArgumentResolver memberArgumentResolver;
-
 
     @Test
     @DisplayName("토픽 새로 생성")
@@ -115,7 +108,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 5,
                 LocalDateTime.now()
         ));
-        given(topicQueryService.findAll()).willReturn(responses);
+        given(topicQueryService.findAll(any())).willReturn(responses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics")
@@ -150,7 +143,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                         )
                 )
         );
-        given(topicQueryService.findById(any())).willReturn(topicDetailResponse);
+        given(topicQueryService.findById(any(), any())).willReturn(topicDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/1")
@@ -174,7 +167,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 LocalDateTime.now()
         ));
         TopicFindBestRequest topicFindBestRequest = new TopicFindBestRequest("37", "127");
-        given(topicQueryService.findBests(any())).willReturn(responses);
+        given(topicQueryService.findBests(any(), any())).willReturn(responses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/best")

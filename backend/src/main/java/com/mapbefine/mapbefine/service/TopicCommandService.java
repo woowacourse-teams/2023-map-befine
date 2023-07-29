@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.service;
 
 import com.mapbefine.mapbefine.config.auth.AuthMember;
+import com.mapbefine.mapbefine.config.auth.AuthTopic;
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
@@ -35,14 +36,16 @@ public class TopicCommandService {
         this.memberRepository = memberRepository;
     }
 
-    public long createNew(AuthMember authMember, TopicCreateRequest request) {
+    public long createNew(AuthMember member, TopicCreateRequest request) {
+        member.canTopicCreate();
+
         Topic topic = new Topic(
                 request.name(),
                 request.description(),
                 request.image(),
                 request.publicity(),
                 request.permission(),
-                findCreatorByAuthMember(authMember)
+                findCreatorByAuthMember(member)
         );
 
         topicRepository.save(topic);
@@ -56,8 +59,8 @@ public class TopicCommandService {
         return topic.getId();
     }
 
-    private Member findCreatorByAuthMember(final AuthMember authMember) {
-        return memberRepository.findById(authMember.getMemberId())
+    private Member findCreatorByAuthMember(AuthMember member) {
+        return memberRepository.findById(member.getMemberId())
                 .orElseThrow(NoSuchElementException::new);
     }
 
@@ -73,9 +76,12 @@ public class TopicCommandService {
                 .collect(Collectors.toList());
     }
 
-    public long createMerge(AuthMember authMember, TopicMergeRequest request) {
+    public long createMerge(AuthMember member, TopicMergeRequest request) {
         List<Long> topicIds = request.topics();
-        List<Topic> topics = topicRepository.findAllById(topicIds);
+        List<Topic> topics = topicRepository.findAllById(topicIds)
+                .stream()
+                .filter(topic -> member.canRead(AuthTopic.from(topic))) // TODO : 일단, 이렇게 Merge 하기 이전에 canRead 한 놈들만 골라낼 수 있도록 했어요.
+                .toList();
 
         validateExist(topicIds.size(), topics.size());
 
@@ -85,8 +91,9 @@ public class TopicCommandService {
                 request.image(),
                 request.publicity(),
                 request.permission(),
-                findCreatorByAuthMember(authMember)
+                findCreatorByAuthMember(member)
         );
+
         topicRepository.save(topic);
 
         List<Pin> original = topics.stream()
@@ -99,16 +106,18 @@ public class TopicCommandService {
         return topic.getId();
     }
 
-    public void update(Long id, TopicUpdateRequest request) {
+    public void update(AuthMember member, Long id, TopicUpdateRequest request) {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
+        member.canTopicUpdate(AuthTopic.from(topic));
 
         topic.update(request.name(), request.description(), request.image());
     }
 
-    public void delete(Long id) {
+    public void delete(AuthMember member, Long id) {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
+        member.canDelete(AuthTopic.from(topic));
 
         pinRepository.deleteAllByTopicId(id);
         topicRepository.deleteById(id);
