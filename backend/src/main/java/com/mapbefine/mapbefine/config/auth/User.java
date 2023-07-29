@@ -30,7 +30,7 @@ public class User extends AuthMember {
     }
 
     @Override
-    public void canTopicCreate() {
+    public void canTopicCreate() { // TODO : 이 부분은 로직을 작성할 필요 없어, @Override 없이 상속받은 메서드를 그냥 구현 없이 사용해도 될 것 같네용
     }
 
     @Override

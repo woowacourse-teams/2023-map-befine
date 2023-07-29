@@ -20,4 +20,5 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
     void deleteById(@Param("pinId") Long pinId);
 
     List<Pin> findAllByTopicId(Long topicId);
+
 }

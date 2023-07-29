@@ -14,8 +14,9 @@ import com.mapbefine.mapbefine.entity.topic.Topic;
 import com.mapbefine.mapbefine.repository.LocationRepository;
 import com.mapbefine.mapbefine.repository.MemberRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class PinIntegrationTest extends IntegrationTest {
+class PinIntegrationTest extends IntegrationTest {
 
     private static final String AUTHORIZATION = "Authorization";
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
@@ -32,7 +33,6 @@ public class PinIntegrationTest extends IntegrationTest {
     private Topic topic;
     private Location location;
     private Member member;
-    private AuthMember authMember;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -46,7 +46,6 @@ public class PinIntegrationTest extends IntegrationTest {
     @BeforeEach
     void saveTopicAndLocation() {
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));
-        authMember = AuthMember.from(member);
         topic = topicRepository.save(TopicFixture.createByName("PinIntegration 토픽", member));
         location = locationRepository.save(LocationFixture.createByCoordinate(37.5152933, 127.1029866));
     }
@@ -109,7 +108,7 @@ public class PinIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("핀 목록을 조회하면 저장된 Pin의 목록과 200을 반환한다.")
-    public void findAll_Success() {
+    void findAll_Success() {
         // given
         PinCreateRequest request1 = new PinCreateRequest(
                 topic.getId(),
@@ -153,7 +152,7 @@ public class PinIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("핀 상세 조회를 하면 Pin 정보와 함께 200을 반환한다.")
-    public void findDetail_Success() {
+    void findDetail_Success() {
         // given
         PinCreateRequest request = new PinCreateRequest(
                 topic.getId(),

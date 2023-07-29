@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -69,15 +68,6 @@ public class Member extends BaseEntity {
 
     public String getRoleKey() {
         return this.role.getKey();
-    }
-
-    public List<Topic> getAllTopicsWithPermission() {
-        List<Topic> allTopicsWithPermission = topicsWithPermission.stream()
-                .map(MemberTopicPermission::getTopic)
-                .collect(Collectors.toList());
-
-        allTopicsWithPermission.addAll(createdTopic);
-        return allTopicsWithPermission;
     }
 
     public boolean isAdmin() {

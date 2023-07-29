@@ -11,7 +11,7 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IntegrationTest {
     @LocalServerPort
-    int port;
+    private int port;
 
     @BeforeEach
     public void setUp() {

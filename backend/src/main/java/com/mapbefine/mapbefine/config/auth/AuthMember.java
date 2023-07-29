@@ -5,7 +5,6 @@ import com.mapbefine.mapbefine.entity.member.MemberTopicPermission;
 import com.mapbefine.mapbefine.entity.topic.Publicity;
 import com.mapbefine.mapbefine.entity.topic.Topic;
 import java.util.List;
-import java.util.function.Predicate;
 import lombok.Getter;
 
 @Getter

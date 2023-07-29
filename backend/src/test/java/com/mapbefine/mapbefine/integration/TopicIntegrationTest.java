@@ -20,7 +20,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +78,7 @@ class TopicIntegrationTest extends IntegrationTest {
         List<Pin> pins = pinRepository.findAll();
         List<Long> pinIds = pins.stream()
                 .map(Pin::getId)
-                .collect(Collectors.toList());
+                .toList();
 
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
@@ -126,7 +125,7 @@ class TopicIntegrationTest extends IntegrationTest {
         List<Topic> topics = topicRepository.findAll();
         List<Long> topicIds = topics.stream()
                 .map(Topic::getId)
-                .collect(Collectors.toList());
+                .toList();
 
         TopicMergeRequest 송파_데이트코스 = new TopicMergeRequest(
                 "송파 데이트코스",

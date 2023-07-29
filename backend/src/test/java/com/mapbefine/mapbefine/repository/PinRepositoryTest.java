@@ -21,8 +21,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 class PinRepositoryTest {
-    private static final Coordinate DEFAULT_COORDINATE =
-            new Coordinate(BigDecimal.valueOf(37.5152933), BigDecimal.valueOf(127.1029866));
+    private static final Coordinate DEFAULT_COORDINATE = new Coordinate(
+            BigDecimal.valueOf(37.5152933),
+            BigDecimal.valueOf(127.1029866)
+    );
 
     @Autowired
     private TopicRepository topicRepository;

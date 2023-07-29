@@ -14,7 +14,6 @@ import com.mapbefine.mapbefine.repository.TopicRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,7 +72,7 @@ public class TopicCommandService {
     private List<Pin> duplicateUserPins(List<Pin> pins, Topic topic) {
         return pins.stream()
                 .map(original -> original.copy(topic))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public long createMerge(AuthMember member, TopicMergeRequest request) {
@@ -99,7 +98,7 @@ public class TopicCommandService {
         List<Pin> original = topics.stream()
                 .map(Topic::getPins)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
         List<Pin> pins = duplicateUserPins(original, topic);
         pinRepository.saveAll(pins);
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
+
     @Query(
             "select l "
                     + "from Location l "
@@ -21,4 +22,5 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
             @Param("currentLongitude") BigDecimal currentLongitude,
             @Param("distance") BigDecimal distance
     );
+
 }

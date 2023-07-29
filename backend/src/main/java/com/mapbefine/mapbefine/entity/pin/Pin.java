@@ -128,17 +128,4 @@ public class Pin extends BaseEntity {
         return location.getRoadBaseAddress();
     }
 
-    @Override
-    public String toString() {
-        return "Pin{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", pinImages=" + pinImages +
-                ", location=" + location +
-                ", isDeleted=" + isDeleted +
-                ", topic=" + topic +
-                '}';
-    }
-
 }

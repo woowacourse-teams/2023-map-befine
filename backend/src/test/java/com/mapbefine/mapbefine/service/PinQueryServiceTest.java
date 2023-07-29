@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 
 import com.mapbefine.mapbefine.MemberFixture;
 import com.mapbefine.mapbefine.annotation.ServiceTest;
