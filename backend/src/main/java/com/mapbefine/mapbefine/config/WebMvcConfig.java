@@ -13,7 +13,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final MemberRepository memberRepository;
 
-    public WebMvcConfig(final MemberRepository memberRepository) {
+    public WebMvcConfig(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
@@ -31,7 +31,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addFormatters(final FormatterRegistry registry) {
+    public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToPermissionConverter());
         registry.addConverter(new StringToPublicityConverter());
     }

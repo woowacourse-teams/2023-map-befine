@@ -1,13 +1,13 @@
 package com.mapbefine.mapbefine.config;
 
-import com.mapbefine.mapbefine.entity.topic.Publicity;
+import com.mapbefine.mapbefine.entity.topic.Permission;
 import org.springframework.core.convert.converter.Converter;
 
-public class StringToPermissionConverter implements Converter<String, Publicity> {
+public class StringToPermissionConverter implements Converter<String, Permission> {
 
     @Override
-    public Publicity convert(String input) {
-        return Publicity.from(input);
+    public Permission convert(String input) {
+        return Permission.from(input);
     }
 
 }

@@ -37,6 +37,7 @@ public class TopicCommandService {
     }
 
     public long createNew(AuthMember member, TopicCreateRequest request) {
+        System.out.println(request);
         member.canTopicCreate();
 
         Topic topic = new Topic(

@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.config.auth;
 
 import com.mapbefine.mapbefine.entity.topic.Permission;
-import com.mapbefine.mapbefine.entity.topic.Publicity;
 import java.util.List;
 
 public class User extends AuthMember {
