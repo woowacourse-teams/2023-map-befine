@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { CoordinatesContext } from './CoordinatesContext';
 import { useParams } from 'react-router-dom';
 import useNavigator from '../hooks/useNavigator';
@@ -24,6 +24,15 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
   const { coordinates } = useContext(CoordinatesContext);
   const { topicId } = useParams<{ topicId: string }>();
   const { routePage } = useNavigator();
+
+  // 핀 추가하기 페이지에서 마커의 애니메이션 제거
+  useEffect(() => {
+    if (location.pathname === '/new-pin') {
+      if (markers.length > 0) {
+        removeAnimation();
+      }
+    }
+  }, [location.pathname]);
 
   //coordinates를 받아서 marker를 생성하고, marker를 markers 배열에 추가
   const createMarkers = (map: any) => {
@@ -59,6 +68,13 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
   const removeMarkers = () => {
     markers.forEach((marker: any) => marker.setMap(null));
     setMarkers([]);
+  };
+
+  //마커 에니메이션 제거
+  const removeAnimation = () => {
+    markers.forEach((marker: any) => {
+      marker._marker_data.options.animationLength = null;
+    });
   };
 
   return (

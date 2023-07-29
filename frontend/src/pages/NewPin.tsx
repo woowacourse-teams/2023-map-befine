@@ -12,10 +12,12 @@ import useNavigator from '../hooks/useNavigator';
 import { DefaultFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
+import { CoordinatesContext } from '../context/CoordinatesContext';
 
 const NewPin = () => {
   const [topic, setTopic] = useState<TopicType | null>(null);
-  const { markers, createMarkers, removeMarkers } = useContext(MarkerContext);
+  const { markers } = useContext(MarkerContext);
+  const { clickedCoordinate } = useContext(CoordinatesContext);
   const { formValues, onChangeInput } = useFormValues<DefaultFormValuesType>({
     name: '',
     address: '',
@@ -46,14 +48,6 @@ const NewPin = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
 
-    if (markers.length > 0) {
-      markers.forEach((marker: any) => {
-        console.log(markers);
-        marker._marker_data.options.animation = null;
-        marker._marker_data.options.animationLength = null;
-      });
-    }
-
     const getTopicId = async () => {
       if (queryParams.has('topic-id')) {
         const topicId = queryParams.get('topic-id');
@@ -62,6 +56,7 @@ const NewPin = () => {
       }
     };
 
+    formValues.address = '';
     getTopicId();
   }, []);
 
@@ -131,7 +126,7 @@ const NewPin = () => {
           <Input
             name="address"
             readOnly
-            value={formValues.address}
+            value={clickedCoordinate.address}
             onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
