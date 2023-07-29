@@ -6,7 +6,7 @@ import { getApi } from '../utils/getApi';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
-  const { coordinates } = useContext(CoordinatesContext);
+  const { coordinates, setClickedCoordinate } = useContext(CoordinatesContext);
   const { markers, createMarkers, removeMarkers } = useContext(MarkerContext);
   const bounds = useRef(new window.Tmapv2.LatLngBounds());
 
@@ -30,7 +30,11 @@ const Map = (props: any, ref: any) => {
         evt.latLng._lat,
         evt.latLng._lng,
       );
-      console.log(roadName);
+      setClickedCoordinate({
+        latitude: evt.latLng._lat,
+        longitude: evt.latLng._lng,
+        address: roadName,
+      });
     });
   }, [map]);
 
@@ -46,7 +50,8 @@ const Map = (props: any, ref: any) => {
   }, [coordinates]);
 
   useEffect(() => {
-    // 마커가 하나만 있으면 해당 마커로 지도의 중심을 이동
+    // 홈 화면이 아니고 마커가 하나만 있으면 해당 마커로 지도의 중심을 이동
+
     if (markers.length === 1) {
       map.panTo(markers[0].getPosition());
     }
