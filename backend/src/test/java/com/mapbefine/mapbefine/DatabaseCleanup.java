@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class DatabaseCleanup implements InitializingBean {
 
-    private static final String SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE = "SET REFERENTIAL_INTEGRITY %s";
     private static final String TRUNCATE_SQL_MESSAGE = "TRUNCATE TABLE %s";
     private static final String ID_RESET_SQL_MESSAGE = "ALTER TABLE %s ALTER COLUMN ID RESTART WITH 1";
+    private static final String SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE = "SET REFERENTIAL_INTEGRITY %s";
     private static final String UNDERSCORE = "_";
+    private static final String DISABLE_REFERENTIAL_QUERY = String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, false);
+    private static final String ENABLE_REFERENTIAL_QUERY = String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, true);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -27,7 +29,7 @@ public class DatabaseCleanup implements InitializingBean {
     public void afterPropertiesSet() {
         Set<EntityType<?>> entities = entityManager.getMetamodel()
                 .getEntities();
-        
+
         tableNames = entities.stream()
                 .filter(this::isEntity)
                 .map(this::convertTableNameFromCamelCaseToSnakeCase)
@@ -71,20 +73,24 @@ public class DatabaseCleanup implements InitializingBean {
     private void disableReferentialIntegrity() {
         entityManager.flush();
 
-        entityManager.createNativeQuery(String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, false))
+        entityManager.createNativeQuery(DISABLE_REFERENTIAL_QUERY)
                 .executeUpdate();
     }
 
     private void enableReferentialIntegrity() {
-        entityManager.createNativeQuery(String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, true))
+
+        entityManager.createNativeQuery(ENABLE_REFERENTIAL_QUERY)
                 .executeUpdate();
     }
 
     private void executeTruncate() {
         for (String tableName : tableNames) {
-            entityManager.createNativeQuery(String.format(TRUNCATE_SQL_MESSAGE, tableName))
+            String TRUNCATE_QUERY = String.format(TRUNCATE_SQL_MESSAGE, tableName);
+            String ID_RESET_QUERY = String.format(ID_RESET_SQL_MESSAGE, tableName);
+
+            entityManager.createNativeQuery(TRUNCATE_QUERY)
                     .executeUpdate();
-            entityManager.createNativeQuery(String.format(ID_RESET_SQL_MESSAGE, tableName))
+            entityManager.createNativeQuery(ID_RESET_QUERY)
                     .executeUpdate();
         }
     }
