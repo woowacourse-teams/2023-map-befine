@@ -5,15 +5,17 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { postApi } from '../utils/postApi';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { DefaultFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
+import { MarkerContext } from '../context/MarkerContext';
 
 const NewPin = () => {
   const [topic, setTopic] = useState<TopicType | null>(null);
+  const { markers, createMarkers, removeMarkers } = useContext(MarkerContext);
   const { formValues, onChangeInput } = useFormValues<DefaultFormValuesType>({
     name: '',
     address: '',
@@ -43,6 +45,14 @@ const NewPin = () => {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
+
+    if (markers.length > 0) {
+      markers.forEach((marker: any) => {
+        console.log(markers);
+        marker._marker_data.options.animation = null;
+        marker._marker_data.options.animationLength = null;
+      });
+    }
 
     const getTopicId = async () => {
       if (queryParams.has('topic-id')) {
@@ -120,6 +130,7 @@ const NewPin = () => {
           <Space size={0} />
           <Input
             name="address"
+            readOnly
             value={formValues.address}
             onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."

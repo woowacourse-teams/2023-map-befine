@@ -3,7 +3,6 @@ import Flex from './common/Flex';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 import { getApi } from '../utils/getApi';
-import { a } from 'msw/lib/glossary-de6278a9';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
@@ -77,6 +76,9 @@ const Map = (props: any, ref: any) => {
         marker._marker_data.options.animationLength = 500;
       }
     }
+    // 핀 추가하기 버튼을 누르면 marker의 animation 속성을 제거
+
+    console.log('effectsMarker');
   }, [markers]);
 
   return <Flex flex="1" id="map" ref={ref} height="100vh" width="100%" />;

@@ -43,9 +43,6 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         map,
       });
       marker.id = coordinate.id;
-      console.log(
-        `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_g_${tag}.png`,
-      );
       return marker;
     });
 
