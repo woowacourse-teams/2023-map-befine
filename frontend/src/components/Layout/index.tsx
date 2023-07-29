@@ -27,6 +27,7 @@ const Layout = ({ children }: LayoutProps) => {
     const map = new Tmapv2.Map(mapContainer.current, {
       center: new Tmapv2.LatLng(37.5055, 127.0509),
     });
+
     setMap(map);
     return () => {
       map.destroy();

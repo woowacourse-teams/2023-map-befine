@@ -28,14 +28,12 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
   //coordinates를 받아서 marker를 생성하고, marker를 markers 배열에 추가
   const createMarkers = (map: any) => {
     const newMarkers = coordinates.map((coordinate: any) => {
-      //console.log(coordinate);
       let tag = '';
       if (!topicId) {
         tag = 'A';
       } else {
         tag = String.fromCharCode(97 + parseInt(topicId, 10));
       }
-      console.log(tag);
       const marker = new window.Tmapv2.Marker({
         position: new window.Tmapv2.LatLng(
           coordinate.latitude,

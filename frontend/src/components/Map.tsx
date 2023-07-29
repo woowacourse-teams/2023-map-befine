@@ -2,18 +2,44 @@ import { forwardRef, useContext, useEffect, useRef } from 'react';
 import Flex from './common/Flex';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
+import { getApi } from '../utils/getApi';
+import { a } from 'msw/lib/glossary-de6278a9';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
   const { coordinates } = useContext(CoordinatesContext);
   const { markers, createMarkers, removeMarkers } = useContext(MarkerContext);
   const bounds = useRef(new window.Tmapv2.LatLngBounds());
+
+  const getAddressFromServer = async (lat: any, lng: any) => {
+    const version = '1';
+    const coordType = 'WGS84GEO';
+    const addressType = 'A10';
+    const callback = 'result';
+    const addressData = await getApi(
+      `https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=${version}&lat=${lat}&lon=${lng}&coordType=${coordType}&addressType=${addressType}&callback=${callback}&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo
+      `,
+    );
+    const addressResult = addressData.addressInfo.fullAddress.split(',');
+    return addressResult[2];
+  };
+
+  useEffect(() => {
+    if (!map) return;
+    map.addListener('click', async (evt: any) => {
+      const roadName = await getAddressFromServer(
+        evt.latLng._lat,
+        evt.latLng._lng,
+      );
+      console.log(roadName);
+    });
+  }, [map]);
+
   useEffect(() => {
     // 마커들을 모두 지도에서 제거
     if (markers.length > 0) {
       removeMarkers();
     }
-
     // 새로운 마커 추가
     if (coordinates.length > 0) {
       createMarkers(map);

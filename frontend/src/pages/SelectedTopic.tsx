@@ -63,7 +63,6 @@ const SelectedTopic = () => {
     const data = await getApi(`/topics/${topicId}`);
     // context coordinates에 data.pins의 좌표들을 넣어주기
     setCoordinates(data.pins);
-    console.log(data.pins);
     setTopicDetail(data);
   };
 
