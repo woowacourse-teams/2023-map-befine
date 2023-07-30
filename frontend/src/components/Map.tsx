@@ -6,8 +6,10 @@ import { getApi } from '../utils/getApi';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
-  const { coordinates, setClickedCoordinate } = useContext(CoordinatesContext);
-  const { markers, createMarkers, removeMarkers } = useContext(MarkerContext);
+  const { coordinates, clickedCoordinate, setClickedCoordinate } =
+    useContext(CoordinatesContext);
+  const { markers, createMarkers, removeMarkers, displayClickedMarker } =
+    useContext(MarkerContext);
   const bounds = useRef(new window.Tmapv2.LatLngBounds());
 
   const getAddressFromServer = async (lat: any, lng: any) => {
@@ -37,6 +39,11 @@ const Map = (props: any, ref: any) => {
       });
     });
   }, [map]);
+
+  useEffect(() => {
+    if (!map) return;
+    if (clickedCoordinate.address) displayClickedMarker(map);
+  }, [clickedCoordinate]);
 
   useEffect(() => {
     // 마커들을 모두 지도에서 제거
@@ -81,9 +88,6 @@ const Map = (props: any, ref: any) => {
         marker._marker_data.options.animationLength = 500;
       }
     }
-    // 핀 추가하기 버튼을 누르면 marker의 animation 속성을 제거
-
-    console.log('effectsMarker');
   }, [markers]);
 
   return <Flex flex="1" id="map" ref={ref} height="100vh" width="100%" />;

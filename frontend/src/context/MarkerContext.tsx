@@ -5,14 +5,18 @@ import useNavigator from '../hooks/useNavigator';
 
 type MarkerContextType = {
   markers: any[];
+  clickedMarker: any;
   createMarkers: (map: any) => void;
   removeMarkers: () => void;
+  displayClickedMarker: (map: any) => void;
 };
 
 export const MarkerContext = createContext<MarkerContextType>({
   markers: [],
+  clickedMarker: null,
   createMarkers: () => {},
   removeMarkers: () => {},
+  displayClickedMarker: () => {},
 });
 
 interface Props {
@@ -21,7 +25,8 @@ interface Props {
 
 const MarkerProvider = ({ children }: Props): JSX.Element => {
   const [markers, setMarkers] = useState<any>([]);
-  const { coordinates } = useContext(CoordinatesContext);
+  const [clickedMarker, setClickedMarker] = useState<any>(null);
+  const { coordinates, clickedCoordinate } = useContext(CoordinatesContext);
   const { topicId } = useParams<{ topicId: string }>();
   const { routePage } = useNavigator();
 
@@ -33,6 +38,23 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
       }
     }
   }, [location.pathname]);
+
+  // 현재 클릭된 좌표의 마커 생성
+  const displayClickedMarker = (map: any) => {
+    if (clickedMarker) {
+      clickedMarker.setMap(null);
+    }
+    const marker = new window.Tmapv2.Marker({
+      position: new window.Tmapv2.LatLng(
+        clickedCoordinate.latitude,
+        clickedCoordinate.longitude,
+      ),
+      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_a.png',
+      map,
+    });
+    marker.id = 'clickedMarker';
+    setClickedMarker(marker);
+  };
 
   //coordinates를 받아서 marker를 생성하고, marker를 markers 배열에 추가
   const createMarkers = (map: any) => {
@@ -80,9 +102,11 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
   return (
     <MarkerContext.Provider
       value={{
+        clickedMarker,
         markers,
         removeMarkers,
         createMarkers,
+        displayClickedMarker,
       }}
     >
       {children}
