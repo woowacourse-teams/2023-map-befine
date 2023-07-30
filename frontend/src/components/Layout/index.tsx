@@ -14,6 +14,7 @@ type LayoutProps = {
 declare global {
   interface Window {
     Tmapv2: any;
+    daum: any;
   }
 }
 
