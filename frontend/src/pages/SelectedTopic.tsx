@@ -8,20 +8,15 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
-import useNavigator from '../hooks/useNavigator';
+import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
-  const { routePage } = useNavigator();
+  const [tagPins, setTagPins] = useState<string[]>([]);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType | null>(null);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
-
-  const onClickSetSelectedPinId = (pinId: string) => {
-    setSelectedPinId(pinId);
-
-    routePage(`/topics/${topicId}?pinDetail=${pinId}`);
-  };
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(`/topics/${topicId}`);
@@ -38,10 +33,13 @@ const SelectedTopic = () => {
   }, [searchParams]);
 
   if (!topicDetail) return <></>;
+  if (!tagPins) return <></>;
 
   return (
     <>
       <Flex $flexDirection="column">
+        <Space size={2} />
+        {<MergeOrSeeTogether tag={tagPins} confirmButton="뽑아오기" />}
         <ul>
           <TopicInfo
             topicParticipant={12}
@@ -51,17 +49,17 @@ const SelectedTopic = () => {
             topicDescription={topicDetail.description}
           />
           {topicDetail.pins.map((pin) => (
-            <li
-              key={pin.id}
-              onClick={() => {
-                onClickSetSelectedPinId(pin.id);
-              }}
-            >
+            <li key={pin.id}>
               <Space size={3} />
               <PinPreview
                 pinTitle={pin.name}
                 pinLocation={pin.address}
                 pinInformation={pin.description}
+                setSelectedPinId={setSelectedPinId}
+                pinId={pin.id}
+                topicId={topicId}
+                tagPins={tagPins}
+                setTagPins={setTagPins}
               />
             </li>
           ))}

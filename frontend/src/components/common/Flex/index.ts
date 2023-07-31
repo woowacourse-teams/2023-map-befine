@@ -11,6 +11,7 @@ type FlexProps = BoxProps & {
   $alignContent?: string;
   $justifyContent?: string;
   $justifyItems?: string;
+  $gap?: string;
 };
 
 const Flex = styled(Box)<FlexProps>`
@@ -26,6 +27,7 @@ const Flex = styled(Box)<FlexProps>`
   ${({ $justifyContent }) =>
     $justifyContent && `justify-content: ${$justifyContent};`}
   ${({ $justifyItems }) => $justifyItems && `justify-items: ${$justifyItems};`}
+  ${({ $gap }) => $gap && `gap: ${$gap};`}
 `;
 
 export default Flex;
