@@ -7,6 +7,7 @@ import Textarea from '../components/common/Textarea';
 import { postApi } from '../utils/postApi';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
+import { getAddress } from '../utils/getAddress';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { NewPinValuesType } from '../types/FormValues';
@@ -41,8 +42,8 @@ const NewPin = () => {
       name: formValues.name,
       address: formValues.address,
       description: formValues.description,
-      latitude: '37',
-      longitude: '127',
+      latitude: clickedCoordinate.latitude,
+      longitude: clickedCoordinate.longitude,
       legalDongCode: '',
       images: [],
     });
@@ -75,7 +76,7 @@ const NewPin = () => {
         const addr = data.roadAddress; // 주소 변수
 
         //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getApi(
+        const { ConvertAdd } = await getAddress(
           `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
         );
         const lat = ConvertAdd.oldLat;
