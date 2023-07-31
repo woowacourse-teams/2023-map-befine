@@ -1,7 +1,5 @@
 package com.mapbefine.mapbefine.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mapbefine.mapbefine.dto.TopicCreateRequest;
 import com.mapbefine.mapbefine.dto.TopicMergeRequest;
 import com.mapbefine.mapbefine.dto.TopicUpdateRequest;
@@ -9,21 +7,21 @@ import com.mapbefine.mapbefine.entity.Pin;
 import com.mapbefine.mapbefine.entity.Topic;
 import com.mapbefine.mapbefine.repository.PinRepository;
 import com.mapbefine.mapbefine.repository.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
-@Sql(value = "/initialization.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
-@Sql(value = {"/topic-fixture.sql"})
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class TopicIntegrationTest extends IntegrationTest {
 
     @Autowired
@@ -35,7 +33,7 @@ public class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록 없이 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithoutPins_Success() {
-        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest("준팍의 또간집", "준팍이 2번 이상 간집 ", Collections.emptyList());
+        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest("준팍의 또간집", "https://map-befine-official.github.io/favicon.png", "준팍이 2번 이상 간집 ", Collections.emptyList());
 
         // when
         ExtractableResponse<Response> response = createNewTopic(준팍의_또간집);
@@ -66,6 +64,7 @@ public class TopicIntegrationTest extends IntegrationTest {
 
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
+                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 pinIds);
 
@@ -86,7 +85,7 @@ public class TopicIntegrationTest extends IntegrationTest {
                 .map(Topic::getId)
                 .collect(Collectors.toList());
 
-        TopicMergeRequest 송파_데이트코스 = new TopicMergeRequest("송파 데이트코스", "맛집과 카페 토픽 합치기", topicIds);
+        TopicMergeRequest 송파_데이트코스 = new TopicMergeRequest("송파 데이트코스", "https://map-befine-official.github.io/favicon.png", "맛집과 카페 토픽 합치기", topicIds);
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -105,12 +104,12 @@ public class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic을 수정하면 200을 반환한다")
     void updateTopic_Success() {
-        List<Topic> all = topicRepository.findAll();
-        Topic topic = all.get(0);
-        Long topicId = topic.getId();
+        ExtractableResponse<Response> newTopic = createNewTopic(
+                new TopicCreateRequest("준팍의 또간집", "https://map-befine-official.github.io/favicon.png", "준팍이 두번 간집", Collections.emptyList()));
+        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
 
         // when
-        TopicUpdateRequest 송파_데이트코스 = new TopicUpdateRequest("송파 데이트코스", "수정한 토픽");
+        TopicUpdateRequest 송파_데이트코스 = new TopicUpdateRequest("송파 데이트코스", "https://map-befine-official.github.io/favicon.png", "수정한 토픽");
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -126,9 +125,9 @@ public class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic을 삭제하면 204를 반환한다")
     void deleteTopic_Success() {
-        List<Topic> all = topicRepository.findAll();
-        Topic topic = all.get(0);
-        Long topicId = topic.getId();
+        ExtractableResponse<Response> newTopic = createNewTopic(
+                new TopicCreateRequest("준팍의 또간집", "https://map-befine-official.github.io/favicon.png", "준팍이 두번 간집 ", Collections.emptyList()));
+        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -160,9 +159,16 @@ public class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic 상세 정보를 조회하면 200을 반환한다")
     void findTopicDetail_Success() {
-        List<Topic> all = topicRepository.findAll();
-        Topic topic = all.get(0);
-        Long topicId = topic.getId();
+        //given
+        TopicCreateRequest request = new TopicCreateRequest(
+                "topicName",
+                "image",
+                "description",
+                Collections.emptyList()
+        );
+        ExtractableResponse<Response> createResponse = createNewTopic(request);
+        String locationHeader = createResponse.header("Location");
+        long topicId = Long.parseLong(locationHeader.split("/")[2]);
 
         // when
         ExtractableResponse<Response> response = RestAssured

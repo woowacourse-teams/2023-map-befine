@@ -9,7 +9,7 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { DefaultFormValuesType } from '../types/FormValues';
+import { NewPinValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
@@ -19,10 +19,15 @@ const NewPin = () => {
   const { markers, clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
-  const { formValues, onChangeInput } = useFormValues<DefaultFormValuesType>({
+  const { formValues, onChangeInput } = useFormValues<NewPinValuesType>({
+    topicId: 0,
     name: '',
     address: '',
     description: '',
+    latitude: '',
+    longitude: '',
+    legalDongCode: '',
+    images: [],
   });
   const { routePage } = useNavigator();
 
@@ -36,6 +41,10 @@ const NewPin = () => {
       name: formValues.name,
       address: formValues.address,
       description: formValues.description,
+      latitude: '37',
+      longitude: '127',
+      legalDongCode: '',
+      images: [],
     });
   };
 
@@ -43,8 +52,7 @@ const NewPin = () => {
     e.preventDefault();
 
     await postToServer();
-    routePage(`/topics/${topic?.id}`);
-
+      routePage(`/topics/${topic?.id}`, [topic!.id]);
     // 선택된 마커가 있으면 마커를 지도에서 제거
     if (clickedMarker) {
       clickedMarker.setMap(null);
@@ -88,7 +96,7 @@ const NewPin = () => {
     const getTopicId = async () => {
       if (queryParams.has('topic-id')) {
         const topicId = queryParams.get('topic-id');
-        const data = await getApi(`topics/${topicId}`);
+        const data = await getApi(`/topics/${topicId}`);
         setTopic(data);
       }
     };
@@ -120,10 +128,7 @@ const NewPin = () => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Button
-            type="button"
-            variant="primary"
-          >{`${topic.emoji} ${topic.name}`}</Button>
+          <Button type="button" variant="primary">{`${topic.name}`}</Button>
         </section>
 
         <Space size={5} />

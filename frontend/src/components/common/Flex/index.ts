@@ -13,6 +13,7 @@ type FlexProps = BoxProps & {
   $justifyItems?: string;
   $zIndex?: number;
   flex?: string;
+  $gap?: string;
 };
 
 const Flex = styled(Box) <FlexProps>`
@@ -30,7 +31,7 @@ const Flex = styled(Box) <FlexProps>`
   ${({ $justifyItems }) => $justifyItems && `justify-items: ${$justifyItems};`}
   z-index: ${({ $zIndex }) => $zIndex};
   ${({ flex }) => flex && `flex: ${flex};`};
-
+  ${({ $gap }) => $gap && `gap: ${$gap};`}
 `;
 
 export default Flex;

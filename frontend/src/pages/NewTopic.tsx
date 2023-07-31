@@ -5,21 +5,35 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { styled } from 'styled-components';
-import { Fragment, useState } from 'react';
 import { postApi } from '../utils/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
-
-const icons = ['🍛', '🏃‍♂️', '👩‍❤️‍👨', '💻', '☕️', '🚀'];
+import { useContext, useEffect } from 'react';
+import { TagIdContext } from '../store/TagId';
+import { useLocation } from 'react-router-dom';
+import { TopicsIdContext } from '../store/TopicsId';
 
 const NewTopic = () => {
-  const [selectedTopicIcon, setSelectedTopicIcon] = useState<string>('');
   const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
     name: '',
     description: '',
+    image: '',
+    topics: [],
   });
   const { routePage } = useNavigator();
+
+  const { state } = useLocation();
+
+  const { tagId, setTagId } = useContext(TagIdContext) ?? {
+    tagId: [],
+    setTagId: () => {},
+  };
+
+  const { topicsId, setTopicsId } = useContext(TopicsIdContext) ?? {
+    topicsId: [],
+    setTopicsId: () => {},
+  };
 
   const goToBack = () => {
     routePage(-1);
@@ -29,22 +43,44 @@ const NewTopic = () => {
     e.preventDefault();
 
     const topicId = await postToServer();
-    if (topicId) routePage(`/topics/${topicId}`);
+    if (topicId) routePage(`/topics/${topicId}`, [Number(topicId)]);
   };
 
   const postToServer = async () => {
-    const response = await postApi('/topics/new', {
-      emoji: selectedTopicIcon,
-      name: formValues.name,
-      description: formValues.description,
-    });
-    const location = response.headers.get('Location');
+    if (state === 'topics') {
+      const response = await postApi('/topics/merge', {
+        image: formValues.image,
+        name: formValues.name,
+        description: formValues.description,
+        topics: tagId,
+      });
 
-    if (location) {
-      const topicIdFromLocation = location.split('/')[2];
-      return topicIdFromLocation;
+      const location = response.headers.get('Location');
+
+      if (location) {
+        const topicIdFromLocation = location.split('/')[2];
+        return topicIdFromLocation;
+      }
+    } else {
+      const response = await postApi('/topics/new', {
+        image: formValues.image,
+        name: formValues.name,
+        description: formValues.description,
+        pins: tagId,
+      });
+
+      const location = response.headers.get('Location');
+
+      if (location) {
+        const topicIdFromLocation = location.split('/')[2];
+        return topicIdFromLocation;
+      }
     }
   };
+
+  useEffect(() => {
+    setTopicsId([]);
+  }, []);
 
   return (
     <form onSubmit={onSubmit}>
@@ -59,7 +95,7 @@ const NewTopic = () => {
         <section>
           <Flex>
             <Text color="black" $fontSize="default" $fontWeight="normal">
-              토픽 아이콘
+              토픽 이미지
             </Text>
             <Space size={0} />
             <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
@@ -67,28 +103,13 @@ const NewTopic = () => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Flex $justifyContent="space-between">
-            {icons.map((icon, idx) => (
-              <Fragment key={idx}>
-                <TopicIcon
-                  type="radio"
-                  id={`checkbox-${idx}`}
-                  name="topic-icon-radio"
-                />
-                <label
-                  id="radio-label"
-                  htmlFor={`checkbox-${idx}`}
-                  onClick={() => {
-                    setSelectedTopicIcon(icon);
-                  }}
-                >
-                  {icon}
-                </label>
-              </Fragment>
-            ))}
-          </Flex>
+          <Input
+            name="image"
+            value={formValues.image}
+            placeholder="이미지 링크를 남겨주세요."
+            onChange={onChangeInput}
+          />
         </section>
-
         <Space size={5} />
 
         <section>

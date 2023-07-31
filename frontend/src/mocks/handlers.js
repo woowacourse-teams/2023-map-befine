@@ -5,13 +5,13 @@ import tempPins from './db/tempPins';
 
 export const handlers = [
   // 포스트 목록
-  rest.get('/pin/:id', (req, res, ctx) => {
+  rest.get('/pins/:id', (req, res, ctx) => {
     const pinId = req.params.id;
     return res(ctx.status(200), ctx.json(tempPins[pinId - 1]));
   }),
 
   // 토픽 목록
-  rest.get('/', (req, res, ctx) => {
+  rest.get('/topics', (req, res, ctx) => {
     const data = topics;
 
     if (!data) {
@@ -43,11 +43,11 @@ export const handlers = [
 
   // 토픽 생성
   rest.post('/topics/new', async (req, res, ctx) => {
-    const { name, emoji, description } = await req.json();
+    const { name, image, description } = await req.json();
 
     topics.push({
       id: `${topics.length + 1}`,
-      emoji,
+      image,
       name,
       description,
       pins: [],
@@ -57,7 +57,7 @@ export const handlers = [
 
     detailTopic.push({
       id: `${detailTopic.length + 1}`,
-      emoji,
+      image,
       name,
       description,
       pins: [],
@@ -103,7 +103,7 @@ export const handlers = [
 
   rest.put('/pins/:id', async (req, res, ctx) => {
     const { id } = req.params;
-    const { name, address, description } = await req.json();
+    const { name, image, description } = await req.json();
 
     const pin = tempPins.find((pin) => pin.id === id);
 
@@ -114,7 +114,7 @@ export const handlers = [
     tempPins.forEach((pin) => {
       if (pin.id === id) {
         pin.name = name;
-        pin.address = address;
+        pin.image = image;
         pin.description = description;
       }
       return pin;
@@ -124,7 +124,7 @@ export const handlers = [
       topic.pins.forEach((pin) => {
         if (pin.id === id) {
           pin.name = name;
-          pin.address = address;
+          pin.image = image;
           pin.description = description;
         }
         return pin;

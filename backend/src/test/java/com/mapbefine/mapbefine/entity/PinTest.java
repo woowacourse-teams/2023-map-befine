@@ -1,15 +1,16 @@
 package com.mapbefine.mapbefine.entity;
 
-import static com.mapbefine.mapbefine.entity.Pin.createPinAssociatedWithLocationAndTopic;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.math.BigDecimal;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.math.BigDecimal;
+import java.util.stream.Stream;
+
+import static com.mapbefine.mapbefine.entity.Pin.createPinAssociatedWithLocationAndTopic;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PinTest {
 
@@ -22,7 +23,7 @@ class PinTest {
             ),
             "legalDongCode"
     );
-    private static final Topic topic = new Topic("topicName", "topicDescription");
+    private static final Topic topic = new Topic("topicName", "topicDescription", null);
 
     @ParameterizedTest
     @MethodSource(value = "validNameAndDescription")
@@ -66,6 +67,15 @@ class PinTest {
         assertThat(actualDescription).isEqualTo(description);
     }
 
+    static Stream<Arguments> validNameAndDescription() {
+        return Stream.of(
+                Arguments.of("1", "1"),
+                Arguments.of("1", "1".repeat(1000)),
+                Arguments.of("1".repeat(50), "1"),
+                Arguments.of("1".repeat(50), "1".repeat(1000))
+        );
+    }
+
     @ParameterizedTest
     @MethodSource(value = "invalidNameOrDescription")
     @DisplayName("정상적인 정보를 통해 Update 를 진행하면 Pin 의 수정을 실패한다.")
@@ -81,16 +91,6 @@ class PinTest {
         // when then
         assertThatThrownBy(() -> pin.update(name, description))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-
-    static Stream<Arguments> validNameAndDescription() {
-        return Stream.of(
-                Arguments.of("1", "1"),
-                Arguments.of("1", "1".repeat(1000)),
-                Arguments.of("1".repeat(50), "1"),
-                Arguments.of("1".repeat(50), "1".repeat(1000))
-        );
     }
 
     static Stream<Arguments> invalidNameOrDescription() {

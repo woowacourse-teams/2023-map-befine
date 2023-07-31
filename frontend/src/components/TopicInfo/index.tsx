@@ -7,7 +7,7 @@ import Space from '../common/Space';
 import { useParams } from 'react-router-dom';
 import useNavigator from '../../hooks/useNavigator';
 
-export interface TopicCardProps {
+export interface TopicInfoProps {
   topicParticipant: number;
   pinNumber: number;
   topicTitle: string;
@@ -21,7 +21,7 @@ const TopicInfo = ({
   topicTitle,
   topicOwner,
   topicDescription,
-}: TopicCardProps) => {
+}: TopicInfoProps) => {
   const { topicId } = useParams();
   const { routePage } = useNavigator();
 

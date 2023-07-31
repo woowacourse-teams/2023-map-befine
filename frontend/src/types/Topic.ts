@@ -1,16 +1,15 @@
 import { PinType } from './Pin';
 
 export interface TopicType {
-  id: string;
+  id: number;
   name: string;
-  emoji: string;
-  description: string;
+  image: string;
   pinCount: number;
   updatedAt: string;
 }
 
 export interface TopicInfoType {
-  id: string;
+  id: number;
   name: string;
   description: string;
   pinCount: number;
