@@ -2,7 +2,7 @@ import { forwardRef, useContext, useEffect, useRef } from 'react';
 import Flex from './common/Flex';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
-import { getApi } from '../utils/getApi';
+import { getAddress } from '../utils/getAddress';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
@@ -17,7 +17,7 @@ const Map = (props: any, ref: any) => {
     const coordType = 'WGS84GEO';
     const addressType = 'A10';
     const callback = 'result';
-    const addressData = await getApi(
+    const addressData = await getAddress(
       `https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=${version}&lat=${lat}&lon=${lng}&coordType=${coordType}&addressType=${addressType}&callback=${callback}&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo
       `,
     );
@@ -54,6 +54,7 @@ const Map = (props: any, ref: any) => {
       );
     }
   }, [clickedCoordinate]);
+
 
   useEffect(() => {
     // 마커들을 모두 지도에서 제거

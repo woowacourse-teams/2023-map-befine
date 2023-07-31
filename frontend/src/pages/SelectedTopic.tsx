@@ -53,10 +53,12 @@ const SelectedTopic = () => {
   const { state } = useLocation();
   const [tagPins, setTagPins] = useState<string[]>([]);
 
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
+  const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
+
   const { routePage } = useNavigator();
-  const [searchParams] = useSearchParams();
-  const [topicDetail, setTopicDetail] = useState<TopicInfoType | null>(null);
-  const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
   const { setCoordinates } = useContext(CoordinatesContext);
 
   const [isOpen, setIsOpen] = useState(true);
@@ -73,9 +75,11 @@ const SelectedTopic = () => {
 
   if (state !== null) setTopicsId(state);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
-  const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
+  const onClickSetSelectedPinId = (pinId: number) => {
+    setSelectedPinId(pinId);
+
+    routePage(`/topics/${topicsId}?pinDetail=${pinId}`)
+  }
 
   const getAndSetDataFromServer = async () => {
 
@@ -83,7 +87,7 @@ const SelectedTopic = () => {
     for (const topicId of topicsId) {
       data.push(await getApi(`/topics/${topicId}`));
       // todo : setCoordinates 인자 확인
-      setCoordinates([...data.pins]);
+      setCoordinates([...data[0].pins]);
       setTopicDetail([...data]);
     }
   };
@@ -142,7 +146,7 @@ const SelectedTopic = () => {
                   />
                   {topic.pins.map((pin) => (
                     <li key={pin.id} onClick={() => {
-                onClickSetSelectedPinId(pin.id);
+                onClickSetSelectedPinId(Number(pin.id));
                 setIsOpen(true);
               }}>
                       <Space size={3} />
