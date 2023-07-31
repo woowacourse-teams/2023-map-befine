@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.pin.Domain;
 
-import jakarta.persistence.Column;
+import com.mapbefine.mapbefine.common.entity.Image;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,20 +21,21 @@ public class PinImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 2048)
-    private String imageUrl;
+    @Embedded
+    private Image image;
 
     @ManyToOne
     @JoinColumn(name = "pin_id")
     private Pin pin;
 
-    private PinImage(String imageUrl, Pin pin) {
-        this.imageUrl = imageUrl;
+    
+    private PinImage(Image image, Pin pin) {
+        this.image = image;
         this.pin = pin;
     }
 
     public static PinImage createPinImageAssociatedWithPin(String imageUrl, Pin pin) {
-        PinImage pinImage = new PinImage(imageUrl, pin);
+        PinImage pinImage = new PinImage(Image.of(imageUrl), pin);
         pin.addPinImage(pinImage);
 
         return pinImage;

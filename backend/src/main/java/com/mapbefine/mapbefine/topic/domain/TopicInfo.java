@@ -2,8 +2,10 @@ package com.mapbefine.mapbefine.topic.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.common.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class TopicInfo {
 
-    private static final String DEFAULT_IMAGE_URL = "https://map-befine-official.github.io/favicon.png";
+    private static final Image DEFAULT_IMAGE = Image.of("https://map-befine-official.github.io/favicon.png");
     private static final int MAX_DESCRIPTION_LENGTH = 1000;
     private static final int MAX_NAME_LENGTH = 20;
 
@@ -24,17 +26,17 @@ public class TopicInfo {
     @Column(nullable = false, length = 1000)
     private String description;
 
-    @Column(nullable = false, length = 2048)
-    private String imageUrl = DEFAULT_IMAGE_URL;
+    @Embedded
+    private Image image;
 
     private TopicInfo(
             String name,
             String description,
-            String imageUrl
+            Image image
     ) {
         this.name = name;
         this.description = description;
-        this.imageUrl = imageUrl;
+        this.image = image;
     }
 
     public static TopicInfo of(
@@ -70,11 +72,11 @@ public class TopicInfo {
         }
     }
 
-    private static String validateImageUrl(String imageUrl) {
-        if (imageUrl == null) { // TODO: 2023/07/28 URL 검증
-            return DEFAULT_IMAGE_URL;
+    private static Image validateImageUrl(String imageUrl) {
+        if (imageUrl == null) {
+            return DEFAULT_IMAGE;
         }
-        return imageUrl;
+        return Image.of(imageUrl);
     }
 
     public void update(
@@ -87,7 +89,10 @@ public class TopicInfo {
 
         this.name = name;
         this.description = description;
-        this.imageUrl = validateImageUrl(imageUrl);
+        this.image = validateImageUrl(imageUrl);
     }
 
+    public String getImageUrl() {
+        return image.getImageUrl();
+    }
 }

@@ -47,7 +47,7 @@ public class Topic extends BaseTimeEntity {
     @ColumnDefault(value = "false")
     private boolean isDeleted = false;
 
-    public Topic(
+    private Topic(
             TopicInfo topicInfo,
             TopicStatus topicStatus,
             Member creator

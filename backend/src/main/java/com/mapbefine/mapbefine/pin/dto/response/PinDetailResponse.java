@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.pin.dto.response;
 
+import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.pin.Domain.PinImage;
 import com.mapbefine.mapbefine.pin.Domain.PinInfo;
@@ -19,7 +20,8 @@ public record PinDetailResponse(
 ) {
     public static PinDetailResponse from(Pin pin) {
         List<String> images = pin.getPinImages().stream()
-                .map(PinImage::getImageUrl)
+                .map(PinImage::getImage)
+                .map(Image::getImageUrl)
                 .toList();
 
         PinInfo pinInfo = pin.getPinInfo();
