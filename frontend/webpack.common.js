@@ -20,8 +20,8 @@ module.exports = {
       process: 'process/browser.js',
     }),
     new EnvironmentPlugin({
-      REACT_APP_API_DEFAULT: 'http://43.202.63.81:80'
-    })
+      REACT_APP_API_DEFAULT: 'https://mapbefine.kro.kr/api',
+    }),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
