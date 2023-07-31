@@ -33,7 +33,7 @@ const SelectedTopic = () => {
   }, [searchParams]);
 
   if (!topicDetail) return <></>;
-  if (tagPins.length <= 0) return <></>;
+  if (!tagPins) return <></>;
 
   return (
     <>

@@ -12,7 +12,7 @@ export const MergeOrSeeTogether = ({
   tag,
   confirmButton,
 }: MergeOrSeeTogetherProps) => {
-  if (!tag || tag.length <= 0) return<></>;
+  if (tag.length === 0) return<></>;
 
   return (
     <>
