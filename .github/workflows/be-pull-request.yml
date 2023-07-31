@@ -1,4 +1,4 @@
-name: Backend Automatically Build On Pull request 
+name: Backend CI For Test Validation
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ permissions:
   contents: write
   
 jobs:
-  build-and-upload:
+  build-and-comment:
 
     runs-on: ubuntu-22.04
 

@@ -1,11 +1,11 @@
-name: Backend main CI/CD
+name: Backend production CI/CD
 
 on:
   workflow_dispatch:
   
   pull_request:
     branches: [ main ]
-    types: [closed]
+    types: [ closed ]
     paths: backend/**
 
 permissions:
@@ -56,7 +56,7 @@ jobs:
           path: /home/ubuntu/backend/build/
 
       - name: 배포하기
-        run: /home/ubuntu/backend/build/deploy.sh
+        run: /home/ubuntu/backend/deploy.sh
 
       - name: 슬랙 메시지 보내기
 
