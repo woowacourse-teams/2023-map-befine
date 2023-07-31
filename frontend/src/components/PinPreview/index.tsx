@@ -3,14 +3,16 @@ import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
+import { useContext } from 'react';
+import { TagIdContext } from '../../store/TagId';
 
-export interface TopicCardProps {
+export interface PinPreviewProps {
   pinTitle: string;
   pinLocation: string;
   pinInformation: string;
-  setSelectedPinId: (value: string) => void;
-  pinId: string;
-  topicId: string | undefined;
+  setSelectedPinId: (value: number) => void;
+  pinId: number;
+  topicId: number | undefined;
   tagPins: string[];
   setTagPins: (value: string[]) => void;
 }
@@ -23,13 +25,23 @@ const PinPreview = ({
   pinId,
   topicId,
   tagPins,
-  setTagPins
-}: TopicCardProps) => {
+  setTagPins,
+}: PinPreviewProps) => {
   const { routePage } = useNavigator();
 
+  const { tagId, setTagId } = useContext(TagIdContext) ?? {
+    tagId: [],
+    setTagId: () => {},
+  };
+
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) setTagPins([...tagPins, pinTitle]);
-    else setTagPins(tagPins.filter((value) => value !== pinTitle));
+    if (e.target.checked) {
+      setTagPins([...tagPins, pinTitle]);
+      setTagId([...tagId, pinId]);
+    } else {
+      setTagPins(tagPins.filter((value) => value !== pinTitle));
+      setTagId(tagId.filter((value) => value !== pinId));
+    }
   };
 
   const onClickSetSelectedPinId = () => {
@@ -53,6 +65,7 @@ const PinPreview = ({
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           onAddTagOfTopic(e)
         }
+        checked={Boolean(tagId.includes(pinId))}
       />
       <Flex
         $flexDirection="column"

@@ -9,15 +9,31 @@ import { postApi } from '../utils/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
+import { useContext, useEffect } from 'react';
+import { TagIdContext } from '../store/TagId';
+import { useLocation } from 'react-router-dom';
+import { TopicsIdContext } from '../store/TopicsId';
 
 const NewTopic = () => {
   const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
     name: '',
     description: '',
     image: '',
-    pins: [],
+    topics: [],
   });
   const { routePage } = useNavigator();
+
+  const { state } = useLocation();
+
+  const { tagId, setTagId } = useContext(TagIdContext) ?? {
+    tagId: [],
+    setTagId: () => {},
+  };
+
+  const { topicsId, setTopicsId } = useContext(TopicsIdContext) ?? {
+    topicsId: [],
+    setTopicsId: () => {},
+  };
 
   const goToBack = () => {
     routePage(-1);
@@ -27,24 +43,44 @@ const NewTopic = () => {
     e.preventDefault();
 
     const topicId = await postToServer();
-    if (topicId) routePage(`/topics/${topicId}`);
+    if (topicId) routePage(`/topics/${topicId}`, [Number(topicId)]);
   };
 
   const postToServer = async () => {
-    const response = await postApi('/topics/new', {
-      image: formValues.image,
-      name: formValues.name,
-      description: formValues.description,
-      pins: [],
-    });
+    if (state === 'topics') {
+      const response = await postApi('/topics/merge', {
+        image: formValues.image,
+        name: formValues.name,
+        description: formValues.description,
+        topics: tagId,
+      });
 
-    const location = response.headers.get('Location');
+      const location = response.headers.get('Location');
 
-    if (location) {
-      const topicIdFromLocation = location.split('/')[2];
-      return topicIdFromLocation;
+      if (location) {
+        const topicIdFromLocation = location.split('/')[2];
+        return topicIdFromLocation;
+      }
+    } else {
+      const response = await postApi('/topics/new', {
+        image: formValues.image,
+        name: formValues.name,
+        description: formValues.description,
+        pins: tagId,
+      });
+
+      const location = response.headers.get('Location');
+
+      if (location) {
+        const topicIdFromLocation = location.split('/')[2];
+        return topicIdFromLocation;
+      }
     }
   };
+
+  useEffect(() => {
+    setTopicsId([]);
+  }, []);
 
   return (
     <form onSubmit={onSubmit}>

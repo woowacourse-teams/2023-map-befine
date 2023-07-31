@@ -1,7 +1,7 @@
 import { PinType } from './Pin';
 
 export interface TopicType {
-  id: string;
+  id: number;
   name: string;
   image: string;
   pinCount: number;
@@ -9,7 +9,7 @@ export interface TopicType {
 }
 
 export interface TopicInfoType {
-  id: string;
+  id: number;
   name: string;
   description: string;
   pinCount: number;

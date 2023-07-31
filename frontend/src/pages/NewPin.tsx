@@ -39,7 +39,7 @@ const NewPin = () => {
       latitude: '37',
       longitude: '127',
       legalDongCode: '',
-      images: []
+      images: [],
     });
   };
 
@@ -47,7 +47,7 @@ const NewPin = () => {
     e.preventDefault();
 
     await postToServer();
-    routePage(`/topics/${topic?.id}`);
+    routePage(`/topics/${topic?.id}`, [topic!.id]);
   };
 
   useEffect(() => {
@@ -87,10 +87,7 @@ const NewPin = () => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Button
-            type="button"
-            variant="primary"
-          >{`${topic.name}`}</Button>
+          <Button type="button" variant="primary">{`${topic.name}`}</Button>
         </section>
 
         <Space size={5} />

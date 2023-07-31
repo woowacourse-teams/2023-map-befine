@@ -14,7 +14,7 @@ import UpdatedPinDetail from './UpdatedPinDetail';
 import useFormValues from '../hooks/useFormValues';
 import { DefaultPinValuesType } from '../types/FormValues';
 
-const PinDetail = ({ pinId }: { pinId: string }) => {
+const PinDetail = ({ pinId }: { pinId: number }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);

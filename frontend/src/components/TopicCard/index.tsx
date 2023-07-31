@@ -2,9 +2,11 @@ import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
+import { useContext } from 'react';
+import { TagIdContext } from '../../store/TagId';
 
 export interface TopicCardProps {
-  topicId: string;
+  topicId: number;
   topicImage: string;
   topicTitle: string;
   topicUpdatedAt: string;
@@ -24,8 +26,23 @@ const TopicCard = ({
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
 
+  const { tagId, setTagId } = useContext(TagIdContext) ?? {
+    tagId: [],
+    setTagId: () => {},
+  };
+
   const goToSelectedTopic = () => {
-    routePage(`topics/${topicId}`);
+    routePage(`topics/${topicId}`, [topicId]);
+  };
+
+  const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setTagTopics([...tagTopics, topicTitle]);
+      setTagId([...tagId, topicId]);
+    } else {
+      setTagTopics(tagTopics.filter((value) => value !== topicTitle));
+      setTagId(tagId.filter((value) => value !== topicId));
+    }
   };
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +67,7 @@ const TopicCard = ({
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             onAddTagOfTopic(e)
           }
+          checked={Boolean(tagId.includes(topicId))}
         />
         <Flex
           $flexDirection="column"
