@@ -1,4 +1,4 @@
-name: Frontend production CI/CD
+name: Frontend production CD
 
 on:
   workflow_dispatch:
