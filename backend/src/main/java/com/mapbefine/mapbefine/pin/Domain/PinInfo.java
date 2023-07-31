@@ -35,7 +35,6 @@ public class PinInfo {
         return new PinInfo(name, description);
     }
 
-
     private static void validateName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("name null");
