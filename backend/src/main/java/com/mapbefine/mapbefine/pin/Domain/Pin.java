@@ -28,9 +28,6 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 public class Pin extends BaseTimeEntity {
 
-    private static final int MAX_DESCRIPTION_LENGTH = 1000;
-    private static final int MAX_NAME_LENGTH = 50;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
