@@ -35,7 +35,7 @@ public class TopicStatus {
 
     private static void validateTopicStatus(Publicity publicity, Permission permission) {
         if (publicity.isPrivate() && permission.isAllMembers()) {
-            throw new IllegalArgumentException("멤버 공개일 때는, 권한 설정이 소속 회원이어야합니다.");
+            throw new IllegalArgumentException("공개 범위가 혼자 볼 지도인 경우, 권한 설정이 소속 회원이어야합니다.");
         }
     }
 
@@ -48,13 +48,13 @@ public class TopicStatus {
     }
 
     private void validatePublicity(Publicity publicity, Permission permission) {
-        if (permission.isAllMembers() && publicity.isPrivate()) {
+        if (publicity.isPrivate() && permission.isAllMembers()) {
             throw new IllegalArgumentException("권한 범위가 모든 멤버인 경우, 공개 범위를 혼자 볼 지도로 설정할 수 없습니다.");
         }
     }
 
     private void validatePermission(Permission permission) {
-        if (permission.isGroupOnly()) {
+        if (this.permission.isAllMembers() && permission.isGroupOnly()) {
             throw new IllegalArgumentException("권한 범위는 줄어들 수 없습니다.");
         }
     }
