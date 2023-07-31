@@ -8,7 +8,12 @@ export interface MergeOrSeeTogetherProps {
   confirmButton: string;
 }
 
-export const MergeOrSeeTogether = ({ tag, confirmButton }: MergeOrSeeTogetherProps) => {
+export const MergeOrSeeTogether = ({
+  tag,
+  confirmButton,
+}: MergeOrSeeTogetherProps) => {
+  if (!tag || tag.length <= 0) return;
+
   return (
     <>
       <Flex
@@ -25,9 +30,9 @@ export const MergeOrSeeTogether = ({ tag, confirmButton }: MergeOrSeeTogetherPro
           $flexWrap="wrap"
           $gap="12px 12px"
         >
-          {tag && tag.length > 0
-            ? tag.map((title, index) => <Tag key={index}>{title}</Tag>)
-            : null}
+          {tag.map((title, index) => (
+            <Tag key={index}>{title}</Tag>
+          ))}
         </Flex>
 
         <Space size={5} />
