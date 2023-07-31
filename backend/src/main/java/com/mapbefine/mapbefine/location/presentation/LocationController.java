@@ -22,7 +22,7 @@ public class LocationController {
     }
 
     @GetMapping("/best")
-    public ResponseEntity<List<TopicResponse>> findBests(
+    public ResponseEntity<List<TopicResponse>> findNearbyTopicsSortedByPinCount(
             AuthMember member,
             @RequestBody CoordinateRequest request
     ) {
