@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { styled } from 'styled-components';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
@@ -10,8 +11,42 @@ import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { TagIdContext } from '../store/TagId';
-import useNavigator from '../hooks/useNavigator';
 import { TopicsIdContext } from '../store/TopicsId';
+import { CoordinatesContext } from '../context/CoordinatesContext';
+import useNavigator from '../hooks/useNavigator';
+
+const PinDetailWrapper = styled.div`
+  &.collapsedPinDetail {
+    z-index: -1;
+  }
+`;
+
+const ToggleButton = styled.button<{ isCollapsed: boolean }>`
+  position: absolute;
+  top: 50%;
+  left: 800px;
+  transform: translateY(-50%);
+  z-index: 99999;
+  height: 80px;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 4px;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+
+  ${(props) =>
+    props.isCollapsed &&
+    `
+    transform: rotate(180deg);
+    top:45%;
+    left: 400px;
+    z-index: 99999;
+    `}
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
 
 const SelectedTopic = () => {
   // const { topicId } = useParams();
@@ -19,6 +54,12 @@ const SelectedTopic = () => {
   const [tagPins, setTagPins] = useState<string[]>([]);
 
   const { routePage } = useNavigator();
+  const [searchParams] = useSearchParams();
+  const [topicDetail, setTopicDetail] = useState<TopicInfoType | null>(null);
+  const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
+  const { setCoordinates } = useContext(CoordinatesContext);
+
+  const [isOpen, setIsOpen] = useState(true);
 
   const { topicsId, setTopicsId } = useContext(TopicsIdContext) ?? {
     topicsId: [],
@@ -37,9 +78,12 @@ const SelectedTopic = () => {
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
 
   const getAndSetDataFromServer = async () => {
+
     const data: TopicInfoType[] = [];
     for (const topicId of topicsId) {
       data.push(await getApi(`/topics/${topicId}`));
+      // todo : setCoordinates 인자 확인
+      setCoordinates([...data.pins]);
       setTopicDetail([...data]);
     }
   };
@@ -60,11 +104,16 @@ const SelectedTopic = () => {
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
     }
-  }, [searchParams, topicsId]);
+    setIsOpen(true);
+  }, [searchParams,topicsId]);
 
   useEffect(() => {
     if (tagPins.length === 0) setTagId([]);
   }, [tagPins, state]);
+  
+  const togglePinDetail = () => {
+    setIsOpen(!isOpen);
+  };
 
   if (!topicDetail) return <></>;
   if (!tagPins) return <></>;
@@ -92,7 +141,10 @@ const SelectedTopic = () => {
                     topicDescription={topic.description}
                   />
                   {topic.pins.map((pin) => (
-                    <li key={pin.id}>
+                    <li key={pin.id} onClick={() => {
+                onClickSetSelectedPinId(pin.id);
+                setIsOpen(true);
+              }}>
                       <Space size={3} />
                       <PinPreview
                         pinTitle={pin.name}
@@ -115,19 +167,27 @@ const SelectedTopic = () => {
         </ul>
 
         {selectedPinId && (
-          <Flex
-            $backgroundColor="white"
-            width="400px"
-            $minHeight="100vh"
-            position="absolute"
-            left="400px"
-            top="0px"
-            padding={4}
-            $flexDirection="column"
-            $borderLeft={`1px solid ${theme.color.gray}`}
-          >
-            <PinDetail pinId={selectedPinId} />
-          </Flex>
+          <>
+            <ToggleButton isCollapsed={!isOpen} onClick={togglePinDetail}>
+              ◀
+            </ToggleButton>
+            <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
+              <Flex
+                $backgroundColor="white"
+                width="400px"
+                $minHeight="100vh"
+                position="absolute"
+                left="400px"
+                top="0px"
+                padding={4}
+                $flexDirection="column"
+                $borderLeft={`1px solid ${theme.color.gray}`}
+                $zIndex={99}
+              >
+                <PinDetail pinId={selectedPinId} />
+              </Flex>
+            </PinDetailWrapper>
+          </>
         )}
       </Flex>
     </>

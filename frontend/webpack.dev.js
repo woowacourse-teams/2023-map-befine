@@ -10,5 +10,5 @@ module.exports = merge(common, {
     port: 3000,
     static: 'public',
   },
-  plugins: [new ReactRefreshWebpackPlugin()],
+  plugins: [new ReactRefreshWebpackPlugin({ overlay: false })],
 });

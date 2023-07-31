@@ -8,6 +8,7 @@ import { Fragment, useContext, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
+import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { TagIdContext } from '../store/TagId';
 import { TopicsIdContext } from '../store/TopicsId';
@@ -16,6 +17,7 @@ const Home = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
   const [tagTopics, setTagTopics] = useState<string[]>([]);
   const { routePage } = useNavigator();
+  const { setCoordinates } = useContext(CoordinatesContext);
 
   const { tagId, setTagId } = useContext(TagIdContext) ?? {
     tagId: [],
@@ -45,8 +47,12 @@ const Home = () => {
     setTopics(topics);
   };
 
+  // 현재 위치 받아오기
+
   useEffect(() => {
     getAndSetDataFromServer();
+
+    setCoordinates([{ latitude: 37.5055, longitude: 127.0509 }]);
   }, []);
 
   useEffect(() => {
