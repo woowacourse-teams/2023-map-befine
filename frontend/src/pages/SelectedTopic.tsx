@@ -33,14 +33,13 @@ const SelectedTopic = () => {
   }, [searchParams]);
 
   if (!topicDetail) return <></>;
+  if (tagPins.length <= 0) return <></>;
 
   return (
     <>
       <Flex $flexDirection="column">
         <Space size={2} />
-        {tagPins.length > 0 ? (
-          <MergeOrSeeTogether tag={tagPins} confirmButton="뽑아오기" />
-        ) : null}
+        {<MergeOrSeeTogether tag={tagPins} confirmButton="뽑아오기" />}
         <ul>
           <TopicInfo
             topicParticipant={12}
