@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    username: sa
+    url: jdbc:h2:mem:mapbefine;MODE=MySQL
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE

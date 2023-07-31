@@ -4,7 +4,7 @@ const Tag = styled.span`
   height: 28px;
   max-width: 240px;
 
-  padding: 6px 15px;
+  padding: ${({ theme }) => `${theme.spacing['1']} ${theme.spacing['3']}`};
 
   color: ${({ theme }) => theme.color.white};
   font-size: ${({ theme }) => theme.fontSize.extraSmall};

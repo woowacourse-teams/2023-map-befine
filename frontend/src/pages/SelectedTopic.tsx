@@ -67,19 +67,18 @@ const SelectedTopic = () => {
   }, [tagPins, state]);
 
   if (!topicDetail) return <></>;
+  if (!tagPins) return <></>;
 
   return (
     <>
       <Flex $flexDirection="column">
         <Space size={2} />
-        {tagPins.length > 0 ? (
           <MergeOrSeeTogether
             tag={tagPins}
             confirmButton="뽑아오기"
             onClickConfirm={onClickConfirm}
             onClickClose={onTagCancel}
           />
-        ) : null}
         <ul>
           {topicDetail.length !== 0 ? (
             topicDetail.map((topic) => {

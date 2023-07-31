@@ -45,6 +45,11 @@ const TopicCard = ({
     }
   };
 
+  const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) setTagTopics([...tagTopics, topicTitle]);
+    else setTagTopics(tagTopics.filter((value) => value !== topicTitle));
+  };
+
   return (
     <li>
       <Flex

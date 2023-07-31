@@ -16,6 +16,8 @@ export const MergeOrSeeTogether = ({
   onClickConfirm,
   onClickClose,
 }: MergeOrSeeTogetherProps) => {
+  if (tag.length === 0) return<></>;
+
   return (
     <>
       <Flex
@@ -32,9 +34,9 @@ export const MergeOrSeeTogether = ({
           $flexWrap="wrap"
           $gap="12px 12px"
         >
-          {tag && tag.length > 0
-            ? tag.map((title, index) => <Tag key={index}>{title}</Tag>)
-            : null}
+          {tag.map((title, index) => (
+            <Tag key={index}>{title}</Tag>
+          ))}
         </Flex>
 
         <Space size={5} />
