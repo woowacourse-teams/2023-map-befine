@@ -91,8 +91,8 @@ class PinQueryServiceTest {
                     "name",
                     "road",
                     "description",
-                    coordinate.getLatitude().toString(),
-                    coordinate.getLongitude().toString()
+                    coordinate.getLatitude(),
+                    coordinate.getLongitude()
             ));
         }
 

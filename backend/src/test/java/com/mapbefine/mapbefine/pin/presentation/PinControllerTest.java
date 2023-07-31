@@ -111,15 +111,15 @@ class PinControllerTest extends RestDocsIntegration {
                         "매튜의 산스장",
                         "지번 주소",
                         "매튜가 사랑하는 산스장",
-                        new BigDecimal(37).toString(),
-                        new BigDecimal(127).toString()
+                        new BigDecimal(37),
+                        new BigDecimal(127)
                 ), new PinResponse(
                         2L,
                         "매튜의 안갈집",
                         "지번 주소",
                         "매튜가 두번은 안 갈 집",
-                        new BigDecimal(37).toString(),
-                        new BigDecimal(127).toString()
+                        new BigDecimal(37),
+                        new BigDecimal(127)
                 )
         );
 
