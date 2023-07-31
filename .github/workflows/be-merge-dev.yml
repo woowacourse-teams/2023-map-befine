@@ -5,7 +5,7 @@ on:
   
   pull_request:
     branches: [ develop ]
-    types: [closed]
+    types: [ closed ]
     paths: backend/**
 
 permissions:
@@ -40,11 +40,11 @@ jobs:
         path: backend/build/libs/mapbefine.jar
 
   deploy:
-    runs-on: self-hosted
-    needs: build-and-upload
-  
     if: github.event.pull_request.merged
-    
+
+    runs-on: [ self-hosted, dev ]
+    needs: build-and-upload
+
     steps:
       - name: 구버전 jar 파일 삭제
         run: rm -rf /home/ubuntu/backend/build/*.jar 
@@ -56,7 +56,7 @@ jobs:
           path: /home/ubuntu/backend/build/
 
       - name: 배포하기
-        run: /home/ubuntu/backend/build/deploy.sh
+        run: /home/ubuntu/backend/deploy.sh
 
       - name: 슬랙 메시지 보내기
 

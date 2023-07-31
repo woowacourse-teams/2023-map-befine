@@ -1,10 +1,10 @@
-name: Backend Automatically Build On Pull request 
+name: Backend CI For Test Validation
 
 on:
   workflow_dispatch:
   
   pull_request:
-    branches: [ develop ]
+    branches: [ main, develop ]
     paths: backend/**
 
 permissions:
@@ -13,7 +13,7 @@ permissions:
   contents: write
   
 jobs:
-  build-and-upload:
+  build-and-comment:
 
     runs-on: ubuntu-22.04
 
