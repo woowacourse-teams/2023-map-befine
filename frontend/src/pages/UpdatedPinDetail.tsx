@@ -11,7 +11,7 @@ import { ModifyPinFormValuesType } from '../types/FormValues';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
-  pinId: string;
+  pinId: number;
   formValues: ModifyPinFormValuesType;
   setSearchParams: SetURLSearchParams;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;

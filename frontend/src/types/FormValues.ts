@@ -8,16 +8,16 @@ export interface NewTopicFormValuesType {
   name: string;
   description: string;
   image: string;
-  pins: []
+  topics: [];
 }
 
-export interface ModifyPinFormValuesType{
+export interface ModifyPinFormValuesType {
   name: string;
   images: string[];
   description: string;
 }
 
-export interface DefaultPinValuesType extends ModifyPinFormValuesType{ 
+export interface DefaultPinValuesType extends ModifyPinFormValuesType {
   id: number;
   address: string;
   latitude: string;
@@ -25,7 +25,7 @@ export interface DefaultPinValuesType extends ModifyPinFormValuesType{
   updatedAt: string;
 }
 
-export interface NewPinValuesType{
+export interface NewPinValuesType {
   topicId: number;
   name: string;
   images: string[];
