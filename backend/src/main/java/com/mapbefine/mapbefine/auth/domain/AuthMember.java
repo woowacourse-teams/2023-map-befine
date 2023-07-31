@@ -4,7 +4,6 @@ import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 
@@ -39,7 +38,6 @@ public abstract class AuthMember {
     private static List<Long> getTopicsWithPermission(Member member) {
         return member.getTopicsWithPermission()
                 .stream()
-                .map(MemberTopicPermission::getTopic)
                 .map(Topic::getId)
                 .toList();
     }

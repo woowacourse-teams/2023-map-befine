@@ -78,4 +78,10 @@ public class Member extends BaseTimeEntity {
         return role == Role.USER;
     }
 
+    public List<Topic> getTopicsWithPermission() {
+        return topicsWithPermission.stream()
+                .map(MemberTopicPermission::getTopic)
+                .toList();
+    }
+
 }
