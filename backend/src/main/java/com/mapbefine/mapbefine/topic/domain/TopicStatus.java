@@ -34,7 +34,7 @@ public class TopicStatus {
     }
 
     private static void validateTopicStatus(Publicity publicity, Permission permission) {
-        if (publicity.isPublic() && permission.isAllMembers()) {
+        if (publicity.isPrivate() && permission.isAllMembers()) {
             throw new IllegalArgumentException("멤버 공개일 때는, 권한 설정이 소속 회원이어야합니다.");
         }
     }

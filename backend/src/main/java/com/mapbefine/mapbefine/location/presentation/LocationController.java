@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/Location")
+@RequestMapping("/location")
 public class LocationController {
 
     private final LocationQueryService locationQueryService;
