@@ -6,9 +6,16 @@ import Tag from '../common/Tag';
 export interface MergeOrSeeTogetherProps {
   tag: string[];
   confirmButton: string;
+  onClickConfirm: () => void;
+  onClickClose: () => void;
 }
 
-export const MergeOrSeeTogether = ({ tag, confirmButton }: MergeOrSeeTogetherProps) => {
+export const MergeOrSeeTogether = ({
+  tag,
+  confirmButton,
+  onClickConfirm,
+  onClickClose,
+}: MergeOrSeeTogetherProps) => {
   return (
     <>
       <Flex
@@ -36,9 +43,13 @@ export const MergeOrSeeTogether = ({ tag, confirmButton }: MergeOrSeeTogetherPro
           $alignItems="center"
           $justifyContent="center"
         >
-          <Button variant="secondary">취소하기</Button>
+          <Button variant="secondary" onClick={onClickClose}>
+            취소하기
+          </Button>
           <Space size={2} />
-          <Button variant="primary">{confirmButton}</Button>
+          <Button variant="primary" onClick={onClickConfirm}>
+            {confirmButton}
+          </Button>
         </Flex>
       </Flex>
     </>
