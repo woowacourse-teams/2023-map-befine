@@ -22,4 +22,19 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
             @Param("distance") BigDecimal distance
     );
 
+    @Query(
+            value = "SELECT l FROM Location l "
+                    + "WHERE ( 6371000 * acos( cos( radians(:#{#current_coordinate.latitude}) ) "
+                    + "      * cos( radians( l.coordinate.latitude ) ) "
+                    + "      * cos( radians( l.coordinate.longitude ) - radians(:#{#current_coordinate.longitude}) ) "
+                    + "      + sin( radians(:latitude) ) "
+                    + "      * sin( radians( l.coordinate.latitude ) ) ) ) <= :distance",
+            nativeQuery = true
+    )
+    List<Location> findAllByCoordinateAndDistanceInMeters(
+            @Param("current_coordinate") Coordinate coordinate,
+            @Param("distance") double distance
+    );
+
+
 }
