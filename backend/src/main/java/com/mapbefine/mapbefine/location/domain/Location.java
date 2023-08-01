@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -63,10 +62,6 @@ public class Location extends BaseTimeEntity {
         pins.add(pin);
     }
 
-    public boolean isDuplicateCoordinate(Coordinate otherCoordinate) {
-        return coordinate.isDuplicateCoordinate(otherCoordinate);
-    }
-
     public boolean isSameAddress(String otherAddress) {
         return address.isSameAddress(otherAddress);
     }
@@ -74,7 +69,6 @@ public class Location extends BaseTimeEntity {
     public double getLatitude() {
         return coordinate.getLatitude();
     }
-
 
     public double getLongitude() {
         return coordinate.getLongitude();
