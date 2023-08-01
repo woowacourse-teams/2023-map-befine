@@ -27,13 +27,16 @@ jobs:
           cache-dependency-path: "frontend"
 
       - name: Install npm
-        run: npm install --force
+        run: npm install
+        working-directory: frontend
 
-      - name: grant excute access
+      - name: grant execute access
         run: chmod +x npm
+        working-directory: frontend
 
       - name: Build project
         run: npm run build
+        working-directory: frontend
 
       - name: upload to artifact
         uses: actions/upload-artifact@v3
