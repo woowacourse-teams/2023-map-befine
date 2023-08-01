@@ -38,7 +38,7 @@ class LocationControllerTest extends RestDocsIntegration {
                 3,
                 LocalDateTime.now()
         ));
-        CoordinateRequest coordinateRequest = new CoordinateRequest(BigDecimal.valueOf(37), BigDecimal.valueOf(127));
+        CoordinateRequest coordinateRequest = new CoordinateRequest(37, 127);
         given(locationQueryService.findBests(any(), any())).willReturn(responses);
 
         mockMvc.perform(

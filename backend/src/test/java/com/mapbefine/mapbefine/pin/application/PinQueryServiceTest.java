@@ -60,8 +60,8 @@ class PinQueryServiceTest {
 
     @BeforeEach
     void setUp() {
-        BigDecimal latitude = BigDecimal.valueOf(37.123456);
-        BigDecimal longitude = BigDecimal.valueOf(127.123456);
+        double latitude = 37.123456;
+        double longitude = 127.123456;
         coordinate = Coordinate.of(latitude, longitude);
         location = saveLocation(coordinate);
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));

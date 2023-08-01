@@ -62,8 +62,8 @@ class PinIntegrationTest extends IntegrationTest {
                 "description",
                 address.getRoadBaseAddress(),
                 "legalDongCode",
-                new BigDecimal("37.5152933"),
-                new BigDecimal("127.1029866"),
+                37.5152933,
+                127.1029866,
                 BASE_IMAGES
         );
 
@@ -95,8 +95,8 @@ class PinIntegrationTest extends IntegrationTest {
                 "description",
                 "기존에 없는 주소",
                 "legalDongCode",
-                new BigDecimal("37"),
-                new BigDecimal("126"),
+                37,
+                126,
                 BASE_IMAGES
         );
 
@@ -118,8 +118,8 @@ class PinIntegrationTest extends IntegrationTest {
                 "description",
                 "기존에 없는 주소",
                 "legalDongCode",
-                new BigDecimal("37"),
-                new BigDecimal("126"),
+                37,
+                126,
                 BASE_IMAGES
         );
 
@@ -129,8 +129,8 @@ class PinIntegrationTest extends IntegrationTest {
                 "description",
                 "기존에 없는 주소",
                 "legalDongCode",
-                new BigDecimal("37.12345"),
-                new BigDecimal("126.12345"),
+                37.12345,
+                126.12345,
                 BASE_IMAGES
         );
 
@@ -162,8 +162,8 @@ class PinIntegrationTest extends IntegrationTest {
                 "description",
                 "기존에 없는 주소",
                 "legalDongCode",
-                new BigDecimal("37"),
-                new BigDecimal("126"),
+                37,
+                126,
                 BASE_IMAGES
         );
         ExtractableResponse<Response> createResponse = createPin(request);

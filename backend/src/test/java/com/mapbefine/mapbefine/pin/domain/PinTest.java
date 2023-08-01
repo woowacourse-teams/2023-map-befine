@@ -30,8 +30,8 @@ class PinTest {
                     "legalDongCode"
             ),
             Coordinate.of(
-                    BigDecimal.valueOf(38.123456),
-                    BigDecimal.valueOf(127.123456)
+                    38.123456,
+                    127.123456
             )
     );
     private static final Topic topic = Topic.of(

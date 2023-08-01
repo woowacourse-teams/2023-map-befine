@@ -13,8 +13,8 @@ public record PinDetailResponse(
         String name,
         String address,
         String description,
-        BigDecimal latitude,
-        BigDecimal longitude,
+        double latitude,
+        double longitude,
         LocalDateTime updatedAt,
         List<String> images
 ) {

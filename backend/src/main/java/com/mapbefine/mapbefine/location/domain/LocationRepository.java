@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.location.domain;
 
-import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,9 +16,9 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
                     + "AND l.coordinate.longitude BETWEEN :currentLongitude - :distance AND :currentLongitude + :distance"
     )
     List<Location> findAllByRectangle(
-            @Param("currentLatitude") BigDecimal currentLatitude,
-            @Param("currentLongitude") BigDecimal currentLongitude,
-            @Param("distance") BigDecimal distance
+            @Param("currentLatitude") double currentLatitude,
+            @Param("currentLongitude") double currentLongitude,
+            @Param("distance") double distance
     );
 
     @Query(

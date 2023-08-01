@@ -9,8 +9,8 @@ public record PinCreateRequest(
         String description,
         String address,
         String legalDongCode,
-        BigDecimal latitude,
-        BigDecimal longitude,
+        double latitude,
+        double longitude,
         List<String> images
 ) {
 }

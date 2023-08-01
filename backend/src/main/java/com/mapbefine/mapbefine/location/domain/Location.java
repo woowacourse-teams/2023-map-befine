@@ -43,8 +43,8 @@ public class Location extends BaseTimeEntity {
             String parcelBaseAddress,
             String roadBaseAddress,
             String legalDongCode,
-            BigDecimal latitude,
-            BigDecimal longitude
+            double latitude,
+            double longitude
     ) {
         return new Location(
                 new Address(
@@ -71,12 +71,12 @@ public class Location extends BaseTimeEntity {
         return address.isSameAddress(otherAddress);
     }
 
-    public BigDecimal getLatitude() {
+    public double getLatitude() {
         return coordinate.getLatitude();
     }
 
 
-    public BigDecimal getLongitude() {
+    public double getLongitude() {
         return coordinate.getLongitude();
     }
 

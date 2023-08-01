@@ -14,7 +14,6 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -132,15 +131,15 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                                 "매튜의 산스장",
                                 "지번 주소",
                                 "매튜가 사랑하는 산스장",
-                                new BigDecimal(37),
-                                new BigDecimal(127)
+                                37,
+                                127
                         ), new PinResponse(
                                 2L,
                                 "매튜의 안갈집",
                                 "지번 주소",
                                 "매튜가 두번은 안 갈 집",
-                                new BigDecimal(37),
-                                new BigDecimal(127)
+                                37,
+                                127
                         )
                 )
         );

@@ -14,10 +14,7 @@ public class LocationFixture {
                         "도로명주소",
                         "111000"
                 ),
-                Coordinate.of(
-                        BigDecimal.valueOf(35),
-                        BigDecimal.valueOf(127)
-                )
+                Coordinate.of(35, 127)
         );
     }
 
@@ -28,9 +25,7 @@ public class LocationFixture {
                         "도로명주소",
                         "111000"
                 ),
-                Coordinate.of(
-                        BigDecimal.valueOf(latitude),
-                        BigDecimal.valueOf(longitude))
+                Coordinate.of(latitude, longitude)
         );
     }
 }

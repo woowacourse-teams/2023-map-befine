@@ -15,41 +15,36 @@ import org.junit.jupiter.params.provider.ValueSource;
 class CoordinateTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"32.9", "43.1"})
+    @ValueSource(doubles = {32.9, 43.1})
     @DisplayName("위도의 값이 33~43사이의 값이 아니면 실패한다.")
-    void createCoordinate_FailByInvalidLatitude(String input) {
-        BigDecimal latitude = new BigDecimal(input);
-
-        assertThatThrownBy(() -> Coordinate.of(latitude, BigDecimal.valueOf(127)))
+    void createCoordinate_FailByInvalidLatitude(double latitude) {
+        assertThatThrownBy(() -> Coordinate.of(latitude, 127))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("한국 내의 좌표만 입력해주세요.");
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"33.1", "42.9"})
+    @ValueSource(doubles = {33.1, 42.9})
     @DisplayName("위도의 값이 33~43사이의 값이면 통과한다.")
-    void createLatitude_Success(String input) {
-        BigDecimal latitude = new BigDecimal(input);
+    void createLatitude_Success(double latitude) {
 
-        assertDoesNotThrow(() -> Coordinate.of(latitude, BigDecimal.valueOf(127)));
+        assertDoesNotThrow(() -> Coordinate.of(latitude, 127));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"124.1", "131.9"})
+    @ValueSource(doubles = {124.1, 131.9})
     @DisplayName("경도의 값이 124~132사이의 값이면 통과한다.")
-    void createLongitude_Success(String input) {
-        BigDecimal longitude = new BigDecimal(input);
+    void createLongitude_Success(double longitude) {
 
-        assertDoesNotThrow(() -> Coordinate.of(BigDecimal.valueOf(37), longitude));
+        assertDoesNotThrow(() -> Coordinate.of(37, longitude));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"123.9", "132.1"})
+    @ValueSource(doubles = {123.9, 132.1})
     @DisplayName("경도의 값이 124~132사이의 값이 아니면 실패한다.")
-    void createCoordinate_FailByInvalidLongitude(String input) {
-        BigDecimal longitude = new BigDecimal(input);
+    void createCoordinate_FailByInvalidLongitude(double longitude) {
 
-        assertThatThrownBy(() -> Coordinate.of(BigDecimal.valueOf(37), longitude))
+        assertThatThrownBy(() -> Coordinate.of(37, longitude))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("한국 내의 좌표만 입력해주세요.");
     }
@@ -57,9 +52,9 @@ class CoordinateTest {
     @ParameterizedTest
     @MethodSource(value = "calculateDistanceProvider")
     @DisplayName("좌표 사이의 거리를 계산한다.")
-    void calculateDistance(Coordinate coordinate, Coordinate other, BigDecimal underBound, BigDecimal upperBound) {
+    void calculateDistance(Coordinate coordinate, Coordinate other, double underBound, double upperBound) {
         // when
-        BigDecimal result = coordinate.calculateDistance(other);
+        double result = coordinate.calculateDistance(other);
 
         // then
         assertThat(result).isBetween(underBound, upperBound);
@@ -68,22 +63,23 @@ class CoordinateTest {
     static Stream<Arguments> calculateDistanceProvider() {
         return Stream.of(
                 Arguments.of(
-                        Coordinate.of(BigDecimal.valueOf(37.6273677), BigDecimal.valueOf(127.0447364)),
-                        Coordinate.of(BigDecimal.valueOf(37.6273438), BigDecimal.valueOf(127.0447853)),
-                        BigDecimal.valueOf(500 * 0.98),
-                        BigDecimal.valueOf(500 * 1.02)
+                        Coordinate.of(37.6273677, 127.0447364),
+                        Coordinate.of(37.6273438, 127.0447853),
+                        500 * 0.98,
+                        500 * 1.02
                 ),
                 Arguments.of(
-                        Coordinate.of(BigDecimal.valueOf(37.5909374), BigDecimal.valueOf(127.1537482)),
-                        Coordinate.of(BigDecimal.valueOf(37.610454), BigDecimal.valueOf(127.2050749)),
-                        BigDecimal.valueOf(500000 * 0.98),
-                        BigDecimal.valueOf(500000 * 1.02)
+                        Coordinate.of(37.5909374, 127.1537482),
+                        Coordinate.of(37.610454, 127.2050749),
+                        500000 * 0.98,
+                        500000 * 1.02
                 ),
                 Arguments.of(
-                        Coordinate.of(BigDecimal.valueOf(37.6273677), BigDecimal.valueOf(127.0447364)),
-                        Coordinate.of(BigDecimal.valueOf(37.6273777), BigDecimal.valueOf(127.0447364)),
-                        BigDecimal.valueOf(111 * 0.98),
-                        BigDecimal.valueOf(111 * 1.02))
+                        Coordinate.of(37.6273677, 127.0447364),
+                        Coordinate.of(37.6273777, 127.0447364),
+                        111 * 0.98,
+                        111 * 1.02
+                )
         );
     }
 

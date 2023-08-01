@@ -94,11 +94,11 @@ public class Pin extends BaseTimeEntity {
         pinImages.add(pinImage);
     }
 
-    public BigDecimal getLatitude() {
+    public double getLatitude() {
         return location.getLatitude();
     }
 
-    public BigDecimal getLongitude() {
+    public double getLongitude() {
         return location.getLongitude();
     }
 

@@ -38,7 +38,7 @@ public class LocationQueryService {
     }
 
     private List<Location> findLocationsInRectangle(CoordinateRequest request) {
-        BigDecimal distance = BigDecimal.valueOf(0.03);
+        double distance = 0.03;
         return locationRepository.findAllByRectangle(
                 request.latitude(),
                 request.longitude(),

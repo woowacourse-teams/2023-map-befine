@@ -81,8 +81,8 @@ class PinCommandServiceTest {
     @DisplayName("핀을 저장하려는 위치(Location)가 존재하면 해당 위치에 핀을 저장한다.")
     void saveIfExistLocation_Success() {
         // given
-        BigDecimal latitude = BigDecimal.valueOf(37.123456);
-        BigDecimal longitude = BigDecimal.valueOf(127.123456);
+        double latitude = 37.123456;
+        double longitude = 127.123456;
         Coordinate coordinate = Coordinate.of(latitude, longitude);
         Location location = saveLocation(coordinate);
 
@@ -139,8 +139,8 @@ class PinCommandServiceTest {
     @DisplayName("핀을 저장하려는 존재하지 않는 위치(Location)가 존재하지 않으면 위치를 저장하고 핀을 저장한다.")
     void saveIfNotExistLocation_Success() {
         // given
-        BigDecimal latitude = BigDecimal.valueOf(37.123456);
-        BigDecimal longitude = BigDecimal.valueOf(127.123456);
+        double latitude = 37.123456;
+        double longitude = 127.123456;
 
         // when
         PinCreateRequest request = new PinCreateRequest(
@@ -183,8 +183,8 @@ class PinCommandServiceTest {
     @DisplayName("제약 사항(name, description)을 지킨 정보로 핀의 정보를 수정하면 핀이 수정된다.")
     void update_Success() {
         // given
-        BigDecimal latitude = BigDecimal.valueOf(37.123456);
-        BigDecimal longitude = BigDecimal.valueOf(127.123456);
+        double latitude = 37.123456;
+        double longitude = 127.123456;
         Coordinate coordinate = Coordinate.of(latitude, longitude);
         saveLocation(coordinate);
 
@@ -230,8 +230,8 @@ class PinCommandServiceTest {
     @DisplayName("제약 사항(name, description)을 지키지 않은 정보로 핀의 정보를 수정하면 핀이 수정되지 않는다.")
     void update_Fail() {
         // given
-        BigDecimal latitude = BigDecimal.valueOf(37.123456);
-        BigDecimal longitude = BigDecimal.valueOf(127.123456);
+        double latitude = 37.123456;
+        double longitude = 127.123456;
         Coordinate coordinate = Coordinate.of(latitude, longitude);
         saveLocation(coordinate);
 
@@ -257,8 +257,8 @@ class PinCommandServiceTest {
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
     void removeById_Success() {
         // given
-        BigDecimal latitude = BigDecimal.valueOf(37.123456);
-        BigDecimal longitude = BigDecimal.valueOf(127.123456);
+        double latitude = 37.123456;
+        double longitude = 127.123456;
         Coordinate coordinate = Coordinate.of(latitude, longitude);
         saveLocation(coordinate);
 
@@ -290,8 +290,8 @@ class PinCommandServiceTest {
     @DisplayName("토픽을 삭제하면 이와 관련된 모든 핀들이 soft-deleting 된다.")
     void removeAllByTopicId_Success() {
         // given
-        BigDecimal latitude = BigDecimal.valueOf(37.123456);
-        BigDecimal longitude = BigDecimal.valueOf(127.123456);
+        double latitude = 37.123456;
+        double longitude = 127.123456;
         Coordinate coordinate = Coordinate.of(latitude, longitude);
         saveLocation(coordinate);
 

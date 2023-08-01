@@ -1,12 +1,13 @@
 package com.mapbefine.mapbefine.location.domain;
 
+import static java.lang.Math.acos;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
 import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.function.DoubleUnaryOperator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,93 +16,70 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Coordinate {
 
-    private static final BigDecimal LATITUDE_LOWER_BOUND = BigDecimal.valueOf(33);
-    private static final BigDecimal LATITUDE_UPPER_BOUND = BigDecimal.valueOf(43);
-    private static final BigDecimal LONGITUDE_LOWER_BOUND = BigDecimal.valueOf(124);
-    private static final BigDecimal LONGITUDE_UPPER_BOUND = BigDecimal.valueOf(132);
+    private static final double LATITUDE_LOWER_BOUND = 33;
+    private static final double LATITUDE_UPPER_BOUND = 43;
+    private static final double LONGITUDE_LOWER_BOUND = 124;
+    private static final double LONGITUDE_UPPER_BOUND = 132;
 
-    private static final BigDecimal EARTH_RADIUS = BigDecimal.valueOf(6371);
-    private static final BigDecimal UNIT_FOR_CONVERT_RADIAN = BigDecimal.valueOf(Math.PI / 180);
-    private static final BigDecimal DUPLICATE_STANDARD_DISTANCE = BigDecimal.valueOf(0.01);
-    private static final BigDecimal UNIT_FOR_CONVERT_TO_CENTIMETER = BigDecimal.valueOf(Math.pow(10, 5));
+    private static final double EARTH_RADIUS = 6371;
+    private static final double UNIT_FOR_CONVERT_RADIAN = Math.PI / 180;
+    private static final double DUPLICATE_STANDARD_DISTANCE = 0.01;
+    private static final double UNIT_FOR_CONVERT_TO_CENTIMETER = Math.pow(10, 5);
 
-    @Column(precision = 18, scale = 15)
-    private BigDecimal latitude;
-    @Column(precision = 18, scale = 15)
-    private BigDecimal longitude;
+//    @Column(precision = 15, scale = 12) // 상의해야 할 부분
+    private double latitude;
+//    @Column(precision = 15, scale = 12)
+    private double longitude;
 
-    private Coordinate(BigDecimal latitude, BigDecimal longitude) {
+    private Coordinate(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public static Coordinate of(BigDecimal latitude, BigDecimal longitude) {
+    public static Coordinate of(double latitude, double longitude) {
         validateRange(latitude, longitude);
 
         return new Coordinate(latitude, longitude);
     }
 
-    private static void validateRange(BigDecimal latitude, BigDecimal longitude) {
+    private static void validateRange(double latitude, double longitude) {
         if (isNotInRange(latitude, longitude)) {
             throw new IllegalArgumentException("한국 내의 좌표만 입력해주세요.");
         }
     }
 
-    private static boolean isNotInRange(BigDecimal latitude, BigDecimal longitude) {
-        return LATITUDE_LOWER_BOUND.compareTo(latitude) > 0 ||
-                LATITUDE_UPPER_BOUND.compareTo(latitude) < 0 ||
-                LONGITUDE_LOWER_BOUND.compareTo(longitude) > 0 ||
-                LONGITUDE_UPPER_BOUND.compareTo(longitude) < 0;
+    private static boolean isNotInRange(double latitude, double longitude) {
+        return (latitude < LATITUDE_LOWER_BOUND || LATITUDE_UPPER_BOUND < latitude)
+                || (longitude < LONGITUDE_LOWER_BOUND || LONGITUDE_UPPER_BOUND < longitude);
     }
 
     /*
      * 오차 범위 2%
      * */
-    public BigDecimal calculateDistance(Coordinate otherCoordinate) {
-        BigDecimal result = applyHaversine(otherCoordinate);
+    public double calculateDistance(Coordinate otherCoordinate) {
+        double result = applyHaversine(otherCoordinate);
 
         return convertToCentimeter(result);
     }
 
-    private BigDecimal applyHaversine(Coordinate otherCoordinate) {
-        BigDecimal sinDeltaLatitude = convertToSinDelta(latitude, otherCoordinate.latitude);
-        BigDecimal sinDeltaLongitude = convertToSinDelta(longitude, otherCoordinate.longitude);
-
-        BigDecimal squareRoot = applyFormula(Math::cos, convertToRadian(latitude))
-                .multiply(applyFormula(Math::cos, convertToRadian(otherCoordinate.latitude)))
-                .multiply(applyFormula(value -> Math.pow(value, 2), sinDeltaLongitude))
-                .add(applyFormula(value -> Math.pow(value, 2), sinDeltaLatitude))
-                .sqrt(MathContext.DECIMAL64);
-
-        return applyFormula(Math::asin, squareRoot)
-                .multiply(BigDecimal.valueOf(2))
-                .multiply(EARTH_RADIUS);
+    private double applyHaversine(Coordinate otherCoordinate) {
+        return acos(
+                sin(toRadians(otherCoordinate.latitude)) * sin(toRadians(this.latitude)) +
+                        (cos(toRadians(otherCoordinate.latitude)) * cos(toRadians(this.latitude))
+                                * cos(toRadians(otherCoordinate.longitude - this.longitude)))
+        ) * EARTH_RADIUS;
     }
 
-    private BigDecimal convertToSinDelta(BigDecimal x, BigDecimal y) {
-        BigDecimal delta = convertToRadian(x.subtract(y));
-
-        return applyFormula(value -> Math.sin(value / 2), delta);
-    }
-
-    private BigDecimal applyFormula(DoubleUnaryOperator formula, BigDecimal value) {
-        return BigDecimal.valueOf(formula.applyAsDouble(value.doubleValue()));
-    }
-
-    private BigDecimal convertToRadian(BigDecimal value) {
-        return value.multiply(UNIT_FOR_CONVERT_RADIAN);
-    }
-
-    private BigDecimal convertToCentimeter(BigDecimal distance) {
-        return distance.multiply(UNIT_FOR_CONVERT_TO_CENTIMETER);
+    private double convertToCentimeter(double distance) {
+        return distance * UNIT_FOR_CONVERT_TO_CENTIMETER;
     }
 
     public boolean isDuplicateCoordinate(Coordinate otherCoordinate) {
-        return calculateDistance(otherCoordinate).doubleValue()
-                <= convertToCentimeter(DUPLICATE_STANDARD_DISTANCE).doubleValue();
+        return calculateDistance(otherCoordinate)
+                <= convertToCentimeter(DUPLICATE_STANDARD_DISTANCE);
     }
 
-    public static BigDecimal getDuplicateStandardDistance() {
+    public static double getDuplicateStandardDistance() {
         return DUPLICATE_STANDARD_DISTANCE;
     }
 

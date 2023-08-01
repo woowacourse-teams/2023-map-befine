@@ -9,8 +9,8 @@ public record PinResponse(
         String name,
         String address,
         String description,
-        BigDecimal latitude,
-        BigDecimal longitude
+        double latitude,
+        double longitude
 ) {
     public static PinResponse from(Pin pin) {
         PinInfo pinInfo = pin.getPinInfo();
