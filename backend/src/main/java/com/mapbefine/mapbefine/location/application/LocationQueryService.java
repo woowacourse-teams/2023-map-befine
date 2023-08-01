@@ -5,13 +5,13 @@ import static java.util.stream.Collectors.groupingBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.AuthTopic;
+import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.location.dto.CoordinateRequest;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class LocationQueryService {
 
+    private static final double NEAR_DISTANCE = 3000.0;
+
     private final LocationRepository locationRepository;
 
     public LocationQueryService(LocationRepository locationRepository) {
@@ -30,20 +32,13 @@ public class LocationQueryService {
     }
 
 
-    public List<TopicResponse> findBests(AuthMember member, CoordinateRequest request) {
-        List<Location> locations = findLocationsInRectangle(request);
+    public List<TopicResponse> findNearbyTopicsSortedByPinCount(AuthMember member, CoordinateRequest request) {
+        Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
+        List<Location> locations = locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, NEAR_DISTANCE);
+
         Map<Topic, Long> topicCounts = countTopicsInLocations(locations);
 
         return sortTopicsByCounts(topicCounts, member);
-    }
-
-    private List<Location> findLocationsInRectangle(CoordinateRequest request) {
-        double distance = 0.03;
-        return locationRepository.findAllByRectangle(
-                request.latitude(),
-                request.longitude(),
-                distance
-        );
     }
 
     private Map<Topic, Long> countTopicsInLocations(List<Location> locations) {
@@ -55,12 +50,15 @@ public class LocationQueryService {
 
     private List<TopicResponse> sortTopicsByCounts(Map<Topic, Long> topicCounts, AuthMember member) {
         return topicCounts.entrySet().stream()
-                .filter(topicEntry -> member.canRead(AuthTopic.from(topicEntry.getKey()))) // TODO : 볼 수 있는 토픽만 걸러내는 과정
+                .filter(topicEntry -> canReadTopic(member, topicEntry.getKey()))
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .map(Map.Entry::getKey)
                 .map(TopicResponse::from)
                 .toList();
     }
 
+    private boolean canReadTopic(AuthMember member, Topic topic) {
+        return member.canRead(AuthTopic.from(topic));
+    }
 
 }

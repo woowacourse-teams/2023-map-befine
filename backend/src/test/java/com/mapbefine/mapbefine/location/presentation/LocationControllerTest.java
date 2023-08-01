@@ -49,7 +49,7 @@ class LocationControllerTest extends RestDocsIntegration {
                 LocalDateTime.now()
         ));
         CoordinateRequest coordinateRequest = new CoordinateRequest(37, 127);
-        given(locationQueryService.findBests(any(), any())).willReturn(responses);
+        given(locationQueryService.findNearbyTopicsSortedByPinCount(any(), any())).willReturn(responses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/location/best")

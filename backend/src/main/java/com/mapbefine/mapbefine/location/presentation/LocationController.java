@@ -26,7 +26,7 @@ public class LocationController {
             AuthMember member,
             @RequestBody CoordinateRequest request
     ) {
-        List<TopicResponse> responses = locationQueryService.findBests(member, request);
+        List<TopicResponse> responses = locationQueryService.findNearbyTopicsSortedByPinCount(member, request);
 
         return ResponseEntity.ok(responses);
     }

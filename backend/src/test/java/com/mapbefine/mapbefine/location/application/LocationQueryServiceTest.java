@@ -77,7 +77,7 @@ class LocationQueryServiceTest {
         );
 
         // when
-        List<TopicResponse> currentTopics = locationQueryService.findBests(authMember, currentLocation);
+        List<TopicResponse> currentTopics = locationQueryService.findNearbyTopicsSortedByPinCount(authMember, currentLocation);
 
         // then
         assertThat(currentTopics.get(0)).isEqualTo(TopicResponse.from(TOPIC_BEST_1ST));
