@@ -30,7 +30,7 @@ const NewTopic = () => {
     routePage(-1);
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const topicId = await postToServer();
