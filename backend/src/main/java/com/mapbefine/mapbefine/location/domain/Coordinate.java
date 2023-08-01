@@ -6,7 +6,6 @@ import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,9 +25,9 @@ public class Coordinate {
     private static final double DUPLICATE_STANDARD_DISTANCE = 0.01;
     private static final double UNIT_FOR_CONVERT_TO_CENTIMETER = Math.pow(10, 5);
 
-//    @Column(precision = 15, scale = 12) // 상의해야 할 부분
+//    @Column(precision = 10, scale = 7) // 상의해야 할 부분
     private double latitude;
-//    @Column(precision = 15, scale = 12)
+//    @Column(precision = 10, scale = 7)
     private double longitude;
 
     private Coordinate(double latitude, double longitude) {

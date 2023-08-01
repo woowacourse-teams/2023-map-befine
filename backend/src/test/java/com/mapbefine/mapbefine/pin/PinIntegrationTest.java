@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.pin;
 
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
@@ -15,10 +16,11 @@ import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
-import java.math.BigDecimal;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.List;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,12 +30,13 @@ import org.springframework.http.MediaType;
 
 class PinIntegrationTest extends IntegrationTest {
 
-    private static final String AUTHORIZATION = "Authorization";
+    private static final String BASIC_FORMAT = "Basic %s";
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     private Topic topic;
     private Location location;
     private Member member;
+    private String authHeader;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -47,6 +50,9 @@ class PinIntegrationTest extends IntegrationTest {
     @BeforeEach
     void saveTopicAndLocation() {
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        authHeader = Base64.encodeBase64String(
+                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+        );
         topic = topicRepository.save(TopicFixture.createByName("PinIntegration 토픽", member));
         location = locationRepository.save(LocationFixture.createByCoordinate(37.5152933, 127.1029866));
     }
@@ -77,7 +83,7 @@ class PinIntegrationTest extends IntegrationTest {
 
     private ExtractableResponse<Response> createPin(PinCreateRequest request) {
         return RestAssured.given().log().all()
-                .header(AUTHORIZATION, member.getEmail())
+                .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/pins")
@@ -139,6 +145,7 @@ class PinIntegrationTest extends IntegrationTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/pins")
                 .then().log().all()
@@ -172,6 +179,7 @@ class PinIntegrationTest extends IntegrationTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/pins/" + pinId)
                 .then().log().all()

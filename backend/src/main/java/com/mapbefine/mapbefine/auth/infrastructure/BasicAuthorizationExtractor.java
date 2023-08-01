@@ -17,18 +17,19 @@ public class BasicAuthorizationExtractor implements AuthorizationExtractor<AuthI
     @Override
     public AuthInfo extract(final HttpServletRequest request) {
         String requestHeader = request.getHeader(AUTHORIZATION);
+
+        if (!hasText(requestHeader)) { // Request Header 가 null 인데 decode 를 먼저 진행하게 되어서 문제 발생 (Guest 의 경우)
+            throw new IllegalArgumentException("로그인 유저가 아닙니다.");
+        }
+
         String authorization = decode(requestHeader);
-
         validateAuthorization(authorization);
-        String trim = authorization.substring(BASIC_TYPE.length()).trim();
+        String email = authorization.substring(BASIC_TYPE.length()).trim();
 
-        return new AuthInfo(trim);
+        return new AuthInfo(email);
     }
 
     private void validateAuthorization(final String authorization) {
-        if (!hasText(authorization)) {
-            throw new IllegalArgumentException("로그인 유저가 아닙니다");
-        }
         if (!authorization.toLowerCase().startsWith(BASIC_TYPE.toLowerCase())) {
             throw new IllegalArgumentException("잘못된 인증방법입니다.");
         }
