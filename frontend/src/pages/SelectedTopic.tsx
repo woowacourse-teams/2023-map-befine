@@ -49,7 +49,7 @@ const ToggleButton = styled.button<{ isCollapsed: boolean }>`
 `;
 
 const SelectedTopic = () => {
-  // const { topicId } = useParams();
+  const { topicId } = useParams();
   const { state } = useLocation();
   const [tagPins, setTagPins] = useState<string[]>([]);
 
@@ -63,33 +63,24 @@ const SelectedTopic = () => {
 
   const [isOpen, setIsOpen] = useState(true);
 
-  const { topicsId, setTopicsId } = useContext(TopicsIdContext) ?? {
-    topicsId: [],
-    setTopicsId: () => {},
-  };
-
   const { tagId, setTagId } = useContext(TagIdContext) ?? {
     tagId: [],
     setTagId: () => {},
   };
 
-  if (state !== null) setTopicsId(state);
-
   const onClickSetSelectedPinId = (pinId: number) => {
     setSelectedPinId(pinId);
 
-    routePage(`/topics/${topicsId}?pinDetail=${pinId}`)
+    routePage(`/topics/${topicId}?pinDetail=${pinId}`)
   }
 
   const getAndSetDataFromServer = async () => {
 
     const data: TopicInfoType[] = [];
-    for (const topicId of topicsId) {
       data.push(await getApi(`/topics/${topicId}`));
       // todo : setCoordinates 인자 확인
       setCoordinates([...data[0].pins]);
       setTopicDetail([...data]);
-    }
   };
 
   const onClickConfirm = () => {
@@ -109,7 +100,7 @@ const SelectedTopic = () => {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
     }
     setIsOpen(true);
-  }, [searchParams,topicsId]);
+  }, [searchParams]);
 
   useEffect(() => {
     if (tagPins.length === 0) setTagId([]);

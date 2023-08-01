@@ -11,7 +11,6 @@ import useNavigator from '../hooks/useNavigator';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { TagIdContext } from '../store/TagId';
-import { TopicsIdContext } from '../store/TopicsId';
 
 const Home = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
@@ -22,11 +21,6 @@ const Home = () => {
   const { tagId, setTagId } = useContext(TagIdContext) ?? {
     tagId: [],
     setTagId: () => {},
-  };
-
-  const { topicsId, setTopicsId } = useContext(TopicsIdContext) ?? {
-    topicsId: [],
-    setTopicsId: () => {},
   };
 
   const goToNewTopic = () => {
@@ -52,12 +46,11 @@ const Home = () => {
   useEffect(() => {
     getAndSetDataFromServer();
 
-    setCoordinates([{ latitude: 37.5055, longitude: 127.0509 }]);
+    setCoordinates([{ latitude: String(37.5055), longitude: String(127.0509) }]);
   }, []);
 
   useEffect(() => {
     if (topics.length === 0) setTagId([]);
-    setTopicsId([]);
   }, [topics]);
 
   return (
