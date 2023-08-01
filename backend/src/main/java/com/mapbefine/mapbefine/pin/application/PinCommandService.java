@@ -13,7 +13,6 @@ import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,16 +41,8 @@ public class PinCommandService {
                 .orElseThrow(NoSuchElementException::new);
         member.canPinCreateOrUpdate(AuthTopic.from(topic));
 
-        List<Location> all = locationRepository.findAllByCoordinateAndDistanceInMeters(
-                coordinate, 10.0);
-
-        Location pinLocation = locationRepository.findAllByRectangle(
-                        coordinate.getLatitude(),
-                        coordinate.getLongitude(),
-                        Coordinate.getDuplicateStandardDistance()
-                )
-                .stream()
-                .filter(location -> location.isDuplicateCoordinate(coordinate))
+        Location pinLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(
+                        coordinate, 10.0).stream()
                 .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
