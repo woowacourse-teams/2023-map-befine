@@ -22,9 +22,7 @@ class LocationRepositoryTest {
     @DisplayName("범위 내의 Pin을 검색한다.")
     void findAllByRectangle_Success(double latitude, double longitude) {
         // given
-//        double distance = 0.00011;
-        double distance = 0.0010;
-        // 지옥의 문제가 다시 시작되었다..... 자릿수 문제를 해결하기 위해서는 어쩔 수 없이 BigDecimal 을 사용하는 방법밖에 없다.
+        double distance = 0.0001;
         Coordinate coordinate = Coordinate.of(latitude, longitude);
         Address address = new Address(
                 "parcel",
@@ -51,10 +49,10 @@ class LocationRepositoryTest {
 
     static Stream<Arguments> coordinates_Success() {
         return Stream.of(
-                Arguments.of(34.9999, 126.999),
-                Arguments.of(35.0001, 126.999),
-                Arguments.of(34.9999, 127.000),
-                Arguments.of(35.0001, 127.000)
+                Arguments.of(34.9999, 126.9999),
+                Arguments.of(35.0001, 126.9999),
+                Arguments.of(34.9999, 127.0001),
+                Arguments.of(35.0001, 127.0001)
         );
     }
 
@@ -89,10 +87,10 @@ class LocationRepositoryTest {
 
     static Stream<Arguments> coordinates_Fail() {
         return Stream.of(
-                Arguments.of(34.9999, 126.999),
-                Arguments.of(35.0001, 126.999),
-                Arguments.of(34.9998, 127.000),
-                Arguments.of(35.0002, 127.000)
+                Arguments.of(34.9998, 126.9998),
+                Arguments.of(35.0002, 126.9998),
+                Arguments.of(34.9998, 127.0002),
+                Arguments.of(35.0002, 127.0002)
         );
     }
 
