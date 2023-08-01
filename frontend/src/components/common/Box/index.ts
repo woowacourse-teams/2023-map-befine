@@ -7,7 +7,6 @@ import { radiusKey } from '../../../themes/radius';
 export type BoxProps = {
   display?: string;
   width?: string;
-  $minWidth?: string;
   height?: string;
   padding?: SpaceThemeKeys;
   $backgroundColor?: colorThemeKey;
@@ -26,14 +25,10 @@ export type BoxProps = {
   $borderBottom?: string;
   $borderLeft?: string;
   cursor?: string;
-  $backgroundImage?: string;
-  $backgroundSize?: string;
-  $backdropFilter?: string;
 };
 
 const Box = styled.div<BoxProps>`
   display: ${({ display }) => display ?? 'block'};
-  min-width: ${({ $minWidth }) => $minWidth};
   background-color: ${({ $backgroundColor }) =>
     $backgroundColor && theme.color[$backgroundColor]};
   color: ${({ color }) => color && theme.color[color]};
@@ -55,8 +50,5 @@ const Box = styled.div<BoxProps>`
   border-bottom: ${({ $borderBottom }) => $borderBottom};
   border-left: ${({ $borderLeft }) => $borderLeft};
   cursor: ${({ cursor }) => cursor};
-  background-image: url(${({ $backgroundImage }) => $backgroundImage});
-  background-size: ${({ $backgroundSize }) => $backgroundSize};
-  backdrop-filter: ${({ $backdropFilter }) => $backdropFilter};
 `;
 export default Box;
