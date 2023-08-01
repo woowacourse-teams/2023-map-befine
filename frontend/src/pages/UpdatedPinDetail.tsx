@@ -7,12 +7,12 @@ import Textarea from '../components/common/Textarea';
 import Input from '../components/common/Input';
 import { putApi } from '../utils/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
-import { DefaultFormValuesType } from '../types/FormValues';
+import { ModifyPinFormValuesType } from '../types/FormValues';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
-  pinId: string;
-  formValues: DefaultFormValuesType;
+  pinId: number;
+  formValues: ModifyPinFormValuesType;
   setSearchParams: SetURLSearchParams;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChangeInput: (
@@ -81,24 +81,6 @@ const UpdatedPinDetail = ({
           name="name"
           value={formValues.name}
           onChange={onChangeInput}
-        />
-      </section>
-
-      <Space size={5} />
-
-      <section>
-        <Flex>
-          <Text color="black" $fontSize="default" $fontWeight="normal">
-            장소 위치
-          </Text>
-        </Flex>
-        <Space size={0} />
-        <Input
-          type="text"
-          name="address"
-          value={formValues.address}
-          onChange={onChangeInput}
-          placeholder={formValues.address}
         />
       </section>
 

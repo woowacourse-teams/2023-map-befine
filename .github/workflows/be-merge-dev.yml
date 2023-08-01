@@ -1,20 +1,20 @@
-name: Backend CI/CD
+name: Backend develop CI/CD
 
 on:
   workflow_dispatch:
   
   pull_request:
     branches: [ develop ]
+    types: [ closed ]
     paths: backend/**
 
 permissions:
-  pull-requests: write
-  checks: write
-  contents: write
+  contents: read
   
 jobs:
-  build-and-upload:
-
+  build-and-upload:    
+    if: github.event.pull_request.merged
+    
     runs-on: ubuntu-22.04
 
     steps:
@@ -32,29 +32,19 @@ jobs:
     - name: Gradle build 시작
       run: ./gradlew clean build
       working-directory: backend
-
-    - name: 테스트 결과를 PR에 코멘트로 등록합니다
-      uses: EnricoMi/publish-unit-test-result-action@v1
-      if: always()
-      with:
-        files: 'backend/build/test-results/test/TEST-*.xml'
-
-    - name: 테스트 실패 시, 실패한 코드 라인에 Check 코멘트를 등록합니다
-      uses: mikepenz/action-junit-report@v3
-      if: always()
-      with:
-        report_paths: '**/build/test-results/test/TEST-*.xml'
-        token: ${{ github.token }}
         
     - name: jar 파일 artifact에 업로드
       uses: actions/upload-artifact@v3
       with:
         name: BackendApplication
-        path: backend/build/libs/*.jar
+        path: backend/build/libs/mapbefine.jar
 
   deploy:
-    runs-on: self-hosted
+    if: github.event.pull_request.merged
+
+    runs-on: [ self-hosted, dev ]
     needs: build-and-upload
+
     steps:
       - name: 구버전 jar 파일 삭제
         run: rm -rf /home/ubuntu/backend/build/*.jar 
@@ -66,9 +56,10 @@ jobs:
           path: /home/ubuntu/backend/build/
 
       - name: 배포하기
-        run: /home/ubuntu/backend/build/deploy.sh
+        run: /home/ubuntu/backend/deploy.sh
 
-      - name: 슬랙 메시지 보내기  // secrets 키 설정만 하면 됨 
+      - name: 슬랙 메시지 보내기
+
         uses: 8398a7/action-slack@v3
         with:
           mention: 'here'

@@ -1,5 +1,5 @@
-export const getApi = (url: string) =>
-  fetch(`${process.env.REACT_APP_API_DEFAULT+url}`, {
+export const getAddress = (url: string) =>
+  fetch(url, {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',

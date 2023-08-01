@@ -38,6 +38,12 @@ public class TopicQueryService {
                 .collect(Collectors.toList());
     }
 
+    public List<TopicDetailResponse> findAllByIds(List<Long> ids) {
+        return topicRepository.findByIdIn(ids).stream()
+                .map(TopicDetailResponse::from)
+                .collect(Collectors.toList());
+    }
+
     public TopicDetailResponse findById(Long id) {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
@@ -74,5 +80,4 @@ public class TopicQueryService {
                 .map(TopicResponse::from)
                 .collect(Collectors.toList());
     }
-
 }

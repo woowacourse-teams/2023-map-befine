@@ -1,5 +1,5 @@
 export const postApi = (url: string, data: {}) =>
-  fetch(url, {
+  fetch(`${process.env.REACT_APP_API_DEFAULT+url}`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',

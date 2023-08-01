@@ -5,19 +5,30 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
 import { postApi } from '../utils/postApi';
-import { useEffect, useState } from 'react';
+import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
+import { getAddress } from '../utils/getAddress';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { DefaultFormValuesType } from '../types/FormValues';
+import { NewPinValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
+import { MarkerContext } from '../context/MarkerContext';
+import { CoordinatesContext } from '../context/CoordinatesContext';
 
 const NewPin = () => {
   const [topic, setTopic] = useState<TopicType | null>(null);
-  const { formValues, onChangeInput } = useFormValues<DefaultFormValuesType>({
+  const { markers, clickedMarker } = useContext(MarkerContext);
+  const { clickedCoordinate, setClickedCoordinate } =
+    useContext(CoordinatesContext);
+  const { formValues, onChangeInput } = useFormValues<NewPinValuesType>({
+    topicId: 0,
     name: '',
     address: '',
     description: '',
+    latitude: '',
+    longitude: '',
+    legalDongCode: '',
+    images: [],
   });
   const { routePage } = useNavigator();
 
@@ -31,14 +42,53 @@ const NewPin = () => {
       name: formValues.name,
       address: formValues.address,
       description: formValues.description,
+      latitude: clickedCoordinate.latitude,
+      longitude: clickedCoordinate.longitude,
+      legalDongCode: '',
+      images: [],
     });
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     await postToServer();
-    routePage(`/topics/${topic?.id}`);
+      routePage(`/topics/${topic?.id}`, [topic!.id]);
+    // 선택된 마커가 있으면 마커를 지도에서 제거
+    if (clickedMarker) {
+      clickedMarker.setMap(null);
+    }
+
+    setClickedCoordinate({
+      latitude: '',
+      longitude: '',
+      address: '',
+    });
+  };
+
+  const onClickAddressInput = () => {
+    var width = 500; //팝업의 너비
+    var height = 600; //팝업의 높이
+    new window.daum.Postcode({
+      width: width, //생성자에 크기 값을 명시적으로 지정해야 합니다.
+      height: height,
+      onComplete: async function (data: any) {
+        const addr = data.roadAddress; // 주소 변수
+
+        //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
+        const { ConvertAdd } = await getAddress(
+          `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
+        );
+        const lat = ConvertAdd.oldLat;
+        const lng = ConvertAdd.oldLon;
+
+        setClickedCoordinate({
+          latitude: lat,
+          longitude: lng,
+          address: addr,
+        });
+      },
+    }).open({});
   };
 
   useEffect(() => {
@@ -47,11 +97,12 @@ const NewPin = () => {
     const getTopicId = async () => {
       if (queryParams.has('topic-id')) {
         const topicId = queryParams.get('topic-id');
-        const data = await getApi(`topics/${topicId}`);
+        const data = await getApi(`/topics/${topicId}`);
         setTopic(data);
       }
     };
 
+    formValues.address = '';
     getTopicId();
   }, []);
 
@@ -78,10 +129,7 @@ const NewPin = () => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Button
-            type="button"
-            variant="primary"
-          >{`${topic.emoji} ${topic.name}`}</Button>
+          <Button type="button" variant="primary">{`${topic.name}`}</Button>
         </section>
 
         <Space size={5} />
@@ -120,8 +168,10 @@ const NewPin = () => {
           <Space size={0} />
           <Input
             name="address"
-            value={formValues.address}
+            readOnly
+            value={clickedCoordinate.address ?? formValues.address}
             onChange={onChangeInput}
+            onClick={onClickAddressInput}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
         </section>

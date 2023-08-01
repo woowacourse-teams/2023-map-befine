@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.repository;
 
 import com.mapbefine.mapbefine.entity.Topic;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
+
+    List<Topic> findByIdIn(List<Long> ids);
 
     @Modifying(clearAutomatically = true)
     @Query("update Topic t set t.isDeleted = true where t.id = :topicId")
