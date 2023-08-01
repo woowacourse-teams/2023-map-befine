@@ -24,18 +24,16 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
+          cache-dependency-path: "frontend"
 
       - name: Install npm
         run: npm install --force
-        working-directory: frontend
 
       - name: grant excute access
         run: chmod +x npm
-        working-directory: frontend
 
       - name: Build project
         run: npm run build
-        working-directory: frontend
 
       - name: upload to artifact
         uses: actions/upload-artifact@v3
