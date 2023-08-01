@@ -12,7 +12,6 @@ import useFormValues from '../hooks/useFormValues';
 import { useContext, useEffect } from 'react';
 import { TagIdContext } from '../store/TagId';
 import { useLocation } from 'react-router-dom';
-import { TopicsIdContext } from '../store/TopicsId';
 
 const NewTopic = () => {
   const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
@@ -25,21 +24,13 @@ const NewTopic = () => {
 
   const { state } = useLocation();
 
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
-
-  const { topicsId, setTopicsId } = useContext(TopicsIdContext) ?? {
-    topicsId: [],
-    setTopicsId: () => {},
-  };
+  const { tagId, setTagId } = useContext(TagIdContext);
 
   const goToBack = () => {
     routePage(-1);
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const topicId = await postToServer();
@@ -77,10 +68,6 @@ const NewTopic = () => {
       }
     }
   };
-
-  useEffect(() => {
-    setTopicsId([]);
-  }, []);
 
   return (
     <form onSubmit={onSubmit}>

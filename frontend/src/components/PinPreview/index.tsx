@@ -29,10 +29,7 @@ const PinPreview = ({
 }: PinPreviewProps) => {
   const { routePage } = useNavigator();
 
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
+  const { tagId, setTagId } = useContext(TagIdContext);
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
