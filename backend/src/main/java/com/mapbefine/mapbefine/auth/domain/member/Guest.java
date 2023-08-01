@@ -6,7 +6,6 @@ import java.util.Collections;
 
 public class Guest extends AuthMember {
 
-
     public Guest() {
         super(
                 null,

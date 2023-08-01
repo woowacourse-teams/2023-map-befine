@@ -4,8 +4,8 @@ import com.mapbefine.mapbefine.auth.application.AuthService;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.dto.AuthInfo;
 import com.mapbefine.mapbefine.auth.infrastructure.AuthorizationExtractor;
-import com.mapbefine.mapbefine.member.domain.Member;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -50,14 +50,22 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     private void validateRequest(HttpServletRequest request) {
         if (request == null) {
-            throw new IllegalArgumentException("로그인 유저가 아닙니다");
+            throw new IllegalArgumentException("정상적인 요청이 아닙니다.");
         }
     }
 
     private AuthMember createAuthMember(HttpServletRequest request) {
-        AuthInfo authInfo = authorizationExtractor.extract(request);
-        Member member = authService.checkLoginMember(authInfo);
+        AuthInfo authInfo = getAuthInfo(request)
+                .orElseGet(() -> new AuthInfo(""));
 
-        return AuthMember.from(member);
+        return authService.findAuthMemberByEmail(authInfo);
+    }
+
+    private Optional<AuthInfo> getAuthInfo(HttpServletRequest request) {
+        try {
+            return Optional.of(authorizationExtractor.extract(request));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 }

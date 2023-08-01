@@ -16,10 +16,13 @@ public class BasicAuthorizationExtractor implements AuthorizationExtractor<AuthI
 
     @Override
     public AuthInfo extract(final HttpServletRequest request) {
-        String authorization = request.getHeader(AUTHORIZATION);
-        validateAuthorization(authorization);
+        String requestHeader = request.getHeader(AUTHORIZATION);
+        String authorization = decode(requestHeader);
 
-        return new AuthInfo(decode(authorization));
+        validateAuthorization(authorization);
+        String trim = authorization.substring(BASIC_TYPE.length()).trim();
+
+        return new AuthInfo(trim);
     }
 
     private void validateAuthorization(final String authorization) {
@@ -32,10 +35,7 @@ public class BasicAuthorizationExtractor implements AuthorizationExtractor<AuthI
     }
 
     private String decode(String authorization) {
-        String authHeaderValue = authorization.substring(BASIC_TYPE.length()).trim();
-        byte[] decodedBytes = Base64.decodeBase64(authHeaderValue);
-
-        return new String(decodedBytes);
+        return new String(Base64.decodeBase64(authorization));
     }
 
 }
