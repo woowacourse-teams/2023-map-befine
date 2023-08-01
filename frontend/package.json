@@ -51,7 +51,7 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-storybook": "^0.6.12",
     "html-webpack-plugin": "^5.5.3",
-    "msw": "^1.2.2",
+    "msw": "1.2.1",
     "prettier": "^3.0.0",
     "process": "^0.11.10",
     "react-refresh": "^0.14.0",
