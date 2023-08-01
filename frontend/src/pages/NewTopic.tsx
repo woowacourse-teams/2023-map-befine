@@ -24,10 +24,7 @@ const NewTopic = () => {
 
   const { state } = useLocation();
 
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
+  const { tagId, setTagId } = useContext(TagIdContext);
 
   const goToBack = () => {
     routePage(-1);

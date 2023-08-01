@@ -18,10 +18,7 @@ const Home = () => {
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
 
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
+  const { tagId, setTagId } = useContext(TagIdContext);
 
   const goToNewTopic = () => {
     routePage('new-topic', 'topics');

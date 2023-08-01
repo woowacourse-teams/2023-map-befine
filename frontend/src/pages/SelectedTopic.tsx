@@ -11,7 +11,6 @@ import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { TagIdContext } from '../store/TagId';
-import { TopicsIdContext } from '../store/TopicsId';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 
@@ -63,10 +62,7 @@ const SelectedTopic = () => {
 
   const [isOpen, setIsOpen] = useState(true);
 
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
+  const { tagId, setTagId } = useContext(TagIdContext);
 
   const onClickSetSelectedPinId = (pinId: number) => {
     setSelectedPinId(pinId);

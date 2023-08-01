@@ -26,10 +26,7 @@ const TopicCard = ({
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
 
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
+  const { tagId, setTagId } = useContext(TagIdContext);
 
   const goToSelectedTopic = () => {
     routePage(`topics/${topicId}`, [topicId]);

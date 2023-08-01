@@ -5,7 +5,10 @@ export interface TagIdContextProps {
   setTagId: (value: number[]) => void;
 }
 
-export const TagIdContext = createContext<TagIdContextProps | null>(null);
+export const TagIdContext = createContext<TagIdContextProps>({
+  tagId: [],
+  setTagId: () => {},
+});
 
 const TagContextProvider = (props: { children: React.ReactNode }) => {
   const [tagId, setTagId] = useState<number[]>([]);
