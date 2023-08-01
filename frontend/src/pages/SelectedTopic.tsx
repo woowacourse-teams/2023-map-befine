@@ -52,7 +52,6 @@ const SelectedTopic = () => {
   const { state } = useLocation();
   const [tagPins, setTagPins] = useState<string[]>([]);
 
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
@@ -67,16 +66,19 @@ const SelectedTopic = () => {
   const onClickSetSelectedPinId = (pinId: number) => {
     setSelectedPinId(pinId);
 
-    routePage(`/topics/${topicId}?pinDetail=${pinId}`)
-  }
+    routePage(`/topics/${topicId}?pinDetail=${pinId}`);
+  };
 
   const getAndSetDataFromServer = async () => {
+    const data = await getApi(
+      `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
+    );
 
-    const data: TopicInfoType[] = [];
-      data.push(await getApi(`/topics/${topicId}`));
-      // todo : setCoordinates 인자 확인
-      setCoordinates([...data[0].pins]);
-      setTopicDetail([...data]);
+    data.forEach((data: any) => {
+      setCoordinates((prev) => [...prev, ...data.pins]);
+    });
+
+    setTopicDetail([...data]);
   };
 
   const onClickConfirm = () => {
@@ -101,7 +103,7 @@ const SelectedTopic = () => {
   useEffect(() => {
     if (tagPins.length === 0) setTagId([]);
   }, [tagPins, state]);
-  
+
   const togglePinDetail = () => {
     setIsOpen(!isOpen);
   };
@@ -113,12 +115,12 @@ const SelectedTopic = () => {
     <>
       <Flex $flexDirection="column">
         <Space size={2} />
-          <MergeOrSeeTogether
-            tag={tagPins}
-            confirmButton="뽑아오기"
-            onClickConfirm={onClickConfirm}
-            onClickClose={onTagCancel}
-          />
+        <MergeOrSeeTogether
+          tag={tagPins}
+          confirmButton="뽑아오기"
+          onClickConfirm={onClickConfirm}
+          onClickClose={onTagCancel}
+        />
         <ul>
           {topicDetail.length !== 0 ? (
             topicDetail.map((topic) => {
@@ -132,10 +134,13 @@ const SelectedTopic = () => {
                     topicDescription={topic.description}
                   />
                   {topic.pins.map((pin) => (
-                    <li key={pin.id} onClick={() => {
-                onClickSetSelectedPinId(Number(pin.id));
-                setIsOpen(true);
-              }}>
+                    <li
+                      key={pin.id}
+                      onClick={() => {
+                        onClickSetSelectedPinId(Number(pin.id));
+                        setIsOpen(true);
+                      }}
+                    >
                       <Space size={3} />
                       <PinPreview
                         pinTitle={pin.name}

@@ -25,7 +25,7 @@ const Home = () => {
   };
 
   const goToSeveralTopic = () => {
-    routePage(`topics/${tagId[0]}`, tagId);
+    routePage(`topics/${tagId}`, tagId);
   };
 
   const onTagCancel = () => {
