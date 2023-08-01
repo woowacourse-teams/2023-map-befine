@@ -14,8 +14,8 @@ const TagContextProvider = (props: { children: React.ReactNode }) => {
   const [tagId, setTagId] = useState<number[]>([]);
 
   const contextValue: TagIdContextProps = {
-    tagId: tagId,
-    setTagId: setTagId,
+    tagId,
+    setTagId
   };
 
   return (
