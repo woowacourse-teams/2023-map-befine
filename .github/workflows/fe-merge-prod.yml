@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
   pull_request:
-    branches: [ develop ]
+    branches: [ main ]
     types: [closed]
     paths: frontend/**
 
@@ -48,13 +48,13 @@ jobs:
 
     steps:
       - name: delete old js file
-        run: rm -rf /home/ubuntu/frontend/dist
+        run: rm -f /home/ubuntu/frontend/dist/*
 
       - name: download js file from artifact
         uses: actions/download-artifact@v3
         with:
           name: FrontendApplication
-          path: /home/ubuntu/frontend/
+          path: /home/ubuntu/frontend/dist
 
       - name: deploy
         run: /home/ubuntu/frontend/deploy.sh
