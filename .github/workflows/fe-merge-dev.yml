@@ -5,7 +5,7 @@ on:
 
   pull_request:
     branches: [ develop ]
-    types: [ closed ]
+    types: [closed]
     paths: frontend/**
 
 permissions:
@@ -24,10 +24,9 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
-          cache-dependency-path: "frontend"
 
       - name: Install npm
-        run: npm install
+        run: npm install --force
 
       - name: grant excute access
         run: chmod +x npm
@@ -44,8 +43,7 @@ jobs:
           path: frontend/dist
 
   deploy:
-    runs-on: [ self-hosted, dev ]
-
+    runs-on: [ self-hosted, dev]
     needs: build-and-upload
 
     if: github.event.pull_request.merged
