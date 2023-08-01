@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class TopicInfoTest {
 
     @Nested
-    class validate {
+    class Validate {
 
         @Test
         @DisplayName("정확한 값을 입력하면 객체가 생성된다")
@@ -228,5 +228,5 @@ class TopicInfoTest {
         }
 
     }
-    
+
 }
