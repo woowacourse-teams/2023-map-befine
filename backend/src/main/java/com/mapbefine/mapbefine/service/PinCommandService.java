@@ -72,21 +72,26 @@ public class PinCommandService {
     public void update(Long pinId, PinUpdateRequest request) {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
-
         pin.update(request.name(), request.description());
 
         // TODO save 호출 필요?
         pinRepository.save(pin);
+
     }
 
     public void removeById(Long pinId) {
-        pinRepository.findById(pinId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
-
-        pinRepository.deleteById(pinId);
+        if (pinRepository.existsById(pinId)) {
+            pinRepository.deleteById(pinId);
+            return;
+        }
+        throw new NoSuchElementException("존재하지 않는 핀입니다.");
     }
 
     public void removeAllByTopicId(Long topicId) {
-        pinRepository.deleteAllByTopicId(topicId);
+        if (topicRepository.existsById(topicId)) {
+            pinRepository.deleteAllByTopicId(topicId);
+            return;
+        }
+        throw new NoSuchElementException("존재하지 않는 토픽입니다.");
     }
 }

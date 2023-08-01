@@ -79,12 +79,12 @@ public class TopicCommandService {
     }
 
     public void delete(Long id) {
-        topicRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
-
-        // TODO PinCommandService의 removeAllByTopicId가 아니라 repository의 메서드를 직접 사용할 것인지?
-        pinRepository.deleteAllByTopicId(id);
-        topicRepository.deleteById(id);
+        if (topicRepository.existsById(id)) {
+            pinRepository.deleteAllByTopicId(id);
+            topicRepository.deleteById(id);
+            return;
+        }
+        throw new NoSuchElementException("존재하지 않는 토픽입니다.");
     }
 
 }
