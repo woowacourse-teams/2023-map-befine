@@ -22,13 +22,12 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     );
 
     @Query(
-            value = "SELECT l FROM Location l "
+            "SELECT l FROM Location l "
                     + "WHERE ( 6371000 * acos( cos( radians(:#{#current_coordinate.latitude}) ) "
                     + "      * cos( radians( l.coordinate.latitude ) ) "
                     + "      * cos( radians( l.coordinate.longitude ) - radians(:#{#current_coordinate.longitude}) ) "
                     + "      + sin( radians(:#{#current_coordinate.latitude}) ) "
-                    + "      * sin( radians( l.coordinate.latitude ) ) ) ) <= :distance",
-            nativeQuery = true
+                    + "      * sin( radians( l.coordinate.latitude ) ) ) ) <= :distance"
     )
     List<Location> findAllByCoordinateAndDistanceInMeters(
             @Param("current_coordinate") Coordinate coordinate,

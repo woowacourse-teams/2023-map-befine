@@ -27,12 +27,12 @@ public class Coordinate {
     private static final double UNIT_FOR_CONVERT_TO_CENTIMETER = Math.pow(10, 5);
 
     @Column(columnDefinition = "Decimal(18,15)")
-    private Double latitude;
+    private double latitude;
 
     @Column(columnDefinition = "Decimal(18,15)")
-    private Double longitude;
+    private double longitude;
 
-    private Coordinate(Double latitude, Double longitude) {
+    private Coordinate(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

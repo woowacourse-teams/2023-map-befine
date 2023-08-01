@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -76,6 +77,13 @@ public class TopicController {
         List<TopicResponse> topics = topicQueryService.findAll(member);
 
         return ResponseEntity.ok(topics);
+    }
+
+    @GetMapping("/ids")
+    public ResponseEntity<List<TopicDetailResponse>> findByIds(@RequestParam List<Long> ids) {
+        List<TopicDetailResponse> responses = topicQueryService.findAllByIds(ids);
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")

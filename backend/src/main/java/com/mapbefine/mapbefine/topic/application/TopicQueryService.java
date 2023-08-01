@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,12 @@ public class TopicQueryService {
                 .toList();
     }
 
+    public List<TopicDetailResponse> findAllByIds(List<Long> ids) {
+        return topicRepository.findByIdIn(ids).stream()
+                .map(TopicDetailResponse::from)
+                .collect(Collectors.toList());
+    }
+
     public TopicDetailResponse findById(AuthMember member, Long id) {
         Topic topic = topicRepository.findById(id)
                 .filter(presentTopic -> member.canRead(AuthTopic.from(presentTopic)))
@@ -35,5 +42,4 @@ public class TopicQueryService {
 
         return TopicDetailResponse.from(topic);
     }
-
 }
