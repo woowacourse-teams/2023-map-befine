@@ -31,9 +31,11 @@ jobs:
 
       - name: grant excute access
         run: chmod +x npm
+        working-directory: frontend
 
       - name: Build project
         run: npm run build
+        working-directory: frontend
 
       - name: upload to artifact
         uses: actions/upload-artifact@v3
@@ -43,6 +45,7 @@ jobs:
 
   deploy:
     runs-on: [ self-hosted, dev ]
+
     needs: build-and-upload
 
     if: github.event.pull_request.merged
