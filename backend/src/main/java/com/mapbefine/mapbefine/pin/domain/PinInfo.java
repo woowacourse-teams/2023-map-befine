@@ -37,19 +37,19 @@ public class PinInfo {
 
     private static void validateName(String name) {
         if (name == null) {
-            throw new IllegalArgumentException("name null");
+            throw new IllegalArgumentException("핀 이름은 필수입니다.");
         }
         if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("이름 길이 이상");
+            throw new IllegalArgumentException("핀 이름의 길이는 1자 이상 " + MAX_NAME_LENGTH + "자 이하여야 합니다.");
         }
     }
 
     private static void validateDescription(String description) {
         if (description == null) {
-            throw new IllegalArgumentException("description null");
+            throw new IllegalArgumentException("핀 설명은 필수입니다.");
         }
         if (description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
-            throw new IllegalArgumentException("description 길이 이상");
+            throw new IllegalArgumentException("핀 설명의 길이는 1자 이상 " + MAX_NAME_LENGTH + "자 이하여야 합니다.");
         }
     }
 
