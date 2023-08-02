@@ -49,7 +49,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         clickedCoordinate.latitude,
         clickedCoordinate.longitude,
       ),
-      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_a.png',
+      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_b_a.png',
       map,
     });
     marker.id = 'clickedMarker';
@@ -70,7 +70,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
           coordinate.latitude,
           coordinate.longitude,
         ),
-        icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_b_${tag}.png`,
+        icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_${tag}.png`,
         map,
       });
       marker.id = String(coordinate.id);
