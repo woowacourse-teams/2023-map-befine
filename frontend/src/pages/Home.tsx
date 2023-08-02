@@ -56,7 +56,7 @@ const Home = () => {
           confirmButton="같이보기"
         />
       ) : null}
-      <Space size={6} />
+      <Space size={4} />
       <Text color="black" $fontSize="large" $fontWeight="bold">
         내 주변 인기 있는 토픽
       </Text>

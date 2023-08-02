@@ -10,6 +10,10 @@ export type BoxProps = {
   $minWidth?: string;
   height?: string;
   padding?: SpaceThemeKeys;
+  $paddingTop?: SpaceThemeKeys;
+  $paddingRight?: SpaceThemeKeys;
+  $paddingBottom?: SpaceThemeKeys;
+  $paddingLeft?: SpaceThemeKeys;
   $backgroundColor?: colorThemeKey;
   border?: string;
   overflow?: string;
@@ -33,12 +37,20 @@ export type BoxProps = {
 
 const Box = styled.div<BoxProps>`
   display: ${({ display }) => display ?? 'block'};
-  min-width: ${({ $minWidth }) => $minWidth};
   background-color: ${({ $backgroundColor }) =>
     $backgroundColor && theme.color[$backgroundColor]};
   color: ${({ color }) => color && theme.color[color]};
   padding: ${({ padding }) => padding && theme.spacing[Number(padding)]};
+  padding-top: ${({ $paddingTop }) =>
+    $paddingTop && theme.spacing[Number($paddingTop)]};
+  padding-right: ${({ $paddingRight }) =>
+    $paddingRight && theme.spacing[Number($paddingRight)]};
+  padding-bottom: ${({ $paddingBottom }) =>
+    $paddingBottom && theme.spacing[Number($paddingBottom)]};
+  padding-left: ${({ $paddingLeft }) =>
+    $paddingLeft && theme.spacing[Number($paddingLeft)]};
   width: ${({ width }) => width};
+  min-width: ${({ $minWidth }) => $minWidth};
   height: ${({ height }) => height};
   border: ${({ border }) => border};
   min-height: ${({ $minHeight }) => $minHeight};

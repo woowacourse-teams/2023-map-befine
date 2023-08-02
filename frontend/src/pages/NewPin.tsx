@@ -20,16 +20,17 @@ const NewPin = () => {
   const { markers, clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
-  const { formValues, onChangeInput } = useFormValues<NewPinValuesType>({
-    topicId: 0,
-    name: '',
-    address: '',
-    description: '',
-    latitude: '',
-    longitude: '',
-    legalDongCode: '',
-    images: [],
-  });
+  const { formValues, setFormValues, onChangeInput } =
+    useFormValues<NewPinValuesType>({
+      topicId: 0,
+      name: '',
+      address: '',
+      description: '',
+      latitude: '',
+      longitude: '',
+      legalDongCode: '',
+      images: [],
+    });
   const { routePage } = useNavigator();
 
   const goToBack = () => {
@@ -49,7 +50,7 @@ const NewPin = () => {
     });
   };
 
-  const onSubmit = async (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     await postToServer();
@@ -74,6 +75,10 @@ const NewPin = () => {
       height: height,
       onComplete: async function (data: any) {
         const addr = data.roadAddress; // 주소 변수
+
+        setFormValues((prev) => {
+          return { ...prev, address: addr };
+        });
 
         //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
         const { ConvertAdd } = await getAddress(

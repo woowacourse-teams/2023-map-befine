@@ -10,9 +10,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedOrigins("https://mapbefine.kro.kr")
-                .allowedOrigins("https://mapbefine.com")
+                .allowedOrigins("http://localhost:3000", "https://mapbefine.kro.kr", "https://mapbefine.com")
                 .allowedMethods("*")
                 .exposedHeaders("Location");
     }

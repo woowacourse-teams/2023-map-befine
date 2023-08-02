@@ -16,7 +16,7 @@ export const MergeOrSeeTogether = ({
   onClickConfirm,
   onClickClose,
 }: MergeOrSeeTogetherProps) => {
-  if (tag.length === 0) return<></>;
+  if (tag.length === 0) return <></>;
 
   return (
     <>
