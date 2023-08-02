@@ -2,6 +2,7 @@ import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
+import Box from '../common/Box';
 
 export interface TopicCardProps {
   topicId: number;
@@ -61,9 +62,16 @@ const TopicCard = ({
           }
           checked={taggedTopicIds.includes(topicId)}
         />
+        <Box
+          position="absolute"
+          width="100%"
+          height="68px"
+          $backgroundColor="black"
+          opacity="0.5"
+        ></Box>
         <Flex
           width="100%"
-          height="65px"
+          height="68px"
           $flexDirection="column"
           $alignItems="center"
           $justifyContent="center"
@@ -71,10 +79,10 @@ const TopicCard = ({
           onClick={goToSelectedTopic}
           $backdropFilter="blur(20px)"
         >
-          <Text color="black" $fontSize="medium" $fontWeight="normal">
+          <Text color="white" $fontSize="medium" $fontWeight="normal">
             {topicTitle}
           </Text>
-          <Text color="gray" $fontSize="small" $fontWeight="normal">
+          <Text color="white" $fontSize="small" $fontWeight="normal">
             {`업데이트 : ${
               topicUpdatedAt.split('T')[0]
             } | 핀 개수 : ${topicPinCount}`}
@@ -89,8 +97,8 @@ const MultiSelectButton = styled.input`
   width: 24px;
   height: 24px;
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: ${({ theme }) => theme.spacing[0]};
+  right: ${({ theme }) => theme.spacing[0]};
   background-color: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.black};
   border-radius: ${({ theme }) => theme.radius.small};

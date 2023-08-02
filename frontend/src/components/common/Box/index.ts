@@ -33,6 +33,7 @@ export type BoxProps = {
   $backgroundImage?: string;
   $backgroundSize?: string;
   $backdropFilter?: string;
+  opacity?: string;
 };
 
 const Box = styled.div<BoxProps>`
@@ -70,5 +71,6 @@ const Box = styled.div<BoxProps>`
   background-image: url(${({ $backgroundImage }) => $backgroundImage});
   background-size: ${({ $backgroundSize }) => $backgroundSize};
   backdrop-filter: ${({ $backdropFilter }) => $backdropFilter};
+  opacity: ${({ opacity }) => opacity};
 `;
 export default Box;
