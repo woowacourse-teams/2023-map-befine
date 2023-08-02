@@ -105,7 +105,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
           핀을 만든 사람
         </Text>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {pin.updatedAt}
+          {`${pin.updatedAt.split('T')[0].split('-').join('.')} 업데이트`}
         </Text>
       </Flex>
       <Space size={2} />

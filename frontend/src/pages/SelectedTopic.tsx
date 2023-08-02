@@ -115,19 +115,22 @@ const SelectedTopic = () => {
     <>
       <Flex $flexDirection="column">
         <Space size={2} />
-        <MergeOrSeeTogether
-          tag={tagPins}
-          confirmButton="뽑아오기"
-          onClickConfirm={onClickConfirm}
-          onClickClose={onTagCancel}
-        />
+        {tagPins.length > 0 && (
+          <MergeOrSeeTogether
+            tag={tagPins}
+            confirmButton="뽑아오기"
+            onClickConfirm={onClickConfirm}
+            onClickClose={onTagCancel}
+          />
+        )}
         <ul>
           {topicDetail.length !== 0 ? (
-            topicDetail.map((topic) => {
+            topicDetail.map((topic, index) => {
               return (
                 <li key={topic.id}>
+                  {index !== 0 && <Space size={5} />}
                   <TopicInfo
-                    topicParticipant={12}
+                    topicParticipant={1}
                     pinNumber={topic.pinCount}
                     topicTitle={topic.name}
                     topicOwner={'하지원'}
