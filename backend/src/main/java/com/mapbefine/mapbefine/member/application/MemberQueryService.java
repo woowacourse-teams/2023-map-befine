@@ -15,6 +15,7 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,4 +81,10 @@ public class MemberQueryService {
                 .toList();
     }
 
+    public MemberDetailResponse findMemberTopicPermissionById(final Long permissionId) {
+        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
+                .orElseThrow(NoSuchElementException::new);
+
+        return MemberDetailResponse.from(memberTopicPermission.getMember());
+    }
 }

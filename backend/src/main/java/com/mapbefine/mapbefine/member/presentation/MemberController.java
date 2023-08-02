@@ -12,6 +12,7 @@ import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.net.URI;
 import java.util.List;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,12 +93,18 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/permissions/{topicId}")
-    public ResponseEntity<List<MemberResponse>> findAllMemberTopicPermission(@PathVariable Long topicId) {
+    public ResponseEntity<List<MemberResponse>> findMemberTopicPermissionAll(@PathVariable Long topicId) {
         List<MemberResponse> responses = memberQueryService.findAllWithPermission(topicId);
 
         return ResponseEntity.ok(responses);
     }
 
-    // TODO: 2023/08/02 특정 멤버의 권한을 확인하는 기능 (로그인 유저만 가능) 
+    @LoginRequired
+    @GetMapping("/permissions/{permissionId}")
+    public ResponseEntity<MemberDetailResponse> findMemberTopicPermissionById(@PathVariable Long permissionId) {
+        MemberDetailResponse response = memberQueryService.findMemberTopicPermissionById(permissionId);
+
+        return ResponseEntity.ok(response);
+    }
 
 }
