@@ -77,7 +77,7 @@ class TopicQueryServiceTest {
     void findById() {
         // given
         // when
-        TopicDetailResponse actual = topicQueryService.findById(authMember, topic.getId());
+        TopicDetailResponse actual = topicQueryService.findDetailById(authMember, topic.getId());
 
         // then
         assertThat(actual).isEqualTo(TopicDetailResponse.from(topic));

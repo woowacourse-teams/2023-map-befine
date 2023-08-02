@@ -74,4 +74,5 @@ public class TopicStatus {
     public boolean isGroupOnly() {
         return permission.isGroupOnly();
     }
+
 }

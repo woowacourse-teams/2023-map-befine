@@ -81,14 +81,14 @@ public class TopicController {
 
     @GetMapping("/ids")
     public ResponseEntity<List<TopicDetailResponse>> findByIds(@RequestParam List<Long> ids) {
-        List<TopicDetailResponse> responses = topicQueryService.findAllByIds(ids);
+        List<TopicDetailResponse> responses = topicQueryService.findDetailsByIds(ids);
 
         return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TopicDetailResponse> findById(AuthMember member, @PathVariable Long id) {
-        TopicDetailResponse response = topicQueryService.findById(member, id);
+        TopicDetailResponse response = topicQueryService.findDetailById(member, id);
 
         return ResponseEntity.ok(response);
     }

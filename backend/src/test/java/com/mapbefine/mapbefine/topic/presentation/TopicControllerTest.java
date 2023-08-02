@@ -179,7 +179,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                         )
                 )
         );
-        given(topicQueryService.findById(any(), any())).willReturn(topicDetailResponse);
+        given(topicQueryService.findDetailById(any(), any())).willReturn(topicDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/1")
