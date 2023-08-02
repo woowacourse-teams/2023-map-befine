@@ -136,7 +136,8 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어디에 있나요?
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
+        <Space size={1} />
+        <Text color="black" $fontSize="small" $fontWeight="normal">
           {pin.address}
         </Text>
       </Flex>
@@ -145,7 +146,8 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어떤 곳인가요?
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
+        <Space size={1} />
+        <Text color="black" $fontSize="small" $fontWeight="normal">
           {pin.description}
         </Text>
       </Flex>
