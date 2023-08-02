@@ -21,9 +21,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Member extends BaseTimeEntity {
 
-    private static final int MAX_NAME_LENGTH = 20;
-    private static final String VALID_EMAIL_URL_REGEX = "^[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,13 +29,13 @@ public class Member extends BaseTimeEntity {
     private MemberInfo memberInfo;
 
     @OneToMany(mappedBy = "creator")
-    private List<Topic> createdTopic = new ArrayList<>();
+    private List<Topic> createdTopics = new ArrayList<>();
 
     @OneToMany(mappedBy = "creator")
-    private List<Pin> createdPin = new ArrayList<>();
+    private List<Pin> createdPins = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<MemberTopicPermission> topicsWithPermission = new ArrayList<>();
+    private List<MemberTopicPermission> topicsWithPermissions = new ArrayList<>();
 
     private Member(
             MemberInfo memberInfo
@@ -61,15 +58,15 @@ public class Member extends BaseTimeEntity {
     }
 
     public void addTopic(Topic topic) {
-        createdTopic.add(topic);
+        createdTopics.add(topic);
     }
 
     public void addPin(Pin pin) {
-        createdPin.add(pin);
+        createdPins.add(pin);
     }
 
     public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {
-        topicsWithPermission.add(memberTopicPermission);
+        topicsWithPermissions.add(memberTopicPermission);
     }
 
     public String getRoleKey() {
@@ -83,8 +80,8 @@ public class Member extends BaseTimeEntity {
         return memberInfo.getRole() == Role.USER;
     }
 
-    public List<Topic> getTopicsWithPermission() {
-        return topicsWithPermission.stream()
+    public List<Topic> getTopicsWithPermissions() {
+        return topicsWithPermissions.stream()
                 .map(MemberTopicPermission::getTopic)
                 .toList();
     }

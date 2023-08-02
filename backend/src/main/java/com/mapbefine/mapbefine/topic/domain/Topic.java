@@ -61,25 +61,6 @@ public class Topic extends BaseTimeEntity {
         this.creator = creator;
     }
 
-    public static Topic of(
-            String name,
-            String description,
-            String imageUrl,
-            Publicity publicity,
-            Permission permission,
-            Member creator
-    ) {
-        return new Topic(
-                TopicInfo.of(
-                        name,
-                        description,
-                        imageUrl
-                ),
-                TopicStatus.of(publicity, permission),
-                creator
-        );
-    }
-
     public static Topic createTopicAssociatedWithMember(
             String name,
             String description,
@@ -87,7 +68,7 @@ public class Topic extends BaseTimeEntity {
             Publicity publicity,
             Permission permission,
             Member creator
-    ) { // 추가된 정적 팩토리 메서드
+    ) {
         Topic topic = new Topic(
                 TopicInfo.of(
                         name,

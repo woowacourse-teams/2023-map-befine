@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
+import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.pin.Domain.PinImage;
@@ -18,12 +19,13 @@ class PinImageTest {
 
     private Topic topic;
     private Pin pin;
+    private Member member;
 
     @BeforeEach
     void setUp() {
         topic = TopicFixture.createByName("아이크의 부잣집", MemberFixture.create(Role.USER));
-        pin = PinFixture.create(LocationFixture.create(), topic);
-
+        member = MemberFixture.create(Role.ADMIN);
+        pin = PinFixture.create(LocationFixture.create(), topic, member);
     }
 
 

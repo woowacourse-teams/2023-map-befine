@@ -61,7 +61,7 @@ class LocationQueryServiceTest {
     private Topic createAndSaveByNameAndPinCounts(String topicName, int pinCounts) {
         Topic topic = TopicFixture.createByName(topicName, member);
         for (int i = 0; i < pinCounts; i++) {
-            PinFixture.create(ALL_PINS_LOCATION, topic);
+            PinFixture.create(ALL_PINS_LOCATION, topic, member);
         }
         return topicRepository.save(topic);
     }

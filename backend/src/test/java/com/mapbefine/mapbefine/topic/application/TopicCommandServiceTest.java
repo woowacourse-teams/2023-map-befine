@@ -51,8 +51,8 @@ class TopicCommandServiceTest {
         Location location = LocationFixture.create();
         locationRepository.save(location);
 
-        PinFixture.create(location, TOPIC_WITH_TWO_PINS);
-        PinFixture.create(location, TOPIC_WITH_TWO_PINS);
+        PinFixture.create(location, TOPIC_WITH_TWO_PINS, member);
+        PinFixture.create(location, TOPIC_WITH_TWO_PINS, member);
 
         topicRepository.save(TOPIC_WITH_TWO_PINS);
     }

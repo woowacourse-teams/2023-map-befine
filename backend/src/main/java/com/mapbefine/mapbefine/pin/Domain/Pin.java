@@ -57,28 +57,13 @@ public class Pin extends BaseTimeEntity {
     private Pin(
             PinInfo pinInfo,
             Location location,
-            Topic topic
+            Topic topic,
+            Member creator
     ) {
         this.pinInfo = pinInfo;
         this.location = location;
         this.topic = topic;
-    }
-
-    public static Pin createPinAssociatedWithLocationAndTopic(
-            String name,
-            String description,
-            Location location,
-            Topic topic
-    ) {
-        PinInfo pinInfo = PinInfo.of(name, description);
-        Pin pin = new Pin(
-                pinInfo,
-                location,
-                topic
-        );
-        location.addPin(pin);
-        topic.addPin(pin);
-        return pin;
+        this.creator = creator;
     }
 
     public static Pin createPinAssociatedWithLocationAndTopicAndMember(
@@ -87,13 +72,14 @@ public class Pin extends BaseTimeEntity {
             Location location,
             Topic topic,
             Member creator
-    ) { // 추가된 정적 팩토리 메서드
+    ) {
         PinInfo pinInfo = PinInfo.of(name, description);
 
         Pin pin = new Pin(
                 pinInfo,
                 location,
-                topic
+                topic,
+                creator
         );
 
         location.addPin(pin);
@@ -106,12 +92,13 @@ public class Pin extends BaseTimeEntity {
         pinInfo.update(name, description);
     }
 
-    public Pin copy(Topic topic) {
-        return Pin.createPinAssociatedWithLocationAndTopic(
+    public Pin copy(Topic topic, Member creator) {
+        return Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 pinInfo.getName(),
                 pinInfo.getDescription(),
                 location,
-                topic
+                topic,
+                creator
         );
     }
 

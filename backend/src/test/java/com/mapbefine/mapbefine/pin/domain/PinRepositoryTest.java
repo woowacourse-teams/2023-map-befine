@@ -15,7 +15,6 @@ import com.mapbefine.mapbefine.pin.Domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +58,7 @@ class PinRepositoryTest {
         topicRepository.save(topic);
         locationRepository.save(location);
 
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember("name", "description", location, topic, member);
         pinRepository.save(pin);
 
         // when
@@ -88,7 +87,7 @@ class PinRepositoryTest {
         );
 
         for (int i = 0; i < 10; i++) {
-            Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+            Pin.createPinAssociatedWithLocationAndTopicAndMember("name", "description", location, topic, member);
         }
 
         locationRepository.save(location);

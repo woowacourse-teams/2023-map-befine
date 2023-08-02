@@ -81,6 +81,10 @@ public class MemberInfo {
     }
 
     private static void validateEmail(String email) {
+        if (email == null) {
+            throw new IllegalArgumentException("email null");
+        }
+
         if (!RegexUtil.matches(VALID_EMAIL_URL_REGEX, email)) {
             throw new IllegalArgumentException("올바르지 않은 이메일 형식입니다.");
         }

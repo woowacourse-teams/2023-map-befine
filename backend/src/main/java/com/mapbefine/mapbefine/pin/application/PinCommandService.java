@@ -6,6 +6,8 @@ import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
+import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.pin.Domain.PinImage;
 import com.mapbefine.mapbefine.pin.Domain.PinRepository;
@@ -13,7 +15,6 @@ import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,25 +26,27 @@ public class PinCommandService {
     private final PinRepository pinRepository;
     private final LocationRepository locationRepository;
     private final TopicRepository topicRepository;
+    private final MemberRepository memberRepository;
 
     public PinCommandService(
             PinRepository pinRepository,
             LocationRepository locationRepository,
-            TopicRepository topicRepository
+            TopicRepository topicRepository,
+            MemberRepository memberRepository
     ) {
         this.pinRepository = pinRepository;
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
+        this.memberRepository = memberRepository;
     }
 
-    public Long save(AuthMember member, PinCreateRequest request) {
+    public Long save(AuthMember authMember, PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
-        member.canPinCreateOrUpdate(AuthTopic.from(topic));
-
-        List<Location> all = locationRepository.findAllByCoordinateAndDistanceInMeters(
-                coordinate, 10.0);
+        Member member = memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(NoSuchElementException::new);
+        authMember.canPinCreateOrUpdate(AuthTopic.from(topic));
 
         Location pinLocation = locationRepository.findAllByRectangle(
                         coordinate.getLatitude(),
@@ -56,11 +59,12 @@ public class PinCommandService {
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
 
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 request.name(),
                 request.description(),
                 pinLocation,
-                topic
+                topic,
+                member
         );
 
         for (String pinImage : request.images()) {
