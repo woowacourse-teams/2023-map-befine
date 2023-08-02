@@ -5,14 +5,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
+import com.mapbefine.mapbefine.common.interceptor.AuthInterceptor;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.application.MemberCommandService;
+import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
-import com.mapbefine.mapbefine.pin.application.PinCommandService;
-import com.mapbefine.mapbefine.pin.application.PinQueryService;
-import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,12 @@ class MemberControllerTest extends RestDocsIntegration {
     @MockBean
     private MemberCommandService memberCommandService;
 
+    @MockBean
+    private MemberQueryService memberQueryService;
+
+    @MockBean
+    private AuthInterceptor authInterceptor;
+
     @Test
     @DisplayName("권한 추가")
     void addMemberTopicPermission() throws Exception {
@@ -36,7 +43,9 @@ class MemberControllerTest extends RestDocsIntegration {
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + member.getMemberInfo().getEmail()).getBytes()
         );
+
         given(memberCommandService.save(any())).willReturn(1L);
+        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/members/permissions")
@@ -54,6 +63,9 @@ class MemberControllerTest extends RestDocsIntegration {
                 ("Basic " + member.getMemberInfo().getEmail()).getBytes()
         );
 
+        given(memberCommandService.save(any())).willReturn(1L);
+        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/members/permissions/1")
                         .header(AUTHORIZATION, authHeader)
@@ -62,14 +74,29 @@ class MemberControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
-    void findMemberTopicPermissionAll() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
+    void findMemberTopicPermissionAll() throws Exception { // LoginRequired 로 인해서 RestDocs 가 막힘... Hadnler 없어서.. 그래서 200 OK 만 반환하고, Response 도 적절하게 안내뱉음
+        List<MemberResponse> memberResponses = List.of(
+                new MemberResponse(
+                        1L,
+                        "member",
+                        "member@naver.com"
+                ),
+                new MemberResponse(
+                        2L,
+                        "memberr",
+                        "memberr@naver.com"
+                )
         );
 
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + memberResponses.get(0).email()).getBytes()
+        );
+
+        given(memberQueryService.findAllWithPermission(any())).willReturn(memberResponses);
+        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/members/permissions/1")
+                MockMvcRequestBuilders.get("/members/permissions/topics/1")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
