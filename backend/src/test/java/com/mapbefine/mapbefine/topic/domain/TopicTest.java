@@ -27,7 +27,7 @@ class TopicTest {
                 "https://example.com/image.jpg",
                 Publicity.PUBLIC,
                 Permission.GROUP_ONLY,
-                MemberFixture.create(Role.USER)
+                MemberFixture.create("member", "member@naver.com", Role.USER)
         );
 
         member = Member.of(
@@ -105,7 +105,7 @@ class TopicTest {
     @DisplayName("Topic 을 생성하면, Member 에 등록이 된다.")
     void createTopicAssociatedWithMember() {
         // given
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
 
         // when
         Topic topic = Topic.createTopicAssociatedWithMember(

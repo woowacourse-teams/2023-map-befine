@@ -43,11 +43,11 @@ class PinTest {
             null,
             Publicity.PUBLIC,
             Permission.ALL_MEMBERS,
-            MemberFixture.create(Role.ADMIN)
+            MemberFixture.create("member", "member@naver.com", Role.ADMIN)
     );
     private static final Member member = Member.of(
-            "member",
-            "member@naver.com",
+            "memberr",
+            "memberr@naver.com",
             "https://map-befine-official.github.io/favicon.png",
             Role.ADMIN
     );
@@ -139,7 +139,7 @@ class PinTest {
     @DisplayName("Pin 을 생성하면, Location, Topic, Member 에 등록이 된다.")
     void createPinAssociatedWithLocationAndTopicAndMember() {
         // given
-        Member mockMember = MemberFixture.create(Role.ADMIN);
+        Member mockMember = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         Topic mockTopic = TopicFixture.createByName("topicName", mockMember);
         Location mockLocation = LocationFixture.create();
 

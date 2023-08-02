@@ -44,7 +44,7 @@ class PinRepositoryTest {
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
     void deleteById_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         Topic topic = TopicFixture.createByName("name", member);
         Address address = new Address(
                 "parcel",
@@ -74,7 +74,7 @@ class PinRepositoryTest {
     @DisplayName("토픽 ID로 핀을 삭제하면 soft-deleting 된다.")
     void deleteAllByTopicId_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         Topic topic = TopicFixture.createByName("name", member);
         Address address = new Address(
                 "parcel",

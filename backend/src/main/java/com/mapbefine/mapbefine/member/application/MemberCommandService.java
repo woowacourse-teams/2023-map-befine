@@ -85,7 +85,7 @@ public class MemberCommandService {
         }
     }
 
-    private void validateDuplicatePermission(final Member member, final Topic topic) {
+    private void validateDuplicatePermission(Member member, Topic topic) {
         if (memberTopicPermissionRepository.existsByTopicAndMember(topic, member)) {
             throw new IllegalArgumentException("권한은 중복으로 줄 수 없습니다.");
         }

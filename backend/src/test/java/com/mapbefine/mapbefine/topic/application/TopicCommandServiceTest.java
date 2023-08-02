@@ -44,7 +44,7 @@ class TopicCommandServiceTest {
 
     @BeforeEach
     void setup() {
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = AuthMember.from(member);
         TOPIC_WITH_TWO_PINS = TopicFixture.createByName("준팍의 또간집", member);
 

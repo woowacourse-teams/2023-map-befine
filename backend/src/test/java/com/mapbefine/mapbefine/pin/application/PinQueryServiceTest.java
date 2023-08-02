@@ -63,7 +63,7 @@ class PinQueryServiceTest {
         double longitude = 127.123456;
         coordinate = Coordinate.of(latitude, longitude);
         location = saveLocation(coordinate);
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = AuthMember.from(member);
         topic = topicRepository.save(
                 Topic.createTopicAssociatedWithMember(

@@ -23,8 +23,8 @@ class PinImageTest {
 
     @BeforeEach
     void setUp() {
-        topic = TopicFixture.createByName("아이크의 부잣집", MemberFixture.create(Role.USER));
-        member = MemberFixture.create(Role.ADMIN);
+        topic = TopicFixture.createByName("아이크의 부잣집", MemberFixture.create("member", "member@naver.com", Role.USER));
+        member = MemberFixture.create("memberr", "memberr@naver.com", Role.ADMIN);
         pin = PinFixture.create(LocationFixture.create(), topic, member);
     }
 

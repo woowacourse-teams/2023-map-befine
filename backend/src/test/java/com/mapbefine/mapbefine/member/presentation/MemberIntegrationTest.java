@@ -42,7 +42,7 @@ class MemberIntegrationTest extends IntegrationTest {
                         Role.USER
                 )
         );
-        Member member = memberRepository.save(MemberFixture.create(Role.USER));
+        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
         );

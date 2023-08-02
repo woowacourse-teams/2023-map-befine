@@ -62,7 +62,7 @@ class PinCommandServiceTest {
     @BeforeEach
     void setUp() {
         locationRepository.deleteAll();
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = AuthMember.from(member);
         topic = topicRepository.save(
                 Topic.createTopicAssociatedWithMember(

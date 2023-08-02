@@ -40,7 +40,7 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 추가")
     void add() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -68,7 +68,7 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 수정")
     void update() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -90,7 +90,7 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 삭제")
     void delete() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -103,7 +103,7 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 상세 조회")
     void findById() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -131,7 +131,7 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 목록 조회")
     void findAll() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );

@@ -28,7 +28,7 @@ class MemberControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 추가")
     void addMemberTopicPermission() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
                 1L,
                 2L
