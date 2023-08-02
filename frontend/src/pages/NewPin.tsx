@@ -152,6 +152,7 @@ const NewPin = () => {
             value={formValues.name}
             onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
+            autoFocus={true}
           />
         </section>
 

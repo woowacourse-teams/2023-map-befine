@@ -84,6 +84,7 @@ const NewTopic = () => {
             value={formValues.image}
             placeholder="이미지 링크를 남겨주세요."
             onChange={onChangeInput}
+            autoFocus={true}
           />
         </section>
         <Space size={5} />

@@ -81,6 +81,7 @@ const UpdatedPinDetail = ({
           name="name"
           value={formValues.name}
           onChange={onChangeInput}
+          autoFocus={true}
         />
       </section>
 
