@@ -74,9 +74,6 @@ const NewTopic = () => {
               토픽 이미지
             </Text>
             <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
           </Flex>
           <Space size={0} />
           <Input

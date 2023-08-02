@@ -83,7 +83,7 @@ const TopicCard = ({
           <Text color="white" $fontSize="medium" $fontWeight="normal">
             {topicTitle}
           </Text>
-          <Text color="white" $fontSize="small" $fontWeight="normal">
+          <Text color="lightGray" $fontSize="small" $fontWeight="normal">
             {`업데이트 : ${
               topicUpdatedAt.split('T')[0]
             } | 핀 개수 : ${topicPinCount}`}
