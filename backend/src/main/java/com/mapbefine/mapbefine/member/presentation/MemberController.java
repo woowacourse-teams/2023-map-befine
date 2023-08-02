@@ -1,10 +1,12 @@
 package com.mapbefine.mapbefine.member.presentation;
 
+import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +51,13 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/members/" + savedId)).build();
     }
 
+    // TODO: 2023/08/02 Member 가 만든 토픽 조회
+    @GetMapping("/topics")
+    public ResponseEntity<List<TopicResponse>> findTopicByMember(AuthMember authMember) {
+        List<TopicResponse> responses = memberQueryService.findTopicByMember(authMember);
 
+        return ResponseEntity.ok(responses);
+    }
+
+    // TODO: 2023/08/02 Member 가 만든 핀들 조회
 }
