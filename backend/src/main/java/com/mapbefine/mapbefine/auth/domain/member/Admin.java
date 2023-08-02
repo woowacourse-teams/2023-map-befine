@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.auth.domain.member;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
+import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.Collections;
 
 public class Admin extends AuthMember {
@@ -15,22 +15,22 @@ public class Admin extends AuthMember {
     }
 
     @Override
-    public boolean canRead(AuthTopic authTopic) {
+    public boolean canRead(Topic topic) {
         return true;
     }
 
     @Override
-    public boolean canDelete(AuthTopic authTopic) {
+    public boolean canDelete(Topic topic) {
         return true;
     }
 
     @Override
-    public boolean canTopicUpdate(AuthTopic authTopic) {
+    public boolean canTopicUpdate(Topic topic) {
         return true;
     }
 
     @Override
-    public boolean canPinCreateOrUpdate(AuthTopic authTopic) {
+    public boolean canPinCreateOrUpdate(Topic topic) {
         return true;
     }
 

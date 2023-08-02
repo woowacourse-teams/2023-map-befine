@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.pin.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -13,7 +12,6 @@ import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,23 +33,14 @@ public class PinCommandService {
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
     }
-
     public Long save(AuthMember member, PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
-        member.canPinCreateOrUpdate(AuthTopic.from(topic));
+        member.canPinCreateOrUpdate(topic);
 
-        List<Location> all = locationRepository.findAllByCoordinateAndDistanceInMeters(
-                coordinate, 10.0);
-
-        Location pinLocation = locationRepository.findAllByRectangle(
-                        coordinate.getLatitude(),
-                        coordinate.getLongitude(),
-                        Coordinate.getDuplicateStandardDistance()
-                )
-                .stream()
-                .filter(location -> location.isDuplicateCoordinate(coordinate))
+        Location pinLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(
+                        coordinate, 10.0).stream()
                 .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
@@ -89,7 +78,7 @@ public class PinCommandService {
     ) {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(NoSuchElementException::new);
-        member.canPinCreateOrUpdate(AuthTopic.from(pin.getTopic()));
+        member.canPinCreateOrUpdate(pin.getTopic());
 
         pin.updatePinInfo(request.name(), request.description());
 
@@ -99,7 +88,7 @@ public class PinCommandService {
     public void removeById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(NoSuchElementException::new);
-        member.canDelete(AuthTopic.from(pin.getTopic()));
+        member.canDelete(pin.getTopic());
         pinRepository.deleteById(pinId);
     }
 
