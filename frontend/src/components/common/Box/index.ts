@@ -68,7 +68,8 @@ const Box = styled.div<BoxProps>`
   border-bottom: ${({ $borderBottom }) => $borderBottom};
   border-left: ${({ $borderLeft }) => $borderLeft};
   cursor: ${({ cursor }) => cursor};
-  background-image: url(${({ $backgroundImage }) => $backgroundImage});
+  background-image: ${({ $backgroundImage }) =>
+    $backgroundImage && `url(${$backgroundImage})`};
   background-size: ${({ $backgroundSize }) => $backgroundSize};
   backdrop-filter: ${({ $backdropFilter }) => $backdropFilter};
   opacity: ${({ opacity }) => opacity};

@@ -54,7 +54,7 @@ const TopicCard = ({
         $borderRadius="small"
         $backgroundImage={topicImage}
         $backgroundSize="360px 140px"
-        $backgroundColor={'whiteGray'}
+        $backgroundColor="whiteGray"
       >
         <MultiSelectButton
           type="checkbox"
@@ -78,7 +78,7 @@ const TopicCard = ({
           $justifyContent="center"
           cursor="pointer"
           onClick={goToSelectedTopic}
-          $backdropFilter="blur(20px)"
+          $backdropFilter="blur(12px)"
         >
           <Text color="white" $fontSize="medium" $fontWeight="normal">
             {topicTitle}
