@@ -73,7 +73,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_b_${tag}.png`,
         map,
       });
-      marker.id = coordinate.id;
+      marker.id = String(coordinate.id);
       return marker;
     });
 

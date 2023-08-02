@@ -26,10 +26,7 @@ const TopicCard = ({
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
 
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
+  const { tagId, setTagId } = useContext(TagIdContext);
 
   const goToSelectedTopic = () => {
     routePage(`topics/${topicId}`, [topicId]);
@@ -54,8 +51,9 @@ const TopicCard = ({
         $flexDirection="column"
         $alignItems="center"
         $justifyContent="center"
-        $backgroundColor="whiteGray"
         $borderRadius="small"
+        $backgroundImage={topicImage}
+        $backgroundSize="360px 140px"
       >
         <MultiSelectButton
           type="checkbox"
@@ -65,15 +63,15 @@ const TopicCard = ({
           checked={Boolean(tagId.includes(topicId))}
         />
         <Flex
+          width="100%"
+          height="65px"
           $flexDirection="column"
           $alignItems="center"
           $justifyContent="center"
           cursor="pointer"
           onClick={goToSelectedTopic}
+          $backdropFilter="blur(20px)"
         >
-          <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
-            {topicImage}
-          </Text>
           <Text color="black" $fontSize="medium" $fontWeight="normal">
             {topicTitle}
           </Text>
