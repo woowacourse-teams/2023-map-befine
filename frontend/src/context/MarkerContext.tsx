@@ -30,15 +30,6 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
   const { topicId } = useParams<{ topicId: string }>();
   const { routePage } = useNavigator();
 
-  // 핀 추가하기 페이지에서 마커의 애니메이션 제거
-  useEffect(() => {
-    if (location.pathname === '/new-pin') {
-      if (markers.length > 0) {
-        removeAnimation();
-      }
-    }
-  }, [location.pathname]);
-
   // 현재 클릭된 좌표의 마커 생성
   const displayClickedMarker = (map: any) => {
     if (clickedMarker) {

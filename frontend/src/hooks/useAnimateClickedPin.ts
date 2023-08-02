@@ -14,7 +14,7 @@ const useAnimateClickedPin = (map: any, markers: any) => {
         marker._marker_data.options.animationLength = 500;
       }
     }
-  }, [markers]);
+  }, [markers, map]);
 };
 
 export default useAnimateClickedPin;
