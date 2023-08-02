@@ -61,6 +61,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   const copyContent = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
+      alert("핀의 링크가 복사되었습니다.")
     } catch (err) {
       if (typeof err === 'string') throw new Error(err);
       throw new Error('[ERROR] clipboard error');
