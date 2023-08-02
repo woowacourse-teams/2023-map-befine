@@ -1,7 +1,8 @@
 package com.mapbefine.mapbefine.auth.domain.member;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
+import com.mapbefine.mapbefine.topic.domain.Topic;
+import com.mapbefine.mapbefine.topic.domain.TopicStatus;
 import java.util.List;
 
 public class User extends AuthMember {
@@ -19,23 +20,26 @@ public class User extends AuthMember {
     }
 
     @Override
-    public boolean canRead(AuthTopic authTopic) {
-        return authTopic.isPublic() || isGroup(authTopic.getTopicId());
+    public boolean canRead(Topic topic) {
+        TopicStatus topicStatus = topic.getTopicStatus();
+        return topicStatus.isPublic() || isGroup(topic.getId());
     }
 
     @Override
-    public boolean canDelete(AuthTopic authTopic) {
-        return authTopic.isPrivate() && isCreator(authTopic.getTopicId());
+    public boolean canDelete(Topic topic) {
+        TopicStatus topicStatus = topic.getTopicStatus();
+        return topicStatus.isPrivate() && isCreator(topic.getId());
     }
 
     @Override
-    public boolean canTopicUpdate(AuthTopic authTopic) {
-        return isCreator(authTopic.getTopicId());
+    public boolean canTopicUpdate(Topic topic) {
+        return isCreator(topic.getId());
     }
 
     @Override
-    public boolean canPinCreateOrUpdate(AuthTopic authTopic) {
-        return authTopic.isAllMembers() || hasPermission(authTopic.getTopicId());
+    public boolean canPinCreateOrUpdate(Topic topic) {
+        TopicStatus topicStatus = topic.getTopicStatus();
+        return topicStatus.isAllMembers() || hasPermission(topic.getId());
     }
 
     private boolean isCreator(Long topicId) {

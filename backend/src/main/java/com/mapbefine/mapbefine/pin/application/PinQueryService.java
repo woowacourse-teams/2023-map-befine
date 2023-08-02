@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.pin.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.pin.Domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
@@ -23,14 +22,14 @@ public class PinQueryService {
     public List<PinResponse> findAll(AuthMember member) {
         return pinRepository.findAll()
                 .stream()
-                .filter(pin -> member.canRead(AuthTopic.from(pin.getTopic())))
+                .filter(pin -> member.canRead(pin.getTopic()))
                 .map(PinResponse::from)
                 .toList();
     }
 
     public PinDetailResponse findById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
-                .filter(optionalPin -> member.canRead(AuthTopic.from(optionalPin.getTopic())))
+                .filter(optionalPin -> member.canRead(optionalPin.getTopic()))
                 .orElseThrow(NoSuchElementException::new);
 
         return PinDetailResponse.from(pin);
