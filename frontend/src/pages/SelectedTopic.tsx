@@ -71,9 +71,21 @@ const SelectedTopic = () => {
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );
 
-    data.forEach((data: any) => {
-      setCoordinates((prev) => [...prev, ...data.pins]);
+    // 각 topic의 pin들의 좌표를 가져옴
+    const newCoordinates: any = [];
+
+    data.forEach((topic: any) => {
+      topic.pins.forEach((pin: any) => {
+        newCoordinates.push({
+          id: pin.id,
+          topicId: topic.id,
+          latitude: pin.latitude,
+          longitude: pin.longitude,
+        });
+      });
     });
+
+    setCoordinates(newCoordinates);
 
     setTopicDetail([...data]);
   };

@@ -49,7 +49,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         clickedCoordinate.latitude,
         clickedCoordinate.longitude,
       ),
-      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_a.png',
+      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_b_a.png',
       map,
     });
     marker.id = 'clickedMarker';
@@ -63,14 +63,14 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
       if (!topicId) {
         tag = 'A';
       } else {
-        tag = String.fromCharCode(97 + parseInt(topicId, 10));
+        tag = String.fromCharCode(97 + (parseInt(coordinate.topicId, 10) % 26));
       }
       const marker = new window.Tmapv2.Marker({
         position: new window.Tmapv2.LatLng(
           coordinate.latitude,
           coordinate.longitude,
         ),
-        icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_b_${tag}.png`,
+        icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_${tag}.png`,
         map,
       });
       marker.id = String(coordinate.id);
