@@ -4,6 +4,7 @@ import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 import { getAddress } from '../utils/getAddress';
 import useMapClick from '../hooks/useMapClick';
+import useClickedCoordinate from '../hooks/useClickedCoordinate';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
@@ -26,21 +27,7 @@ const Map = (props: any, ref: any) => {
     return addressResult[2];
   };
   useMapClick({ map, getAddressFromServer });
-
-  useEffect(() => {
-    if (!map) return;
-    if (clickedCoordinate.address) displayClickedMarker(map);
-
-    // 선택된 좌표가 있으면 해당 좌표로 지도의 중심을 이동
-    if (clickedCoordinate.latitude && clickedCoordinate.longitude) {
-      map.panTo(
-        new window.Tmapv2.LatLng(
-          clickedCoordinate.latitude,
-          clickedCoordinate.longitude,
-        ),
-      );
-    }
-  }, [clickedCoordinate]);
+  useClickedCoordinate(map);
 
   useEffect(() => {
     // 마커들을 모두 지도에서 제거
