@@ -10,3 +10,4 @@ toc::[]
 
 include::topic.adoc[]
 include::pin.adoc[]
+include::member.adoc[]

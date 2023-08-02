@@ -1,0 +1,5 @@
+== 유저
+
+=== 유저 권한 부여
+
+operation::member-controller-test/add-member-topic-permission[snippets='http-request,http-response']
