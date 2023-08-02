@@ -3,6 +3,7 @@ import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
+import Box from '../common/Box';
 
 export interface PinPreviewProps {
   pinTitle: string;
@@ -68,7 +69,6 @@ const PinPreview = ({
         cursor="pointer"
         onClick={onClickSetSelectedPinId}
         width="90%"
-        height="95%"
       >
         <Text color="black" $fontSize="default" $fontWeight="bold">
           {pinTitle}
@@ -77,9 +77,9 @@ const PinPreview = ({
           {pinLocation}
         </Text>
         <Space size={3} />
-        <Text color="black" $fontSize="small" $fontWeight="normal">
+        <EllipsisText color="black" $fontSize="small" $fontWeight="normal">
           {pinInformation}
-        </Text>
+        </EllipsisText>
       </Flex>
     </Flex>
   );
@@ -99,6 +99,16 @@ const MultiSelectButton = styled.input`
   &:focus {
     background-color: ${({ theme }) => theme.color.primary};
   }
+`;
+
+const EllipsisText = styled(Text)`
+  width: 100%;
+  display: -webkit-box;
+  word-wrap: break-word;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export default PinPreview;
