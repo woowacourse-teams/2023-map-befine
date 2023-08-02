@@ -12,11 +12,13 @@ public record MemberDetailResponse(
         LocalDateTime updateAt
 ) {
     public static MemberDetailResponse from(Member member) {
+        MemberInfo memberInfo = member.getMemberInfo();
+        
         return new MemberDetailResponse(
                 member.getId(),
-                member.getName(),
-                member.getEmail(),
-                member.getImageUrl(),
+                memberInfo.getName(),
+                memberInfo.getEmail(),
+                memberInfo.getImageUrl(),
                 member.getUpdatedAt()
         );
     }

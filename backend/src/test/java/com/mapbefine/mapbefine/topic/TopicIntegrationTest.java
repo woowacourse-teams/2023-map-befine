@@ -55,7 +55,7 @@ class TopicIntegrationTest extends IntegrationTest {
         );
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         // when
@@ -87,7 +87,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 .toList();
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
@@ -113,7 +113,7 @@ class TopicIntegrationTest extends IntegrationTest {
         // given
         Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
@@ -167,7 +167,7 @@ class TopicIntegrationTest extends IntegrationTest {
     void updateTopic_Success() {
         Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         ExtractableResponse<Response> newTopic = createNewTopic(
@@ -208,7 +208,7 @@ class TopicIntegrationTest extends IntegrationTest {
         Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         ExtractableResponse<Response> newTopic = createNewTopic(
                 new TopicCreateRequest(
@@ -243,7 +243,7 @@ class TopicIntegrationTest extends IntegrationTest {
         Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         // when
@@ -266,7 +266,7 @@ class TopicIntegrationTest extends IntegrationTest {
         Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         TopicCreateRequest request = new TopicCreateRequest(
                 "topicName",

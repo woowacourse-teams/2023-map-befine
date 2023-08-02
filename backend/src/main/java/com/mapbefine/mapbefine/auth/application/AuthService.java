@@ -23,11 +23,11 @@ public class AuthService {
     }
 
     public boolean isMember(AuthInfo authInfo) {
-        return memberRepository.existsByEmail(authInfo.email());
+        return memberRepository.existsByMemberInfoEmail(authInfo.email());
     }
 
     public AuthMember findAuthMemberByEmail(AuthInfo authInfo) {
-        return memberRepository.findByEmail(authInfo.email())
+        return memberRepository.findByMemberInfoEmail(authInfo.email())
                 .map(this::convertToAuthMember)
                 .orElseGet(Guest::new);
     }

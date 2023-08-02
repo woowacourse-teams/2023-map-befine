@@ -33,7 +33,7 @@ class LocationControllerTest extends RestDocsIntegration {
     void findBests() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         List<TopicResponse> responses = List.of(new TopicResponse(
                 1L,

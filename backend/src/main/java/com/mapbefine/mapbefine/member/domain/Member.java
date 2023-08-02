@@ -3,13 +3,10 @@ package com.mapbefine.mapbefine.member.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import com.mapbefine.mapbefine.common.entity.Image;
-import com.mapbefine.mapbefine.common.util.RegexUtil;
+import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,35 +28,22 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String name;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private Image imageUrl;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @Embedded
+    private MemberInfo memberInfo;
 
     @OneToMany(mappedBy = "creator")
     private List<Topic> createdTopic = new ArrayList<>();
+
+    @OneToMany(mappedBy = "creator")
+    private List<Pin> createdPin = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private List<MemberTopicPermission> topicsWithPermission = new ArrayList<>();
 
     private Member(
-            String name,
-            String email,
-            Image imageUrl,
-            Role role
+            MemberInfo memberInfo
     ) {
-        this.name = name;
-        this.email = email;
-        this.imageUrl = imageUrl;
-        this.role = role;
+        this.memberInfo = memberInfo;
     }
 
     public static Member of(
@@ -68,46 +52,12 @@ public class Member extends BaseTimeEntity {
             String imageUrl,
             Role role
     ) {
-        validateName(name);
-        validateEmail(email);
-        validateRole(role);
-
-        return new Member(
-                name,
-                email,
-                Image.of(imageUrl),
-                role
-        );
+        MemberInfo memberInfo = MemberInfo.of(name, email, imageUrl, role);
+        return new Member(memberInfo);
     }
 
     public void update(String name, String email, String imageUrl) {
-        validateName(name);
-        validateEmail(email);
-
-        this.name = name;
-        this.email = email;
-        this.imageUrl = Image.of(imageUrl);
-    }
-
-    private static void validateName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name null");
-        }
-        if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("이름 길이 이상");
-        }
-    }
-
-    private static void validateEmail(String email) {
-        if (!RegexUtil.matches(VALID_EMAIL_URL_REGEX, email)) {
-            throw new IllegalArgumentException("올바르지 않은 이메일 형식입니다.");
-        }
-    }
-
-    private static void validateRole(Role role) {
-        if (role == null) {
-            throw new IllegalArgumentException("role null");
-        }
+        memberInfo.update(name, email, imageUrl);
     }
 
     public void addTopic(Topic topic) {
@@ -115,19 +65,15 @@ public class Member extends BaseTimeEntity {
     }
 
     public String getRoleKey() {
-        return role.getKey();
+        return memberInfo.getRole().getKey();
     }
 
     public boolean isAdmin() {
-        return role == Role.ADMIN;
+        return memberInfo.getRole() == Role.ADMIN;
     }
 
     public boolean isUser() {
-        return role == Role.USER;
-    }
-
-    public String getImageUrl() {
-        return imageUrl.getImageUrl();
+        return memberInfo.getRole() == Role.USER;
     }
 
     public List<Topic> getTopicsWithPermission() {

@@ -92,4 +92,8 @@ public class MemberInfo {
         }
     }
 
+    public String getImageUrl() {
+        return imageUrl.getImageUrl();
+    }
+
 }

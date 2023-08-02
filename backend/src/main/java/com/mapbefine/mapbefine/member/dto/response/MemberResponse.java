@@ -10,10 +10,12 @@ public record MemberResponse (
 ) {
 
     public static MemberResponse from(Member member) {
+        MemberInfo memberInfo = member.getMemberInfo();
+
         return new MemberResponse(
                 member.getId(),
-                member.getName(),
-                member.getEmail()
+                memberInfo.getName(),
+                memberInfo.getEmail()
         );
     }
 }

@@ -42,7 +42,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void create() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         given(topicCommandService.createNew(any(), any())).willReturn(1L);
 
@@ -68,7 +68,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void mergeAndCreate() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         given(topicCommandService.createMerge(any(), any())).willReturn(1L);
         TopicMergeRequest topicMergeRequest = new TopicMergeRequest(
@@ -93,7 +93,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void update() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest("준팍의 안갈집",
                 "https://map-befine-official.github.io/favicon.png", "준팍이 두번 다시 안갈집");
@@ -111,7 +111,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void delete() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/topics/1")
@@ -124,7 +124,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void findAll() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         List<TopicResponse> responses = List.of(new TopicResponse(
                 1L,
@@ -152,7 +152,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void findById() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         TopicDetailResponse topicDetailResponse = new TopicDetailResponse(
                 1L,

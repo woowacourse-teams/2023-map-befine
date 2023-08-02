@@ -6,6 +6,7 @@ import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.net.URI;
 import java.util.List;
@@ -51,13 +52,17 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/members/" + savedId)).build();
     }
 
-    // TODO: 2023/08/02 Member 가 만든 토픽 조회
     @GetMapping("/topics")
-    public ResponseEntity<List<TopicResponse>> findTopicByMember(AuthMember authMember) {
-        List<TopicResponse> responses = memberQueryService.findTopicByMember(authMember);
+    public ResponseEntity<List<TopicResponse>> findTopicsByMember(AuthMember authMember) {
+        List<TopicResponse> responses = memberQueryService.findTopicsByMember(authMember);
 
         return ResponseEntity.ok(responses);
     }
 
-    // TODO: 2023/08/02 Member 가 만든 핀들 조회
+    @GetMapping("/pins")
+    public ResponseEntity<List<PinResponse>> findPinsByMember(AuthMember authMember) {
+        List<PinResponse> responses = memberQueryService.findPinsByMember(authMember);
+
+        return ResponseEntity.ok(responses);
+    }
 }

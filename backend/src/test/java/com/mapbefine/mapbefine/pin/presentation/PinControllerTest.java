@@ -42,7 +42,7 @@ class PinControllerTest extends RestDocsIntegration {
     void add() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         given(pinCommandService.save(any(), any())).willReturn(1L);
 
@@ -70,7 +70,7 @@ class PinControllerTest extends RestDocsIntegration {
     void update() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         PinUpdateRequest pinUpdateRequest = new PinUpdateRequest(
@@ -92,7 +92,7 @@ class PinControllerTest extends RestDocsIntegration {
     void delete() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/pins/1")
@@ -105,7 +105,7 @@ class PinControllerTest extends RestDocsIntegration {
     void findById() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         PinDetailResponse pinDetailResponse = new PinDetailResponse(
@@ -123,7 +123,7 @@ class PinControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins/1")
-//                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
 
@@ -133,7 +133,7 @@ class PinControllerTest extends RestDocsIntegration {
     void findAll() throws Exception {
         Member member = MemberFixture.create(Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         List<PinResponse> pinResponses = List.of(
