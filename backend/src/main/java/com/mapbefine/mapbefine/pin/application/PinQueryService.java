@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @Service
 public class PinQueryService {
+
     private final PinRepository pinRepository;
 
     public PinQueryService(PinRepository pinRepository) {

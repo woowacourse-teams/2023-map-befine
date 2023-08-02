@@ -27,7 +27,6 @@ public class PinImage {
     @ManyToOne
     @JoinColumn(name = "pin_id")
     private Pin pin;
-
     
     private PinImage(Image image, Pin pin) {
         this.image = image;

@@ -33,6 +33,7 @@ public class PinCommandService {
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
     }
+
     public Long save(AuthMember member, PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())

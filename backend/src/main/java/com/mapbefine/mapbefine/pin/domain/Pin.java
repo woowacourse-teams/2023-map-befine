@@ -59,6 +59,7 @@ public class Pin extends BaseTimeEntity {
         this.topic = topic;
     }
 
+    // TODO PinImage 저장 추가
     public static Pin createPinAssociatedWithLocationAndTopic(
             String name,
             String description,

@@ -37,7 +37,8 @@ public class PinController {
     public ResponseEntity<Void> add(AuthMember member, @RequestBody PinCreateRequest request) {
         Long savedId = pinCommandService.save(member, request);
 
-        return ResponseEntity.created(URI.create("/pins/" + savedId)).build();
+        return ResponseEntity.created(URI.create("/pins/" + savedId))
+                .build();
     }
 
     @LoginRequired
