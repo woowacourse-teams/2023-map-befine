@@ -53,26 +53,55 @@ public class MemberCommandService {
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
 
-        validateMemberCanTopicUpdate(authMember, topic);
+        validateSaveMemberTopicPermission(authMember, request, member, topic);
 
         MemberTopicPermission memberTopicPermission =
                 MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
         return memberTopicPermissionRepository.save(memberTopicPermission).getId();
     }
 
-    public void deleteMemberTopicPermission(final AuthMember authMember, final Long permissionId) {
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
-                .orElseThrow(NoSuchElementException::new);
-
-        validateMemberCanTopicUpdate(authMember, memberTopicPermission.getTopic());
-
-        memberTopicPermissionRepository.delete(memberTopicPermission);
+    private void validateSaveMemberTopicPermission(
+            AuthMember authMember,
+            MemberTopicPermissionCreateRequest request,
+            Member member,
+            Topic topic
+    ) {
+        validateMemberCanTopicUpdate(authMember, topic);
+        validateSelfPermission(authMember, request);
+        validateDuplicatePermission(member, topic);
     }
 
     private void validateMemberCanTopicUpdate(AuthMember authMember, Topic topic) {
         if (!authMember.canTopicUpdate(AuthTopic.from(topic))) {
             throw new IllegalArgumentException("해당 유저는 해당 토픽에서 다른 유저에게 권한을 줄 수 없습니다.");
         }
+    }
+
+    private void validateSelfPermission(
+            AuthMember authMember,
+            MemberTopicPermissionCreateRequest request
+    ) {
+        if (authMember.getMemberId().equals(request.memberId())) {
+            throw new IllegalArgumentException("본인에게 권한을 줄 수 없습니다.");
+        }
+    }
+
+    private void validateDuplicatePermission(final Member member, final Topic topic) {
+        if (memberTopicPermissionRepository.existsByTopicAndMember(topic, member)) {
+            throw new IllegalArgumentException("권한은 중복으로 줄 수 없습니다.");
+        }
+    }
+
+    public void deleteMemberTopicPermission(
+            AuthMember authMember,
+            Long permissionId
+    ) {
+        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
+                .orElseThrow(NoSuchElementException::new);
+
+        validateMemberCanTopicUpdate(authMember, memberTopicPermission.getTopic());
+
+        memberTopicPermissionRepository.delete(memberTopicPermission);
     }
 
 }
