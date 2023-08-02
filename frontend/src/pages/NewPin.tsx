@@ -174,6 +174,7 @@ const NewPin = () => {
             readOnly
             value={clickedCoordinate.address}
             onClick={onClickAddressInput}
+            onKeyDown={onClickAddressInput}
             ref={addressRef}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
