@@ -139,10 +139,6 @@ const SelectedTopic = () => {
                   {topic.pins.map((pin) => (
                     <li
                       key={pin.id}
-                      onClick={() => {
-                        onClickSetSelectedPinId(Number(pin.id));
-                        setIsOpen(true);
-                      }}
                     >
                       <Space size={3} />
                       <PinPreview
