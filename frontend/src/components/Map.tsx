@@ -3,6 +3,7 @@ import Flex from './common/Flex';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 import { getAddress } from '../utils/getAddress';
+import useMapClick from '../hooks/useMapClick';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
@@ -24,21 +25,7 @@ const Map = (props: any, ref: any) => {
     const addressResult = addressData.addressInfo.fullAddress.split(',');
     return addressResult[2];
   };
-
-  useEffect(() => {
-    if (!map) return;
-    map.addListener('click', async (evt: any) => {
-      const roadName = await getAddressFromServer(
-        evt.latLng._lat,
-        evt.latLng._lng,
-      );
-      setClickedCoordinate({
-        latitude: evt.latLng._lat,
-        longitude: evt.latLng._lng,
-        address: roadName,
-      });
-    });
-  }, [map]);
+  useMapClick({ map, getAddressFromServer });
 
   useEffect(() => {
     if (!map) return;

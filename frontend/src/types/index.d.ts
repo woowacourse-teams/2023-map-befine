@@ -3,3 +3,9 @@ declare module '*.svg' {
   const SVG: React.VFC<React.SVGProps<SVGSVGElement>>;
   export default SVG;
 }
+
+declare global {
+  interface Window {
+    Tmapv2: Tmapv2;
+  }
+}
