@@ -65,16 +65,10 @@ public class Topic extends BaseTimeEntity {
             Permission permission,
             Member creator
     ) {
-        return new Topic(
-                TopicInfo.of(
-                        name,
-                        description,
-                        imageUrl
-                ),
-                TopicStatus.of(publicity, permission),
-                creator
-        );
+        TopicInfo topicInfo = TopicInfo.of(name, description, imageUrl);
+        TopicStatus topicStatus = TopicStatus.of(publicity, permission);
 
+        return new Topic(topicInfo, topicStatus, creator);
     }
 
     public void updateTopicInfo(
@@ -82,11 +76,7 @@ public class Topic extends BaseTimeEntity {
             String description,
             String imageUrl
     ) {
-        topicInfo.update(
-                name,
-                description,
-                imageUrl
-        );
+        topicInfo.update(name, description, imageUrl);
     }
 
     public void updateTopicStatus(Publicity publicity, Permission permission) {
