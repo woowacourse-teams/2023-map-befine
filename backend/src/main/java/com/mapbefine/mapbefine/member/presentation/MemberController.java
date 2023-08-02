@@ -2,11 +2,14 @@ package com.mapbefine.mapbefine.member.presentation;
 
 import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
+import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,5 +41,13 @@ public class MemberController {
 
         return ResponseEntity.ok(responses);
     }
+
+    @PostMapping
+    public ResponseEntity<Void> add(MemberCreateRequest request) {
+        Long savedId = memberCommandService.save(request);
+
+        return ResponseEntity.created(URI.create("/members/" + savedId)).build();
+    }
+
 
 }

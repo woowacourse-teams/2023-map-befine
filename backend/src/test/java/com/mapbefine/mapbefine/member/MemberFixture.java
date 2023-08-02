@@ -6,10 +6,10 @@ import com.mapbefine.mapbefine.member.domain.Role;
 public class MemberFixture {
 
     public static Member create(Role role) {
-        return new Member(
+        return Member.of(
                 "member",
-                "member@naver.com",
-                "image.com",
+                "jakind@naver.com",
+                "https://map-befine-official.github.io/favicon.png",
                 role
         );
     }

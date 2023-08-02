@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.member.dto.response;
 
 import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberInfo;
 import java.time.LocalDateTime;
 
 public record MemberDetailResponse(
