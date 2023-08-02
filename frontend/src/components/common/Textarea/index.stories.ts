@@ -21,7 +21,3 @@ export const WithValue: Story = {
     value: '인풋이 이미 입력되어 있는 경우',
   },
 };
-
-
-
-

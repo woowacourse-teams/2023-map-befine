@@ -10,18 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Query(
-            "select l "
-                    + "from Location l "
-                    + "where l.coordinate.latitude BETWEEN :currentLatitude - :distance AND :currentLatitude + :distance "
-                    + "AND l.coordinate.longitude BETWEEN :currentLongitude - :distance AND :currentLongitude + :distance"
-    )
-    List<Location> findAllByRectangle(
-            @Param("currentLatitude") double currentLatitude,
-            @Param("currentLongitude") double currentLongitude,
-            @Param("distance") double distance
-    );
-
-    @Query(
             "SELECT l FROM Location l "
                     + "WHERE ( 6371000 * acos( cos( radians(:#{#current_coordinate.latitude}) ) "
                     + "      * cos( radians( l.coordinate.latitude ) ) "

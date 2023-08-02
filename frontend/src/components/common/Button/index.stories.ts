@@ -1,47 +1,47 @@
-import { Meta, StoryObj } from "@storybook/react";
-import Button from ".";
+import { Meta, StoryObj } from '@storybook/react';
+import Button from '.';
 
 const meta = {
-  title: "Components/common/Button",
+  title: 'Components/common/Button',
   component: Button,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
     variant: {
       control: {
-        type: "radio",
+        type: 'radio',
       },
-      options: ["primary", "secondary"],
-      defaultValue: "primary",
+      options: ['primary', 'secondary'],
+      defaultValue: 'primary',
       table: {
-        defaultValue: { summary: "primary" },
-        type: { summary: "primary | secondary" },
+        defaultValue: { summary: 'primary' },
+        type: { summary: 'primary | secondary' },
       },
     },
     children: {
       control: {
-        type: "text",
+        type: 'text',
       },
-      defaultValue: "Button",
+      defaultValue: 'Button',
       table: {
-        defaultValue: { summary: "Button" },
-        type: { summary: "string" },
+        defaultValue: { summary: 'Button' },
+        type: { summary: 'string' },
       },
     },
     disabled: {
       control: {
-        type: "boolean",
+        type: 'boolean',
       },
       defaultValue: false,
-      description: "버튼 비활성화 여부",
+      description: '버튼 비활성화 여부',
       table: {
         defaultValue: { summary: false },
-        type: { summary: "boolean" },
+        type: { summary: 'boolean' },
       },
     },
     onClick: {
-      description: "버튼 클릭 이벤트",
+      description: '버튼 클릭 이벤트',
       table: {
-        type: { summary: "function" },
+        type: { summary: 'function' },
       },
     },
   },
@@ -52,22 +52,22 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    variant: "primary",
-    children: "primary button",
+    variant: 'primary',
+    children: 'primary button',
   },
 };
 
 export const Secondary: Story = {
   args: {
-    variant: "secondary",
-    children: "secondary button",
+    variant: 'secondary',
+    children: 'secondary button',
   },
 };
 
 export const Disabled: Story = {
   args: {
-    variant: "primary",
-    children: "disabled button",
+    variant: 'primary',
+    children: 'disabled button',
     disabled: true,
   },
 };

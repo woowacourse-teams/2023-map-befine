@@ -5,9 +5,8 @@ const fontSize = {
   default: '16px',
   small: '14px',
   extraSmall: '12px',
-} as const
+} as const;
 
 export type fontSizeThemeKey = keyof typeof fontSize;
 
-
-export default fontSize
+export default fontSize;

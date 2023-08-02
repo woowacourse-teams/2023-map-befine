@@ -21,11 +21,6 @@ public class Coordinate {
     private static final double LONGITUDE_LOWER_BOUND = 124;
     private static final double LONGITUDE_UPPER_BOUND = 132;
 
-    private static final double EARTH_RADIUS = 6371;
-    private static final double UNIT_FOR_CONVERT_RADIAN = Math.PI / 180;
-    private static final double DUPLICATE_STANDARD_DISTANCE = 0.01;
-    private static final double UNIT_FOR_CONVERT_TO_CENTIMETER = Math.pow(10, 5);
-
     @Column(columnDefinition = "Decimal(18,15)")
     private double latitude;
 
@@ -54,34 +49,13 @@ public class Coordinate {
                 || (longitude < LONGITUDE_LOWER_BOUND || LONGITUDE_UPPER_BOUND < longitude);
     }
 
-    /*
-     * 오차 범위 2%
-     * */
-    public double calculateDistance(Coordinate otherCoordinate) {
-        double result = applyHaversine(otherCoordinate);
+    public double calculateDistanceInMeters(Coordinate otherCoordinate) {
+        double earthRadius = 6_371_000;
 
-        return convertToCentimeter(result);
-    }
-
-    private double applyHaversine(Coordinate otherCoordinate) {
-        return acos(
-                sin(toRadians(otherCoordinate.latitude)) * sin(toRadians(this.latitude)) +
-                        (cos(toRadians(otherCoordinate.latitude)) * cos(toRadians(this.latitude))
-                                * cos(toRadians(otherCoordinate.longitude - this.longitude)))
-        ) * EARTH_RADIUS;
-    }
-
-    private double convertToCentimeter(double distance) {
-        return distance * UNIT_FOR_CONVERT_TO_CENTIMETER;
-    }
-
-    public boolean isDuplicateCoordinate(Coordinate otherCoordinate) {
-        return calculateDistance(otherCoordinate)
-                <= convertToCentimeter(DUPLICATE_STANDARD_DISTANCE);
-    }
-
-    public static double getDuplicateStandardDistance() {
-        return DUPLICATE_STANDARD_DISTANCE;
+        return acos(sin(toRadians(otherCoordinate.latitude)) * sin(toRadians(this.latitude)) + (
+                cos(toRadians(otherCoordinate.latitude)) * cos(toRadians(this.latitude))
+                        * cos(toRadians(otherCoordinate.longitude - this.longitude))
+        )) * earthRadius;
     }
 
 }

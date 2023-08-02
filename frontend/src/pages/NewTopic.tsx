@@ -4,15 +4,15 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
-import { styled } from 'styled-components';
-import { postApi } from '../utils/postApi';
+import { postApi } from '../apis/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
-import { useContext, useEffect } from 'react';
-import { TagIdContext } from '../store/TagId';
 import { useLocation } from 'react-router-dom';
-import { TopicsIdContext } from '../store/TopicsId';
+import useToast from '../hooks/useToast';
+
+const DEFAULT_IMAGE =
+  'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
 
 const NewTopic = () => {
   const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
@@ -22,65 +22,55 @@ const NewTopic = () => {
     topics: [],
   });
   const { routePage } = useNavigator();
-
-  const { state } = useLocation();
-
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
-
-  const { topicsId, setTopicsId } = useContext(TopicsIdContext) ?? {
-    topicsId: [],
-    setTopicsId: () => {},
-  };
+  const { state: taggedIds } = useLocation();
+  const { showToast } = useToast();
 
   const goToBack = () => {
     routePage(-1);
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const topicId = await postToServer();
-    if (topicId) routePage(`/topics/${topicId}`, [Number(topicId)]);
+    if (topicId) routePage(`/topics/${topicId}`);
   };
 
   const postToServer = async () => {
-    if (state === 'topics') {
-      const response = await postApi('/topics/merge', {
-        image: formValues.image,
-        name: formValues.name,
-        description: formValues.description,
-        topics: tagId,
-      });
+    const response =
+      taggedIds?.length > 1 && typeof taggedIds !== 'string'
+        ? await mergeTopics()
+        : await createTopic();
 
-      const location = response.headers.get('Location');
+    const location = response.headers.get('Location');
 
-      if (location) {
-        const topicIdFromLocation = location.split('/')[2];
-        return topicIdFromLocation;
-      }
-    } else {
-      const response = await postApi('/topics/new', {
-        image: formValues.image,
-        name: formValues.name,
-        description: formValues.description,
-        pins: tagId,
-      });
-
-      const location = response.headers.get('Location');
-
-      if (location) {
-        const topicIdFromLocation = location.split('/')[2];
-        return topicIdFromLocation;
-      }
+    if (location) {
+      const topicIdFromLocation = location.split('/')[2];
+      return topicIdFromLocation;
     }
   };
 
-  useEffect(() => {
-    setTopicsId([]);
-  }, []);
+  const mergeTopics = async () => {
+    showToast('info', `${formValues.name} 토픽을 병합하였습니다.`);
+
+    return await postApi('/topics/merge', {
+      image: formValues.image || DEFAULT_IMAGE,
+      name: formValues.name,
+      description: formValues.description,
+      topics: taggedIds,
+    });
+  };
+
+  const createTopic = async () => {
+    showToast('info', `${formValues.name} 토픽을 생성하였습니다.`);
+
+    return await postApi('/topics/new', {
+      image: formValues.image || DEFAULT_IMAGE,
+      name: formValues.name,
+      description: formValues.description,
+      pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
+    });
+  };
 
   return (
     <form onSubmit={onSubmit}>
@@ -98,16 +88,14 @@ const NewTopic = () => {
               토픽 이미지
             </Text>
             <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
           </Flex>
           <Space size={0} />
           <Input
             name="image"
             value={formValues.image}
-            placeholder="이미지 링크를 남겨주세요."
+            placeholder="원하는 배경이 있을 시 이미지 링크를 남겨주세요."
             onChange={onChangeInput}
+            tabIndex={1}
           />
         </section>
         <Space size={5} />
@@ -128,6 +116,8 @@ const NewTopic = () => {
             value={formValues.name}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
             onChange={onChangeInput}
+            tabIndex={2}
+            autoFocus={true}
           />
         </section>
 
@@ -149,42 +139,29 @@ const NewTopic = () => {
             value={formValues.description}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
             onChange={onChangeInput}
+            tabIndex={3}
           />
         </section>
 
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button variant="primary">생성하기</Button>
-          <Space size={3} />
-          <Button type="button" variant="secondary" onClick={goToBack}>
+          <Button
+            tabIndex={5}
+            type="button"
+            variant="secondary"
+            onClick={goToBack}
+          >
             취소하기
+          </Button>
+          <Space size={3} />
+          <Button tabIndex={4} variant="primary">
+            생성하기
           </Button>
         </Flex>
       </Flex>
     </form>
   );
 };
-
-const TopicIcon = styled(Input)`
-  display: none;
-  position: relative;
-
-  & + label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 52px;
-    height: 52px;
-    font-size: 36px;
-    border: 1px solid ${({ theme }) => theme.color.black};
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  &:checked + label {
-    background-color: ${({ theme }) => theme.color.primary};
-  }
-`;
 
 export default NewTopic;
