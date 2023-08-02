@@ -90,7 +90,13 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: 2023/08/02 권한이 있는 멤버들을 읽어오는 API (로그인 유저만)
+    @LoginRequired
+    @GetMapping("/permissions/{topicId}")
+    public ResponseEntity<List<MemberResponse>> findAllMemberTopicPermission(@PathVariable Long topicId) {
+        List<MemberResponse> responses = memberQueryService.findAllWithPermission(topicId);
+
+        return ResponseEntity.ok(responses);
+    }
 
     // TODO: 2023/08/02 특정 멤버의 권한을 확인하는 기능 (로그인 유저만 가능) 
 
