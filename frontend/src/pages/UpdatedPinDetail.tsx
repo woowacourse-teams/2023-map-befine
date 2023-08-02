@@ -105,23 +105,23 @@ const UpdatedPinDetail = ({
       <Flex $justifyContent="end">
         <Box cursor="pointer">
           <Text
-            color="primary"
-            $fontSize="default"
-            $fontWeight="normal"
-            onClick={onClickUpdatePin}
-          >
-            저장
-          </Text>
-        </Box>
-        <Space size={2} />
-        <Box cursor="pointer">
-          <Text
             color="black"
             $fontSize="default"
             $fontWeight="normal"
             onClick={onClickCancelPinUpdate}
           >
             취소
+          </Text>
+        </Box>
+        <Space size={2} />
+        <Box cursor="pointer">
+          <Text
+            color="primary"
+            $fontSize="default"
+            $fontWeight="normal"
+            onClick={onClickUpdatePin}
+          >
+            저장
           </Text>
         </Box>
       </Flex>
