@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Lob;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +16,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class TopicInfo {
 
-    private static final Image DEFAULT_IMAGE = Image.from("https://map-befine-official.github.io/favicon.png");
+    private static final Image DEFAULT_IMAGE =
+            Image.from("https://map-befine-official.github.io/favicon.png");
+
     private static final int MAX_DESCRIPTION_LENGTH = 1000;
     private static final int MAX_NAME_LENGTH = 20;
 
@@ -47,11 +50,7 @@ public class TopicInfo {
         validateName(name);
         validateDescription(description);
 
-        return new TopicInfo(
-                name,
-                description,
-                validateImageUrl(imageUrl)
-        );
+        return new TopicInfo(name, description, createImage(imageUrl));
     }
 
     private static void validateName(String name) {
@@ -72,10 +71,11 @@ public class TopicInfo {
         }
     }
 
-    private static Image validateImageUrl(String imageUrl) {
-        if (imageUrl == null) {
+    private static Image createImage(String imageUrl) {
+        if (Objects.isNull(imageUrl)) {
             return DEFAULT_IMAGE;
         }
+
         return Image.from(imageUrl);
     }
 
@@ -89,7 +89,7 @@ public class TopicInfo {
 
         this.name = name;
         this.description = description;
-        this.image = validateImageUrl(imageUrl);
+        this.image = createImage(imageUrl);
     }
 
     public String getImageUrl() {
