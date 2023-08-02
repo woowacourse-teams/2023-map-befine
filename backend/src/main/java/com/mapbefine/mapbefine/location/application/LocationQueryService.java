@@ -34,9 +34,9 @@ public class LocationQueryService {
 
     public List<TopicResponse> findNearbyTopicsSortedByPinCount(AuthMember member, CoordinateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
-        List<Location> locations = locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, NEAR_DISTANCE);
+        List<Location> nearLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, NEAR_DISTANCE);
 
-        Map<Topic, Long> topicCounts = countTopicsInLocations(locations);
+        Map<Topic, Long> topicCounts = countTopicsInLocations(nearLocation);
 
         return sortTopicsByCounts(topicCounts, member);
     }
