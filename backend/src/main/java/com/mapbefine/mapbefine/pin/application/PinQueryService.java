@@ -30,10 +30,12 @@ public class PinQueryService {
 
     public PinDetailResponse findById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
-                .filter(optionalPin -> member.canRead(optionalPin.getTopic()))
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
 
-        return PinDetailResponse.from(pin);
+        if (member.canRead(pin.getTopic())) {
+            return PinDetailResponse.from(pin);
+        }
+        throw new IllegalArgumentException("해당 토픽의 핀 조회 권한이 없습니다.");
     }
 
 }
