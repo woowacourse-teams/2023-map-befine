@@ -33,5 +33,5 @@ export default function useMapClick({
         map.removeListener('click', clickHandler);
       }
     };
-  }, [getAddressFromServer, map, setClickedCoordinate]);
+  }, [map]);
 }
