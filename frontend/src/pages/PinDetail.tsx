@@ -153,11 +153,11 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
       </Flex>
       <Space size={7} />
       <Flex $justifyContent="center">
-        <Clipping cursor={'pointer'} />
+        <Clipping />
         <Space size={4} />
-        <Share cursor={'pointer'} onClick={copyContent} />
+        <Share cursor="pointer" onClick={copyContent} />
         <Space size={4} />
-        <ShowDetail cursor={'pointer'} />
+        <ShowDetail />
       </Flex>
     </>
   );
