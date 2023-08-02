@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.member.presentation;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -53,17 +54,60 @@ class MemberIntegrationTest extends IntegrationTest {
         );
 
         // when
-        ExtractableResponse<Response> response = given().log().all()
+        ExtractableResponse<Response> response = saveMemberTopicPermission(authHeader, request);
+
+        // then
+        assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> saveMemberTopicPermission(
+            String authHeader,
+            MemberTopicPermissionCreateRequest request
+    ) {
+        return given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/members/permissions")
                 .then().log().all()
                 .extract();
+    }
+
+    @Test
+    @DisplayName("Topic 을 만든자가 특정 유저에게 권한을 삭제한다.")
+    void deleteMemberTopicPermission() {
+        // given
+        Member creator = memberRepository.save(
+                Member.of(
+                        "memberr",
+                        "memberr@naver.com",
+                        "https://map-befine-official.github.io/favicon.png",
+                        Role.USER
+                )
+        );
+        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
+        );
+        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
+        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+                topic.getId(),
+                member.getId()
+        );
+
+        // when
+        ExtractableResponse<Response> newMemberTopicPermission = saveMemberTopicPermission(authHeader, request);
+        long memberTopicPermissionId = Long.parseLong(newMemberTopicPermission.header("Location").split("/")[3]);
+        ExtractableResponse<Response> response = given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .when().delete("/members/permissions/" + memberTopicPermissionId)
+                .then().log().all()
+                .extract();
 
         // then
-        assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode())
+                .isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }
