@@ -16,22 +16,13 @@ import useNavigator from '../hooks/useNavigator';
 const SelectedTopic = () => {
   const { topicId } = useParams();
   const [tagPins, setTagPins] = useState<string[]>([]);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
-
+  const [isOpen, setIsOpen] = useState(true);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
-
-  const [isOpen, setIsOpen] = useState(true);
-
-  const onClickSetSelectedPinId = (pinId: number) => {
-    setSelectedPinId(pinId);
-
-    routePage(`/topics/${topicId}?pinDetail=${pinId}`);
-  };
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(

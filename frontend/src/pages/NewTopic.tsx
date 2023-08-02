@@ -79,7 +79,7 @@ const NewTopic = () => {
           <Input
             name="image"
             value={formValues.image}
-            placeholder="이미지 링크를 남겨주세요."
+            placeholder="원하는 배경이 있을 시 이미지 링크를 남겨주세요."
             onChange={onChangeInput}
             autoFocus={true}
             tabIndex={1}
