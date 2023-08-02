@@ -10,6 +10,9 @@ import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { useLocation } from 'react-router-dom';
 
+const DEFAULT_IMAGE =
+  'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
+
 const NewTopic = () => {
   const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
     name: '',
@@ -35,13 +38,13 @@ const NewTopic = () => {
     const response =
       taggedIds?.length > 1 && typeof taggedIds !== 'string'
         ? await postApi('/topics/merge', {
-            image: formValues.image,
+            image: formValues.image || DEFAULT_IMAGE,
             name: formValues.name,
             description: formValues.description,
             topics: taggedIds,
           })
         : await postApi('/topics/new', {
-            image: formValues.image,
+            image: formValues.image || DEFAULT_IMAGE,
             name: formValues.name,
             description: formValues.description,
             pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
@@ -128,11 +131,11 @@ const NewTopic = () => {
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button variant="primary">생성하기</Button>
-          <Space size={3} />
           <Button type="button" variant="secondary" onClick={goToBack}>
             취소하기
           </Button>
+          <Space size={3} />
+          <Button variant="primary">생성하기</Button>
         </Flex>
       </Flex>
     </form>

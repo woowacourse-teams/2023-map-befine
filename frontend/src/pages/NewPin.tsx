@@ -202,11 +202,11 @@ const NewPin = () => {
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button variant="primary">추가하기</Button>
-          <Space size={3} />
           <Button type="button" variant="secondary" onClick={goToBack}>
             취소하기
           </Button>
+          <Space size={3} />
+          <Button variant="primary">추가하기</Button>
         </Flex>
       </Flex>
     </form>
