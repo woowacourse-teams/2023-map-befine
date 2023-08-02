@@ -85,6 +85,7 @@ const NewTopic = () => {
             placeholder="이미지 링크를 남겨주세요."
             onChange={onChangeInput}
             autoFocus={true}
+            tabIndex={1}
           />
         </section>
         <Space size={5} />
@@ -105,6 +106,7 @@ const NewTopic = () => {
             value={formValues.name}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
             onChange={onChangeInput}
+            tabIndex={2}
           />
         </section>
 
@@ -126,17 +128,25 @@ const NewTopic = () => {
             value={formValues.description}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
             onChange={onChangeInput}
+            tabIndex={3}
           />
         </section>
 
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button type="button" variant="secondary" onClick={goToBack}>
+          <Button
+            tabIndex={5}
+            type="button"
+            variant="secondary"
+            onClick={goToBack}
+          >
             취소하기
           </Button>
           <Space size={3} />
-          <Button variant="primary">생성하기</Button>
+          <Button tabIndex={4} variant="primary">
+            생성하기
+          </Button>
         </Flex>
       </Flex>
     </form>

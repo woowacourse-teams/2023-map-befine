@@ -153,6 +153,7 @@ const NewPin = () => {
             onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
             autoFocus={true}
+            tabIndex={1}
           />
         </section>
 
@@ -176,6 +177,7 @@ const NewPin = () => {
             onClick={onClickAddressInput}
             onKeyDown={onClickAddressInput}
             ref={addressRef}
+            tabIndex={2}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
         </section>
@@ -198,17 +200,25 @@ const NewPin = () => {
             value={formValues.description}
             onChange={onChangeInput}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
+            tabIndex={3}
           />
         </section>
 
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button type="button" variant="secondary" onClick={goToBack}>
+          <Button
+            tabIndex={5}
+            type="button"
+            variant="secondary"
+            onClick={goToBack}
+          >
             취소하기
           </Button>
           <Space size={3} />
-          <Button variant="primary">추가하기</Button>
+          <Button tabIndex={4} variant="primary">
+            추가하기
+          </Button>
         </Flex>
       </Flex>
     </form>
