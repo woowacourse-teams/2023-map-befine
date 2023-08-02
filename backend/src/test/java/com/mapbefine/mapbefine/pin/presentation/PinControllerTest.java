@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.pin.presentation;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -123,8 +125,11 @@ class PinControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins/1")
-//                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document(
+                requestHeaders(
+                        headerWithName(AUTHORIZATION).optional().description("Optional")
+                )));
     }
 
 
@@ -159,7 +164,10 @@ class PinControllerTest extends RestDocsIntegration {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins")
                         .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
+        ).andDo(restDocs.document(
+                requestHeaders(
+                        headerWithName(AUTHORIZATION).optional().description("Optional")
+                )));
     }
 
 }
