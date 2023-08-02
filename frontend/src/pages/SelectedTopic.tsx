@@ -113,48 +113,46 @@ const SelectedTopic = () => {
           onClickConfirm={onClickConfirm}
           onClickClose={onTagCancel}
         />
-        <ul>
-          {topicDetail.length !== 0 ? (
-            topicDetail.map((topic) => {
-              return (
-                <li key={topic.id}>
-                  <TopicInfo
-                    topicParticipant={12}
-                    pinNumber={topic.pinCount}
-                    topicTitle={topic.name}
-                    topicOwner={'하지원'}
-                    topicDescription={topic.description}
-                  />
-                  {topic.pins.map((pin) => (
-                    <li
-                      key={pin.id}
-                      onClick={() => {
-                        onClickSetSelectedPinId(Number(pin.id));
-                        setIsOpen(true);
-                      }}
-                    >
-                      <Space size={3} />
-                      <PinPreview
-                        pinTitle={pin.name}
-                        pinLocation={pin.address}
-                        pinInformation={pin.description}
-                        setSelectedPinId={setSelectedPinId}
-                        pinId={Number(pin.id)}
-                        topicId={topic.id}
-                        tagPins={tagPins}
-                        setTagPins={setTagPins}
-                        taggedPinIds={taggedPinIds}
-                        setTaggedPinIds={setTaggedPinIds}
-                      />
-                    </li>
-                  ))}
-                </li>
-              );
-            })
-          ) : (
-            <></>
-          )}
-        </ul>
+        {topicDetail.length !== 0 ? (
+          topicDetail.map((topic) => {
+            return (
+              <ul key={topic.id}>
+                <TopicInfo
+                  topicParticipant={12}
+                  pinNumber={topic.pinCount}
+                  topicTitle={topic.name}
+                  topicOwner={'하지원'}
+                  topicDescription={topic.description}
+                />
+                {topic.pins.map((pin) => (
+                  <li
+                    key={pin.id}
+                    onClick={() => {
+                      onClickSetSelectedPinId(Number(pin.id));
+                      setIsOpen(true);
+                    }}
+                  >
+                    <Space size={3} />
+                    <PinPreview
+                      pinTitle={pin.name}
+                      pinLocation={pin.address}
+                      pinInformation={pin.description}
+                      setSelectedPinId={setSelectedPinId}
+                      pinId={Number(pin.id)}
+                      topicId={topic.id}
+                      tagPins={tagPins}
+                      setTagPins={setTagPins}
+                      taggedPinIds={taggedPinIds}
+                      setTaggedPinIds={setTaggedPinIds}
+                    />
+                  </li>
+                ))}
+              </ul>
+            );
+          })
+        ) : (
+          <></>
+        )}
 
         {selectedPinId && (
           <>
