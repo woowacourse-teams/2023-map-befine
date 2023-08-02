@@ -31,9 +31,11 @@ public class Image {
     }
 
     private static void validateUrl(String imageUrl) {
-        if (!RegexUtil.matches(IMAGE_URL_REGEX, imageUrl)) {
-            throw new IllegalArgumentException("잘못된 형식의 URL입니다.");
+        if (RegexUtil.matches(IMAGE_URL_REGEX, imageUrl)) {
+            return;
         }
+
+        throw new IllegalArgumentException("잘못된 형식의 URL입니다.");
     }
 
 }
