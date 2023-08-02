@@ -4,13 +4,10 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
-import { styled } from 'styled-components';
 import { postApi } from '../utils/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
-import { useContext, useEffect } from 'react';
-import { TagIdContext } from '../store/TagId';
 import { useLocation } from 'react-router-dom';
 
 const NewTopic = () => {
@@ -21,10 +18,7 @@ const NewTopic = () => {
     topics: [],
   });
   const { routePage } = useNavigator();
-
-  const { state } = useLocation();
-
-  const { tagId, setTagId } = useContext(TagIdContext);
+  const { state: taggedIds } = useLocation();
 
   const goToBack = () => {
     routePage(-1);
@@ -34,38 +28,30 @@ const NewTopic = () => {
     e.preventDefault();
 
     const topicId = await postToServer();
-    if (topicId) routePage(`/topics/${topicId}`, [Number(topicId)]);
+    if (topicId) routePage(`/topics/${topicId}`);
   };
 
   const postToServer = async () => {
-    if (state === 'topics') {
-      const response = await postApi('/topics/merge', {
-        image: formValues.image,
-        name: formValues.name,
-        description: formValues.description,
-        topics: tagId,
-      });
+    const response =
+      taggedIds?.length > 1 && typeof taggedIds !== 'string'
+        ? await postApi('/topics/merge', {
+            image: formValues.image,
+            name: formValues.name,
+            description: formValues.description,
+            topics: taggedIds,
+          })
+        : await postApi('/topics/new', {
+            image: formValues.image,
+            name: formValues.name,
+            description: formValues.description,
+            pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
+          });
 
-      const location = response.headers.get('Location');
+    const location = response.headers.get('Location');
 
-      if (location) {
-        const topicIdFromLocation = location.split('/')[2];
-        return topicIdFromLocation;
-      }
-    } else {
-      const response = await postApi('/topics/new', {
-        image: formValues.image,
-        name: formValues.name,
-        description: formValues.description,
-        pins: tagId,
-      });
-
-      const location = response.headers.get('Location');
-
-      if (location) {
-        const topicIdFromLocation = location.split('/')[2];
-        return topicIdFromLocation;
-      }
+    if (location) {
+      const topicIdFromLocation = location.split('/')[2];
+      return topicIdFromLocation;
     }
   };
 
@@ -152,26 +138,5 @@ const NewTopic = () => {
     </form>
   );
 };
-
-const TopicIcon = styled(Input)`
-  display: none;
-  position: relative;
-
-  & + label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 52px;
-    height: 52px;
-    font-size: 36px;
-    border: 1px solid ${({ theme }) => theme.color.black};
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  &:checked + label {
-    background-color: ${({ theme }) => theme.color.primary};
-  }
-`;
 
 export default NewTopic;

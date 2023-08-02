@@ -10,27 +10,24 @@ import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
-import { TagIdContext } from '../store/TagId';
 
 const Home = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
+  const [taggedTopicIds, setTaggedTopicIds] = useState<number[]>([]);
   const [tagTopics, setTagTopics] = useState<string[]>([]);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
 
-  const { tagId, setTagId } = useContext(TagIdContext);
-
   const goToNewTopic = () => {
-    routePage('new-topic', 'topics');
+    routePage('new-topic', taggedTopicIds);
   };
 
   const goToSeveralTopic = () => {
-    routePage(`topics/${tagId}`, tagId);
+    routePage(`topics/${taggedTopicIds.join(',')}`, taggedTopicIds.join(','));
   };
 
   const onTagCancel = () => {
     setTagTopics([]);
-    setTagId([]);
   };
 
   const getAndSetDataFromServer = async () => {
@@ -47,10 +44,6 @@ const Home = () => {
       { latitude: String(37.5055), longitude: String(127.0509) },
     ]);
   }, []);
-
-  useEffect(() => {
-    if (topics.length === 0) setTagId([]);
-  }, [topics]);
 
   return (
     <Box position="relative">
@@ -81,6 +74,8 @@ const Home = () => {
                   topicPinCount={topic.pinCount}
                   tagTopics={tagTopics}
                   setTagTopics={setTagTopics}
+                  taggedTopicIds={taggedTopicIds}
+                  setTaggedTopicIds={setTaggedTopicIds}
                 />
                 <Space size={4} />
               </Fragment>
@@ -89,7 +84,7 @@ const Home = () => {
       </ul>
       <Flex position="fixed" bottom="40px" left="130px">
         <Button variant="primary" onClick={goToNewTopic}>
-          {tagId.length > 0 ? '토픽 병합하기' : '토픽 추가하기'}
+          {tagTopics.length > 0 ? '토픽 병합하기' : '토픽 추가하기'}
         </Button>
       </Flex>
     </Box>

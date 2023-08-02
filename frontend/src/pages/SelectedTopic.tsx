@@ -5,12 +5,11 @@ import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
 import TopicInfo from '../components/TopicInfo';
 import { TopicInfoType } from '../types/Topic';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
-import { TagIdContext } from '../store/TagId';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 
@@ -49,19 +48,17 @@ const ToggleButton = styled.button<{ isCollapsed: boolean }>`
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
-  const { state } = useLocation();
   const [tagPins, setTagPins] = useState<string[]>([]);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
+  const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
 
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
 
   const [isOpen, setIsOpen] = useState(true);
-
-  const { tagId, setTagId } = useContext(TagIdContext);
 
   const onClickSetSelectedPinId = (pinId: number) => {
     setSelectedPinId(pinId);
@@ -82,12 +79,11 @@ const SelectedTopic = () => {
   };
 
   const onClickConfirm = () => {
-    routePage('/new-topic', 'pins');
+    routePage('/new-topic', taggedPinIds.join(','));
   };
 
   const onTagCancel = () => {
     setTagPins([]);
-    setTagId([]);
   };
 
   useEffect(() => {
@@ -100,10 +96,6 @@ const SelectedTopic = () => {
     setIsOpen(true);
   }, [searchParams]);
 
-  useEffect(() => {
-    if (tagPins.length === 0) setTagId([]);
-  }, [tagPins, state]);
-
   const togglePinDetail = () => {
     setIsOpen(!isOpen);
   };
@@ -115,7 +107,7 @@ const SelectedTopic = () => {
     <>
       <Flex $flexDirection="column">
         <Space size={2} />
-        {tagPins.length > 0 && (
+        {taggedPinIds.length > 0 && (
           <MergeOrSeeTogether
             tag={tagPins}
             confirmButton="뽑아오기"
@@ -123,41 +115,41 @@ const SelectedTopic = () => {
             onClickClose={onTagCancel}
           />
         )}
-        <ul>
-          {topicDetail.length !== 0 ? (
-            topicDetail.map((topic, index) => {
-              return (
-                <li key={topic.id}>
-                  {index !== 0 && <Space size={5} />}
-                  <TopicInfo
-                    topicParticipant={1}
-                    pinNumber={topic.pinCount}
-                    topicTitle={topic.name}
-                    topicOwner={'하지원'}
-                    topicDescription={topic.description}
-                  />
-                  {topic.pins.map((pin) => (
-                    <li key={pin.id}>
-                      <Space size={3} />
-                      <PinPreview
-                        pinTitle={pin.name}
-                        pinLocation={pin.address}
-                        pinInformation={pin.description}
-                        setSelectedPinId={setSelectedPinId}
-                        pinId={Number(pin.id)}
-                        topicId={topic.id}
-                        tagPins={tagPins}
-                        setTagPins={setTagPins}
-                      />
-                    </li>
-                  ))}
-                </li>
-              );
-            })
-          ) : (
-            <></>
-          )}
-        </ul>
+        {topicDetail.length !== 0 ? (
+          topicDetail.map((topic, idx) => {
+            return (
+              <ul key={topic.id}>
+                {idx !== 0 && <Space size={5} />}
+                <TopicInfo
+                  topicParticipant={1}
+                  pinNumber={topic.pinCount}
+                  topicTitle={topic.name}
+                  topicOwner={'UserName'}
+                  topicDescription={topic.description}
+                />
+                {topic.pins.map((pin) => (
+                  <li key={pin.id}>
+                    <Space size={3} />
+                    <PinPreview
+                      pinTitle={pin.name}
+                      pinLocation={pin.address}
+                      pinInformation={pin.description}
+                      setSelectedPinId={setSelectedPinId}
+                      pinId={Number(pin.id)}
+                      topicId={topic.id}
+                      tagPins={tagPins}
+                      setTagPins={setTagPins}
+                      taggedPinIds={taggedPinIds}
+                      setTaggedPinIds={setTaggedPinIds}
+                    />
+                  </li>
+                ))}
+              </ul>
+            );
+          })
+        ) : (
+          <></>
+        )}
 
         {selectedPinId && (
           <>
