@@ -55,7 +55,6 @@ const Map = (props: any, ref: any) => {
     }
   }, [clickedCoordinate]);
 
-
   useEffect(() => {
     // 마커들을 모두 지도에서 제거
     if (markers.length > 0) {
@@ -95,7 +94,7 @@ const Map = (props: any, ref: any) => {
         map.panTo(marker.getPosition());
         //marker 객체의 animation 속성을 변경
         marker._marker_data.options.animation =
-          window.Tmapv2.MarkerOptions.ANIMATE_BOUNCE;
+          window.Tmapv2.MarkerOptions.ANIMATE_BALLOON;
         marker._marker_data.options.animationLength = 500;
       }
     }
