@@ -26,7 +26,7 @@ class MemberControllerTest extends RestDocsIntegration {
     private MemberCommandService memberCommandService;
 
     @Test
-    @DisplayName("핀 추가")
+    @DisplayName("권한 추가")
     void addMemberTopicPermission() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
@@ -46,5 +46,18 @@ class MemberControllerTest extends RestDocsIntegration {
         ).andDo(restDocs.document());
     }
 
+    @Test
+    @DisplayName("권한 삭제")
+    void deleteMemberTopicPermission() throws Exception {
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/members/permissions/1")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
 
 }
