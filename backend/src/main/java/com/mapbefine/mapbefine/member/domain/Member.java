@@ -82,4 +82,8 @@ public class Member extends BaseTimeEntity {
                 .toList();
     }
 
+    public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {
+        topicsWithPermission.add(memberTopicPermission);
+    }
+
 }

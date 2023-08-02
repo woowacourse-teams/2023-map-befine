@@ -1,9 +1,11 @@
 package com.mapbefine.mapbefine.member.presentation;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
+import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -65,4 +67,23 @@ public class MemberController {
 
         return ResponseEntity.ok(responses);
     }
+
+    // TODO: 2023/08/02 특정 멤버에게 권한을 주는 기능 (Creator만 가능)
+    @LoginRequired
+    @PostMapping("/permissions")
+    public ResponseEntity<Void> addMemberTopicPermission(
+            AuthMember authMember,
+            MemberTopicPermissionCreateRequest request
+    ) {
+        Long savedId = memberCommandService.saveMemberTopicPermission(authMember, request);
+
+        return ResponseEntity.created(URI.create("/members/permissions/" + savedId)).build();
+    }
+
+    // TODO: 2023/08/02 특정 멤버의 권한을 삭제하는 기능 (Creator만 가능)
+
+    // TODO: 2023/08/02 권한이 있는 멤버들을 읽어오는 API (로그인 유저만)
+
+    // TODO: 2023/08/02 특정 멤버의 권한을 확인하는 기능 (로그인 유저만 가능) 
+
 }

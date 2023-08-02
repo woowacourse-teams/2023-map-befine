@@ -35,4 +35,14 @@ public class MemberTopicPermission extends BaseTimeEntity {
         this.member = member;
     }
 
+    public static MemberTopicPermission createPermissionAssociatedWithTopicAndMember(
+            Topic topic,
+            Member member
+    ) {
+        MemberTopicPermission memberTopicPermission = new MemberTopicPermission(topic, member);
+        topic.addMemberTopicPermission(memberTopicPermission);
+        member.addMemberTopicPermission(memberTopicPermission);
+        return memberTopicPermission;
+    }
+
 }
