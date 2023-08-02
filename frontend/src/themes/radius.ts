@@ -1,8 +1,8 @@
 const radius = {
   small: '4px',
   medium: '8px',
-} as const
+} as const;
 
 export type radiusKey = keyof typeof radius;
 
-export default radius
+export default radius;

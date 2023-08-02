@@ -61,6 +61,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   const copyContent = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
+      alert('핀의 링크가 복사되었습니다.');
     } catch (err) {
       if (typeof err === 'string') throw new Error(err);
       throw new Error('[ERROR] clipboard error');
@@ -105,7 +106,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
           핀을 만든 사람
         </Text>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {pin.updatedAt}
+          {`${pin.updatedAt.split('T')[0].split('-').join('.')} 업데이트`}
         </Text>
       </Flex>
       <Space size={2} />

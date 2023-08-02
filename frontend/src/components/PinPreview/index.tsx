@@ -55,7 +55,6 @@ const PinPreview = ({
       $flexDirection="column"
       $backgroundColor="white"
       $borderBottom="1px solid #E7E7E7"
-      cursor="pointer"
     >
       <MultiSelectButton
         type="checkbox"
@@ -68,6 +67,8 @@ const PinPreview = ({
         $flexDirection="column"
         cursor="pointer"
         onClick={onClickSetSelectedPinId}
+        width="90%"
+        height="80%"
       >
         <Text color="black" $fontSize="default" $fontWeight="bold">
           {pinTitle}
@@ -83,23 +84,6 @@ const PinPreview = ({
     </Flex>
   );
 };
-
-const PinButton = styled.button`
-  width: 16px;
-  height: 16px;
-
-  position: absolute;
-  top: 8px;
-  right: 8px;
-
-  background-color: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.black};
-  border-radius: ${({ theme }) => theme.radius.medium};
-
-  &:focus {
-    background-color: ${({ theme }) => theme.color.primary};
-  }
-`;
 
 const MultiSelectButton = styled.input`
   width: 24px;

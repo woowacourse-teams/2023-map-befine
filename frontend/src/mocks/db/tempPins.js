@@ -8,7 +8,7 @@ const tempPins = [
     latitude: 37.512,
     longitude: 127.102,
     images: [],
-    updatedAt: '2023-07-12'
+    updatedAt: '2023-07-12',
   },
   {
     id: '2',
@@ -19,7 +19,7 @@ const tempPins = [
     latitude: 37.541,
     longitude: 127.0782,
     images: [],
-    updatedAt: '2023-07-12'
+    updatedAt: '2023-07-12',
   },
   {
     id: '3',
@@ -29,7 +29,7 @@ const tempPins = [
     latitude: '핀 위도',
     longitude: '핀 경도',
     images: [],
-    updatedAt: '2023-07-12'
+    updatedAt: '2023-07-12',
   },
   {
     id: '4',
@@ -39,7 +39,7 @@ const tempPins = [
     latitude: '핀 위도',
     longitude: '핀 경도',
     images: [],
-    updatedAt: '2023-07-12'
+    updatedAt: '2023-07-12',
   },
 ];
 

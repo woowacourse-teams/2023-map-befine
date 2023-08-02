@@ -43,7 +43,9 @@ const Home = () => {
   useEffect(() => {
     getAndSetDataFromServer();
 
-    setCoordinates([{ latitude: String(37.5055), longitude: String(127.0509) }]);
+    setCoordinates([
+      { latitude: String(37.5055), longitude: String(127.0509) },
+    ]);
   }, []);
 
   useEffect(() => {
@@ -61,7 +63,7 @@ const Home = () => {
           confirmButton="같이보기"
         />
       ) : null}
-      <Space size={6} />
+      <Space size={4} />
       <Text color="black" $fontSize="large" $fontWeight="bold">
         내 주변 인기 있는 토픽
       </Text>

@@ -37,7 +37,6 @@ const TopicInfo = ({
       $backgroundColor="white"
       $borderBottom="1px solid #E7E7E7"
     >
-      <Space size={3} />
       <Flex>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
           · {topicParticipant}명의 참가자
@@ -55,7 +54,7 @@ const TopicInfo = ({
         {topicOwner}
       </Text>
       <Space size={0} />
-      <Text color="gray" $fontSize="small" $fontWeight="normal">
+      <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicDescription}
       </Text>
       <Space size={3} />
@@ -65,7 +64,7 @@ const TopicInfo = ({
           <Space size={2} />
           <Share />
         </Flex>
-        <Button variant="secondary" onClick={goToNewPin}>
+        <Button variant="primary" onClick={goToNewPin}>
           + 핀 추가하기
         </Button>
       </Flex>

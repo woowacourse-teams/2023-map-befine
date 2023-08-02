@@ -1,54 +1,74 @@
-import { Meta, StoryObj } from "@storybook/react";
-import Text from ".";
+import { Meta, StoryObj } from '@storybook/react';
+import Text from '.';
 
 const meta = {
-  title: "Components/common/Text",
+  title: 'Components/common/Text',
   component: Text,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
     color: {
       control: {
-        type: "radio",
+        type: 'radio',
       },
-      options: ["primary", "black", "white", "darkGray", "gray", "lightGray", "whiteGray"],
-      defaultValue: "primary",
+      options: [
+        'primary',
+        'black',
+        'white',
+        'darkGray',
+        'gray',
+        'lightGray',
+        'whiteGray',
+      ],
+      defaultValue: 'primary',
       table: {
-        defaultValue: { summary: "primary" },
-        type: { summary: "primary | black | white | darkGray |gray | lightGray | whiteGray" },
+        defaultValue: { summary: 'primary' },
+        type: {
+          summary:
+            'primary | black | white | darkGray |gray | lightGray | whiteGray',
+        },
       },
     },
     $fontSize: {
       control: {
-        type: "radio",
+        type: 'radio',
       },
-      options: ["extraSmall", "small", "default", "medium", "large", "extraLarge"],
-      defaultValue: "default",
+      options: [
+        'extraSmall',
+        'small',
+        'default',
+        'medium',
+        'large',
+        'extraLarge',
+      ],
+      defaultValue: 'default',
       table: {
-        defaultValue: { summary: "default" },
-        type: { summary: "extraSmall | small | default | medium | large | extraLarge" },
+        defaultValue: { summary: 'default' },
+        type: {
+          summary: 'extraSmall | small | default | medium | large | extraLarge',
+        },
       },
     },
     $fontWeight: {
       control: {
-        type: "radio",
+        type: 'radio',
       },
-      options: ["normal", "bold"],
-      defaultValue: "normal",
-      description: "폰트 굵기",
+      options: ['normal', 'bold'],
+      defaultValue: 'normal',
+      description: '폰트 굵기',
       table: {
-        defaultValue: { summary: "normal" },
-        type: { summary: "normal | bold" },
+        defaultValue: { summary: 'normal' },
+        type: { summary: 'normal | bold' },
       },
     },
     children: {
       control: {
-        type: "text",
+        type: 'text',
       },
-      defaultValue: "Text",
+      defaultValue: 'Text',
       table: {
-        defaultValue: { summary: "Text" },
+        defaultValue: { summary: 'Text' },
 
-        type: { summary: "string" },
+        type: { summary: 'string' },
       },
     },
   },
@@ -59,19 +79,18 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    color: "black",
-    $fontSize: "default",
-    $fontWeight: "normal",
-    children: "Text",
+    color: 'black',
+    $fontSize: 'default',
+    $fontWeight: 'normal',
+    children: 'Text',
   },
 };
 
 export const Bold: Story = {
   args: {
-    color: "black",
-    $fontSize: "large",
-    $fontWeight: "bold",
-    children: "Text",
+    color: 'black',
+    $fontSize: 'large',
+    $fontWeight: 'bold',
+    children: 'Text',
   },
 };
-

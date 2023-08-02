@@ -41,18 +41,27 @@ const Layout = ({ children }: LayoutProps) => {
         <Flex height="100vh" width="100vw">
           <Flex
             $flexDirection="column"
-            width="400px"
+            $minWidth="400px"
             height="100vh"
             $backgroundColor="white"
-            padding={4}
           >
-            <Logo />
-            <Space size={5} />
-            <Input placeholder="검색어를 입력하세요." />
+            <Flex
+              $flexDirection="column"
+              $paddingTop={4}
+              $paddingRight={4}
+              $paddingLeft={4}
+            >
+              <Logo />
+              <Space size={5} />
+              <Input placeholder="검색어를 입력하세요." />
+            </Flex>
             <Flex
               height="calc(100vh - 120px)"
               $flexDirection="column"
               overflow="auto"
+              $paddingRight={4}
+              $paddingLeft={4}
+              $paddingBottom={4}
             >
               {children}
             </Flex>
