@@ -137,9 +137,7 @@ const SelectedTopic = () => {
                     topicDescription={topic.description}
                   />
                   {topic.pins.map((pin) => (
-                    <li
-                      key={pin.id}
-                    >
+                    <li key={pin.id}>
                       <Space size={3} />
                       <PinPreview
                         pinTitle={pin.name}

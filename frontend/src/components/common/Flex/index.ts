@@ -16,7 +16,7 @@ type FlexProps = BoxProps & {
   $gap?: string;
 };
 
-const Flex = styled(Box) <FlexProps>`
+const Flex = styled(Box)<FlexProps>`
   display: flex;
   ${({ $flexDirection }) =>
     $flexDirection && `flex-direction: ${$flexDirection};`}

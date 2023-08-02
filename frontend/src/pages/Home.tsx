@@ -43,7 +43,9 @@ const Home = () => {
   useEffect(() => {
     getAndSetDataFromServer();
 
-    setCoordinates([{ latitude: String(37.5055), longitude: String(127.0509) }]);
+    setCoordinates([
+      { latitude: String(37.5055), longitude: String(127.0509) },
+    ]);
   }, []);
 
   useEffect(() => {

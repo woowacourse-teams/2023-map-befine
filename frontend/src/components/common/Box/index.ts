@@ -41,12 +41,16 @@ const Box = styled.div<BoxProps>`
     $backgroundColor && theme.color[$backgroundColor]};
   color: ${({ color }) => color && theme.color[color]};
   padding: ${({ padding }) => padding && theme.spacing[Number(padding)]};
-  padding-top: ${({ $paddingTop }) => $paddingTop && theme.spacing[Number($paddingTop)]};
-  padding-right: ${({ $paddingRight }) => $paddingRight && theme.spacing[Number($paddingRight)]};
-  padding-bottom: ${({ $paddingBottom }) => $paddingBottom && theme.spacing[Number($paddingBottom)]};
-  padding-left: ${({ $paddingLeft }) => $paddingLeft && theme.spacing[Number($paddingLeft)]};
+  padding-top: ${({ $paddingTop }) =>
+    $paddingTop && theme.spacing[Number($paddingTop)]};
+  padding-right: ${({ $paddingRight }) =>
+    $paddingRight && theme.spacing[Number($paddingRight)]};
+  padding-bottom: ${({ $paddingBottom }) =>
+    $paddingBottom && theme.spacing[Number($paddingBottom)]};
+  padding-left: ${({ $paddingLeft }) =>
+    $paddingLeft && theme.spacing[Number($paddingLeft)]};
   width: ${({ width }) => width};
-  min-width: ${({ $minWidth }) => $minWidth };
+  min-width: ${({ $minWidth }) => $minWidth};
   height: ${({ height }) => height};
   border: ${({ border }) => border};
   min-height: ${({ $minHeight }) => $minHeight};

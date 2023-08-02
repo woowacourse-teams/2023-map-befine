@@ -1,6 +1,5 @@
 import { StoryObj, Meta } from '@storybook/react';
-import Home from './Home'
-
+import Home from './Home';
 
 const meta = {
   title: 'Pages/Home',
@@ -12,5 +11,5 @@ export default meta;
 type Story = StoryObj<typeof Home>;
 
 export const HomePage: Story = {
-  args: {}
-}
+  args: {},
+};

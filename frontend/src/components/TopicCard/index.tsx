@@ -76,7 +76,9 @@ const TopicCard = ({
             {topicTitle}
           </Text>
           <Text color="gray" $fontSize="small" $fontWeight="normal">
-            {`업데이트 : ${topicUpdatedAt.split('T')[0]} | 핀 개수 : ${topicPinCount}`}
+            {`업데이트 : ${
+              topicUpdatedAt.split('T')[0]
+            } | 핀 개수 : ${topicPinCount}`}
           </Text>
         </Flex>
       </Flex>
