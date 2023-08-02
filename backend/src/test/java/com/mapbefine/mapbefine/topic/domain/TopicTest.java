@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

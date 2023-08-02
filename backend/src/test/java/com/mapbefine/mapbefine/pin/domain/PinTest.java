@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.pin.domain;
 
-import static com.mapbefine.mapbefine.pin.Domain.Pin.createPinAssociatedWithLocationAndTopic;
+import static com.mapbefine.mapbefine.pin.domain.Pin.createPinAssociatedWithLocationAndTopic;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -9,12 +9,9 @@ import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinInfo;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.math.BigDecimal;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

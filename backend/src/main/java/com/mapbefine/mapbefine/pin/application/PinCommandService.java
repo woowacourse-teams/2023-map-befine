@@ -5,9 +5,9 @@ import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinImage;
-import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinImage;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -77,19 +77,27 @@ public class PinCommandService {
             PinUpdateRequest request
     ) {
         Pin pin = pinRepository.findById(pinId)
-                .orElseThrow(NoSuchElementException::new);
-        member.canPinCreateOrUpdate(pin.getTopic());
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
 
-        pin.updatePinInfo(request.name(), request.description());
-
-        pinRepository.save(pin);
+        if (member.canPinCreateOrUpdate(pin.getTopic())) {
+            pin.updatePinInfo(request.name(), request.description());
+            // TODO PinImage도 update
+            pinRepository.save(pin);
+            return;
+        }
+        throw new IllegalArgumentException("해당 토픽의 핀을 수정할 권한이 없습니다.");
     }
 
     public void removeById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
-                .orElseThrow(NoSuchElementException::new);
-        member.canDelete(pin.getTopic());
-        pinRepository.deleteById(pinId);
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+
+        if (member.canDelete(pin.getTopic())) {
+            pinRepository.deleteById(pinId);
+            // TODO PinImage는 어떻게 할 건지?
+            return;
+        }
+        throw new IllegalArgumentException("해당 토픽의 핀을 삭제할 권한이 없습니다.");
     }
 
 }

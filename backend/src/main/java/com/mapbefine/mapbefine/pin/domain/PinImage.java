@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.pin.Domain;
+package com.mapbefine.mapbefine.pin.domain;
 
 import com.mapbefine.mapbefine.common.entity.Image;
 import jakarta.persistence.Embedded;
