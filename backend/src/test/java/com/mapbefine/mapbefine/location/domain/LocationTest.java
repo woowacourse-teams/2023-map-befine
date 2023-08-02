@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.location.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.location.AddressFixture;
+import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
@@ -11,22 +11,10 @@ import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class LocationTest {
-
-    private Address address;
-    private Coordinate coordinate;
-    private Location location;
-
-    @BeforeEach
-    void setUp() {
-        address = AddressFixture.create();
-        coordinate = Coordinate.of(37.6273677, 127.0447364);
-        location = new Location(address, coordinate);
-    }
 
     @Test
     @DisplayName("정상적인 값이 입력되면 객체가 생성된다")
@@ -35,12 +23,9 @@ class LocationTest {
         double expectedLatitude = 37.6273677;
         double expectedLongitude = 127.0447364;
 
-        Location location = Location.of(
-                AddressFixture.지번_주소,
-                AddressFixture.도로명_주소,
-                "1100000",
-                expectedLatitude,
-                expectedLongitude
+        Location location = new Location(
+                LocationFixture.ADDRESS,
+                Coordinate.of(expectedLatitude, expectedLongitude)
         );
 
         //when
@@ -49,7 +34,7 @@ class LocationTest {
         double actualLongitude = location.getLongitude();
 
         //then
-        assertThat(actualAddress.getRoadBaseAddress()).isEqualTo(AddressFixture.도로명_주소);
+        assertThat(actualAddress.getRoadBaseAddress()).isEqualTo(LocationFixture.ROAD_ADDRESS);
         assertThat(actualLatitude).isEqualTo(expectedLatitude);
         assertThat(actualLongitude).isEqualTo(expectedLongitude);
     }
@@ -59,9 +44,10 @@ class LocationTest {
     void addPin() {
         //given
         Member member = MemberFixture.create(Role.USER);
-        Topic 쥬니의_오락실 = TopicFixture.createByName("쥬니의 오락실", member);
+        Topic topic = TopicFixture.createByName("쥬니의 오락실", member);
+        Location location = LocationFixture.LOCATION;
 
-        Pin pin = PinFixture.create(location, 쥬니의_오락실);
+        Pin pin = PinFixture.create(location, topic);
 
         //when
         Location pinLocation = pin.getLocation();
@@ -76,12 +62,11 @@ class LocationTest {
     @DisplayName("같은 주소를 입력하면 참을 반환한다")
     void isSameAddress() {
         //given
-        String 지번주소 = AddressFixture.지번_주소;
-        String 도로명주소 = AddressFixture.도로명_주소;
+        Location location = LocationFixture.LOCATION;
 
         //when
-        boolean sameParcelAddress = location.isSameAddress(지번주소);
-        boolean sameRoadAddress = location.isSameAddress(도로명주소);
+        boolean sameParcelAddress = location.isSameAddress(LocationFixture.PARCEL_ADDRESS);
+        boolean sameRoadAddress = location.isSameAddress(LocationFixture.ROAD_ADDRESS);
 
         //then
         assertThat(sameParcelAddress).isTrue();

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import com.mapbefine.mapbefine.location.LocationFixture;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -65,19 +66,19 @@ class CoordinateTest {
     static Stream<Arguments> calculateDistanceProvider() {
         return Stream.of(
                 Arguments.of(
-                        Coordinate.of(37.6273677, 127.0447364),
-                        Coordinate.of(37.6273438, 127.0447853),
-                        5
+                        LocationFixture.BASE_COORDINATE,
+                        LocationFixture.SEVEN_METER,
+                        7
                 ),
                 Arguments.of(
-                        Coordinate.of(37.5909374, 127.1537482),
-                        Coordinate.of(37.610454, 127.2050749),
-                        5015
+                        LocationFixture.BASE_COORDINATE,
+                        LocationFixture.EIGHTEEN_FORTY_SIX_METER,
+                        1846
                 ),
                 Arguments.of(
-                        Coordinate.of(37.6273677, 127.0447364),
-                        Coordinate.of(37.6273777, 127.0447364),
-                        1
+                        LocationFixture.BASE_COORDINATE,
+                        LocationFixture.SIXTY_FOUR_THIRTY_METER,
+                        6430
                 )
         );
     }
