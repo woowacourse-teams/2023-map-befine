@@ -95,7 +95,7 @@ public class MemberController {
     }
 
     @LoginRequired
-    @GetMapping("/permissions/{topicId}")
+    @GetMapping("/permissions/topics/{topicId}")
     public ResponseEntity<List<MemberResponse>> findMemberTopicPermissionAll(@PathVariable Long topicId) {
         List<MemberResponse> responses = memberQueryService.findAllWithPermission(topicId);
 

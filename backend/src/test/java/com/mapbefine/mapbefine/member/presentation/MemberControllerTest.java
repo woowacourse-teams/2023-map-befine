@@ -60,4 +60,18 @@ class MemberControllerTest extends RestDocsIntegration {
         ).andDo(restDocs.document());
     }
 
+    @Test
+    @DisplayName("권한이 있는 자들 모두 조회")
+    void findMemberTopicPermissionAll() throws Exception {
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/members/permissions/1")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
 }
