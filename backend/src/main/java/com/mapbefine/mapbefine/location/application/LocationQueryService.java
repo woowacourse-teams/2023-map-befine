@@ -30,7 +30,6 @@ public class LocationQueryService {
         this.locationRepository = locationRepository;
     }
 
-
     public List<TopicResponse> findNearbyTopicsSortedByPinCount(AuthMember member, CoordinateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
         List<Location> nearLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, NEAR_DISTANCE);
@@ -49,12 +48,10 @@ public class LocationQueryService {
 
     private List<TopicResponse> sortTopicsByCounts(Map<Topic, Long> topicCounts, AuthMember member) {
         return topicCounts.entrySet().stream()
-                .filter(topicEntry -> member.canRead(topicEntry.getKey()))
+                .filter(entry -> member.canRead(entry.getKey()))
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .map(Map.Entry::getKey)
-                .map(TopicResponse::from)
+                .map(entry -> TopicResponse.from(entry.getKey()))
                 .toList();
     }
-
 
 }
