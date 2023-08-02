@@ -81,6 +81,27 @@ public class Pin extends BaseTimeEntity {
         return pin;
     }
 
+    public static Pin createPinAssociatedWithLocationAndTopicAndMember(
+            String name,
+            String description,
+            Location location,
+            Topic topic,
+            Member creator
+    ) { // 추가된 정적 팩토리 메서드
+        PinInfo pinInfo = PinInfo.of(name, description);
+
+        Pin pin = new Pin(
+                pinInfo,
+                location,
+                topic
+        );
+
+        location.addPin(pin);
+        topic.addPin(pin);
+        creator.addPin(pin);
+        return pin;
+    }
+
     public void updatePinInfo(String name, String description) {
         pinInfo.update(name, description);
     }

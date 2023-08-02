@@ -12,7 +12,6 @@ import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.net.URI;
 import java.util.List;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,13 +36,15 @@ public class MemberController {
         this.memberQueryService = memberQueryService;
     }
 
+    @LoginRequired
     @GetMapping("/{memberId}")
-    public ResponseEntity<MemberDetailResponse> findMemberById(Long memberId) {
+    public ResponseEntity<MemberDetailResponse> findMemberById(@PathVariable Long memberId) {
         MemberDetailResponse response = memberQueryService.findById(memberId);
 
         return ResponseEntity.ok(response);
     }
 
+    @LoginRequired
     @GetMapping
     public ResponseEntity<List<MemberResponse>> findAllMember() {
         List<MemberResponse> responses = memberQueryService.findAll();
@@ -58,6 +59,7 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/members/" + savedId)).build();
     }
 
+    @LoginRequired
     @GetMapping("/topics")
     public ResponseEntity<List<TopicResponse>> findTopicsByMember(AuthMember authMember) {
         List<TopicResponse> responses = memberQueryService.findTopicsByMember(authMember);
@@ -65,6 +67,7 @@ public class MemberController {
         return ResponseEntity.ok(responses);
     }
 
+    @LoginRequired
     @GetMapping("/pins")
     public ResponseEntity<List<PinResponse>> findPinsByMember(AuthMember authMember) {
         List<PinResponse> responses = memberQueryService.findPinsByMember(authMember);

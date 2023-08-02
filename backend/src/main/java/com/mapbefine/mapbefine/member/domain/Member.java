@@ -64,6 +64,14 @@ public class Member extends BaseTimeEntity {
         createdTopic.add(topic);
     }
 
+    public void addPin(Pin pin) {
+        createdPin.add(pin);
+    }
+
+    public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {
+        topicsWithPermission.add(memberTopicPermission);
+    }
+
     public String getRoleKey() {
         return memberInfo.getRole().getKey();
     }
@@ -71,7 +79,6 @@ public class Member extends BaseTimeEntity {
     public boolean isAdmin() {
         return memberInfo.getRole() == Role.ADMIN;
     }
-
     public boolean isUser() {
         return memberInfo.getRole() == Role.USER;
     }
@@ -80,10 +87,6 @@ public class Member extends BaseTimeEntity {
         return topicsWithPermission.stream()
                 .map(MemberTopicPermission::getTopic)
                 .toList();
-    }
-
-    public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {
-        topicsWithPermission.add(memberTopicPermission);
     }
 
 }
