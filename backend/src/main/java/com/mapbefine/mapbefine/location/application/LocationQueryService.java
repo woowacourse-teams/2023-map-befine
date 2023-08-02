@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -50,15 +49,12 @@ public class LocationQueryService {
 
     private List<TopicResponse> sortTopicsByCounts(Map<Topic, Long> topicCounts, AuthMember member) {
         return topicCounts.entrySet().stream()
-                .filter(topicEntry -> canReadTopic(member, topicEntry.getKey()))
+                .filter(topicEntry -> member.canRead(topicEntry.getKey()))
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .map(Map.Entry::getKey)
                 .map(TopicResponse::from)
                 .toList();
     }
 
-    private boolean canReadTopic(AuthMember member, Topic topic) {
-        return member.canRead(AuthTopic.from(topic));
-    }
 
 }
