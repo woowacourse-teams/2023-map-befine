@@ -27,7 +27,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             HttpServletResponse response,
             Object handler
     ) throws Exception {
-        if (isLoginRequired((HandlerMethod) handler)) {
+        if ((handler instanceof HandlerMethod) && isLoginRequired((HandlerMethod) handler)) {
             return isMember(request);
         }
         return true;
