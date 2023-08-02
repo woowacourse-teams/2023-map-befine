@@ -33,7 +33,7 @@ const TopicInfo = ({
     try {
       const topicUrl = window.location.href.split('?')[0];
       await navigator.clipboard.writeText(topicUrl);
-      alert('핀의 링크가 복사되었습니다.');
+      alert('토픽 링크가 복사되었습니다.');
     } catch (err) {
       if (typeof err === 'string') throw new Error(err);
       throw new Error('[ERROR] clipboard error');
