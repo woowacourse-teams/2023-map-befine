@@ -4,14 +4,12 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.location.dto.CoordinateRequest;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -55,7 +53,7 @@ public class LocationQueryService {
 
     private List<TopicResponse> sortTopicsByCounts(Map<Topic, Long> topicCounts, AuthMember member) {
         return topicCounts.entrySet().stream()
-                .filter(topicEntry -> member.canRead(AuthTopic.from(topicEntry.getKey()))) // TODO : 볼 수 있는 토픽만 걸러내는 과정
+                .filter(topicEntry -> member.canRead(topicEntry.getKey()))
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .map(Map.Entry::getKey)
                 .map(TopicResponse::from)

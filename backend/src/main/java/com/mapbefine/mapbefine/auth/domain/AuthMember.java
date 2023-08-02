@@ -49,13 +49,13 @@ public abstract class AuthMember {
                 .toList();
     }
 
-    public abstract boolean canRead(AuthTopic authTopic);
+    public abstract boolean canRead(Topic topic);
 
-    public abstract boolean canDelete(AuthTopic authTopic);
+    public abstract boolean canDelete(Topic topic);
 
-    public abstract boolean canTopicUpdate(AuthTopic authTopic);
+    public abstract boolean canTopicUpdate(Topic topic);
 
-    public abstract boolean canPinCreateOrUpdate(AuthTopic authTopic);
+    public abstract boolean canPinCreateOrUpdate(Topic topic);
 
     public Long getMemberId() {
         return memberId;

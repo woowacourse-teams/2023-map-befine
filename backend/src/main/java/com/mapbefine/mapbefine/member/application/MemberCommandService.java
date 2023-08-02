@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.member.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
@@ -72,7 +71,7 @@ public class MemberCommandService {
     }
 
     private void validateMemberCanTopicUpdate(AuthMember authMember, Topic topic) {
-        if (!authMember.canTopicUpdate(AuthTopic.from(topic))) {
+        if (!authMember.canTopicUpdate(topic)) {
             throw new IllegalArgumentException("해당 유저는 해당 토픽에서 다른 유저에게 권한을 줄 수 없습니다.");
         }
     }

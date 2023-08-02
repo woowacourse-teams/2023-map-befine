@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.pin.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -46,15 +45,10 @@ public class PinCommandService {
                 .orElseThrow(NoSuchElementException::new);
         Member member = memberRepository.findById(authMember.getMemberId())
                 .orElseThrow(NoSuchElementException::new);
-        authMember.canPinCreateOrUpdate(AuthTopic.from(topic));
+        authMember.canPinCreateOrUpdate(topic);
 
-        Location pinLocation = locationRepository.findAllByRectangle(
-                        coordinate.getLatitude(),
-                        coordinate.getLongitude(),
-                        Coordinate.getDuplicateStandardDistance()
-                )
-                .stream()
-                .filter(location -> location.isDuplicateCoordinate(coordinate))
+        Location pinLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(
+                        coordinate, 10.0).stream()
                 .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
@@ -93,7 +87,7 @@ public class PinCommandService {
     ) {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(NoSuchElementException::new);
-        member.canPinCreateOrUpdate(AuthTopic.from(pin.getTopic()));
+        member.canPinCreateOrUpdate(pin.getTopic());
 
         pin.updatePinInfo(request.name(), request.description());
 
@@ -103,7 +97,7 @@ public class PinCommandService {
     public void removeById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(NoSuchElementException::new);
-        member.canDelete(AuthTopic.from(pin.getTopic()));
+        member.canDelete(pin.getTopic());
         pinRepository.deleteById(pinId);
     }
 

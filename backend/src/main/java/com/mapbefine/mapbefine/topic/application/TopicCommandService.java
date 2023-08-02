@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.topic.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.AuthTopic;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
@@ -71,7 +70,7 @@ public class TopicCommandService {
     ) {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
-        member.canTopicUpdate(AuthTopic.from(topic));
+        member.canTopicUpdate(topic);
 
         topic.updateTopicInfo(
                 request.name(),
@@ -83,7 +82,7 @@ public class TopicCommandService {
     public void delete(AuthMember member, Long id) {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
-        member.canDelete(AuthTopic.from(topic));
+        member.canDelete(topic);
 
         pinRepository.deleteAllByTopicId(id);
         topicRepository.deleteById(id);
@@ -92,8 +91,7 @@ public class TopicCommandService {
     private List<Topic> findTopicsByIds(AuthMember member, List<Long> topicIds) {
         return topicRepository.findAllById(topicIds)
                 .stream()
-                .filter(topic -> member.canRead(
-                        AuthTopic.from(topic))) // TODO : 일단, 이렇게 Merge 하기 이전에 canRead 한 놈들만 골라낼 수 있도록 했어요.
+                .filter(member::canRead)
                 .toList();
     }
 
