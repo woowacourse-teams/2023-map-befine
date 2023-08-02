@@ -73,7 +73,7 @@ const PinPreview = ({
         <Text color="black" $fontSize="default" $fontWeight="bold">
           {pinTitle}
         </Text>
-        <Space size={1} />
+        <Space size={0} />
         <Text color="gray" $fontSize="small" $fontWeight="normal">
           {pinLocation}
         </Text>

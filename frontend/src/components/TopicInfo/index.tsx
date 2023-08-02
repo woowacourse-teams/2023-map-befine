@@ -49,11 +49,11 @@ const TopicInfo = ({
       <Text color="black" $fontSize="large" $fontWeight="bold">
         {topicTitle}
       </Text>
-      <Space size={0} />
+      <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicOwner}
       </Text>
-      <Space size={0} />
+      <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicDescription}
       </Text>

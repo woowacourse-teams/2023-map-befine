@@ -136,7 +136,7 @@ const SelectedTopic = () => {
                   topicParticipant={1}
                   pinNumber={topic.pinCount}
                   topicTitle={topic.name}
-                  topicOwner={'UserName'}
+                  topicOwner={'토픽을 만든 사람'}
                   topicDescription={topic.description}
                 />
                 {topic.pins.map((pin) => (
