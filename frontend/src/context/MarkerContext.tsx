@@ -63,7 +63,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
       if (!topicId) {
         tag = 'A';
       } else {
-        tag = String.fromCharCode(97 + parseInt(topicId, 10));
+        tag = String.fromCharCode(97 + (parseInt(coordinate.topicId, 10) % 26));
       }
       const marker = new window.Tmapv2.Marker({
         position: new window.Tmapv2.LatLng(

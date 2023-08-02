@@ -79,9 +79,9 @@ const SelectedTopic = () => {
 
     data.forEach((topic: any) => {
       topic.pins.forEach((pin: any) => {
-        console.log(pin.id, 'PIN_ID');
         newCoordinates.push({
           id: pin.id,
+          topicId: topic.id,
           latitude: pin.latitude,
           longitude: pin.longitude,
         });
