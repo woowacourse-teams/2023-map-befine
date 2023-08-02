@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Image {
 
-    private static final String VALID_IMAGE_URL_REGEX = "(http(s?):)([/|.|\\w|\\s|-])*\\.(?:jpg|gif|png)";
+    private static final String IMAGE_URL_REGEX = "(http(s?):)([/|.|\\w|\\s|-])*\\.(?:jpg|gif|png)";
 
-    @Pattern(regexp = VALID_IMAGE_URL_REGEX)
+    @Pattern(regexp = IMAGE_URL_REGEX)
     @Column(nullable = false, length = 2048)
     private String imageUrl;
 
@@ -24,13 +24,14 @@ public class Image {
         this.imageUrl = imageUrl;
     }
 
-    public static Image of(String imageUrl) {
+    public static Image from(String imageUrl) {
         validateUrl(imageUrl);
+
         return new Image(imageUrl);
     }
 
     private static void validateUrl(String imageUrl) {
-        if (!RegexUtil.matches(VALID_IMAGE_URL_REGEX, imageUrl)) {
+        if (!RegexUtil.matches(IMAGE_URL_REGEX, imageUrl)) {
             throw new IllegalArgumentException("잘못된 형식의 URL입니다.");
         }
     }
