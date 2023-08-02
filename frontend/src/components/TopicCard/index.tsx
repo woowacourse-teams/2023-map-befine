@@ -43,7 +43,7 @@ const TopicCard = ({
   };
 
   return (
-    <li>
+    <WrapperLi>
       <Flex
         width="360px"
         height="140px"
@@ -54,6 +54,7 @@ const TopicCard = ({
         $borderRadius="small"
         $backgroundImage={topicImage}
         $backgroundSize="360px 140px"
+        $backgroundColor={'whiteGray'}
       >
         <MultiSelectButton
           type="checkbox"
@@ -67,7 +68,7 @@ const TopicCard = ({
           width="100%"
           height="68px"
           $backgroundColor="black"
-          opacity="0.5"
+          opacity="0.6"
         ></Box>
         <Flex
           width="100%"
@@ -89,9 +90,13 @@ const TopicCard = ({
           </Text>
         </Flex>
       </Flex>
-    </li>
+    </WrapperLi>
   );
 };
+
+const WrapperLi = styled.li`
+  box-shadow: 2px 4px 4px 0px rgba(69, 69, 69, 0.25);
+`;
 
 const MultiSelectButton = styled.input`
   width: 24px;
