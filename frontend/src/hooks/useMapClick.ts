@@ -1,16 +1,8 @@
-// hooks/useMapClick.tsx
 import { useContext, useEffect } from 'react';
 import { CoordinatesContext } from '../context/CoordinatesContext';
+import getAddressFromServer from '../lib/getAddressFromServer';
 
-interface UseMapClickProps {
-  map: Window['Tmapv2'] | null;
-  getAddressFromServer: (lat: number, lng: number) => Promise<string>;
-}
-
-export default function useMapClick({
-  map,
-  getAddressFromServer,
-}: UseMapClickProps) {
+export default function useMapClick(map: any) {
   const { setClickedCoordinate } = useContext(CoordinatesContext);
 
   useEffect(() => {
