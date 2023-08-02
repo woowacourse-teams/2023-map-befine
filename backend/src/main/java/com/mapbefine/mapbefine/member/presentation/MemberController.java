@@ -13,8 +13,11 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -68,19 +71,24 @@ public class MemberController {
         return ResponseEntity.ok(responses);
     }
 
-    // TODO: 2023/08/02 특정 멤버에게 권한을 주는 기능 (Creator만 가능)
     @LoginRequired
     @PostMapping("/permissions")
     public ResponseEntity<Void> addMemberTopicPermission(
             AuthMember authMember,
-            MemberTopicPermissionCreateRequest request
+            @RequestBody MemberTopicPermissionCreateRequest request
     ) {
         Long savedId = memberCommandService.saveMemberTopicPermission(authMember, request);
 
         return ResponseEntity.created(URI.create("/members/permissions/" + savedId)).build();
     }
 
-    // TODO: 2023/08/02 특정 멤버의 권한을 삭제하는 기능 (Creator만 가능)
+    @LoginRequired
+    @DeleteMapping("/permissions/{permissionId}")
+    public ResponseEntity<Void> deleteMemberTopicPermission(AuthMember authMember, @PathVariable Long permissionId) {
+        memberCommandService.deleteMemberTopicPermission(authMember, permissionId);
+
+        return ResponseEntity.noContent().build();
+    }
 
     // TODO: 2023/08/02 권한이 있는 멤버들을 읽어오는 API (로그인 유저만)
 

@@ -60,9 +60,19 @@ public class MemberCommandService {
         return memberTopicPermissionRepository.save(memberTopicPermission).getId();
     }
 
+    public void deleteMemberTopicPermission(final AuthMember authMember, final Long permissionId) {
+        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
+                .orElseThrow(NoSuchElementException::new);
+
+        validateMemberCanTopicUpdate(authMember, memberTopicPermission.getTopic());
+
+        memberTopicPermissionRepository.delete(memberTopicPermission);
+    }
+
     private void validateMemberCanTopicUpdate(AuthMember authMember, Topic topic) {
         if (!authMember.canTopicUpdate(AuthTopic.from(topic))) {
             throw new IllegalArgumentException("해당 유저는 해당 토픽에서 다른 유저에게 권한을 줄 수 없습니다.");
         }
     }
+
 }
