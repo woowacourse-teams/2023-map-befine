@@ -2,7 +2,6 @@ import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
-import { useContext, useState } from 'react';
 
 export interface TopicCardProps {
   topicId: number;

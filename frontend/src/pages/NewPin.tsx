@@ -14,7 +14,6 @@ import { NewPinValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
-import { useLocation } from 'react-router-dom';
 
 const NewPin = () => {
   const [topic, setTopic] = useState<TopicType | null>(null);

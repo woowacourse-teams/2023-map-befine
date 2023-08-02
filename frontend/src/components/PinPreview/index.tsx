@@ -3,7 +3,6 @@ import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
-import { useContext } from 'react';
 
 export interface PinPreviewProps {
   pinTitle: string;

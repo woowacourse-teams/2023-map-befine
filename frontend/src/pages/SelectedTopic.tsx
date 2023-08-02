@@ -5,7 +5,7 @@ import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
 import TopicInfo from '../components/TopicInfo';
 import { TopicInfoType } from '../types/Topic';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
