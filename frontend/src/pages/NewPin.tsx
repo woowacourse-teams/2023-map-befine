@@ -14,6 +14,7 @@ import { NewPinValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
+import { useLocation } from 'react-router-dom';
 
 const NewPin = () => {
   const [topic, setTopic] = useState<TopicType | null>(null);
@@ -53,7 +54,7 @@ const NewPin = () => {
     e.preventDefault();
 
     await postToServer();
-      routePage(`/topics/${topic?.id}`, [topic!.id]);
+    routePage(`/topics/${topic?.id}`, [topic!.id]);
     // 선택된 마커가 있으면 마커를 지도에서 제거
     if (clickedMarker) {
       clickedMarker.setMap(null);

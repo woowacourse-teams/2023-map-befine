@@ -10,7 +10,6 @@ import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../utils/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
-import { TagIdContext } from '../store/TagId';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 
@@ -49,19 +48,17 @@ const ToggleButton = styled.button<{ isCollapsed: boolean }>`
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
-  const { state } = useLocation();
   const [tagPins, setTagPins] = useState<string[]>([]);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
+  const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
 
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
 
   const [isOpen, setIsOpen] = useState(true);
-
-  const { tagId, setTagId } = useContext(TagIdContext);
 
   const onClickSetSelectedPinId = (pinId: number) => {
     setSelectedPinId(pinId);
@@ -82,12 +79,11 @@ const SelectedTopic = () => {
   };
 
   const onClickConfirm = () => {
-    routePage('/new-topic', 'pins');
+    routePage('/new-topic', taggedPinIds.join(','));
   };
 
   const onTagCancel = () => {
     setTagPins([]);
-    setTagId([]);
   };
 
   useEffect(() => {
@@ -99,10 +95,6 @@ const SelectedTopic = () => {
     }
     setIsOpen(true);
   }, [searchParams]);
-
-  useEffect(() => {
-    if (tagPins.length === 0) setTagId([]);
-  }, [tagPins, state]);
 
   const togglePinDetail = () => {
     setIsOpen(!isOpen);
@@ -151,6 +143,8 @@ const SelectedTopic = () => {
                         topicId={topic.id}
                         tagPins={tagPins}
                         setTagPins={setTagPins}
+                        taggedPinIds={taggedPinIds}
+                        setTaggedPinIds={setTaggedPinIds}
                       />
                     </li>
                   ))}

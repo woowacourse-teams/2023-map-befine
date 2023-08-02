@@ -2,8 +2,7 @@ import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
-import { useContext } from 'react';
-import { TagIdContext } from '../../store/TagId';
+import { useContext, useState } from 'react';
 
 export interface TopicCardProps {
   topicId: number;
@@ -12,7 +11,9 @@ export interface TopicCardProps {
   topicUpdatedAt: string;
   topicPinCount: number;
   tagTopics: string[];
-  setTagTopics: (value: string[]) => void;
+  setTagTopics: React.Dispatch<React.SetStateAction<string[]>>;
+  taggedTopicIds: number[];
+  setTaggedTopicIds: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const TopicCard = ({
@@ -23,11 +24,10 @@ const TopicCard = ({
   topicPinCount,
   tagTopics,
   setTagTopics,
+  taggedTopicIds,
+  setTaggedTopicIds,
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
-
-  const { tagId, setTagId } = useContext(TagIdContext);
-
   const goToSelectedTopic = () => {
     routePage(`topics/${topicId}`, [topicId]);
   };
@@ -35,10 +35,10 @@ const TopicCard = ({
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setTagTopics([...tagTopics, topicTitle]);
-      setTagId([...tagId, topicId]);
+      setTaggedTopicIds((prev) => [...prev, topicId]);
     } else {
       setTagTopics(tagTopics.filter((value) => value !== topicTitle));
-      setTagId(tagId.filter((value) => value !== topicId));
+      setTaggedTopicIds(taggedTopicIds.filter((value) => value !== topicId));
     }
   };
 
@@ -60,7 +60,7 @@ const TopicCard = ({
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             onAddTagOfTopic(e)
           }
-          checked={Boolean(tagId.includes(topicId))}
+          checked={taggedTopicIds.includes(topicId)}
         />
         <Flex
           width="100%"
