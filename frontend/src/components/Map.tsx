@@ -1,17 +1,14 @@
 import { forwardRef, useContext, useEffect, useRef } from 'react';
 import Flex from './common/Flex';
-import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 import { getAddress } from '../utils/getAddress';
 import useMapClick from '../hooks/useMapClick';
 import useClickedCoordinate from '../hooks/useClickedCoordinate';
+import useUpdateCoordinates from '../hooks/useUpdateCoordinates';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
-  const { coordinates, clickedCoordinate, setClickedCoordinate } =
-    useContext(CoordinatesContext);
-  const { markers, createMarkers, removeMarkers, displayClickedMarker } =
-    useContext(MarkerContext);
+  const { markers } = useContext(MarkerContext);
   const bounds = useRef(new window.Tmapv2.LatLngBounds());
 
   const getAddressFromServer = async (lat: any, lng: any) => {
@@ -28,17 +25,7 @@ const Map = (props: any, ref: any) => {
   };
   useMapClick({ map, getAddressFromServer });
   useClickedCoordinate(map);
-
-  useEffect(() => {
-    // 마커들을 모두 지도에서 제거
-    if (markers.length > 0) {
-      removeMarkers();
-    }
-    // 새로운 마커 추가
-    if (coordinates.length > 0) {
-      createMarkers(map);
-    }
-  }, [coordinates]);
+  useUpdateCoordinates(map);
 
   useEffect(() => {
     // 홈 화면이 아니고 마커가 하나만 있으면 해당 마커로 지도의 중심을 이동
