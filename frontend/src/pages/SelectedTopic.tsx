@@ -13,39 +13,6 @@ import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 
-const PinDetailWrapper = styled.div`
-  &.collapsedPinDetail {
-    z-index: -1;
-  }
-`;
-
-const ToggleButton = styled.button<{ isCollapsed: boolean }>`
-  position: absolute;
-  top: 50%;
-  left: 800px;
-  transform: translateY(-50%);
-  z-index: 99999;
-  height: 80px;
-  background-color: #fff;
-  padding: 12px;
-  border-radius: 4px;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-
-  ${(props) =>
-    props.isCollapsed &&
-    `
-    transform: rotate(180deg);
-    top:45%;
-    left: 400px;
-    z-index: 99999;
-    `}
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
-
 const SelectedTopic = () => {
   const { topicId } = useParams();
   const [tagPins, setTagPins] = useState<string[]>([]);
@@ -96,6 +63,7 @@ const SelectedTopic = () => {
 
   const onTagCancel = () => {
     setTagPins([]);
+    setTaggedPinIds([]);
   };
 
   useEffect(() => {
@@ -190,5 +158,38 @@ const SelectedTopic = () => {
     </>
   );
 };
+
+const PinDetailWrapper = styled.div`
+  &.collapsedPinDetail {
+    z-index: -1;
+  }
+`;
+
+const ToggleButton = styled.button<{ isCollapsed: boolean }>`
+  position: absolute;
+  top: 50%;
+  left: 800px;
+  transform: translateY(-50%);
+  z-index: 99999;
+  height: 80px;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 4px;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+
+  ${(props) =>
+    props.isCollapsed &&
+    `
+    transform: rotate(180deg);
+    top:45%;
+    left: 400px;
+    z-index: 99999;
+    `}
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
 
 export default SelectedTopic;

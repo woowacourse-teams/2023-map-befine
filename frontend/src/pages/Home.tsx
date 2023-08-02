@@ -28,6 +28,7 @@ const Home = () => {
 
   const onTagCancel = () => {
     setTagTopics([]);
+    setTaggedTopicIds([]);
   };
 
   const getAndSetDataFromServer = async () => {
