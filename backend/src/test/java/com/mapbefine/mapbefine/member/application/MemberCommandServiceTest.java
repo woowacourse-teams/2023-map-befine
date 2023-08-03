@@ -9,12 +9,14 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -212,6 +214,77 @@ class MemberCommandServiceTest {
         // when then
         assertThatThrownBy(() -> memberCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("유저를 저장한다.")
+    void save() {
+        // given
+        Member member = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.USER
+        );
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest(
+                member.getMemberInfo().getName(),
+                member.getMemberInfo().getEmail(),
+                member.getMemberInfo().getImageUrl(),
+                member.getMemberInfo().getRole()
+        );
+
+        // when
+        Long savedId = memberCommandService.save(memberCreateRequest);
+        Member savedResult = memberRepository.findById(savedId)
+                .orElseThrow(NoSuchElementException::new);
+
+        // then
+        assertThat(savedResult).usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(member);
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 이름으로 유저를 저장할 때 예외가 발생한다.")
+    void save_whenDuplicateName_thenFail() {
+        // given
+        Member member = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.USER
+        );
+        memberRepository.save(member);
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest(
+                member.getMemberInfo().getName(),
+                "memberr@naver.com",
+                member.getMemberInfo().getImageUrl(),
+                member.getMemberInfo().getRole()
+        );
+
+        // when
+        assertThatThrownBy(() -> memberCommandService.save(memberCreateRequest))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 이메일로 유저를 저장할 때 예외가 발생한다.")
+    void save_whenDuplicateEmail_thenFail() {
+        // given
+        Member member = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.USER
+        );
+        memberRepository.save(member);
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest(
+                "memberr",
+                member.getMemberInfo().getEmail(),
+                member.getMemberInfo().getImageUrl(),
+                member.getMemberInfo().getRole()
+        );
+
+        // when
+        assertThatThrownBy(() -> memberCommandService.save(memberCreateRequest))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

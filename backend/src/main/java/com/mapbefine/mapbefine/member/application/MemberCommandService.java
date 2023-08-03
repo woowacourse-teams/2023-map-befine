@@ -32,6 +32,9 @@ public class MemberCommandService {
     }
 
     public Long save(MemberCreateRequest request) {
+        validateUniqueName(request.name());
+        validateUniqueEmail(request.email());
+
         Member member = Member.of(
                 request.name(),
                 request.email(),
@@ -41,6 +44,18 @@ public class MemberCommandService {
 
         return memberRepository.save(member)
                 .getId();
+    }
+
+    private void validateUniqueName(String name) {
+        if (memberRepository.existsByMemberInfoName(name)) {
+            throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+        }
+    }
+
+    private void validateUniqueEmail(String email) {
+        if (memberRepository.existsByMemberInfoEmail(email)) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
     }
 
     public Long saveMemberTopicPermission(
