@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.member.application;
 
-import static java.lang.Long.MAX_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -101,7 +100,7 @@ public class MemberQueryServiceTest {
     @DisplayName("ID 를 통해서 토픽에 권한이 있는자를 조회하려 할 때, 결과가 존재하지 않을 때 예외가 발생한다.")
     void findMemberTopicPermissionById_whenNoneExistsPermission_thenFail() {
         // given when then
-        assertThatThrownBy(() -> memberQueryService.findMemberTopicPermissionById(MAX_VALUE))
+        assertThatThrownBy(() -> memberQueryService.findMemberTopicPermissionById(Long.MAX_VALUE))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
@@ -123,6 +122,30 @@ public class MemberQueryServiceTest {
         // then
         assertThat(responses).usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(member), MemberResponse.from(memberr)));
+    }
+
+    @Test
+    @DisplayName("유저를 단일 조회한다.")
+    void findMemberById() {
+        // given
+        Member member = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER)
+        );
+
+        // when
+        MemberDetailResponse response = memberQueryService.findById(member.getId());
+
+        // then
+        assertThat(response).usingRecursiveComparison()
+                .isEqualTo(MemberDetailResponse.from(member));
+    }
+
+    @Test
+    @DisplayName("조회하려는 유저가 없는 경우 예외를 반환한다.")
+    void findMemberById_whenNoneExists_thenFail() {
+        // given when then
+        assertThatThrownBy(() -> memberQueryService.findById(Long.MAX_VALUE))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
 }
