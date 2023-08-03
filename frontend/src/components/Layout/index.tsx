@@ -52,7 +52,7 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <Logo />
               <Space size={5} />
-              <Input placeholder="검색어를 입력하세요." />
+              <Input placeholder="검색어를 입력하세요." aria-label='검색어 입력창' />
             </Flex>
             <Flex
               height="calc(100vh - 120px)"

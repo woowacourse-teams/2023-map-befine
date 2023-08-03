@@ -4,16 +4,18 @@ import TopicCard from '../components/TopicCard';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
+import { MarkerContext } from '../context/MarkerContext';
 
 const Home = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
   const [taggedTopicIds, setTaggedTopicIds] = useState<number[]>([]);
   const [tagTopics, setTagTopics] = useState<string[]>([]);
+  const { markers, removeMarkers } = useContext(MarkerContext);
   const { routePage } = useNavigator();
 
   const goToNewTopic = () => {
@@ -37,6 +39,7 @@ const Home = () => {
   // 현재 위치 받아오기
   useEffect(() => {
     getAndSetDataFromServer();
+    if (markers.length > 0) removeMarkers();
   }, []);
 
   return (
