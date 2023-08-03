@@ -3,6 +3,7 @@ import Flex from '../common/Flex';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
+import { useEffect, useState } from 'react';
 
 export interface TopicCardProps {
   topicId: number;
@@ -28,19 +29,47 @@ const TopicCard = ({
   setTaggedTopicIds,
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
+
   const goToSelectedTopic = () => {
     routePage(`topics/${topicId}`, [topicId]);
   };
+
+  const [announceText, setAnnounceText] = useState<string>('토픽 카드 선택');
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setTagTopics([...tagTopics, topicTitle]);
       setTaggedTopicIds((prev) => [...prev, topicId]);
+
+      if (taggedTopicIds.length === 0) {
+        setAnnounceText(
+          `토픽 ${topicTitle}이 태그에 추가됨. 같이보기 및 병합 기능 활성화`,
+        );
+        return;
+      }
+      setAnnounceText(`토픽 ${topicTitle}이 태그에 추가됨`);
     } else {
       setTagTopics(tagTopics.filter((value) => value !== topicTitle));
       setTaggedTopicIds(taggedTopicIds.filter((value) => value !== topicId));
+
+      if (taggedTopicIds.length === 1) {
+        setAnnounceText(
+          `토픽 ${topicTitle}이 태그에서 삭제됨. 같이보기 및 병합 버튼 비활성화`,
+        );
+        return;
+      }
+      setAnnounceText(`토픽 ${topicTitle}이 태그에서 삭제됨`);
     }
   };
+
+  useEffect(() => {
+    if (announceText) {
+      const liveRegion = document.getElementById('live-region');
+      if (liveRegion) {
+        liveRegion.innerText = announceText;
+      }
+    }
+  }, [announceText]);
 
   return (
     <WrapperLi>
@@ -62,6 +91,7 @@ const TopicCard = ({
             onAddTagOfTopic(e)
           }
           checked={taggedTopicIds.includes(topicId)}
+          aria-label={`${topicTitle} 토픽 카드 선택`}
         />
         <Box
           position="absolute"
@@ -79,6 +109,8 @@ const TopicCard = ({
           cursor="pointer"
           onClick={goToSelectedTopic}
           $backdropFilter="blur(12px)"
+          tabIndex={0}
+          role="button"
         >
           <Text color="white" $fontSize="medium" $fontWeight="normal">
             {topicTitle}
@@ -90,6 +122,11 @@ const TopicCard = ({
           </Text>
         </Flex>
       </Flex>
+      <div
+        id="live-region"
+        aria-live="assertive"
+        style={{ position: 'absolute', left: '-9999px' }}
+      ></div>
     </WrapperLi>
   );
 };

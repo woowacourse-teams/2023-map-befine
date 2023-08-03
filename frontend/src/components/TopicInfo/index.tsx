@@ -47,6 +47,8 @@ const TopicInfo = ({
       $flexDirection="column"
       $backgroundColor="white"
       $borderBottom="1px solid #E7E7E7"
+      tabIndex={0}
+      role="button"
     >
       <Flex>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
