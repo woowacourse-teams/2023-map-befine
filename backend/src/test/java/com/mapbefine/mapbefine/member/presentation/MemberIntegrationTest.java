@@ -10,6 +10,7 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
+import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -154,6 +155,46 @@ class MemberIntegrationTest extends IntegrationTest {
                 .isEqualTo(HttpStatus.OK.value());
         assertThat(memberResponses).usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(member1), MemberResponse.from(member2)));
+    }
+
+    @Test
+    @DisplayName("Topic 에 권한을 가진 자를 조회한다.")
+    void findMemberTopicPermissionById() {
+        // given
+        Member creator = memberRepository.save(
+                Member.of(
+                        "memberr",
+                        "memberr@naver.com",
+                        "https://map-befine-official.github.io/favicon.png",
+                        Role.USER
+                )
+        );
+        Member member = memberRepository.save(MemberFixture.create("memberrr", "memberrr@naver.com", Role.USER));
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
+        );
+        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
+        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+                topic.getId(),
+                member.getId()
+        );
+
+        // when
+        ExtractableResponse<Response> newMemberTopicPermission = saveMemberTopicPermission(authHeader, request);
+        long memberTopicPermissionId = Long.parseLong(newMemberTopicPermission.header("Location").split("/")[3]);
+
+        ExtractableResponse<Response> response = given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .when().get("/members/permissions/" + memberTopicPermissionId)
+                .then().log().all()
+                .extract();
+
+        // then
+        MemberDetailResponse memberResponses = response.as(MemberDetailResponse.class);
+        assertThat(response.statusCode())
+                .isEqualTo(HttpStatus.OK.value());
+        assertThat(memberResponses).usingRecursiveComparison()
+                .isEqualTo(MemberDetailResponse.from(member));
     }
 
 }
