@@ -1,0 +1,27 @@
+name: Frontend develop CI
+# 어떤 이벤트가 발생하면 실행할지 결정
+on:
+  #pull request open과 reopen 시 실행한다.
+  pull_request:
+    types: [opened, reopened]
+defaults:
+  run:
+    working-directory: ./frontend 
+jobs:
+  jest:
+    runs-on: ubuntu-latest
+    
+    steps:  
+      - name: Checkout repository
+        uses: actions/checkout@v2 
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'  
+
+      - name: Install node modules
+        run: npm install     
+
+      - name: Run Cypress test
+        run: npm run test
