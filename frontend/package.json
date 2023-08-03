@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config webpack.dev.js --open",
     "build": "webpack --config webpack.prod.js",
+    "test": "jest --watchAll --coverage",
     "stylelint:fix": "stylelint 'src/**/*.{js,jsx,ts,tsx}' --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -38,6 +39,8 @@
     "@storybook/testing-library": "^0.0.14-next.2",
     "@stylelint/postcss-css-in-js": "^0.38.0",
     "@svgr/webpack": "^8.0.1",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@types/styled-components": "^5.1.26",
@@ -51,6 +54,7 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-storybook": "^0.6.12",
     "html-webpack-plugin": "^5.5.3",
+    "jest": "^29.6.2",
     "msw": "^1.2.2",
     "prettier": "^3.0.0",
     "process": "^0.11.10",
