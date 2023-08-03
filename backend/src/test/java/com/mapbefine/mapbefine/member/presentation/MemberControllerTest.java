@@ -148,4 +148,32 @@ class MemberControllerTest extends RestDocsIntegration {
         ).andDo(restDocs.document());
     }
 
+    @Test
+    @DisplayName("유저 목록 조회")
+    void findAllMember() throws Exception {
+        List<MemberResponse> memberResponses = List.of(
+                new MemberResponse(
+                        1L,
+                        "member",
+                        "member@naver.com"
+                ),
+                new MemberResponse(
+                        2L,
+                        "memberr",
+                        "memberr@naver.com"
+                )
+        );
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + memberResponses.get(0).email()).getBytes()
+        );
+
+        given(memberQueryService.findAll()).willReturn(memberResponses);
+        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
 }

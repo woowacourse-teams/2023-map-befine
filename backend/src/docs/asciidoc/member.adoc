@@ -20,6 +20,6 @@ operation::member-controller-test/find-member-topic-permission-by-id[snippets='h
 
 operation::member-controller-test/add[snippets='http-request,http-response']
 
+=== 유저 목록 조회
 
-
-
+operation::member-controller-test/find-all-member[snippets='http-request,http-response']
