@@ -12,7 +12,9 @@ import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
+import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
@@ -74,7 +76,7 @@ class MemberControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
-    void findMemberTopicPermissionAll() throws Exception { // LoginRequired 로 인해서 RestDocs 가 막힘... Hadnler 없어서.. 그래서 200 OK 만 반환하고, Response 도 적절하게 안내뱉음
+    void findMemberTopicPermissionAll() throws Exception {
         List<MemberResponse> memberResponses = List.of(
                 new MemberResponse(
                         1L,
@@ -97,6 +99,30 @@ class MemberControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/permissions/topics/1")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("권한이 있는 자들 모두 조회")
+    void findMemberTopicPermissionById() throws Exception {
+        MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
+                1L,
+                "member",
+                "member@naver.com",
+                "https://map-befine-official.github.io/favicon.png",
+                LocalDateTime.now()
+        );
+
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + memberDetailResponse.email()).getBytes()
+        );
+
+        given(memberQueryService.findMemberTopicPermissionById(any())).willReturn(memberDetailResponse);
+        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/permissions/1")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
