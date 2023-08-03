@@ -281,4 +281,45 @@ class MemberIntegrationTest extends IntegrationTest {
                 .isEqualTo(List.of(MemberResponse.from(member), MemberResponse.from(memberr)));
     }
 
+    @Test
+    @DisplayName("유저를 단일 조회한다.")
+    void findMemberById() {
+        // given
+        Member member = Member.of(
+                "member",
+                "member@naver.com",
+                "https://map-befine-official.github.io/favicon.png",
+                Role.USER
+        );
+        MemberCreateRequest request = new MemberCreateRequest(
+                member.getMemberInfo().getName(),
+                member.getMemberInfo().getEmail(),
+                member.getMemberInfo().getImageUrl(),
+                member.getMemberInfo().getRole()
+        );
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        // when
+        ExtractableResponse<Response> saveMemberResponse = saveMember(request);
+        Long newMemberId = Long.parseLong(saveMemberResponse.header("Location").split("/")[2]);
+
+        ExtractableResponse<Response> response = given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/" + newMemberId)
+                .then().log().all()
+                .extract();
+
+        MemberDetailResponse memberDetailResponse = response.as(MemberDetailResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(memberDetailResponse)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "updateAt")
+                .isEqualTo(MemberDetailResponse.from(member));
+    }
+
 }
