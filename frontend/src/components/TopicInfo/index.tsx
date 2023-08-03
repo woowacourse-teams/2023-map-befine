@@ -4,10 +4,11 @@ import Clipping from '../../assets/clipping.svg';
 import Share from '../../assets/share.svg';
 import Button from '../common/Button';
 import Space from '../common/Space';
-import { useParams } from 'react-router-dom';
 import useNavigator from '../../hooks/useNavigator';
 
 export interface TopicInfoProps {
+  fullUrl?: string;
+  topicId?: string;
   topicParticipant: number;
   pinNumber: number;
   topicTitle: string;
@@ -16,17 +17,18 @@ export interface TopicInfoProps {
 }
 
 const TopicInfo = ({
+  fullUrl,
+  topicId,
   topicParticipant,
   pinNumber,
   topicTitle,
   topicOwner,
   topicDescription,
 }: TopicInfoProps) => {
-  const { topicId } = useParams();
   const { routePage } = useNavigator();
 
   const goToNewPin = () => {
-    routePage(`/new-pin?topic-id=${topicId}`);
+    routePage(`/new-pin?topic-id=${topicId}`, fullUrl);
   };
 
   const copyContent = async () => {
