@@ -27,3 +27,11 @@ operation::member-controller-test/find-all-member[snippets='http-request,http-re
 === 유저 단일 조회
 
 operation::member-controller-test/find-member-by-id[snippets='http-request,http-response']
+
+=== 유저가 만든 핀 조회
+
+operation::member-controller-test/find-pins-by-member[snippets='http-request,http-response']
+
+=== 유저가 만든 토픽 조회
+
+operation::member-controller-test/find-topics-by-member[snippets='http-request,http-response']

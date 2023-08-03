@@ -15,7 +15,6 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
