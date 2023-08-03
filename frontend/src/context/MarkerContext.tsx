@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { CoordinatesContext } from './CoordinatesContext';
 import { useParams } from 'react-router-dom';
 import useNavigator from '../hooks/useNavigator';
+import pinImageMap from '../const/pinImage';
 
 type MarkerContextType = {
   markers: any[];
@@ -40,7 +41,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         clickedCoordinate.latitude,
         clickedCoordinate.longitude,
       ),
-      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_b_a.png',
+      icon: pinImageMap[1],
       map,
     });
     marker.id = 'clickedMarker';
@@ -54,14 +55,17 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
       if (!topicId) {
         tag = 'A';
       } else {
-        tag = String.fromCharCode(97 + (parseInt(coordinate.topicId, 10) % 26));
+        tag = String.fromCharCode(97 + (parseInt(coordinate.topicId, 10) % 7));
       }
+      // coordinate.topicId를 나누기 7한 나머지를 문자열로 변환
+      const num = (coordinate.topicId % 7) + 1;
+
       const marker = new window.Tmapv2.Marker({
         position: new window.Tmapv2.LatLng(
           coordinate.latitude,
           coordinate.longitude,
         ),
-        icon: `http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_${tag}.png`,
+        icon: pinImageMap[num],
         map,
       });
       marker.id = String(coordinate.id);
