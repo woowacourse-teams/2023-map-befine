@@ -13,6 +13,7 @@ const useFocusToMarker = (map: any, markers: any) => {
       markers.forEach((marker: any) => {
         bounds.current.extend(marker.getPosition());
       });
+
       map.fitBounds(bounds.current);
     }
   }, [markers]);

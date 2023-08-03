@@ -8,7 +8,8 @@ const useAnimateClickedPin = (map: any, markers: any) => {
 
       const marker = markers.find((marker: any) => marker.id === pinId);
       if (marker) {
-        map.panTo(marker.getPosition());
+        map.setCenter(marker.getPosition());
+        map.setZoom(14);
         marker._marker_data.options.animation =
           window.Tmapv2.MarkerOptions.ANIMATE_BALLOON;
         marker._marker_data.options.animationLength = 500;
