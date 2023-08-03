@@ -1,7 +1,7 @@
 import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
-import Tag from '../common/Tag';
+import Tag from '../Tag';
 
 export interface MergeOrSeeTogetherProps {
   tag: string[];

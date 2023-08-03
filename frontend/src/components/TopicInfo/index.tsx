@@ -29,6 +29,17 @@ const TopicInfo = ({
     routePage(`/new-pin?topic-id=${topicId}`);
   };
 
+  const copyContent = async () => {
+    try {
+      const topicUrl = window.location.href.split('?')[0];
+      await navigator.clipboard.writeText(topicUrl);
+      alert('토픽 링크가 복사되었습니다.');
+    } catch (err) {
+      if (typeof err === 'string') throw new Error(err);
+      throw new Error('[ERROR] clipboard error');
+    }
+  };
+
   return (
     <Flex
       width="360px"
@@ -49,11 +60,11 @@ const TopicInfo = ({
       <Text color="black" $fontSize="large" $fontWeight="bold">
         {topicTitle}
       </Text>
-      <Space size={0} />
+      <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicOwner}
       </Text>
-      <Space size={0} />
+      <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicDescription}
       </Text>
@@ -61,8 +72,8 @@ const TopicInfo = ({
       <Flex $justifyContent="space-between">
         <Flex>
           <Clipping />
-          <Space size={2} />
-          <Share />
+          <Space size={4} />
+          <Share cursor="pointer" onClick={copyContent} />
         </Flex>
         <Button variant="primary" onClick={goToNewPin}>
           + 핀 추가하기

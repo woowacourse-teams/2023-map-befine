@@ -73,13 +73,14 @@ const PinPreview = ({
         <Text color="black" $fontSize="default" $fontWeight="bold">
           {pinTitle}
         </Text>
+        <Space size={0} />
         <Text color="gray" $fontSize="small" $fontWeight="normal">
           {pinLocation}
         </Text>
         <Space size={3} />
-        <Text color="black" $fontSize="small" $fontWeight="normal">
+        <EllipsisText color="black" $fontSize="small" $fontWeight="normal">
           {pinInformation}
-        </Text>
+        </EllipsisText>
       </Flex>
     </Flex>
   );
@@ -89,8 +90,8 @@ const MultiSelectButton = styled.input`
   width: 24px;
   height: 24px;
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 4px;
+  right: 4px;
   background-color: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.black};
   border-radius: ${({ theme }) => theme.radius.small};
@@ -99,6 +100,16 @@ const MultiSelectButton = styled.input`
   &:focus {
     background-color: ${({ theme }) => theme.color.primary};
   }
+`;
+
+const EllipsisText = styled(Text)`
+  width: 100%;
+  display: -webkit-box;
+  word-wrap: break-word;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export default PinPreview;
