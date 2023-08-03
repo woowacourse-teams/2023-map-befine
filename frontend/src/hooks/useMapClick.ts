@@ -4,7 +4,7 @@ import getAddressFromServer from '../lib/getAddressFromServer';
 
 export default function useMapClick(map: any) {
   const { setClickedCoordinate } = useContext(CoordinatesContext);
-  console.log("useMapClick"")
+  console.log('useMapClick');
   useEffect(() => {
     if (!map) return;
     const clickHandler = async (evt: any) => {
