@@ -228,4 +228,57 @@ class MemberIntegrationTest extends IntegrationTest {
                 .extract();
     }
 
+    @Test
+    @DisplayName("유저 목록을 조회한다.")
+    void findAllMember() {
+        // given
+        Member member = Member.of(
+                "member",
+                "member@naver.com",
+                "https://map-befine-official.github.io/favicon.png",
+                Role.USER
+        );
+        Member memberr = Member.of(
+                "memberr",
+                "memberr@naver.com",
+                "https://map-befine-official.github.io/favicon.png",
+                Role.USER
+        );
+        MemberCreateRequest request1 = new MemberCreateRequest(
+                member.getMemberInfo().getName(),
+                member.getMemberInfo().getEmail(),
+                member.getMemberInfo().getImageUrl(),
+                member.getMemberInfo().getRole()
+        );
+        MemberCreateRequest request2 = new MemberCreateRequest(
+                memberr.getMemberInfo().getName(),
+                memberr.getMemberInfo().getEmail(),
+                memberr.getMemberInfo().getImageUrl(),
+                memberr.getMemberInfo().getRole()
+        );
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        // when
+        saveMember(request1);
+        saveMember(request2);
+
+        ExtractableResponse<Response> response = given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members")
+                .then().log().all()
+                .extract();
+
+        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {});
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(memberResponses).hasSize(2)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(List.of(MemberResponse.from(member), MemberResponse.from(memberr)));
+    }
+
 }
