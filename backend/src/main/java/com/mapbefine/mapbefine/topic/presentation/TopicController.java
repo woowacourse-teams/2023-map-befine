@@ -29,7 +29,8 @@ public class TopicController {
     private final TopicCommandService topicCommandService;
     private final TopicQueryService topicQueryService;
 
-    public TopicController(TopicCommandService topicCommandService, TopicQueryService topicQueryService) {
+    public TopicController(TopicCommandService topicCommandService,
+            TopicQueryService topicQueryService) {
         this.topicCommandService = topicCommandService;
         this.topicQueryService = topicQueryService;
     }
@@ -37,16 +38,27 @@ public class TopicController {
     @LoginRequired
     @PostMapping("/new")
     public ResponseEntity<Void> create(AuthMember member, @RequestBody TopicCreateRequest request) {
-        long topicId = topicCommandService.createNew(member, request);
+        Long topicId = createTopic(member, request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();
     }
 
+    private Long createTopic(AuthMember member, TopicCreateRequest request) {
+        List<Long> pinIds = request.pins();
+
+        if (pinIds.isEmpty()) {
+            return topicCommandService.saveEmptyTopic(member, request);
+        }
+
+        return topicCommandService.saveTopicWithPins(member, request);
+    }
+
     @LoginRequired
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeAndCreate(AuthMember member, @RequestBody TopicMergeRequest request) {
-        long topicId = topicCommandService.createMerge(member, request);
+    public ResponseEntity<Void> mergeAndCreate(AuthMember member,
+            @RequestBody TopicMergeRequest request) {
+        long topicId = topicCommandService.merge(member, request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();

@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -81,13 +80,19 @@ public class Pin extends BaseTimeEntity {
         pinInfo.update(name, description);
     }
 
-    public Pin copy(Topic topic) {
-        return Pin.createPinAssociatedWithLocationAndTopic(
-                pinInfo.getName(),
-                pinInfo.getDescription(),
-                location,
-                topic
-        );
+    /**
+     * createPinAssociatedWithLocationAndTopic을 재사용하지 않은 이유
+     * 내부적으로 copy를 처리하면, 반환값이 필요 없음 -> 외부에서 반환값을 무시함
+     * 반환값이 있을 경우, topic과의 연관관계를 맺어주지 않은 상태로 반환하고,
+     * 외부에서 해당 연관관계를 맺어주어도 됨 -> 이 방법은 객체가 불안정한 상태라고 판단 됨.
+     */
+
+    public void copyToTopic(Topic otherTopic) {
+        PinInfo copiedPinInfo = PinInfo.of(pinInfo.getName(), pinInfo.getDescription());
+        Pin copiedPin = new Pin(copiedPinInfo, location, otherTopic);
+        location.addPin(copiedPin);
+
+        otherTopic.addPin(copiedPin);
     }
 
     public void addPinImage(PinImage pinImage) {

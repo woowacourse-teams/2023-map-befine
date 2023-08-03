@@ -44,7 +44,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getEmail()).getBytes()
         );
-        given(topicCommandService.createNew(any(), any())).willReturn(1L);
+        given(topicCommandService.saveEmptyTopic(any(), any())).willReturn(1L);
 
         TopicCreateRequest topicCreateRequest = new TopicCreateRequest(
                 "준팍의 안갈집",
@@ -70,7 +70,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getEmail()).getBytes()
         );
-        given(topicCommandService.createMerge(any(), any())).willReturn(1L);
+        given(topicCommandService.merge(any(), any())).willReturn(1L);
         TopicMergeRequest topicMergeRequest = new TopicMergeRequest(
                 "준팍의 안갈집",
                 "https://map-befine-official.github.io/favicon.png",
