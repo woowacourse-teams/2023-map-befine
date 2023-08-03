@@ -3,7 +3,7 @@ import Flex from '../common/Flex';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
-import { useEffect, useState } from 'react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 
 export interface TopicCardProps {
   topicId: number;
@@ -29,6 +29,8 @@ const TopicCard = ({
   setTaggedTopicIds,
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const goToSelectedTopic = () => {
     routePage(`topics/${topicId}`, [topicId]);
@@ -62,6 +64,13 @@ const TopicCard = ({
     }
   };
 
+  const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      inputRef.current?.click();
+    }
+  };
+
   useEffect(() => {
     if (announceText) {
       const liveRegion = document.getElementById('live-region');
@@ -90,8 +99,10 @@ const TopicCard = ({
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             onAddTagOfTopic(e)
           }
+          onKeyDown={onInputKeyDown}
           checked={taggedTopicIds.includes(topicId)}
           aria-label={`${topicTitle} 토픽 카드 선택`}
+          ref={inputRef}
         />
         <Box
           position="absolute"

@@ -3,7 +3,7 @@ import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, KeyboardEvent } from 'react';
 
 export interface PinPreviewProps {
   pinTitle: string;
@@ -33,6 +33,8 @@ const PinPreview = ({
   const { routePage } = useNavigator();
 
   const [announceText, setAnnounceText] = useState<string>('토픽 핀 선택');
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
@@ -64,6 +66,13 @@ const PinPreview = ({
     routePage(`/topics/${topicId}?pinDetail=${pinId}`);
   };
 
+  const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      inputRef.current?.click();
+    }
+  };
+
   useEffect(() => {
     if (announceText) {
       const liveRegion = document.getElementById('live-region');
@@ -87,8 +96,10 @@ const PinPreview = ({
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           onAddTagOfTopic(e)
         }
+        onKeyDown={onInputKeyDown}
         checked={Boolean(taggedPinIds.includes(pinId))}
         aria-label={`${pinTitle} 핀 선택`}
+        ref={inputRef}
       />
       <Flex
         $flexDirection="column"
