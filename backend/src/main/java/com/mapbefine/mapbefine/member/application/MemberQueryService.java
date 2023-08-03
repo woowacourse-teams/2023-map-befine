@@ -55,22 +55,32 @@ public class MemberQueryService {
                 .toList();
     }
 
-    public List<TopicResponse> findTopicsByMember(final AuthMember authMember) {
-        Long memberId = authMember.getMemberId();
-        List<Topic> topicsByCreator = topicRepository.findByCreatorId(memberId);
+    public List<TopicResponse> findTopicsByMember(AuthMember authMember) {
+        validateNull(authMember.getMemberId());
+        Member member = memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(NoSuchElementException::new);
+        List<Topic> topicsByCreator = topicRepository.findByCreator(member);
 
         return topicsByCreator.stream()
                 .map(TopicResponse::from)
                 .toList();
     }
 
-    public List<PinResponse> findPinsByMember(final AuthMember authMember) {
-        Long memberId = authMember.getMemberId();
-        List<Pin> pinsByCreator = pinRepository.findByCreatorId(memberId);
+    public List<PinResponse> findPinsByMember(AuthMember authMember) {
+        validateNull(authMember.getMemberId());
+        Member creator = memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(NoSuchElementException::new);
+        List<Pin> pinsByCreator = pinRepository.findByCreator(creator);
 
         return pinsByCreator.stream()
                 .map(PinResponse::from)
                 .toList();
+    }
+
+    private void validateNull(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id 는 null 일 수 없습니다.");
+        }
     }
 
     public List<MemberResponse> findAllWithPermission(Long topicId) {
@@ -81,7 +91,7 @@ public class MemberQueryService {
                 .toList();
     }
 
-    public MemberDetailResponse findMemberTopicPermissionById(final Long permissionId) {
+    public MemberDetailResponse findMemberTopicPermissionById(Long permissionId) {
         MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
                 .orElseThrow(NoSuchElementException::new);
 

@@ -3,7 +3,11 @@ package com.mapbefine.mapbefine.member.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.location.LocationFixture;
+import com.mapbefine.mapbefine.location.domain.Location;
+import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -12,9 +16,14 @@ import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.pin.Domain.Pin;
+import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +44,12 @@ public class MemberQueryServiceTest {
 
     @Autowired
     private MemberTopicPermissionRepository memberTopicPermissionRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
+
+    @Autowired
+    private PinRepository pinRepository;
 
     @Test
     @DisplayName("Topic 에 권한이 있는자들을 모두 조회한다.") // creator 는 권한이 있는자들을 조회할 때 조회되어야 할 것인가??
@@ -145,6 +160,76 @@ public class MemberQueryServiceTest {
     void findMemberById_whenNoneExists_thenFail() {
         // given when then
         assertThatThrownBy(() -> memberQueryService.findById(Long.MAX_VALUE))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("유저가 만든 핀을 조회한다.")
+    void findPinsByMember() {
+        // given
+        Member creator = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER)
+        );
+        Location location = locationRepository.save(LocationFixture.create());
+        Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
+        Pin pin1 = pinRepository.save(PinFixture.create(
+                location,
+                topic,
+                creator
+        ));
+        Pin pin2 = pinRepository.save(PinFixture.create(
+                location,
+                topic,
+                creator
+        ));
+
+        // when
+        List<PinResponse> response = memberQueryService.findPinsByMember(AuthMember.from(creator));
+
+        // then
+        assertThat(response).usingRecursiveComparison()
+                .isEqualTo(List.of(PinResponse.from(pin1), PinResponse.from(pin2)));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 유저가 Pin 을 조회할 때 예외가 발생한다.")
+    void findPinsByMember_whenNoneExists_thenFail() {
+        // given
+        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        memberRepository.delete(member);
+
+        // when then
+        assertThatThrownBy(() -> memberQueryService.findPinsByMember(AuthMember.from(member)))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("유저가 만든 토픽을 조회한다.")
+    void findTopicsByMember() {
+        // given
+        Member creator = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER)
+        );
+        Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", creator));
+        Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", creator));
+
+        // when
+        List<TopicResponse> response = memberQueryService.findTopicsByMember(AuthMember.from(creator));
+
+        // then
+        assertThat(response).usingRecursiveComparison()
+                .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 유저가 본인이 만든 토픽을 조회할 때 예외가 발생한다.")
+    void findTopicsByMember_whenNoneExists_thenFail() {
+        // given
+        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        memberRepository.delete(member);
+
+        // when then
+        assertThatThrownBy(() -> memberQueryService.findTopicsByMember(AuthMember.from(member)))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
