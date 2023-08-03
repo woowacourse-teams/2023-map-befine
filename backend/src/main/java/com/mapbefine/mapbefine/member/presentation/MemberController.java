@@ -53,7 +53,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> add(MemberCreateRequest request) {
+    public ResponseEntity<Void> add(@RequestBody MemberCreateRequest request) {
         Long savedId = memberCommandService.save(request);
 
         return ResponseEntity.created(URI.create("/members/" + savedId)).build();

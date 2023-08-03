@@ -9,6 +9,7 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
@@ -195,6 +196,36 @@ class MemberIntegrationTest extends IntegrationTest {
                 .isEqualTo(HttpStatus.OK.value());
         assertThat(memberResponses).usingRecursiveComparison()
                 .isEqualTo(MemberDetailResponse.from(member));
+    }
+
+    @Test
+    @DisplayName("유저를 생성한다.")
+    void add() {
+        // given
+        MemberCreateRequest request = new MemberCreateRequest(
+                "member",
+                "member@naver.com",
+                "https://map-befine-official.github.io/favicon.png",
+                Role.USER
+        );
+
+        // when
+        ExtractableResponse<Response> response = saveMember(request);
+
+        // then
+        assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> saveMember(
+            MemberCreateRequest request
+    ) {
+        return given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/members")
+                .then().log().all()
+                .extract();
     }
 
 }
