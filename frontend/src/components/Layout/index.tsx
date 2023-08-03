@@ -28,6 +28,7 @@ const Layout = ({ children }: LayoutProps) => {
     const map = new Tmapv2.Map(mapContainer.current, {
       center: new Tmapv2.LatLng(37.5154, 127.1029),
     });
+    map.setZoomLimit(8, 17);
     setMap(map);
     return () => {
       map.destroy();
@@ -52,7 +53,10 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <Logo />
               <Space size={5} />
-              <Input placeholder="검색어를 입력하세요." aria-label='검색어 입력창' />
+              <Input
+                placeholder="검색어를 입력하세요."
+                aria-label="검색어 입력창"
+              />
             </Flex>
             <Flex
               height="calc(100vh - 120px)"
