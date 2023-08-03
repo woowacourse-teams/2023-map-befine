@@ -105,4 +105,24 @@ public class MemberQueryServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
+
+    @Test
+    @DisplayName("유저 목록을 조회한다.")
+    void findAllMember() {
+        // given
+        Member member = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER)
+        );
+        Member memberr = memberRepository.save(
+                MemberFixture.create("memberr", "memberr@naver.com", Role.USER)
+        );
+
+        // when
+        List<MemberResponse> responses = memberQueryService.findAll();
+
+        // then
+        assertThat(responses).usingRecursiveComparison()
+                .isEqualTo(List.of(MemberResponse.from(member), MemberResponse.from(memberr)));
+    }
+
 }
