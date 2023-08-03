@@ -11,7 +11,7 @@ const Logo = () => {
 
   return (
     <Box cursor="pointer">
-      <LogoImage onClick={goToHome} />
+      <LogoImage onClick={goToHome} aria-label="괜찮을지도 로고" tabIndex={0}/>
     </Box>
   );
 };

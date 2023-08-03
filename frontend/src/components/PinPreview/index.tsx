@@ -3,6 +3,7 @@ import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
+import { useEffect, useState } from 'react';
 
 export interface PinPreviewProps {
   pinTitle: string;
@@ -31,13 +32,29 @@ const PinPreview = ({
 }: PinPreviewProps) => {
   const { routePage } = useNavigator();
 
+  const [announceText, setAnnounceText] = useState<string>('토픽 핀 선택');
+
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setTagPins([...tagPins, pinTitle]);
       setTaggedPinIds((prev) => [...prev, pinId]);
+
+      if (taggedPinIds.length === 0) {
+        setAnnounceText(`핀 ${pinTitle}이 태그에 추가됨. 뽑아오기 기능 활성화`);
+        return;
+      }
+      setAnnounceText(`핀 ${pinTitle}이 태그에 추가됨`);
     } else {
       setTagPins(tagPins.filter((value) => value !== pinTitle));
       setTaggedPinIds(taggedPinIds.filter((value) => value !== pinId));
+
+      if (taggedPinIds.length === 1) {
+        setAnnounceText(
+          `핀 ${pinTitle}이 태그에서 삭제됨. 뽑아오기 기능 비활성화`,
+        );
+        return;
+      }
+      setAnnounceText(`핀 ${pinTitle}이 태그에서 삭제됨`);
     }
   };
 
@@ -46,6 +63,15 @@ const PinPreview = ({
 
     routePage(`/topics/${topicId}?pinDetail=${pinId}`);
   };
+
+  useEffect(() => {
+    if (announceText) {
+      const liveRegion = document.getElementById('live-region');
+      if (liveRegion) {
+        liveRegion.innerText = announceText;
+      }
+    }
+  }, [announceText]);
 
   return (
     <Flex
@@ -62,6 +88,7 @@ const PinPreview = ({
           onAddTagOfTopic(e)
         }
         checked={Boolean(taggedPinIds.includes(pinId))}
+        aria-label={`${pinTitle} 핀 선택`}
       />
       <Flex
         $flexDirection="column"
@@ -69,6 +96,8 @@ const PinPreview = ({
         onClick={onClickSetSelectedPinId}
         width="90%"
         height="95%"
+        tabIndex={0}
+        role="button"
       >
         <Text color="black" $fontSize="default" $fontWeight="bold">
           {pinTitle}
@@ -82,6 +111,11 @@ const PinPreview = ({
           {pinInformation}
         </EllipsisText>
       </Flex>
+      <div
+        id="live-region"
+        aria-live="assertive"
+        style={{ position: 'absolute', left: '-9999px' }}
+      ></div>
     </Flex>
   );
 };
