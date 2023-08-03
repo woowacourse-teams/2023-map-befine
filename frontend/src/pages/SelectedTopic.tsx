@@ -28,6 +28,7 @@ const SelectedTopic = () => {
     const data = await getApi(
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );
+    const topicHashmap = new Map([]);
 
     // 각 topic의 pin들의 좌표를 가져옴
     const newCoordinates: any = [];
@@ -45,7 +46,17 @@ const SelectedTopic = () => {
 
     setCoordinates(newCoordinates);
 
-    setTopicDetail([...data]);
+    data.forEach((topicDetailFromData: TopicInfoType) =>
+      topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
+    );
+
+    const topicDetailFromData = topicId
+      ?.split(',')
+      .map((number) => topicHashmap.get(number)) as TopicInfoType[];
+
+    if (!topicDetailFromData) return;
+
+    setTopicDetail([...topicDetailFromData]);
   };
 
   const onClickConfirm = () => {
@@ -92,6 +103,8 @@ const SelectedTopic = () => {
               <ul key={topic.id}>
                 {idx !== 0 && <Space size={5} />}
                 <TopicInfo
+                  fullUrl={topicId}
+                  topicId={topicId?.split(',')[idx]}
                   topicParticipant={1}
                   pinNumber={topic.pinCount}
                   topicTitle={topic.name}
