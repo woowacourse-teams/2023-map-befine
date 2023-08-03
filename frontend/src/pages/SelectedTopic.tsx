@@ -120,7 +120,7 @@ const SelectedTopic = () => {
                       pinInformation={pin.description}
                       setSelectedPinId={setSelectedPinId}
                       pinId={Number(pin.id)}
-                      topicId={topic.id}
+                      topicId={topicId}
                       tagPins={tagPins}
                       setTagPins={setTagPins}
                       taggedPinIds={taggedPinIds}

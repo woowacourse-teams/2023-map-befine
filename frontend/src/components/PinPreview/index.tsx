@@ -11,7 +11,7 @@ export interface PinPreviewProps {
   pinInformation: string;
   setSelectedPinId: (value: number) => void;
   pinId: number;
-  topicId: number | undefined;
+  topicId: string | undefined;
   tagPins: string[];
   setTagPins: (value: string[]) => void;
   taggedPinIds: number[];
