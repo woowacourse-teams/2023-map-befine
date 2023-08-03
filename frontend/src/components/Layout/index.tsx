@@ -26,9 +26,8 @@ const Layout = ({ children }: LayoutProps) => {
 
   useEffect(() => {
     const map = new Tmapv2.Map(mapContainer.current, {
-      center: new Tmapv2.LatLng(37.5055, 127.0509),
+      center: new Tmapv2.LatLng(37.5154, 127.1029),
     });
-
     setMap(map);
     return () => {
       map.destroy();

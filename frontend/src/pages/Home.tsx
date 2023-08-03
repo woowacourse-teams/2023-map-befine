@@ -4,11 +4,10 @@ import TopicCard from '../components/TopicCard';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
-import { Fragment, useContext, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { getApi } from '../utils/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 
 const Home = () => {
@@ -16,7 +15,6 @@ const Home = () => {
   const [taggedTopicIds, setTaggedTopicIds] = useState<number[]>([]);
   const [tagTopics, setTagTopics] = useState<string[]>([]);
   const { routePage } = useNavigator();
-  const { setCoordinates } = useContext(CoordinatesContext);
 
   const goToNewTopic = () => {
     routePage('new-topic', taggedTopicIds);
@@ -37,13 +35,8 @@ const Home = () => {
   };
 
   // 현재 위치 받아오기
-
   useEffect(() => {
     getAndSetDataFromServer();
-
-    setCoordinates([
-      { latitude: String(37.5055), longitude: String(127.0509) },
-    ]);
   }, []);
 
   return (
