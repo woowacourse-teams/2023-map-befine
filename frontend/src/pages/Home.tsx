@@ -26,6 +26,7 @@ const Home = () => {
 
   const onTagCancel = () => {
     setTagTopics([]);
+    setTaggedTopicIds([]);
   };
 
   const getAndSetDataFromServer = async () => {
@@ -75,7 +76,7 @@ const Home = () => {
             );
           })}
       </ul>
-      <Flex position="fixed" bottom="40px" left="130px">
+      <Flex position="fixed" bottom="40px" left="142px">
         <Button variant="primary" onClick={goToNewTopic}>
           {tagTopics.length > 0 ? '토픽 병합하기' : '토픽 추가하기'}
         </Button>

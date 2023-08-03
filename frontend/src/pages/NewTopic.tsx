@@ -10,6 +10,9 @@ import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { useLocation } from 'react-router-dom';
 
+const DEFAULT_IMAGE =
+  'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
+
 const NewTopic = () => {
   const { formValues, onChangeInput } = useFormValues<NewTopicFormValuesType>({
     name: '',
@@ -35,13 +38,13 @@ const NewTopic = () => {
     const response =
       taggedIds?.length > 1 && typeof taggedIds !== 'string'
         ? await postApi('/topics/merge', {
-            image: formValues.image,
+            image: formValues.image || DEFAULT_IMAGE,
             name: formValues.name,
             description: formValues.description,
             topics: taggedIds,
           })
         : await postApi('/topics/new', {
-            image: formValues.image,
+            image: formValues.image || DEFAULT_IMAGE,
             name: formValues.name,
             description: formValues.description,
             pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
@@ -71,16 +74,15 @@ const NewTopic = () => {
               토픽 이미지
             </Text>
             <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
           </Flex>
           <Space size={0} />
           <Input
             name="image"
             value={formValues.image}
-            placeholder="이미지 링크를 남겨주세요."
+            placeholder="원하는 배경이 있을 시 이미지 링크를 남겨주세요."
             onChange={onChangeInput}
+            autoFocus={true}
+            tabIndex={1}
           />
         </section>
         <Space size={5} />
@@ -101,6 +103,7 @@ const NewTopic = () => {
             value={formValues.name}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
             onChange={onChangeInput}
+            tabIndex={2}
           />
         </section>
 
@@ -122,16 +125,24 @@ const NewTopic = () => {
             value={formValues.description}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
             onChange={onChangeInput}
+            tabIndex={3}
           />
         </section>
 
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button variant="primary">생성하기</Button>
-          <Space size={3} />
-          <Button type="button" variant="secondary" onClick={goToBack}>
+          <Button
+            tabIndex={5}
+            type="button"
+            variant="secondary"
+            onClick={goToBack}
+          >
             취소하기
+          </Button>
+          <Space size={3} />
+          <Button tabIndex={4} variant="primary">
+            생성하기
           </Button>
         </Flex>
       </Flex>

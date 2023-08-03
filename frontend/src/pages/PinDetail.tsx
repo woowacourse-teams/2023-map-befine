@@ -61,7 +61,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   const copyContent = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      alert('핀의 링크가 복사되었습니다.');
+      alert('핀 링크가 복사되었습니다.');
     } catch (err) {
       if (typeof err === 'string') throw new Error(err);
       throw new Error('[ERROR] clipboard error');
@@ -136,7 +136,8 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어디에 있나요?
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
+        <Space size={1} />
+        <Text color="black" $fontSize="small" $fontWeight="normal">
           {pin.address}
         </Text>
       </Flex>
@@ -145,17 +146,18 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어떤 곳인가요?
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
+        <Space size={1} />
+        <Text color="black" $fontSize="small" $fontWeight="normal">
           {pin.description}
         </Text>
       </Flex>
       <Space size={7} />
       <Flex $justifyContent="center">
-        <Clipping cursor={'pointer'} />
+        <Clipping />
         <Space size={4} />
-        <Share cursor={'pointer'} onClick={copyContent} />
+        <Share cursor="pointer" onClick={copyContent} />
         <Space size={4} />
-        <ShowDetail cursor={'pointer'} />
+        <ShowDetail />
       </Flex>
     </>
   );
