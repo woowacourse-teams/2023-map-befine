@@ -68,6 +68,7 @@ const PinPreview = ({
         cursor="pointer"
         onClick={onClickSetSelectedPinId}
         width="90%"
+        height="95%"
       >
         <Text color="black" $fontSize="default" $fontWeight="bold">
           {pinTitle}
