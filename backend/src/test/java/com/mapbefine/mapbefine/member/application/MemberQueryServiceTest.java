@@ -172,16 +172,20 @@ public class MemberQueryServiceTest {
         );
         Location location = locationRepository.save(LocationFixture.create());
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        Pin pin1 = pinRepository.save(PinFixture.create(
-                location,
-                topic,
-                creator
-        ));
-        Pin pin2 = pinRepository.save(PinFixture.create(
-                location,
-                topic,
-                creator
-        ));
+        Pin pin1 = pinRepository.save(
+                PinFixture.create(
+                        location,
+                        topic,
+                        creator
+                )
+        );
+        Pin pin2 = pinRepository.save(
+                PinFixture.create(
+                        location,
+                        topic,
+                        creator
+                )
+        );
 
         // when
         List<PinResponse> response = memberQueryService.findPinsByMember(AuthMember.from(creator));
