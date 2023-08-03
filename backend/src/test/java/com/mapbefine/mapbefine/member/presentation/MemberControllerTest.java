@@ -166,4 +166,26 @@ class MemberControllerTest extends RestDocsIntegration {
         ).andDo(restDocs.document());
     }
 
+    @Test
+    @DisplayName("유저 단일 조회")
+    void findMemberById() throws Exception {
+        MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
+                1L,
+                "member",
+                "member@naver.com",
+                "https://map-befine-official.github.io/favicon.png",
+                LocalDateTime.now()
+        );
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + memberDetailResponse.email()).getBytes()
+        );
+
+        given(memberQueryService.findById(any())).willReturn(memberDetailResponse);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/1")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
 }
