@@ -50,7 +50,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
 
   //coordinates를 받아서 marker를 생성하고, marker를 markers 배열에 추가
   const createMarkers = (map: any) => {
-    let markerType = 0;
+    let markerType = -1;
     let currentTopicId = '-1';
 
     const newMarkers = coordinates.map((coordinate: any) => {
@@ -65,7 +65,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
           coordinate.latitude,
           coordinate.longitude,
         ),
-        icon: pinImageMap[markerType],
+        icon: pinImageMap[markerType + 1],
         map,
       });
       marker.id = String(coordinate.id);
