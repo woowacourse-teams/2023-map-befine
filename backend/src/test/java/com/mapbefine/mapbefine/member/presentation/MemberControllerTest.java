@@ -11,6 +11,7 @@ import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
@@ -46,7 +47,7 @@ class MemberControllerTest extends RestDocsIntegration {
                 ("Basic " + member.getMemberInfo().getEmail()).getBytes()
         );
 
-        given(memberCommandService.save(any())).willReturn(1L);
+        given(memberCommandService.saveMemberTopicPermission(any(), any())).willReturn(1L);
         given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(
@@ -124,6 +125,26 @@ class MemberControllerTest extends RestDocsIntegration {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/permissions/1")
                         .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("유저 생성")
+    void add() throws Exception {
+        MemberCreateRequest request = new MemberCreateRequest(
+                "member",
+                "member@naver.com",
+                "https://map-befine-official.github.io/favicon.png",
+                Role.USER
+        );
+
+        given(memberCommandService.save(any())).willReturn(1L);
+        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
         ).andDo(restDocs.document());
     }
 

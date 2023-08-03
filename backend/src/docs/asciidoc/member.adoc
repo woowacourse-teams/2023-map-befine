@@ -5,12 +5,21 @@
 operation::member-controller-test/add-member-topic-permission[snippets='http-request,http-response']
 
 === 유저 권한 삭제
+
 operation::member-controller-test/delete-member-topic-permission[snippets='http-request,http-response']
 
 === 토픽에 권한을 가진 유저 목록 조회
+
 operation::member-controller-test/find-member-topic-permission-all[snippets='http-request,http-response']
 
 === 토픽에 권한을 가진 유저 단일 조회
+
 operation::member-controller-test/find-member-topic-permission-by-id[snippets='http-request,http-response']
+
+=== 유저 생성
+
+operation::member-controller-test/add[snippets='http-request,http-response']
+
+
 
 
