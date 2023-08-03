@@ -32,6 +32,8 @@ const TopicCard = ({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const divRef = useRef<HTMLDivElement | null>(null);
+
   const goToSelectedTopic = () => {
     routePage(`topics/${topicId}`, [topicId]);
   };
@@ -68,6 +70,13 @@ const TopicCard = ({
     if (e.keyCode === 13) {
       e.preventDefault();
       inputRef.current?.click();
+    }
+  };
+
+  const onDivKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      divRef.current?.click();
     }
   };
 
@@ -119,9 +128,11 @@ const TopicCard = ({
           $justifyContent="center"
           cursor="pointer"
           onClick={goToSelectedTopic}
+          onKeyDown={onDivKeyDown}
           $backdropFilter="blur(12px)"
           tabIndex={0}
           role="button"
+          ref={divRef}
         >
           <Text color="white" $fontSize="medium" $fontWeight="normal">
             {topicTitle}
