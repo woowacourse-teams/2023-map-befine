@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
-import com.mapbefine.mapbefine.common.interceptor.AuthInterceptor;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
@@ -32,9 +31,6 @@ class MemberControllerTest extends RestDocsIntegration {
     @MockBean
     private MemberQueryService memberQueryService;
 
-    @MockBean
-    private AuthInterceptor authInterceptor;
-
     @Test
     @DisplayName("권한 추가")
     void addMemberTopicPermission() throws Exception {
@@ -48,7 +44,6 @@ class MemberControllerTest extends RestDocsIntegration {
         );
 
         given(memberCommandService.saveMemberTopicPermission(any(), any())).willReturn(1L);
-        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/members/permissions")
@@ -67,7 +62,6 @@ class MemberControllerTest extends RestDocsIntegration {
         );
 
         given(memberCommandService.save(any())).willReturn(1L);
-        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/members/permissions/1")
@@ -96,7 +90,6 @@ class MemberControllerTest extends RestDocsIntegration {
         );
 
         given(memberQueryService.findAllWithPermission(any())).willReturn(memberResponses);
-        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/permissions/topics/1")
@@ -120,7 +113,6 @@ class MemberControllerTest extends RestDocsIntegration {
         );
 
         given(memberQueryService.findMemberTopicPermissionById(any())).willReturn(memberDetailResponse);
-        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/permissions/1")
@@ -139,7 +131,6 @@ class MemberControllerTest extends RestDocsIntegration {
         );
 
         given(memberCommandService.save(any())).willReturn(1L);
-        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/members")
@@ -168,7 +159,6 @@ class MemberControllerTest extends RestDocsIntegration {
         );
 
         given(memberQueryService.findAll()).willReturn(memberResponses);
-        given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members")
