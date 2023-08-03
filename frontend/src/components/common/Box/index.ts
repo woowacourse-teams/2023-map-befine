@@ -69,7 +69,8 @@ const Box = styled.div<BoxProps>`
   border-left: ${({ $borderLeft }) => $borderLeft};
   cursor: ${({ cursor }) => cursor};
   background-image: ${({ $backgroundImage }) =>
-    $backgroundImage && `url(${$backgroundImage})`};
+    $backgroundImage &&
+    `url(${$backgroundImage}),  url('https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg')`};
   background-size: ${({ $backgroundSize }) => $backgroundSize};
   backdrop-filter: ${({ $backdropFilter }) => $backdropFilter};
   opacity: ${({ opacity }) => opacity};

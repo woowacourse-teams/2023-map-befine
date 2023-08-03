@@ -90,8 +90,8 @@ const MultiSelectButton = styled.input`
   width: 24px;
   height: 24px;
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 4px;
+  right: 4px;
   background-color: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.black};
   border-radius: ${({ theme }) => theme.radius.small};
