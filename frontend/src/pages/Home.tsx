@@ -54,7 +54,7 @@ const Home = () => {
         />
       ) : null}
       <Space size={4} />
-      <Text color="black" $fontSize="large" $fontWeight="bold">
+      <Text color="black" $fontSize="large" $fontWeight="bold" tabIndex={0}>
         내 주변 인기 있는 토픽
       </Text>
       <Space size={2} />
