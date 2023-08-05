@@ -36,13 +36,6 @@ public class Pin extends BaseTimeEntity {
     private PinInfo pinInfo;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member creator;
-
-    @OneToMany(mappedBy = "pin", cascade = CascadeType.PERSIST)
-    private List<PinImage> pinImages = new ArrayList<>();
-
-    @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
@@ -50,9 +43,16 @@ public class Pin extends BaseTimeEntity {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member creator;
+
     @Column(nullable = false)
     @ColumnDefault(value = "false")
     private boolean isDeleted = false;
+
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.PERSIST)
+    private List<PinImage> pinImages = new ArrayList<>();
 
     private Pin(
             PinInfo pinInfo,

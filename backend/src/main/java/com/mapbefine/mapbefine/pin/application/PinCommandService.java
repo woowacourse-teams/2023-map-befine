@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.pin.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -49,7 +50,7 @@ public class PinCommandService {
 
             // TODO Pin 안에 있어야 하는 것 아닌가?
             for (String pinImage : request.images()) {
-                PinImage.createPinImageAssociatedWithPin(pinImage, pin);
+                PinImage.createPinImageAssociatedWithPin(Image.of(pinImage), pin);
             }
 
             return pinRepository.save(pin).getId();

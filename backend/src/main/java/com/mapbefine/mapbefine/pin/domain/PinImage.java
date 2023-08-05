@@ -27,17 +27,20 @@ public class PinImage {
     @ManyToOne
     @JoinColumn(name = "pin_id")
     private Pin pin;
-    
+
     private PinImage(Image image, Pin pin) {
         this.image = image;
         this.pin = pin;
     }
 
-    public static PinImage createPinImageAssociatedWithPin(String imageUrl, Pin pin) {
-        PinImage pinImage = new PinImage(Image.of(imageUrl), pin);
+    public static PinImage createPinImageAssociatedWithPin(Image image, Pin pin) {
+        PinImage pinImage = new PinImage(image, pin);
         pin.addPinImage(pinImage);
 
         return pinImage;
     }
 
+    public String getImageUrl() {
+        return image.getImageUrl();
+    }
 }
