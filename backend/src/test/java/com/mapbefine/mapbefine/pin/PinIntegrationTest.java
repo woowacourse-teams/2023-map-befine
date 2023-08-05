@@ -49,7 +49,7 @@ class PinIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void saveTopicAndLocation() {
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );

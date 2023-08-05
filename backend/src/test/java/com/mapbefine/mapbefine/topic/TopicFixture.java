@@ -9,7 +9,7 @@ import com.mapbefine.mapbefine.topic.domain.Topic;
 public class TopicFixture {
 
     public static Topic createByName(String name, Member member) {
-        return Topic.of(
+        return Topic.createTopicAssociatedWithMember(
                 name,
                 "설명",
                 null,

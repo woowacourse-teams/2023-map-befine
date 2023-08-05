@@ -34,27 +34,31 @@ public class TopicCommandService {
         this.memberRepository = memberRepository;
     }
 
-    public long createNew(AuthMember member, TopicCreateRequest request) {
-        Topic topic = createNewTopic(member, request);
+    public long createNew(AuthMember authMember, TopicCreateRequest request) {
+        Topic topic = createNewTopic(authMember, request);
+        Member member = memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(NoSuchElementException::new);
 
         List<Long> pinIds = request.pins();
         List<Pin> original = pinRepository.findAllById(pinIds);
 
         validateExist(pinIds.size(), original.size());
-        pinRepository.saveAll(copyPins(original, topic));
+        pinRepository.saveAll(copyPins(original, topic, member));
 
         return topic.getId();
     }
 
-    public long createMerge(AuthMember member, TopicMergeRequest request) {
+    public long createMerge(AuthMember authMember, TopicMergeRequest request) {
         List<Long> topicIds = request.topics();
-        List<Topic> topics = findTopicsByIds(member, topicIds);
+        List<Topic> topics = findTopicsByIds(authMember, topicIds);
+        Member member = memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(NoSuchElementException::new);
 
         validateExist(topicIds.size(), topics.size());
-        Topic topic = createMergeTopic(member, request);
+        Topic topic = createMergeTopic(authMember, request);
 
         List<Pin> original = getPinFromTopics(topics);
-        pinRepository.saveAll(copyPins(original, topic));
+        pinRepository.saveAll(copyPins(original, topic, member));
 
         return topic.getId();
     }
@@ -100,7 +104,7 @@ public class TopicCommandService {
 
     private Topic createMergeTopic(AuthMember member, TopicMergeRequest request) {
         Member creator = findCreatorByAuthMember(member);
-        Topic topic = Topic.of(
+        Topic topic = Topic.createTopicAssociatedWithMember(
                 request.name(),
                 request.description(),
                 request.image(),
@@ -114,7 +118,7 @@ public class TopicCommandService {
 
     private Topic createNewTopic(AuthMember member, TopicCreateRequest request) {
         Member creator = findCreatorByAuthMember(member);
-        Topic topic = Topic.of(
+        Topic topic = Topic.createTopicAssociatedWithMember(
                 request.name(),
                 request.description(),
                 request.image(),
@@ -136,10 +140,9 @@ public class TopicCommandService {
         }
     }
 
-    private List<Pin> copyPins(List<Pin> pins, Topic topic) {
-        // TODO 핀 이미지 생성해야 됨
+    private List<Pin> copyPins(List<Pin> pins, Topic topic, Member member) {
         return pins.stream()
-                .map(original -> original.copy(topic))
+                .map(original -> original.copy(topic, member))
                 .toList();
     }
 

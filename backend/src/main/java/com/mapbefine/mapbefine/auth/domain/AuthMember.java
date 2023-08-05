@@ -36,14 +36,14 @@ public abstract class AuthMember {
     }
 
     private static List<Long> getTopicsWithPermission(Member member) {
-        return member.getTopicsWithPermission()
+        return member.getTopicsWithPermissions()
                 .stream()
                 .map(Topic::getId)
                 .toList();
     }
 
     private static List<Long> getCreatedTopics(Member member) {
-        return member.getCreatedTopic()
+        return member.getCreatedTopics()
                 .stream()
                 .map(Topic::getId)
                 .toList();

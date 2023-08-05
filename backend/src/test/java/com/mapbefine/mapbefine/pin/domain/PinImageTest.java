@@ -14,7 +14,8 @@ class PinImageTest {
 
     private static final Pin PIN = PinFixture.create(
             LocationFixture.create(),
-            TopicFixture.createByName("아이크의 부잣집", MemberFixture.create(Role.USER))
+            TopicFixture.createByName("아이크의 부잣집", MemberFixture.create("topic creator", "topic@naver.com", Role.USER)),
+            MemberFixture.create("pin creator", "pin@naver.com", Role.USER)
     );
 
     @Test

@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.pin.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -57,22 +56,31 @@ public class Pin extends BaseTimeEntity {
     private Pin(
             PinInfo pinInfo,
             Location location,
-            Topic topic
+            Topic topic,
+            Member creator
     ) {
         this.pinInfo = pinInfo;
         this.location = location;
         this.topic = topic;
+        this.creator = creator;
     }
 
-    // TODO PinImage 저장 추가
-    public static Pin createPinAssociatedWithLocationAndTopic(
+    public static Pin createPinAssociatedWithLocationAndTopicAndMember(
             PinInfo pinInfo,
             Location location,
-            Topic topic
+            Topic topic,
+            Member creator
     ) {
-        Pin pin = new Pin(pinInfo, location, topic);
+        Pin pin = new Pin(
+                pinInfo,
+                location,
+                topic,
+                creator
+        );
+
         location.addPin(pin);
         topic.addPin(pin);
+        creator.addPin(pin);
         return pin;
     }
 
@@ -80,12 +88,12 @@ public class Pin extends BaseTimeEntity {
         pinInfo = PinInfo.of(name, description);
     }
 
-    public Pin copy(Topic topic) {
-        // TODO 이미지는 외부 로직에서 처리?
-        return Pin.createPinAssociatedWithLocationAndTopic(
+    public Pin copy(Topic topic, Member creator) {
+        return Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 pinInfo,
                 location,
-                topic
+                topic,
+                creator
         );
     }
 

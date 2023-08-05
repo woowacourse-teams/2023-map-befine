@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.common;
 
 import com.mapbefine.mapbefine.DatabaseCleanup;
 import io.restassured.*;
+import io.restassured.parsing.Parser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

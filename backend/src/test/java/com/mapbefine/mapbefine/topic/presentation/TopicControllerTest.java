@@ -40,7 +40,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 새로 생성")
     void create() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -66,7 +66,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 병합 생성")
     void mergeAndCreate() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -91,7 +91,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 수정")
     void update() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -109,7 +109,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 삭제")
     void delete() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -122,7 +122,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 목록 조회")
     void findAll() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -150,7 +150,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 상세 조회")
     void findById() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );

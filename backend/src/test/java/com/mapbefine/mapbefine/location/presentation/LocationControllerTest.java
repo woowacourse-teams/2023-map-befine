@@ -31,7 +31,7 @@ class LocationControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("현재 위치를 기준 토픽의 핀 개수로 나열한다.")
     void findBests() throws Exception {
-        Member member = MemberFixture.create(Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );

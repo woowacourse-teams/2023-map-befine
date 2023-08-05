@@ -24,6 +24,7 @@ import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -65,10 +66,10 @@ class PinQueryServiceTest {
         double longitude = 127.123456;
         coordinate = Coordinate.of(latitude, longitude);
         location = saveLocation(coordinate);
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = AuthMember.from(member);
         topic = topicRepository.save(
-                Topic.of(
+                Topic.createTopicAssociatedWithMember(
                         "topicName",
                         "topicDescription",
                         "https://map-befine-official.github.io/favicon.png",
@@ -85,7 +86,12 @@ class PinQueryServiceTest {
         // given
         List<PinResponse> expected = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Pin pin = Pin.createPinAssociatedWithLocationAndTopic(PinInfo.of("name", "description"), location, topic);
+            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+                    PinInfo.of("name", "description"),
+                    location,
+                    topic,
+                    member
+            );
             Long savedId = pinRepository.save(pin).getId();
             expected.add(new PinResponse(
                     savedId,
@@ -109,8 +115,12 @@ class PinQueryServiceTest {
     @DisplayName("핀의 Id 를 넘기면 핀을 가져온다.")
     void findById_Success() {
         // given
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(PinInfo.of("name", "description"), location, topic);
-        PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGES.get(0)), pin);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+                PinInfo.of("name", "description"),
+                location,
+                topic,
+                member
+        );        PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGES.get(0)), pin);
         Long savedId = pinRepository.save(pin).getId();
 
         // when

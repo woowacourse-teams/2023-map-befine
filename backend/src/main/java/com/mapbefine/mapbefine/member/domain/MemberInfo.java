@@ -19,10 +19,10 @@ public class MemberInfo {
     private static final int MAX_NAME_LENGTH = 20;
     private static final String VALID_EMAIL_URL_REGEX = "^[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$";
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -81,6 +81,10 @@ public class MemberInfo {
     }
 
     private static void validateEmail(String email) {
+        if (email == null) {
+            throw new IllegalArgumentException("email null");
+        }
+
         if (!RegexUtil.matches(VALID_EMAIL_URL_REGEX, email)) {
             throw new IllegalArgumentException("올바르지 않은 이메일 형식입니다.");
         }
