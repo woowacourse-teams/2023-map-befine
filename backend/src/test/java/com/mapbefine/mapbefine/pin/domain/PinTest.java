@@ -3,84 +3,59 @@ package com.mapbefine.mapbefine.pin.domain;
 import static com.mapbefine.mapbefine.pin.domain.Pin.createPinAssociatedWithLocationAndTopic;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.member.MemberFixture;
+import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 class PinTest {
 
-    private static final Location location = new Location(
-            new Address(
-                    "parcel",
-                    "road",
-                    "legalDongCode"
-            ),
-            Coordinate.of(
-                    38.123456,
-                    127.123456
-            )
-    );
-    private static final Topic topic = Topic.of(
-            "topicName",
-            "topicDescription",
-            null,
-            Publicity.PUBLIC,
-            Permission.ALL_MEMBERS,
-            MemberFixture.create(Role.ADMIN)
-    );
+    private static final Location LOCATION = LocationFixture.create();
+    private static final Topic TOPIC = TopicFixture.createByName("topic", MemberFixture.create(Role.USER));
+    private static final PinInfo VALID_PIN_INFO = PinInfo.of("name", "description");
 
-    @ParameterizedTest
-    @MethodSource(value = "validNameAndDescription")
-    @DisplayName("올바른 핀 정보(이름, 설명)을 주면 성공적으로 Pin 을 생성한다.")
-    void createPinAssociatedWithLocationAndTopic_Success(String name, String description) {
+    @Test
+    @DisplayName("올바른 핀 정보를 주면 성공적으로 Pin 을 생성한다.")
+    void createPinAssociatedWithLocationAndTopic_Success() {
         // given
-        PinInfo expected = PinInfo.of(name, description);
-        Pin pin = createPinAssociatedWithLocationAndTopic(expected, location, topic);
+        Pin pin = createPinAssociatedWithLocationAndTopic(VALID_PIN_INFO, LOCATION, TOPIC);
 
         // when
         PinInfo actual = pin.getPinInfo();
 
         // then
         assertThat(actual).usingRecursiveComparison()
-                .isEqualTo(expected);
+                .isEqualTo(VALID_PIN_INFO);
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "validNameAndDescription")
-    @DisplayName("올바른 핀 정보(이름, 설명)을 주면 성공적으로 Pin 을 수정한다.")
-    void update_Success(String name, String description) {
+    @Test
+    @DisplayName("올바른 핀 정보를 주면 성공적으로 Pin 을 수정한다.")
+    void update_Success() {
         // given
         Pin pin = createPinAssociatedWithLocationAndTopic(
                 PinInfo.of("before name", "before description"),
-                location,
-                topic
+                LOCATION,
+                TOPIC
         );
+        String updateName = VALID_PIN_INFO.getName();
+        String updateDescription = VALID_PIN_INFO.getDescription();
 
         // when
-        pin.updatePinInfo(name, description);
+        pin.updatePinInfo(updateName, updateDescription);
         PinInfo actual = pin.getPinInfo();
 
         // then
         assertThat(actual).usingRecursiveComparison()
-                .isEqualTo(PinInfo.of(name, description));
+                .isEqualTo(PinInfo.of(updateName, updateDescription));
     }
 
-    private static Stream<Arguments> validNameAndDescription() {
-        return Stream.of(
-                Arguments.of("1", "1"),
-                Arguments.of("1", "1".repeat(1000)),
-                Arguments.of("1".repeat(50), "1"),
-                Arguments.of("1".repeat(50), "1".repeat(1000))
-        );
-    }
 }
