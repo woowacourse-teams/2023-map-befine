@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PROTECTED;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Location;
+import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,6 +34,10 @@ public class Pin extends BaseTimeEntity {
 
     @Embedded
     private PinInfo pinInfo;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member creator;
 
     @OneToMany(mappedBy = "pin", cascade = CascadeType.PERSIST)
     private List<PinImage> pinImages = new ArrayList<>();

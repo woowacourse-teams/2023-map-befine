@@ -60,4 +60,5 @@ public abstract class AuthMember {
     public Long getMemberId() {
         return memberId;
     }
+
 }

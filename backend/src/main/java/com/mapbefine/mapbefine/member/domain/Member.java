@@ -3,11 +3,10 @@ package com.mapbefine.mapbefine.member.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,44 +21,43 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Member extends BaseTimeEntity {
 
+    private static final int MAX_NAME_LENGTH = 20;
+    private static final String VALID_EMAIL_URL_REGEX = "^[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String name;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private String imageUrl;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @Embedded
+    private MemberInfo memberInfo;
 
     @OneToMany(mappedBy = "creator")
     private List<Topic> createdTopic = new ArrayList<>();
 
+    @OneToMany(mappedBy = "creator")
+    private List<Pin> createdPin = new ArrayList<>();
+
     @OneToMany(mappedBy = "member")
     private List<MemberTopicPermission> topicsWithPermission = new ArrayList<>();
 
-    public Member(
+    private Member(
+            MemberInfo memberInfo
+    ) {
+        this.memberInfo = memberInfo;
+    }
+
+    public static Member of(
             String name,
             String email,
             String imageUrl,
             Role role
     ) {
-        this.name = name;
-        this.email = email;
-        this.imageUrl = imageUrl;
-        this.role = role;
+        MemberInfo memberInfo = MemberInfo.of(name, email, imageUrl, role);
+        return new Member(memberInfo);
     }
 
-    public void update(String name, String imageUrl) {
-        this.name = name;
-        this.imageUrl = imageUrl;
+    public void update(String name, String email, String imageUrl) {
+        memberInfo.update(name, email, imageUrl);
     }
 
     public void addTopic(Topic topic) {
@@ -67,15 +65,15 @@ public class Member extends BaseTimeEntity {
     }
 
     public String getRoleKey() {
-        return this.role.getKey();
+        return memberInfo.getRole().getKey();
     }
 
     public boolean isAdmin() {
-        return role == Role.ADMIN;
+        return memberInfo.getRole() == Role.ADMIN;
     }
 
     public boolean isUser() {
-        return role == Role.USER;
+        return memberInfo.getRole() == Role.USER;
     }
 
     public List<Topic> getTopicsWithPermission() {
