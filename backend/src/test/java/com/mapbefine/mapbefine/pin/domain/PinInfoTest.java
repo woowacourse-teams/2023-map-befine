@@ -35,8 +35,7 @@ class PinInfoTest {
 
         @ParameterizedTest
         @NullSource
-        @ValueSource(strings = {"",
-                "ExampleOf50CharStringToDemonstrateLengthCheck123456"})
+        @ValueSource(strings = {"", "ExampleOf50CharStringToDemonstrateLengthCheck123456"})
         @DisplayName("유효한 이름이 아닌 경우 예외가 발생한다")
         void whenNameIsInvalid_thenFail(String input) {
             //given
@@ -72,69 +71,6 @@ class PinInfoTest {
             //when
             //then
             assertThatThrownBy(() -> PinInfo.of(validName, validDescription))
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
-
-    }
-
-    @Nested
-    class Update {
-
-        private final String name = "쥬니의 안 갈 집";
-        private final String description = "쥬니가 두 번은 안 갈 집";
-
-        private PinInfo pinInfo;
-
-        @BeforeEach
-        void setUp() {
-            pinInfo = PinInfo.of("매튜의 산스장", "매튜가 엄마 몰래 찾는 산스장");
-        }
-
-        @Test
-        @DisplayName("정확한 값을 입력하면 객체가 수정된다")
-        void success() {
-            //when
-            pinInfo.update(name, description);
-
-            //then
-            assertThat(pinInfo).isNotNull();
-            assertThat(pinInfo.getName()).isEqualTo(name);
-            assertThat(pinInfo.getDescription()).isEqualTo(description);
-        }
-
-
-        @ParameterizedTest
-        @NullSource
-        @ValueSource(strings = {"",
-                "ExampleOf50CharStringToDemonstrateLengthCheck123456"})
-        @DisplayName("유효한 이름이 아닌 경우 예외가 발생한다")
-        void whenNameIsInvalid_thenFail(String input) {
-            //when
-            //then
-            assertThatThrownBy(() -> pinInfo.update(input, description))
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @ParameterizedTest
-        @NullSource
-        @EmptySource
-        @DisplayName("유효한 설명이 아닌 경우 예외가 발생한다")
-        void whenDescriptionIsInvalid_thenFail(String input) {
-            //when
-            //then
-            assertThatThrownBy(() -> pinInfo.update(name, input))
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @Test
-        @DisplayName("설명의 길이가 1000자를 초과하는 경우 예외가 발생한다")
-        void whenDescriptionIsLongerThanThousand_thenFail() {
-            //given
-            String validDescription = "a".repeat(1001);
-
-            //when
-            //then
-            assertThatThrownBy(() -> pinInfo.update(name, validDescription))
                     .isInstanceOf(IllegalArgumentException.class);
         }
 

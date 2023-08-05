@@ -52,12 +52,4 @@ public class PinInfo {
             throw new IllegalArgumentException("핀 설명의 길이는 1자 이상 " + MAX_NAME_LENGTH + "자 이하여야 합니다.");
         }
     }
-
-    public void update(String name, String description) {
-        validateName(name);
-        validateDescription(description);
-
-        this.name = name;
-        this.description = description;
-    }
 }

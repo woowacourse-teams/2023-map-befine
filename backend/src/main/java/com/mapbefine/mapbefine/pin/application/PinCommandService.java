@@ -7,6 +7,7 @@ import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
+import com.mapbefine.mapbefine.pin.domain.PinInfo;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
@@ -35,11 +36,11 @@ public class PinCommandService {
     }
 
     public Long save(AuthMember member, PinCreateRequest request) {
-        Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
         member.canPinCreateOrUpdate(topic);
 
+        Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
         Location pinLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(
                         coordinate, 10.0).stream()
                 .filter(location -> location.isSameAddress(request.address()))
@@ -47,12 +48,12 @@ public class PinCommandService {
                 .orElseGet(() -> saveLocation(request, coordinate));
 
         Pin pin = Pin.createPinAssociatedWithLocationAndTopic(
-                request.name(),
-                request.description(),
+                PinInfo.of(request.name(), request.description()),
                 pinLocation,
                 topic
         );
 
+        // TODO Pin 안에 있어야 하는 것 아닌가?
         for (String pinImage : request.images()) {
             PinImage.createPinImageAssociatedWithPin(pinImage, pin);
         }

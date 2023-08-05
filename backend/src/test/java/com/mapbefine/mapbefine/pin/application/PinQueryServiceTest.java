@@ -15,6 +15,7 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
+import com.mapbefine.mapbefine.pin.domain.PinInfo;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -83,7 +84,7 @@ class PinQueryServiceTest {
         // given
         List<PinResponse> expected = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Pin pin = Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+            Pin pin = Pin.createPinAssociatedWithLocationAndTopic(PinInfo.of("name", "description"), location, topic);
             Long savedId = pinRepository.save(pin).getId();
             expected.add(new PinResponse(
                     savedId,
@@ -107,7 +108,7 @@ class PinQueryServiceTest {
     @DisplayName("핀의 Id 를 넘기면 핀을 가져온다.")
     void findById_Success() {
         // given
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(PinInfo.of("name", "description"), location, topic);
         PinImage.createPinImageAssociatedWithPin(BASE_IMAGES.get(0), pin);
         Long savedId = pinRepository.save(pin).getId();
 

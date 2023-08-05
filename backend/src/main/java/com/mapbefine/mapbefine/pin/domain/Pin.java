@@ -66,30 +66,24 @@ public class Pin extends BaseTimeEntity {
 
     // TODO PinImage 저장 추가
     public static Pin createPinAssociatedWithLocationAndTopic(
-            String name,
-            String description,
+            PinInfo pinInfo,
             Location location,
             Topic topic
     ) {
-        PinInfo pinInfo = PinInfo.of(name, description);
-        Pin pin = new Pin(
-                pinInfo,
-                location,
-                topic
-        );
+        Pin pin = new Pin(pinInfo, location, topic);
         location.addPin(pin);
         topic.addPin(pin);
         return pin;
     }
 
     public void updatePinInfo(String name, String description) {
-        pinInfo.update(name, description);
+        pinInfo = PinInfo.of(name, description);
     }
 
     public Pin copy(Topic topic) {
+        // TODO 이미지는 외부 로직에서 처리?
         return Pin.createPinAssociatedWithLocationAndTopic(
-                pinInfo.getName(),
-                pinInfo.getDescription(),
+                pinInfo,
                 location,
                 topic
         );
@@ -108,8 +102,8 @@ public class Pin extends BaseTimeEntity {
     }
 
     public String getRoadBaseAddress() {
-        Address address = location.getAddress();
-        return address.getRoadBaseAddress();
+        return location.getAddress()
+                .getRoadBaseAddress();
     }
 
 }

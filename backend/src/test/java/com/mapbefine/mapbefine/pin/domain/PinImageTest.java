@@ -21,7 +21,6 @@ class PinImageTest {
     void setUp() {
         topic = TopicFixture.createByName("아이크의 부잣집", MemberFixture.create(Role.USER));
         pin = PinFixture.create(LocationFixture.create(), topic);
-
     }
 
 

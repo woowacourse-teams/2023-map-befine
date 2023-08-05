@@ -137,6 +137,7 @@ public class TopicCommandService {
     }
 
     private List<Pin> copyPins(List<Pin> pins, Topic topic) {
+        // TODO 핀 이미지 생성해야 됨
         return pins.stream()
                 .map(original -> original.copy(topic))
                 .toList();

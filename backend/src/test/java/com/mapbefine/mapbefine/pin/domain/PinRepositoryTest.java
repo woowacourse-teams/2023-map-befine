@@ -56,7 +56,7 @@ class PinRepositoryTest {
         topicRepository.save(topic);
         locationRepository.save(location);
 
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(PinInfo.of("name", "description"), location, topic);
         pinRepository.save(pin);
 
         // when
@@ -85,7 +85,7 @@ class PinRepositoryTest {
         );
 
         for (int i = 0; i < 10; i++) {
-            Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+            Pin.createPinAssociatedWithLocationAndTopic(PinInfo.of("name", "description"), location, topic);
         }
 
         locationRepository.save(location);
