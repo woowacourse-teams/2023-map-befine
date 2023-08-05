@@ -25,6 +25,7 @@ public class PinCommandService {
     private final LocationRepository locationRepository;
     private final TopicRepository topicRepository;
 
+    // TODO 예외처리 패턴 추상화
     public PinCommandService(
             PinRepository pinRepository,
             LocationRepository locationRepository,
@@ -38,27 +39,32 @@ public class PinCommandService {
     public Long save(AuthMember member, PinCreateRequest request) {
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
-        member.canPinCreateOrUpdate(topic);
 
+        if (member.canPinCreateOrUpdate(topic)) {
+            Pin pin = Pin.createPinAssociatedWithLocationAndTopic(
+                    PinInfo.of(request.name(), request.description()),
+                    findExistingOrCreatePinLocation(request),
+                    topic
+            );
+
+            // TODO Pin 안에 있어야 하는 것 아닌가?
+            for (String pinImage : request.images()) {
+                PinImage.createPinImageAssociatedWithPin(pinImage, pin);
+            }
+
+            return pinRepository.save(pin).getId();
+        }
+        throw new IllegalArgumentException("해당 토픽의 핀을 생성할 권한이 없습니다.");
+    }
+
+    private Location findExistingOrCreatePinLocation(PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
-        Location pinLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(
-                        coordinate, 10.0).stream()
+
+        return locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, 10.0)
+                .stream()
                 .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
-
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(
-                PinInfo.of(request.name(), request.description()),
-                pinLocation,
-                topic
-        );
-
-        // TODO Pin 안에 있어야 하는 것 아닌가?
-        for (String pinImage : request.images()) {
-            PinImage.createPinImageAssociatedWithPin(pinImage, pin);
-        }
-
-        return pinRepository.save(pin).getId();
     }
 
     private Location saveLocation(PinCreateRequest pinCreateRequest, Coordinate coordinate) {
@@ -68,9 +74,7 @@ public class PinCommandService {
                 pinCreateRequest.legalDongCode()
         );
 
-        Location location = new Location(address, coordinate);
-
-        return locationRepository.save(location);
+        return locationRepository.save(new Location(address, coordinate));
     }
 
     public void update(
