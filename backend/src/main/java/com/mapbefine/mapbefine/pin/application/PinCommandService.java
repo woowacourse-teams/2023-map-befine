@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PinCommandService {
 
+    private static final double DUPLICATE_LOCATION_DISTANCE = 10.0;
+
     private final PinRepository pinRepository;
     private final LocationRepository locationRepository;
     private final TopicRepository topicRepository;
@@ -46,13 +48,13 @@ public class PinCommandService {
     public Long save(AuthMember authMember, PinCreateRequest request) {
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
-        Member member = memberRepository.findById(authMember.getMemberId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
         if (authMember.canPinCreateOrUpdate(topic)) {
+            Member member = memberRepository.findById(authMember.getMemberId())
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
             Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
                     PinInfo.of(request.name(), request.description()),
-                    findExistingOrCreatePinLocation(request),
+                    findDuplicateOrCreatePinLocation(request),
                     topic,
                     member
             );
@@ -67,10 +69,10 @@ public class PinCommandService {
         throw new IllegalArgumentException("해당 토픽의 핀을 생성할 권한이 없습니다.");
     }
 
-    private Location findExistingOrCreatePinLocation(PinCreateRequest request) {
+    private Location findDuplicateOrCreatePinLocation(PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
 
-        return locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, 10.0)
+        return locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, DUPLICATE_LOCATION_DISTANCE)
                 .stream()
                 .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
