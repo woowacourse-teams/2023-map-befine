@@ -97,7 +97,7 @@ const TopicCard = ({
   }, [announceText]);
 
   return (
-    <WrapperLi>
+    <Wrapper>
       <Flex
         width="360px"
         height="140px"
@@ -167,11 +167,11 @@ const TopicCard = ({
         aria-live="assertive"
         style={{ position: 'absolute', left: '-9999px' }}
       ></div>
-    </WrapperLi>
+    </Wrapper>
   );
 };
 
-const WrapperLi = styled.li`
+const Wrapper = styled.li`
   box-shadow: 2px 4px 4px 0px rgba(69, 69, 69, 0.25);
 `;
 
