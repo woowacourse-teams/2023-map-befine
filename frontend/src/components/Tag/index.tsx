@@ -1,17 +1,25 @@
+import { ReactNode } from 'react';
 import { styled } from 'styled-components';
+import Box from '../common/Box';
+import Text from '../common/Text';
 
-const Tag = styled.span`
-  display: block;
-  height: 32px;
-  max-width: 280px;
+interface TagProps {
+  children: string;
+}
 
-  padding: ${({ theme }) => `${theme.spacing['1']} ${theme.spacing['3']}`};
-
-  color: ${({ theme }) => theme.color.white};
-  font-size: ${({ theme }) => theme.fontSize.small};
-
-  background-color: ${({ theme }) => theme.color.black};
-  border-radius: ${({ theme }) => theme.radius.medium};
-`;
+const Tag = ({ children }: TagProps) => {
+  return (
+    <Box
+      height="36px"
+      padding="8px 16px"
+      $backgroundColor="black"
+      $borderRadius="medium"
+    >
+      <Text color="white" $fontSize="small" $fontWeight="normal">
+        {children}
+      </Text>
+    </Box>
+  );
+};
 
 export default Tag;
