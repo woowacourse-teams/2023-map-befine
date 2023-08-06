@@ -4,7 +4,7 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
-import { postApi } from '../utils/postApi';
+import { postApi } from '../apis/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';

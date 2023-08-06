@@ -8,7 +8,7 @@ import { TopicInfoType } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
-import { getApi } from '../utils/getApi';
+import { getApi } from '../apis/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';

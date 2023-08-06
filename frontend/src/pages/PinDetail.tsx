@@ -7,7 +7,7 @@ import ShowDetail from '../assets/showDetail.svg';
 import Share from '../assets/share.svg';
 import { useEffect, useState } from 'react';
 import { PinType } from '../types/Pin';
-import { getApi } from '../utils/getApi';
+import { getApi } from '../apis/getApi';
 import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';

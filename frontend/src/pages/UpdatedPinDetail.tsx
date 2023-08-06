@@ -5,7 +5,7 @@ import Plus from '../assets/plus.svg';
 import Box from '../components/common/Box';
 import Textarea from '../components/common/Textarea';
 import Input from '../components/common/Input';
-import { putApi } from '../utils/putApi';
+import { putApi } from '../apis/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
 import { ModifyPinFormValuesType } from '../types/FormValues';
 

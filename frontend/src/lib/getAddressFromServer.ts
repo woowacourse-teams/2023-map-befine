@@ -1,4 +1,4 @@
-import { getAddress } from '../utils/getAddress';
+import { getAddress } from '../apis/getAddress';
 
 const getAddressFromServer = async (lat: any, lng: any) => {
   const version = '1';

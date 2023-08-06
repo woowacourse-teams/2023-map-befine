@@ -5,7 +5,7 @@ import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { getApi } from '../utils/getApi';
+import { getApi } from '../apis/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
