@@ -4,7 +4,7 @@ import { colorThemeKey } from '../../../themes/color';
 import { SpaceThemeKeys } from '../../../themes/spacing';
 import { radiusKey } from '../../../themes/radius';
 
-export type BoxProps = {
+export interface BoxProps {
   display?: string;
   width?: string;
   height?: string;
@@ -28,7 +28,7 @@ export type BoxProps = {
   cursor?: string;
   opacity?: string;
   $zIndex?: number;
-};
+}
 
 const Box = styled.div<BoxProps>`
   display: ${({ display }) => display ?? 'block'};

@@ -3,10 +3,11 @@ import theme from '../../../themes';
 
 export type ButtonVariant = 'primary' | 'secondary';
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant: ButtonVariant;
   children: React.ReactNode;
-};
+}
 
 const variants = {
   primary: {

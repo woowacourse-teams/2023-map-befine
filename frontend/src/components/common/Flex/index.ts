@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import Box, { BoxProps } from '../Box';
 
-type FlexProps = BoxProps & {
+interface FlexProps extends BoxProps {
   $flexDirection?: string;
   $flexWrap?: string;
   $flexBasis?: string;
@@ -13,7 +13,7 @@ type FlexProps = BoxProps & {
   $justifyItems?: string;
   flex?: string;
   $gap?: string;
-};
+}
 
 const Flex = styled(Box)<FlexProps>`
   display: flex;
