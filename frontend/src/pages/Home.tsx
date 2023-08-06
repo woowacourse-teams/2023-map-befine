@@ -32,7 +32,7 @@ const Home = () => {
   };
 
   const getAndSetDataFromServer = async () => {
-    const topics = await getApi('/topics');
+    const topics = await getApi('default', '/topics');
     setTopics(topics);
   };
 

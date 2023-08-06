@@ -26,6 +26,7 @@ const SelectedTopic = () => {
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(
+      'default',
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );
     const topicHashmap = new Map([]);

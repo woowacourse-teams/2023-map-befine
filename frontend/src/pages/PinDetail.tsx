@@ -32,7 +32,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
 
   useEffect(() => {
     const getPinData = async () => {
-      const pinData = await getApi(`/pins/${pinId}`);
+      const pinData = await getApi('default', `/pins/${pinId}`);
       setPin(pinData);
       setFormValues({
         id: pinData.id,
