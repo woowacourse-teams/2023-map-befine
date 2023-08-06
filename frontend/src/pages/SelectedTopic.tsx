@@ -16,7 +16,7 @@ import useNavigator from '../hooks/useNavigator';
 const SelectedTopic = () => {
   const { topicId } = useParams();
   const [tagPins, setTagPins] = useState<string[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
