@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import { CoordinatesContext } from './CoordinatesContext';
 import { useParams } from 'react-router-dom';
 import useNavigator from '../hooks/useNavigator';
-import pinImageMap from '../const/pinImage';
+import pinImageMap from '../constants/pinImage';
 
 type MarkerContextType = {
   markers: any[];
