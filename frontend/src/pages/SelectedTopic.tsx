@@ -138,7 +138,7 @@ const SelectedTopic = () => {
 
         {selectedPinId && (
           <>
-            <ToggleButton isCollapsed={!isOpen} onClick={togglePinDetail}>
+            <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>
               ◀
             </ToggleButton>
             <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
@@ -170,7 +170,7 @@ const PinDetailWrapper = styled.div`
   }
 `;
 
-const ToggleButton = styled.button<{ isCollapsed: boolean }>`
+const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
   position: absolute;
   top: 50%;
   left: 800px;
@@ -184,7 +184,7 @@ const ToggleButton = styled.button<{ isCollapsed: boolean }>`
   cursor: pointer;
 
   ${(props) =>
-    props.isCollapsed &&
+    props.$isCollapsed &&
     `
     transform: rotate(180deg);
     top:45%;
