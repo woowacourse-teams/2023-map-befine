@@ -11,27 +11,23 @@ type FlexProps = BoxProps & {
   $alignContent?: string;
   $justifyContent?: string;
   $justifyItems?: string;
-  $zIndex?: number;
   flex?: string;
   $gap?: string;
 };
 
 const Flex = styled(Box)<FlexProps>`
   display: flex;
-  ${({ $flexDirection }) =>
-    $flexDirection && `flex-direction: ${$flexDirection};`}
-  ${({ $flexWrap }) => $flexWrap && `flex-wrap: ${$flexWrap};`}
-  ${({ $flexBasis }) => $flexBasis && `flex-basis: ${$flexBasis};`}
-  ${({ $flexGrow }) => $flexGrow && `flex-grow: ${$flexGrow};`}
-  ${({ $flexShrink }) => $flexShrink && `flex-shrink: ${$flexShrink};`}
-  ${({ $alignItems }) => $alignItems && `align-items: ${$alignItems};`}
-  ${({ $alignContent }) => $alignContent && `align-content: ${$alignContent};`}
-  ${({ $justifyContent }) =>
-    $justifyContent && `justify-content: ${$justifyContent};`}
-  ${({ $justifyItems }) => $justifyItems && `justify-items: ${$justifyItems};`}
-  z-index: ${({ $zIndex }) => $zIndex};
-  ${({ flex }) => flex && `flex: ${flex};`};
-  ${({ $gap }) => $gap && `gap: ${$gap};`}
+  flex-direction: ${({ $flexDirection }) => $flexDirection};
+  flex-wrap: ${({ $flexWrap }) => $flexWrap};
+  flex-basis: ${({ $flexBasis }) => $flexBasis};
+  flex-grow: ${({ $flexGrow }) => $flexGrow};
+  flex-shrink: ${({ $flexShrink }) => $flexShrink};
+  align-items: ${({ $alignItems }) => $alignItems};
+  align-content: ${({ $alignContent }) => $alignContent};
+  justify-content: ${({ $justifyContent }) => $justifyContent};
+  justify-items: ${({ $justifyItems }) => $justifyItems};
+  flex: ${({ flex }) => flex};
+  gap: ${({ $gap }) => $gap};
 `;
 
 export default Flex;
