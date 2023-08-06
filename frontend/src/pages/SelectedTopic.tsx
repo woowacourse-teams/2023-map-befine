@@ -151,7 +151,7 @@ const SelectedTopic = () => {
                 padding={4}
                 $flexDirection="column"
                 $borderLeft={`1px solid ${theme.color.gray}`}
-                $zIndex={99}
+                $zIndex={1}
               >
                 <PinDetail pinId={selectedPinId} />
               </Flex>
@@ -174,7 +174,7 @@ const ToggleButton = styled.button<{ isCollapsed: boolean }>`
   top: 50%;
   left: 800px;
   transform: translateY(-50%);
-  z-index: 99999;
+  z-index: 1;
   height: 80px;
   background-color: #fff;
   padding: 12px;
@@ -188,7 +188,7 @@ const ToggleButton = styled.button<{ isCollapsed: boolean }>`
     transform: rotate(180deg);
     top:45%;
     left: 400px;
-    z-index: 99999;
+    z-index: 1;
     `}
 
   &:hover {

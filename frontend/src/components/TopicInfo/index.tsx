@@ -5,6 +5,7 @@ import Share from '../../assets/share.svg';
 import Button from '../common/Button';
 import Space from '../common/Space';
 import useNavigator from '../../hooks/useNavigator';
+import useToast from '../../hooks/useToast';
 
 export interface TopicInfoProps {
   fullUrl?: string;
@@ -26,6 +27,7 @@ const TopicInfo = ({
   topicDescription,
 }: TopicInfoProps) => {
   const { routePage } = useNavigator();
+  const { showToast } = useToast();
 
   const goToNewPin = () => {
     routePage(`/new-pin?topic-id=${topicId}`, fullUrl);
@@ -35,10 +37,9 @@ const TopicInfo = ({
     try {
       const topicUrl = window.location.href.split('?')[0];
       await navigator.clipboard.writeText(topicUrl);
-      alert('토픽 링크가 복사되었습니다.');
+      showToast('info', '토픽 링크가 복사되었습니다.');
     } catch (err) {
-      if (typeof err === 'string') throw new Error(err);
-      throw new Error('[ERROR] clipboard error');
+      showToast('error', '토픽 링크를 복사하는데 실패했습니다.');
     }
   };
 
