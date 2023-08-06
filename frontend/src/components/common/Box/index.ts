@@ -7,17 +7,13 @@ import { radiusKey } from '../../../themes/radius';
 export type BoxProps = {
   display?: string;
   width?: string;
-  $minWidth?: string;
   height?: string;
-  padding?: SpaceThemeKeys;
-  $paddingTop?: SpaceThemeKeys;
-  $paddingRight?: SpaceThemeKeys;
-  $paddingBottom?: SpaceThemeKeys;
-  $paddingLeft?: SpaceThemeKeys;
-  $backgroundColor?: colorThemeKey;
-  border?: string;
-  overflow?: string;
+  $minWidth?: string;
   $minHeight?: string;
+  padding?: SpaceThemeKeys | string;
+  $backgroundColor?: colorThemeKey;
+  $backdropFilter?: string;
+  overflow?: string;
   color?: colorThemeKey;
   position?: string;
   right?: string;
@@ -30,30 +26,20 @@ export type BoxProps = {
   $borderBottom?: string;
   $borderLeft?: string;
   cursor?: string;
-  $backgroundImage?: string;
-  $backgroundSize?: string;
-  $backdropFilter?: string;
   opacity?: string;
+  $zIndex?: number;
 };
 
 const Box = styled.div<BoxProps>`
   display: ${({ display }) => display ?? 'block'};
   background-color: ${({ $backgroundColor }) =>
     $backgroundColor && theme.color[$backgroundColor]};
+  backdrop-filter: ${({ $backdropFilter }) => $backdropFilter};
   color: ${({ color }) => color && theme.color[color]};
-  padding: ${({ padding }) => padding && theme.spacing[Number(padding)]};
-  padding-top: ${({ $paddingTop }) =>
-    $paddingTop && theme.spacing[Number($paddingTop)]};
-  padding-right: ${({ $paddingRight }) =>
-    $paddingRight && theme.spacing[Number($paddingRight)]};
-  padding-bottom: ${({ $paddingBottom }) =>
-    $paddingBottom && theme.spacing[Number($paddingBottom)]};
-  padding-left: ${({ $paddingLeft }) =>
-    $paddingLeft && theme.spacing[Number($paddingLeft)]};
+  padding: ${({ padding }) => padding && convertPadding(padding)};
   width: ${({ width }) => width};
-  min-width: ${({ $minWidth }) => $minWidth};
   height: ${({ height }) => height};
-  border: ${({ border }) => border};
+  min-width: ${({ $minWidth }) => $minWidth};
   min-height: ${({ $minHeight }) => $minHeight};
   overflow: ${({ overflow }) => overflow};
   position: ${({ position }) => position};
@@ -68,11 +54,14 @@ const Box = styled.div<BoxProps>`
   border-bottom: ${({ $borderBottom }) => $borderBottom};
   border-left: ${({ $borderLeft }) => $borderLeft};
   cursor: ${({ cursor }) => cursor};
-  background-image: ${({ $backgroundImage }) =>
-    $backgroundImage &&
-    `url(${$backgroundImage}),  url('https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg')`};
-  background-size: ${({ $backgroundSize }) => $backgroundSize};
-  backdrop-filter: ${({ $backdropFilter }) => $backdropFilter};
   opacity: ${({ opacity }) => opacity};
+  z-index: ${({ $zIndex }) => $zIndex};
 `;
+
+const convertPadding = (padding: SpaceThemeKeys | string) => {
+  if (typeof padding === 'string' && padding.length > 1) return padding;
+
+  return theme.spacing[Number(padding)];
+};
+
 export default Box;

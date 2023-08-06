@@ -45,12 +45,7 @@ const Layout = ({ children }: LayoutProps) => {
             height="100vh"
             $backgroundColor="white"
           >
-            <Flex
-              $flexDirection="column"
-              $paddingTop={4}
-              $paddingRight={4}
-              $paddingLeft={4}
-            >
+            <Flex $flexDirection="column" padding="20px 20px 0 20px">
               <Logo />
               <Space size={5} />
               <Input
@@ -62,9 +57,7 @@ const Layout = ({ children }: LayoutProps) => {
               height="calc(100vh - 120px)"
               $flexDirection="column"
               overflow="auto"
-              $paddingRight={4}
-              $paddingLeft={4}
-              $paddingBottom={4}
+              padding="0 20px 20px 20px"
             >
               {children}
             </Flex>
