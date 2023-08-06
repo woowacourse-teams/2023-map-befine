@@ -9,6 +9,7 @@ import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { useLocation } from 'react-router-dom';
+import useToast from '../hooks/useToast';
 
 const DEFAULT_IMAGE =
   'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
@@ -22,6 +23,7 @@ const NewTopic = () => {
   });
   const { routePage } = useNavigator();
   const { state: taggedIds } = useLocation();
+  const { showToast } = useToast();
 
   const goToBack = () => {
     routePage(-1);
@@ -37,18 +39,8 @@ const NewTopic = () => {
   const postToServer = async () => {
     const response =
       taggedIds?.length > 1 && typeof taggedIds !== 'string'
-        ? await postApi('/topics/merge', {
-            image: formValues.image || DEFAULT_IMAGE,
-            name: formValues.name,
-            description: formValues.description,
-            topics: taggedIds,
-          })
-        : await postApi('/topics/new', {
-            image: formValues.image || DEFAULT_IMAGE,
-            name: formValues.name,
-            description: formValues.description,
-            pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
-          });
+        ? await mergeTopics()
+        : await createTopic();
 
     const location = response.headers.get('Location');
 
@@ -56,6 +48,28 @@ const NewTopic = () => {
       const topicIdFromLocation = location.split('/')[2];
       return topicIdFromLocation;
     }
+  };
+
+  const mergeTopics = async () => {
+    showToast('info', `${formValues.name} 토픽을 병합하였습니다.`);
+
+    return await postApi('/topics/merge', {
+      image: formValues.image || DEFAULT_IMAGE,
+      name: formValues.name,
+      description: formValues.description,
+      topics: taggedIds,
+    });
+  };
+
+  const createTopic = async () => {
+    showToast('info', `${formValues.name} 토픽을 생성하였습니다.`);
+
+    return await postApi('/topics/new', {
+      image: formValues.image || DEFAULT_IMAGE,
+      name: formValues.name,
+      description: formValues.description,
+      pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
+    });
   };
 
   return (
@@ -81,7 +95,6 @@ const NewTopic = () => {
             value={formValues.image}
             placeholder="원하는 배경이 있을 시 이미지 링크를 남겨주세요."
             onChange={onChangeInput}
-            autoFocus={true}
             tabIndex={1}
           />
         </section>
@@ -104,6 +117,7 @@ const NewTopic = () => {
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
             onChange={onChangeInput}
             tabIndex={2}
+            autoFocus={true}
           />
         </section>
 

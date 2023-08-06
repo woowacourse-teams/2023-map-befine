@@ -15,25 +15,26 @@ import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { useLocation } from 'react-router-dom';
+import useToast from '../hooks/useToast';
 
 const NewPin = () => {
   const { state: prevUrl } = useLocation();
   const [topic, setTopic] = useState<TopicType | null>(null);
-  const { markers, clickedMarker } = useContext(MarkerContext);
+  const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
-  const { formValues, setFormValues, onChangeInput } =
-    useFormValues<NewPinValuesType>({
-      topicId: 0,
-      name: '',
-      address: '',
-      description: '',
-      latitude: '',
-      longitude: '',
-      legalDongCode: '',
-      images: [],
-    });
+  const { formValues, onChangeInput } = useFormValues<NewPinValuesType>({
+    topicId: 0,
+    name: '',
+    address: '',
+    description: '',
+    latitude: '',
+    longitude: '',
+    legalDongCode: '',
+    images: [],
+  });
   const { routePage } = useNavigator();
+  const { showToast } = useToast();
   const addressRef = useRef<HTMLInputElement | null>(null);
 
   const goToBack = () => {
@@ -60,6 +61,8 @@ const NewPin = () => {
 
     if (prevUrl.length > 1) routePage(`/topics/${prevUrl}`, [topic!.id]);
     else routePage(`/topics/${topic?.id}`, [topic!.id]);
+
+    showToast('info', `${formValues.name} 핀을 추가하였습니다.`);
 
     // 선택된 마커가 있으면 마커를 지도에서 제거
     if (clickedMarker) {
