@@ -1,11 +1,11 @@
 import { forwardRef, useContext } from 'react';
-import Flex from './common/Flex';
-import { MarkerContext } from '../context/MarkerContext';
-import useMapClick from '../hooks/useMapClick';
-import useClickedCoordinate from '../hooks/useClickedCoordinate';
-import useUpdateCoordinates from '../hooks/useUpdateCoordinates';
-import useFocusToMarker from '../hooks/useFocusToMarkers';
-import useAnimateClickedPin from '../hooks/useAnimateClickedPin';
+import Flex from '../common/Flex';
+import { MarkerContext } from '../../context/MarkerContext';
+import useMapClick from '../../hooks/useMapClick';
+import useClickedCoordinate from '../../hooks/useClickedCoordinate';
+import useUpdateCoordinates from '../../hooks/useUpdateCoordinates';
+import useFocusToMarker from '../../hooks/useFocusToMarkers';
+import useAnimateClickedPin from '../../hooks/useAnimateClickedPin';
 
 const Map = (props: any, ref: any) => {
   const { map } = props;
