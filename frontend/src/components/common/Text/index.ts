@@ -15,7 +15,7 @@ export interface TextProps {
   right?: string;
   bottom?: string;
   left?: string;
-  $zIndex?: string;
+  $zIndex?: number;
   overflow?: string;
   $whiteSpace?: string;
   $wordBreak?: string;
