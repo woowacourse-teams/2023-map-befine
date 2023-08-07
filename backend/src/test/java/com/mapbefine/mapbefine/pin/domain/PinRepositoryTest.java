@@ -73,6 +73,8 @@ class PinRepositoryTest {
         assertThat(deletedPin.isDeleted()).isTrue();
     }
 
+    // TODO PinRepositoryTest에서 테스트할 내용이 맞을까요? 서비스 계층에서 테스트할 내용 아닐까요?
+    // TODO 토픽 삭제 시에도 핀 이미지 삭제 처리되어야 할 것 같아요
     @Test
     @DisplayName("토픽 ID로 핀을 삭제하면 soft-deleting 된다.")
     void deleteAllByTopicId_Success() {

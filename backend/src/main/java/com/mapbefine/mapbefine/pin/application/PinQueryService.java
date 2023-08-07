@@ -33,7 +33,6 @@ public class PinQueryService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
 
         if (member.canRead(pin.getTopic())) {
-            // TODO 모든 PinImage 조회
             return PinDetailResponse.from(pin);
         }
         throw new IllegalArgumentException("해당 토픽의 핀 조회 권한이 없습니다.");

@@ -210,6 +210,7 @@ class PinCommandServiceTest {
         assertThat(pinImages).isEmpty();
     }
 
+    // TODO PinCommandServiceTest에서 테스트할 내용이 맞을까요? 토픽테스트에서 하는 건 어떨까요?
     @Test
     @DisplayName("토픽을 삭제하면 이와 관련된 모든 핀들이 soft-deleting 된다.")
     void removeAllByTopicId_Success() {
