@@ -16,12 +16,12 @@ class MemberTest {
         String imageUrl = "https://map-befine-official.github.io/favicon.png";
         Role role = Role.ADMIN;
 
-        // then
+        // when
         Member member = Member.of(
-                "member",
-                "member@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
-                Role.ADMIN
+                name,
+                email,
+                imageUrl,
+                role
         );
 
         // then
