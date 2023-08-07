@@ -1,9 +1,15 @@
-import { ReactNode, createContext, useState } from 'react';
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useState,
+} from 'react';
 import ToastProps from '../types/Toast';
 
 interface ToastContextProps {
   toast: ToastProps;
-  setToast: React.Dispatch<React.SetStateAction<ToastProps>>;
+  setToast: Dispatch<SetStateAction<ToastProps>>;
 }
 
 interface ToastProviderProps {
