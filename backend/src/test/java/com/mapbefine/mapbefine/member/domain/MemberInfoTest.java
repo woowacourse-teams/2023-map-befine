@@ -58,7 +58,7 @@ public class MemberInfoTest {
         @ParameterizedTest
         @NullSource
         @EmptySource
-        @ValueSource(strings = "jakind")
+        @ValueSource(strings = "member")
         @DisplayName("유효한 이메일이 아닌 경우 예외가 발생한다")
         void whenEmailIsInvalid_thenFail(String invalidEmail) {
             //given when then
@@ -87,17 +87,14 @@ public class MemberInfoTest {
         @Test
         @DisplayName("유효하지 않은 Role 이 들어오는 경우 예외가 발생한다.")
         void whenRoleIsInvalid_thenFail() {
-            String invalidImageUrl = "image.png";
-
             //given when then
             assertThatThrownBy(() -> MemberInfo.of(
                     VALID_NAME,
                     VALID_EMAIL,
-                    invalidImageUrl,
-                    VALID_ROLE
+                    VALID_IMAGE_URL,
+                    null
             )).isInstanceOf(IllegalArgumentException.class);
         }
-
 
     }
 
