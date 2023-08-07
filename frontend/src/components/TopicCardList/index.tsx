@@ -6,7 +6,7 @@ import Space from '../common/Space';
 import { MarkerContext } from '../../context/MarkerContext';
 import Flex from '../common/Flex';
 
-const TopicCardContainer = () => {
+const TopicCardList = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
   const { markers, removeMarkers } = useContext(MarkerContext);
 
@@ -28,6 +28,7 @@ const TopicCardContainer = () => {
             return (
               <Fragment key={index}>
                 <TopicCard
+                  topicSize="small"
                   topicId={topic.id}
                   topicImage={topic.image}
                   topicTitle={topic.name}
@@ -43,4 +44,4 @@ const TopicCardContainer = () => {
   );
 };
 
-export default TopicCardContainer;
+export default TopicCardList;
