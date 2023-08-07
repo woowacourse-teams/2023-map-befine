@@ -16,6 +16,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private static final String EMPTY_EMAIL = "";
+
     private final AuthorizationExtractor<AuthInfo> authorizationExtractor;
     private final AuthService authService;
 
@@ -53,7 +55,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     private AuthMember createAuthMember(HttpServletRequest request) {
         AuthInfo authInfo = getAuthInfo(request)
-                .orElseGet(() -> new AuthInfo(""));
+                .orElseGet(() -> new AuthInfo(EMPTY_EMAIL));
 
         return authService.findAuthMemberByEmail(authInfo);
     }
