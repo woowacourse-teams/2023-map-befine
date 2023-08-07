@@ -13,6 +13,7 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -54,8 +55,7 @@ class PinControllerTest extends RestDocsIntegration {
                 "지번 주소",
                 "법정동 코드",
                 37,
-                127,
-                BASE_IMAGES
+                127
         );
 
         mockMvc.perform(
@@ -76,8 +76,7 @@ class PinControllerTest extends RestDocsIntegration {
 
         PinUpdateRequest pinUpdateRequest = new PinUpdateRequest(
                 "매튜의 안갈집",
-                "매튜가 다신 안 갈 집",
-                BASE_IMAGES
+                "매튜가 다신 안 갈 집"
         );
 
         mockMvc.perform(
@@ -169,4 +168,25 @@ class PinControllerTest extends RestDocsIntegration {
                 )));
     }
 
+
+    @Test
+    @DisplayName("핀 이미지 추가")
+    void addImage() throws Exception {
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        String authHeader = Base64.encodeBase64String(
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        PinImageCreateRequest pinImageCreateRequest = new PinImageCreateRequest(
+                1L,
+                "https://map-befine-official.github.io/favicon.png"
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/pins/images")
+                        .header(AUTHORIZATION, authHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pinImageCreateRequest))
+        ).andDo(restDocs.document());
+    }
 }

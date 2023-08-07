@@ -5,11 +5,13 @@ import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import java.net.URI;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,6 +77,14 @@ public class PinController {
         List<PinResponse> allResponses = pinQueryService.findAll(member);
 
         return ResponseEntity.ok(allResponses);
+    }
+
+    @PostMapping("/images")
+    public ResponseEntity<Void> addImage(AuthMember member, @RequestBody PinImageCreateRequest request) {
+        pinCommandService.addImage(member, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
     }
 
 }

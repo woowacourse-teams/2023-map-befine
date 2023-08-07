@@ -10,9 +10,11 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
+import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinInfo;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -30,18 +32,21 @@ public class PinCommandService {
     private final LocationRepository locationRepository;
     private final TopicRepository topicRepository;
     private final MemberRepository memberRepository;
+    private final PinImageRepository pinImageRepository;
 
     // TODO 예외처리 패턴 추상화
     public PinCommandService(
             PinRepository pinRepository,
             LocationRepository locationRepository,
             TopicRepository topicRepository,
-            MemberRepository memberRepository
+            MemberRepository memberRepository,
+            PinImageRepository pinImageRepository
     ) {
         this.pinRepository = pinRepository;
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
         this.memberRepository = memberRepository;
+        this.pinImageRepository = pinImageRepository;
     }
 
 
@@ -58,11 +63,6 @@ public class PinCommandService {
                     topic,
                     member
             );
-
-            // TODO Pin 안에 있어야 하는 것 아닌가?
-            for (String pinImage : request.images()) {
-                PinImage.createPinImageAssociatedWithPin(Image.of(pinImage), pin);
-            }
 
             return pinRepository.save(pin).getId();
         }
@@ -99,7 +99,6 @@ public class PinCommandService {
 
         if (authMember.canPinCreateOrUpdate(pin.getTopic())) {
             pin.updatePinInfo(request.name(), request.description());
-            // TODO PinImage도 update
             pinRepository.save(pin);
             return;
         }
@@ -112,10 +111,22 @@ public class PinCommandService {
 
         if (authMember.canDelete(pin.getTopic())) {
             pinRepository.deleteById(pinId);
-            // TODO PinImage는 어떻게 할 건지?
+            // TODO PinImage 모두 삭제
             return;
         }
         throw new IllegalArgumentException("해당 토픽의 핀을 삭제할 권한이 없습니다.");
+    }
+
+    public void addImage(AuthMember authMember, PinImageCreateRequest request) {
+        Pin pin = pinRepository.findById(request.pinId())
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+
+        if (authMember.canPinCreateOrUpdate(pin.getTopic())) {
+            PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of(request.imageUrl()), pin);
+            pinImageRepository.save(pinImage);
+            return;
+        }
+        throw new IllegalArgumentException("해당 토픽의 핀을 수정할 권한이 없습니다.");
     }
 
 }

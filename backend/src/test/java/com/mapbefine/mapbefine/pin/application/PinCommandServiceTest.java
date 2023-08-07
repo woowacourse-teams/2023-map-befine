@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -21,20 +22,15 @@ import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@SpringBootTest
+@ServiceTest
 class PinCommandServiceTest {
-    // TODO : Custom Annotation 인 @ServiceTest 를 붙여서 동작시키면, 중복된 Location 을 전혀 찾아오지 못하는 문제가 발생 (터지는 테스트는 @DisplayName("핀을 저장하려는 위치(Location)가 존재하면 해당 위치에 핀을 저장한다." 이 테스트))
-
-    private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     @Autowired
     private PinCommandService pinCommandService;
@@ -53,7 +49,6 @@ class PinCommandServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
-
 
     private Topic topic;
     private Member member;
@@ -93,8 +88,7 @@ class PinCommandServiceTest {
                 "road",
                 "legalDongCode",
                 latitude,
-                longitude,
-                BASE_IMAGES
+                longitude
         );
 
         Long savedPinId = pinCommandService.save(authMember, request);
@@ -109,7 +103,7 @@ class PinCommandServiceTest {
                 latitude,
                 longitude,
                 null,
-                BASE_IMAGES
+                Collections.emptyList()
         );
 
         assertThat(location.getPins()).extractingResultOf("getId")
@@ -149,8 +143,7 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude,
-                longitude,
-                BASE_IMAGES
+                longitude
         );
         Long savedPinId = pinCommandService.save(authMember, request);
 
@@ -164,7 +157,7 @@ class PinCommandServiceTest {
                 latitude,
                 longitude,
                 null,
-                BASE_IMAGES
+                Collections.emptyList()
         );
 
         List<Location> locations = locationRepository.findAll();
@@ -194,16 +187,14 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude,
-                longitude,
-                BASE_IMAGES
+                longitude
         );
         Long savedPinId = pinCommandService.save(authMember, createRequest);
 
         // when
         PinUpdateRequest updateRequest = new PinUpdateRequest(
                 "updatedName",
-                "updatedDescription",
-                BASE_IMAGES
+                "updatedDescription"
         );
         pinCommandService.update(authMember, savedPinId, updateRequest);
 
@@ -217,7 +208,7 @@ class PinCommandServiceTest {
                 latitude,
                 longitude,
                 null,
-                BASE_IMAGES
+                Collections.emptyList()
         );
 
         assertThat(actual).usingRecursiveComparison()
@@ -241,13 +232,12 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude,
-                longitude,
-                BASE_IMAGES
+                longitude
         );
         Long savedPinId = pinCommandService.save(authMember, createRequest);
 
         // when then
-        PinUpdateRequest updateRequest = new PinUpdateRequest("", "updatedDescription", BASE_IMAGES);
+        PinUpdateRequest updateRequest = new PinUpdateRequest("", "updatedDescription");
         assertThatThrownBy(() -> pinCommandService.update(authMember, savedPinId, updateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -268,8 +258,7 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude,
-                longitude,
-                BASE_IMAGES
+                longitude
         );
         Long savedPinId = pinCommandService.save(authMember, createRequest);
 
@@ -301,8 +290,7 @@ class PinCommandServiceTest {
                 "address",
                 "legalDongCode",
                 latitude,
-                longitude,
-                BASE_IMAGES
+                longitude
         );
 
         for (int i = 0; i < 10; i++) {

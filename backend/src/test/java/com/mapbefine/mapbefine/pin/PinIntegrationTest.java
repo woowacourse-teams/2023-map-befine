@@ -13,12 +13,12 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import io.restassured.*;
 import io.restassured.response.*;
-import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ import org.springframework.http.MediaType;
 class PinIntegrationTest extends IntegrationTest {
 
     private static final String BASIC_FORMAT = "Basic %s";
-    private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
+    private static final String BASE_IMAGE = "https://map-befine-official.github.io/favicon.png";
 
     private Topic topic;
     private Location location;
@@ -67,8 +67,7 @@ class PinIntegrationTest extends IntegrationTest {
                         .getRoadBaseAddress(),
                 "legalDongCode",
                 location.getLatitude(),
-                location.getLongitude(),
-                BASE_IMAGES
+                location.getLongitude()
         );
         createRequestNoDuplicateLocation = new PinCreateRequest(
                 topic.getId(),
@@ -77,8 +76,7 @@ class PinIntegrationTest extends IntegrationTest {
                 "기존에 없는 주소",
                 "legalDongCode",
                 37,
-                126,
-                BASE_IMAGES
+                126
         );
         createRequestNoDuplicateLocation2 = new PinCreateRequest(
                 topic.getId(),
@@ -87,8 +85,7 @@ class PinIntegrationTest extends IntegrationTest {
                 "기존에 없는 주소",
                 "legalDongCode",
                 37.12345,
-                126.12345,
-                BASE_IMAGES
+                126.12345
         );
     }
 
@@ -158,9 +155,7 @@ class PinIntegrationTest extends IntegrationTest {
     @DisplayName("Pin 상세 조회를 하면 Pin 정보와 함께 200을 반환한다.")
     void findDetail_Success() {
         // given
-        ExtractableResponse<Response> createResponse = createPin(createRequestNoDuplicateLocation);
-        String locationHeader = createResponse.header("Location");
-        long pinId = Long.parseLong(locationHeader.split("/")[2]);
+        long pinId = createPinAndGetId(createRequestNoDuplicateLocation);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -179,5 +174,29 @@ class PinIntegrationTest extends IntegrationTest {
                 .isEqualTo(createRequestNoDuplicateLocation.address());
     }
 
+    private long createPinAndGetId(PinCreateRequest request) {
+        ExtractableResponse<Response> createResponse = createPin(request);
+        String locationHeader = createResponse.header("Location");
+        return Long.parseLong(locationHeader.split("/")[2]);
+    }
+
+    @Test
+    @DisplayName("특정 Pin 에 대한 PinImage 를 생성하면(이미지 추가) 201을 반환한다.")
+    void addImage_Success() {
+        // given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new PinImageCreateRequest(pinId, BASE_IMAGE))
+                .when().post("/pins/images")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
 }
 
