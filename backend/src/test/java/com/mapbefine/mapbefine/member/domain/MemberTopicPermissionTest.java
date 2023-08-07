@@ -15,7 +15,11 @@ class MemberTopicPermissionTest {
     @DisplayName("정상적인 값을 입력하면 객체가 생성된다.")
     void createMemberTopicPermission() {
         // given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        Member member = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.ADMIN
+        );
         Topic topic = TopicFixture.createByName("topic", member);
 
         // when
@@ -33,7 +37,11 @@ class MemberTopicPermissionTest {
     @DisplayName("MemberTopicPermission 을 생성하면, Topic 과 Member 에 등록이 된다.")
     void createPermissionAssociatedWithTopicAndMember() {
         // given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        Member member = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.ADMIN
+        );
         Topic topic = TopicFixture.createByName("topic", member);
 
         // when

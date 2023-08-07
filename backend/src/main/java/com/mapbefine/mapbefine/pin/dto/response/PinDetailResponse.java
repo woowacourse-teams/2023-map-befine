@@ -4,7 +4,6 @@ import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.pin.Domain.PinImage;
 import com.mapbefine.mapbefine.pin.Domain.PinInfo;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 

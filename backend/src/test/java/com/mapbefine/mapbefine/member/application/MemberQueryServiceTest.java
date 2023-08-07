@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-public class MemberQueryServiceTest {
+class MemberQueryServiceTest {
 
     @Autowired
     private MemberQueryService memberQueryService;
@@ -199,7 +199,13 @@ public class MemberQueryServiceTest {
     @DisplayName("존재하지 않는 유저가 Pin 을 조회할 때 예외가 발생한다.")
     void findPinsByMember_whenNoneExists_thenFail() {
         // given
-        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create(
+                        "member",
+                        "member@naver.com",
+                        Role.USER
+                )
+        );
         memberRepository.delete(member);
 
         // when then
@@ -229,7 +235,13 @@ public class MemberQueryServiceTest {
     @DisplayName("존재하지 않는 유저가 본인이 만든 토픽을 조회할 때 예외가 발생한다.")
     void findTopicsByMember_whenNoneExists_thenFail() {
         // given
-        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create(
+                        "member",
+                        "member@naver.com",
+                        Role.USER
+                )
+        );
         memberRepository.delete(member);
 
         // when then
