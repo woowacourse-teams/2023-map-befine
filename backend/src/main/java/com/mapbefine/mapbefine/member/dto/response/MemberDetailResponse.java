@@ -22,4 +22,5 @@ public record MemberDetailResponse(
                 member.getUpdatedAt()
         );
     }
+
 }

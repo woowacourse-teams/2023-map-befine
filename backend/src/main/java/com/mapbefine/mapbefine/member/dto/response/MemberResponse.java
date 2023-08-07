@@ -18,4 +18,5 @@ public record MemberResponse (
                 memberInfo.getEmail()
         );
     }
+
 }

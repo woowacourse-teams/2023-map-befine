@@ -36,6 +36,24 @@ public class MemberController {
         this.memberQueryService = memberQueryService;
     }
 
+    @PostMapping
+    public ResponseEntity<Void> add(@RequestBody MemberCreateRequest request) {
+        Long savedId = memberCommandService.save(request);
+
+        return ResponseEntity.created(URI.create("/members/" + savedId)).build();
+    }
+
+    @LoginRequired
+    @PostMapping("/permissions")
+    public ResponseEntity<Void> addMemberTopicPermission(
+            AuthMember authMember,
+            @RequestBody MemberTopicPermissionCreateRequest request
+    ) {
+        Long savedId = memberCommandService.saveMemberTopicPermission(authMember, request);
+
+        return ResponseEntity.created(URI.create("/members/permissions/" + savedId)).build();
+    }
+
     @LoginRequired
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberDetailResponse> findMemberById(@PathVariable Long memberId) {
@@ -50,13 +68,6 @@ public class MemberController {
         List<MemberResponse> responses = memberQueryService.findAll();
 
         return ResponseEntity.ok(responses);
-    }
-
-    @PostMapping
-    public ResponseEntity<Void> add(@RequestBody MemberCreateRequest request) {
-        Long savedId = memberCommandService.save(request);
-
-        return ResponseEntity.created(URI.create("/members/" + savedId)).build();
     }
 
     @LoginRequired
@@ -76,25 +87,6 @@ public class MemberController {
     }
 
     @LoginRequired
-    @PostMapping("/permissions")
-    public ResponseEntity<Void> addMemberTopicPermission(
-            AuthMember authMember,
-            @RequestBody MemberTopicPermissionCreateRequest request
-    ) {
-        Long savedId = memberCommandService.saveMemberTopicPermission(authMember, request);
-
-        return ResponseEntity.created(URI.create("/members/permissions/" + savedId)).build();
-    }
-
-    @LoginRequired
-    @DeleteMapping("/permissions/{permissionId}")
-    public ResponseEntity<Void> deleteMemberTopicPermission(AuthMember authMember, @PathVariable Long permissionId) {
-        memberCommandService.deleteMemberTopicPermission(authMember, permissionId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @LoginRequired
     @GetMapping("/permissions/topics/{topicId}")
     public ResponseEntity<List<MemberResponse>> findMemberTopicPermissionAll(@PathVariable Long topicId) {
         List<MemberResponse> responses = memberQueryService.findAllWithPermission(topicId);
@@ -108,6 +100,14 @@ public class MemberController {
         MemberDetailResponse response = memberQueryService.findMemberTopicPermissionById(permissionId);
 
         return ResponseEntity.ok(response);
+    }
+
+    @LoginRequired
+    @DeleteMapping("/permissions/{permissionId}")
+    public ResponseEntity<Void> deleteMemberTopicPermission(AuthMember authMember, @PathVariable Long permissionId) {
+        memberCommandService.deleteMemberTopicPermission(authMember, permissionId);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -83,7 +83,10 @@ public class MemberQueryService {
     }
 
     public List<MemberResponse> findAllWithPermission(Long topicId) {
-        return memberTopicPermissionRepository.findByTopicId(topicId)
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(NoSuchElementException::new);
+
+        return memberTopicPermissionRepository.findByTopic(topic)
                 .stream()
                 .map(MemberTopicPermission::getMember)
                 .map(MemberResponse::from)
@@ -96,4 +99,5 @@ public class MemberQueryService {
 
         return MemberDetailResponse.from(memberTopicPermission.getMember());
     }
+
 }
