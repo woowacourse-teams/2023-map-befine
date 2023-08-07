@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
-import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -92,10 +91,7 @@ class PinIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin을 생성하면 저장된 Pin의 Location 헤더값과 201을 반환한다.")
     void addIfExistDuplicateLocation_Success() {
-        //given
-        Address address = location.getAddress();
-
-        //when
+        //given, when
         ExtractableResponse<Response> response = createPin(createRequestDuplicateLocation);
 
         //then
@@ -187,6 +183,13 @@ class PinIntegrationTest extends IntegrationTest {
         long pinId = createPinAndGetId(createRequestDuplicateLocation);
 
         // when
+        ExtractableResponse<Response> response = createPinImage(pinId);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> createPinImage(long pinId) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -194,9 +197,33 @@ class PinIntegrationTest extends IntegrationTest {
                 .when().post("/pins/images")
                 .then().log().all()
                 .extract();
+        return response;
+    }
+
+    @Test
+    @DisplayName("특정 PinImage 를 삭제하면 204를 반환한다.")
+    void removeImage_Success() {
+        // given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+
+        // when
+        long pinImageId = createPinImageAndGetId(pinId);
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/pins/images/" + pinImageId)
+                .then().log().all()
+                .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    private long createPinImageAndGetId(long pinId) {
+        ExtractableResponse<Response> response = createPinImage(pinId);
+        String locationHeader = response.header("Location");
+        return Long.parseLong(locationHeader.split("/")[3]);
+    }
+
 }
 

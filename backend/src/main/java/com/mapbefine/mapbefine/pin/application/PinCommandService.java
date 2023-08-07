@@ -131,4 +131,15 @@ public class PinCommandService {
         throw new IllegalArgumentException("해당 토픽의 핀을 수정할 권한이 없습니다.");
     }
 
+    public void removeImage(AuthMember authMember, Long pinImageId) {
+        PinImage pinImage = pinImageRepository.findById(pinImageId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀 이미지입니다."));
+
+        Pin pin = pinImage.getPin();
+        if (authMember.canDelete(pin.getTopic())) {
+            pinImageRepository.deleteById(pinImageId);
+            return;
+        }
+        throw new IllegalArgumentException("해당 토픽의 핀을 수정할 권한이 없습니다.");
+    }
 }

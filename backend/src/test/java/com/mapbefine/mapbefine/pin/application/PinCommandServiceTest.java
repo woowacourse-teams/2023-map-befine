@@ -18,6 +18,7 @@ import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
@@ -243,5 +244,33 @@ class PinCommandServiceTest {
 
         assertThat(findTopicAfterDeleting.getPins()).extractingResultOf("isDeleted")
                 .doesNotContain(false);
+    }
+
+    @Test
+    @DisplayName("핀 이미지의 id를 전달받아 해당하는 핀 이미지를 hard delete 한다.")
+    void removeImage_Success() {
+        // given
+        double latitude = 37.123456;
+        double longitude = 127.123456;
+        Coordinate coordinate = Coordinate.of(latitude, longitude);
+        saveLocation(coordinate);
+
+        PinCreateRequest createRequest = new PinCreateRequest(
+                topic.getId(),
+                "name",
+                "description",
+                "address",
+                "legalDongCode",
+                latitude,
+                longitude
+        );
+        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinImageId = pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE));
+
+        // when
+        pinCommandService.removeImage(authMember, pinImageId);
+
+        // then
+        assertThat(pinImageRepository.findById(pinImageId)).isEmpty();
     }
 }
