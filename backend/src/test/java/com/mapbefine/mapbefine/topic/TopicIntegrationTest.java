@@ -3,12 +3,16 @@ package com.mapbefine.mapbefine.topic;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
+import com.mapbefine.mapbefine.location.LocationFixture;
+import com.mapbefine.mapbefine.location.domain.Location;
+import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -16,8 +20,9 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -34,6 +39,9 @@ class TopicIntegrationTest extends IntegrationTest {
 
     @Autowired
     private PinRepository pinRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
 
     @Autowired
     private TopicRepository topicRepository;
@@ -66,7 +74,8 @@ class TopicIntegrationTest extends IntegrationTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    private ExtractableResponse<Response> createNewTopic(TopicCreateRequest request, String authHeader) {
+    private ExtractableResponse<Response> createNewTopic(TopicCreateRequest request,
+            String authHeader) {
         return RestAssured.given()
                 .log().all()
                 .header(AUTHORIZATION, authHeader)
@@ -80,7 +89,16 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록과 함께 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithPins_Success() {
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = MemberFixture.create(Role.USER);
+        memberRepository.save(member);
+
+        Location location = LocationFixture.create();
+        locationRepository.save(location);
+
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+        Pin pin = PinFixture.create(location, topic);
+        topicRepository.save(topic);
+
         List<Pin> pins = pinRepository.findAll();
         List<Long> pinIds = pins.stream()
                 .map(Pin::getId)
@@ -286,6 +304,44 @@ class TopicIntegrationTest extends IntegrationTest {
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/topics/{id}", topicId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("Topic 상세 정보 여러개를 조회하면 200을 반환한다")
+    void findTopicDetailsByIds_Success() {
+        //given
+        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+
+        String authHeader = Base64.encodeBase64String(
+                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+        );
+        TopicCreateRequest request = new TopicCreateRequest(
+                "topicName",
+                "https://map-befine-official.github.io/favicon.png",
+                "description",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS,
+                Collections.emptyList()
+        );
+        ExtractableResponse<Response> createResponse1 = createNewTopic(request, authHeader);
+        ExtractableResponse<Response> createResponse2 = createNewTopic(request, authHeader);
+        String locationHeader1 = createResponse1.header("Location");
+        String locationHeader2 = createResponse2.header("Location");
+        long topicId1 = Long.parseLong(locationHeader1.split("/")[2]);
+        long topicId2 = Long.parseLong(locationHeader2.split("/")[2]);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("ids",topicId1 + "," + topicId2)
+                .when().get("/topics/ids")
                 .then().log().all()
                 .extract();
 
