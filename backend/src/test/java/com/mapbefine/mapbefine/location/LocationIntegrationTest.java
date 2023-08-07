@@ -28,7 +28,7 @@ public class LocationIntegrationTest extends IntegrationTest {
     void setAuthHeader() {
         Member member = MemberFixture.create(Role.USER);
         authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                ("Basic" + member.getEmail()).getBytes()
         );
     }
 
