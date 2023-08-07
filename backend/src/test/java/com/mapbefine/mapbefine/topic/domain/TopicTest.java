@@ -17,7 +17,7 @@ class TopicTest {
 
     @BeforeEach
     void setUp() {
-        topic = Topic.of(
+        topic = Topic.createTopicAssociatedWithCreator(
                 "매튜의 산스장",
                 "매튜가 엄마 몰래 찾는 산스장",
                 "https://example.com/image.jpg",

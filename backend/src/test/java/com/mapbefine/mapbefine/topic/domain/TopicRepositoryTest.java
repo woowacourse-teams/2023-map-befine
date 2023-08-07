@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.topic.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
@@ -14,29 +15,24 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 class TopicRepositoryTest {
 
-    private static final Member member = new Member(
-            "쥬니",
-            "cpot5620@gmail.com",
-            "프로필사진",
-            Role.USER
-    );
-
     @Autowired
     private TopicRepository topicRepository;
 
     @Autowired
     private MemberRepository memberRepository;
 
+    private Member member;
+
     @BeforeEach
     void setUp() {
-        memberRepository.save(member);
+        member = memberRepository.save(MemberFixture.create(Role.USER));
     }
 
     @Test
     @DisplayName("토픽을 삭제하면, soft-deleting 된다.")
     void deleteById_Success() {
         //given
-        Topic topic = Topic.of(
+        Topic topic = Topic.createTopicAssociatedWithCreator(
                 "토픽",
                 "토픽설명",
                 "https://example.com/image.jpg",

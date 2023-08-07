@@ -26,6 +26,18 @@ public class TopicQueryService {
                 .toList();
     }
 
+    public TopicDetailResponse findDetailById(AuthMember member, Long id) {
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+
+        if (member.canRead(topic)) {
+            return TopicDetailResponse.from(topic);
+        }
+
+        throw new IllegalArgumentException("조회할 수 없는 Topic 입니다.");
+    }
+
+    // TODO: 2023/08/07 토픽의 id가 존재하지 않는 경우도 검증해야 하는가 ?
     public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> ids) {
         List<Topic> topics = topicRepository.findByIdIn(ids);
 
@@ -44,14 +56,6 @@ public class TopicQueryService {
         if (topics.size() != readableCount) {
             throw new IllegalArgumentException("읽을 수 없는 토픽이 존재합니다.");
         }
-    }
-
-    public TopicDetailResponse findDetailById(AuthMember member, Long id) {
-        Topic topic = topicRepository.findById(id)
-                .filter(member::canRead)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
-
-        return TopicDetailResponse.from(topic);
     }
 
 }

@@ -14,7 +14,6 @@ import com.mapbefine.mapbefine.pin.Domain.PinInfo;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.math.BigDecimal;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,7 +33,7 @@ class PinTest {
                     127.123456
             )
     );
-    private static final Topic topic = Topic.of(
+    private static final Topic topic = Topic.createTopicAssociatedWithCreator(
             "topicName",
             "topicDescription",
             null,

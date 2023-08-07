@@ -21,7 +21,6 @@ import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,7 +65,7 @@ class PinCommandServiceTest {
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));
         authMember = AuthMember.from(member);
         topic = topicRepository.save(
-                Topic.of(
+                Topic.createTopicAssociatedWithCreator(
                         "topicName",
                         "topicDescription",
                         "https://map-befine-official.github.io/favicon.png",

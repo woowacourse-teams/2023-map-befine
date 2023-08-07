@@ -45,7 +45,7 @@ public class TopicCommandService {
     private Topic convertToTopic(AuthMember member, TopicCreateRequest request) {
         Member creator = findCreatorByAuthMember(member);
 
-        return Topic.of(
+        return Topic.createTopicAssociatedWithCreator(
                 request.name(),
                 request.description(),
                 request.image(),
@@ -113,7 +113,7 @@ public class TopicCommandService {
     private Topic convertToTopic(AuthMember member, TopicMergeRequest request) {
         Member creator = findCreatorByAuthMember(member);
 
-        return Topic.of(
+        return Topic.createTopicAssociatedWithCreator(
                 request.name(),
                 request.description(),
                 request.image(),

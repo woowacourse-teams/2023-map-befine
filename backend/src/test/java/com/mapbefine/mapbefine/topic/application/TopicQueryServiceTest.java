@@ -1,17 +1,15 @@
 package com.mapbefine.mapbefine.topic.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
-import com.mapbefine.mapbefine.location.LocationFixture;
-import com.mapbefine.mapbefine.location.domain.Location;
-import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -27,60 +25,172 @@ import org.springframework.beans.factory.annotation.Autowired;
 class TopicQueryServiceTest {
 
     @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private LocationRepository locationRepository;
-
-    @Autowired
     private TopicQueryService topicQueryService;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Autowired
     private TopicRepository topicRepository;
 
-    private Topic topic;
-    private Location ALL_PINS_LOCATION;
     private Member member;
-    private AuthMember authMember;
 
     @BeforeEach
     void setup() {
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
-        authMember = AuthMember.from(member);
-        ALL_PINS_LOCATION = LocationFixture.createByCoordinate(35.0, 127.0);
-        locationRepository.save(ALL_PINS_LOCATION);
-
-        topic = createAndSaveByNameAndPinCounts("준팍의 또간집", 1);
-    }
-
-    private Topic createAndSaveByNameAndPinCounts(String topicName, int pinCounts) {
-        Topic topic = TopicFixture.createByName(topicName, member);
-        for (int i = 0; i < pinCounts; i++) {
-            PinFixture.create(ALL_PINS_LOCATION, topic);
-        }
-        return topicRepository.save(topic);
+        member = memberRepository.save(MemberFixture.create(Role.USER));
     }
 
     @Test
-    @DisplayName("모든 Topic 목록을 조회한다.")
-    void findAll() {
-        // given
-        // when
+    @DisplayName("읽을 수 있는 모든 Topic 목록을 조회한다.")
+    void findAllReadable_Success1() {
+        //given
+        saveAllReadableTopicOfCount(1);
+        saveOnlyMemberReadableTopicOfCount(2);
+
+        AuthMember authMember = AuthMember.from(member);
+
+        //when
         List<TopicResponse> topics = topicQueryService.findAllReadable(authMember);
 
-        // then
-        assertThat(topics).contains(TopicResponse.from(topic));
+        //then
+        assertThat(topics).hasSize(3);
+        assertThat(topics).extractingResultOf("name")
+                .containsExactlyInAnyOrder(
+                        "아무나 읽을 수 있는 토픽",
+                        "토픽 멤버만 읽을 수 있는 토픽",
+                        "토픽 멤버만 읽을 수 있는 토픽"
+                );
     }
 
     @Test
-    @DisplayName("해당 ID를 가진 Topic을 조회한다.")
-    void findById() {
-        // given
-        // when
-        TopicDetailResponse actual = topicQueryService.findDetailById(authMember, topic.getId());
+    @DisplayName("읽을 수 있는 모든 Topic 목록을 조회한다.")
+    void findAllReadable_Success2() {
+        //given
+        saveAllReadableTopicOfCount(1);
+        saveOnlyMemberReadableTopicOfCount(10);
 
-        // then
-        assertThat(actual).isEqualTo(TopicDetailResponse.from(topic));
+        //when
+        AuthMember guest = new Guest();
+
+        List<TopicResponse> topics = topicQueryService.findAllReadable(guest);
+
+        //then
+        assertThat(topics).hasSize(1);
+        assertThat(topics).extractingResultOf("name")
+                .containsExactlyInAnyOrder("아무나 읽을 수 있는 토픽");
     }
 
+
+    void saveAllReadableTopicOfCount(int count) {
+        for (int i = 0; i < count; i++) {
+            topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
+        }
+    }
+
+    void saveOnlyMemberReadableTopicOfCount(int count) {
+        for (int i = 0; i < count; i++) {
+            topicRepository.save(TopicFixture.createPrivateAndGroupOnlyTopic(member));
+        }
+    }
+
+    @Test
+    @DisplayName("권한이 있는 토픽을 ID로 조회한다.")
+    void findDetailById_Success() {
+        //given
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+
+        topicRepository.save(topic);
+
+        //when
+        AuthMember guest = new Guest();
+
+        TopicDetailResponse detail = topicQueryService.findDetailById(guest, topic.getId());
+
+        //then
+        assertThat(detail.id()).isEqualTo(topic.getId());
+        assertThat(detail.name()).isEqualTo("아무나 읽을 수 있는 토픽");
+    }
+
+    @Test
+    @DisplayName("권한이 없는 토픽을 ID로 조회하면, 예외가 발생한다.")
+    void findDetailById_Fail() {
+        //given
+        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
+
+        topicRepository.save(topic);
+
+        //when then
+        AuthMember guest = new Guest();
+
+        assertThatThrownBy(() -> topicQueryService.findDetailById(guest, topic.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("조회할 수 없는 Topic 입니다.");
+    }
+
+    @Test
+    @DisplayName("권한이 있는 토픽을 여러개의 ID로 조회한다.")
+    void findDetailByIds_Success1() {
+        //given
+        Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
+
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        //when
+        AuthMember guest = new Guest();
+
+        List<TopicDetailResponse> details = topicQueryService.findDetailsByIds(
+                guest,
+                List.of(topic1.getId(), topic2.getId())
+        );
+
+        //then
+        assertThat(details).hasSize(2);
+        assertThat(details).extractingResultOf("name")
+                .containsExactlyInAnyOrder("아무나 읽을 수 있는 토픽", "아무나 읽을 수 있는 토픽");
+    }
+
+    @Test
+    @DisplayName("권한이 있는 토픽을 여러개의 ID로 조회한다.")
+    void findDetailByIds_Success2() {
+        //given
+        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(member);
+        Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
+
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        //when
+        AuthMember guest = AuthMember.from(member);
+
+        List<TopicDetailResponse> details = topicQueryService.findDetailsByIds(
+                guest,
+                List.of(topic1.getId(), topic2.getId())
+        );
+
+        //then
+        assertThat(details).hasSize(2);
+        assertThat(details).extractingResultOf("name")
+                .containsExactlyInAnyOrder("아무나 읽을 수 있는 토픽", "토픽 멤버만 읽을 수 있는 토픽");
+    }
+
+    @Test
+    @DisplayName("권한이 없는 토픽을 여러개의 ID로 조회하면, 예외가 발생한다.")
+    void findDetailByIds_Fail() {
+        //given
+        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(member);
+        Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
+
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        //when then
+        AuthMember guest = new Guest();
+        List<Long> topicIds = List.of(topic1.getId(), topic2.getId());
+
+        assertThatThrownBy(() -> topicQueryService.findDetailsByIds(guest, topicIds))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("읽을 수 없는 토픽이 존재합니다.");
+    }
 }
