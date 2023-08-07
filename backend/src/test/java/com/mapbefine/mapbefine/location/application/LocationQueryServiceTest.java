@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.location.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
@@ -46,8 +47,8 @@ class LocationQueryServiceTest {
 
     @BeforeEach
     void setup() {
-        member = memberRepository.save(MemberFixture.create(Role.USER));
-        authMember = AuthMember.from(member);
+        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        authMember = new Admin(member.getId());
 
         allPinsLocation = LocationFixture.LOCATION;
         locationRepository.save(allPinsLocation);

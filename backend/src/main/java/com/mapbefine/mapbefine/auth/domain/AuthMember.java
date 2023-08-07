@@ -1,8 +1,5 @@
 package com.mapbefine.mapbefine.auth.domain;
 
-import com.mapbefine.mapbefine.auth.domain.member.Admin;
-import com.mapbefine.mapbefine.auth.domain.member.Guest;
-import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
@@ -21,18 +18,6 @@ public abstract class AuthMember {
         this.memberId = memberId;
         this.createdTopic = createdTopic;
         this.topicsWithPermission = topicsWithPermission;
-    }
-
-    public static AuthMember from(Member member) {
-        if (member == null) {
-            return new Guest();
-        }
-
-        if (member.isUser()) {
-            return new User(member.getId(), getCreatedTopics(member), getTopicsWithPermission(member));
-        }
-
-        return new Admin(member.getId());
     }
 
     private static List<Long> getTopicsWithPermission(Member member) {

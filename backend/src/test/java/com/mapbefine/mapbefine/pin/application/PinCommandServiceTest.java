@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -63,7 +64,7 @@ class PinCommandServiceTest {
     void setUp() {
         locationRepository.deleteAll();
         member = memberRepository.save(MemberFixture.create(Role.ADMIN));
-        authMember = AuthMember.from(member);
+        authMember = new Admin(member.getId());
         topic = topicRepository.save(
                 Topic.of(
                         "topicName",
