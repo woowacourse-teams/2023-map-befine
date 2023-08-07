@@ -6,6 +6,8 @@ import Space from '../common/Space';
 import Logo from './Logo';
 import CoordinatesProvider from '../../context/CoordinatesContext';
 import MarkerProvider from '../../context/MarkerContext';
+import ToastProvider from '../../context/ToastContext';
+import Toast from '../Toast';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -36,36 +38,39 @@ const Layout = ({ children }: LayoutProps) => {
   }, []);
 
   return (
-    <CoordinatesProvider>
-      <MarkerProvider>
-        <Flex height="100vh" width="100vw">
-          <Flex
-            $flexDirection="column"
-            $minWidth="400px"
-            height="100vh"
-            $backgroundColor="white"
-          >
-            <Flex $flexDirection="column" padding="20px 20px 0 20px">
-              <Logo />
-              <Space size={5} />
-              <Input
-                placeholder="검색어를 입력하세요."
-                aria-label="검색어 입력창"
-              />
-            </Flex>
+    <ToastProvider>
+      <CoordinatesProvider>
+        <MarkerProvider>
+          <Flex height="100vh" width="100vw">
             <Flex
-              height="calc(100vh - 120px)"
               $flexDirection="column"
-              overflow="auto"
-              padding="0 20px 20px 20px"
+              $minWidth="400px"
+              height="100vh"
+              $backgroundColor="white"
             >
-              {children}
+              <Flex $flexDirection="column" padding="20px 20px 0 20px">
+                <Logo />
+                <Space size={5} />
+                <Input
+                  placeholder="검색어를 입력하세요."
+                  aria-label="검색어 입력창"
+                />
+              </Flex>
+              <Flex
+                height="calc(100vh - 120px)"
+                $flexDirection="column"
+                overflow="auto"
+                padding="0 20px 20px 20px"
+              >
+                {children}
+              </Flex>
             </Flex>
+            <Toast />
+            <Map ref={mapContainer} map={map} />
           </Flex>
-          <Map ref={mapContainer} map={map} />
-        </Flex>
-      </MarkerProvider>
-    </CoordinatesProvider>
+        </MarkerProvider>
+      </CoordinatesProvider>
+    </ToastProvider>
   );
 };
 
