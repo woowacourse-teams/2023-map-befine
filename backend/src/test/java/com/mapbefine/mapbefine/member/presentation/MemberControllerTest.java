@@ -86,7 +86,6 @@ class MemberControllerTest extends RestDocsIntegration {
                         "memberr@naver.com"
                 )
         );
-
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + memberResponses.get(0).email()).getBytes()
         );
@@ -109,7 +108,6 @@ class MemberControllerTest extends RestDocsIntegration {
                 "https://map-befine-official.github.io/favicon.png",
                 LocalDateTime.now()
         );
-
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + memberDetailResponse.email()).getBytes()
         );
