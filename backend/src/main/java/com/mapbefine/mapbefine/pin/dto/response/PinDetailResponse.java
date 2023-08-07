@@ -1,10 +1,9 @@
 package com.mapbefine.mapbefine.pin.dto.response;
 
 import com.mapbefine.mapbefine.common.entity.Image;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinImage;
-import com.mapbefine.mapbefine.pin.Domain.PinInfo;
-import java.math.BigDecimal;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinImage;
+import com.mapbefine.mapbefine.pin.domain.PinInfo;
 import java.time.LocalDateTime;
 import java.util.List;
 

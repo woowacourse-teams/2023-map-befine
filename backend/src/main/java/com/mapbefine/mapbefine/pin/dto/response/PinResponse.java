@@ -1,8 +1,7 @@
 package com.mapbefine.mapbefine.pin.dto.response;
 
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinInfo;
-import java.math.BigDecimal;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinInfo;
 
 public record PinResponse(
         Long id,

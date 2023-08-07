@@ -5,9 +5,9 @@ import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinImage;
-import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinImage;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -33,6 +33,7 @@ public class PinCommandService {
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
     }
+
     public Long save(AuthMember member, PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())

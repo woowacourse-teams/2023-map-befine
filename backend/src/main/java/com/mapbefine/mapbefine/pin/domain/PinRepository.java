@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.pin.Domain;
+package com.mapbefine.mapbefine.pin.domain;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

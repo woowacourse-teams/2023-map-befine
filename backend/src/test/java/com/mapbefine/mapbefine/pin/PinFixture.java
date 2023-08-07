@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.pin;
 
 import com.mapbefine.mapbefine.location.domain.Location;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicInfo;
 
