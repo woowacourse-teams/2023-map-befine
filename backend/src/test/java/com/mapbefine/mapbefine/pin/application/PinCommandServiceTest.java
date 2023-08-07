@@ -13,6 +13,8 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinImage;
+import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
@@ -47,6 +49,9 @@ class PinCommandServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private PinImageRepository pinImageRepository;
 
     private Topic topic;
     private Member member;
@@ -170,7 +175,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀을 삭제하면 soft-deleting 된다.")
+    @DisplayName("핀을 삭제하면 해당 핀을 soft delete 하고, 해당 핀의 이미지들은 hard delete 한다.")
     void removeById_Success() {
         // given
         double latitude = 37.123456;
@@ -197,8 +202,9 @@ class PinCommandServiceTest {
 
         // then
         Pin deletedPin = pinRepository.findById(savedPinId).get();
-
         assertThat(deletedPin.isDeleted()).isTrue();
+        List<PinImage> pinImages = pinImageRepository.findAllByPinId(savedPinId);
+        assertThat(pinImages).isEmpty();
     }
 
     @Test

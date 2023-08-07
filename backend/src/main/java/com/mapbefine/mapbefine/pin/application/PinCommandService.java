@@ -111,7 +111,7 @@ public class PinCommandService {
 
         if (authMember.canDelete(pin.getTopic())) {
             pinRepository.deleteById(pinId);
-            // TODO PinImage 모두 삭제
+            pinImageRepository.deleteAllByPinId(pinId);
             return;
         }
         throw new IllegalArgumentException("해당 토픽의 핀을 삭제할 권한이 없습니다.");
