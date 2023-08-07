@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -31,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
 class PinCommandServiceTest {
+
+    private static final String BASE_IMAGE = "https://map-befine-official.github.io/favicon.png";
 
     @Autowired
     private PinCommandService pinCommandService;
@@ -193,11 +196,10 @@ class PinCommandServiceTest {
                 longitude
         );
         Long savedPinId = pinCommandService.save(authMember, createRequest);
+        Pin pin = pinRepository.findById(savedPinId).get();
+        PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGE), pin);
 
         // when
-        Pin pin = pinRepository.findById(savedPinId).get();
-        assertThat(pin.isDeleted()).isFalse();
-
         pinCommandService.removeById(authMember, savedPinId);
 
         // then
