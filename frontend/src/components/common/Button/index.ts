@@ -3,10 +3,11 @@ import theme from '../../../themes';
 
 export type ButtonVariant = 'primary' | 'secondary';
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant: ButtonVariant;
   children: React.ReactNode;
-};
+}
 
 const variants = {
   primary: {
@@ -24,6 +25,7 @@ const variants = {
 const Button = styled.button<ButtonProps>`
   width: max-content;
   cursor: pointer;
+  box-sizing: border-box;
   color: ${({ variant }) => variants[variant].color};
   background-color: ${({ variant }) => variants[variant].backgroundColor};
   border: ${({ variant }) => variants[variant].border};
@@ -31,7 +33,6 @@ const Button = styled.button<ButtonProps>`
   border-radius: ${({ theme }) => theme.radius.small};
   padding: ${({ theme }) => `${theme.spacing['2']} ${theme.spacing['3']}`};
   font-size: ${({ theme }) => theme.fontSize.small};
-  box-sizing: border-box;
 
   &:hover {
     filter: brightness(0.9);

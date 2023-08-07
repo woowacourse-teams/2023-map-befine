@@ -3,7 +3,14 @@ import Flex from '../common/Flex';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import Image from '../common/Image';
+import {
+  KeyboardEvent,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 export interface TopicCardProps {
   topicId: number;
@@ -90,7 +97,7 @@ const TopicCard = ({
   }, [announceText]);
 
   return (
-    <WrapperLi>
+    <Wrapper>
       <Flex
         width="360px"
         height="140px"
@@ -99,10 +106,21 @@ const TopicCard = ({
         $alignItems="center"
         $justifyContent="center"
         $borderRadius="small"
-        $backgroundImage={topicImage}
-        $backgroundSize="360px 140px"
         $backgroundColor="whiteGray"
       >
+        <Box position="absolute">
+          <Image
+            width="360px"
+            height="140px"
+            src={topicImage}
+            alt="토픽 이미지"
+            $objectFit="cover"
+            onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+              e.currentTarget.src =
+                'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
+            }}
+          />
+        </Box>
         <MultiSelectButton
           type="checkbox"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -149,11 +167,11 @@ const TopicCard = ({
         aria-live="assertive"
         style={{ position: 'absolute', left: '-9999px' }}
       ></div>
-    </WrapperLi>
+    </Wrapper>
   );
 };
 
-const WrapperLi = styled.li`
+const Wrapper = styled.li`
   box-shadow: 2px 4px 4px 0px rgba(69, 69, 69, 0.25);
 `;
 

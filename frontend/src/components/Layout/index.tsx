@@ -41,19 +41,14 @@ const Layout = ({ children }: LayoutProps) => {
     <ToastProvider>
       <CoordinatesProvider>
         <MarkerProvider>
-          <Flex height="100vh" width="100vw" position="relative">
+          <Flex height="100vh" width="100vw">
             <Flex
               $flexDirection="column"
               $minWidth="400px"
               height="100vh"
               $backgroundColor="white"
             >
-              <Flex
-                $flexDirection="column"
-                $paddingTop={4}
-                $paddingRight={4}
-                $paddingLeft={4}
-              >
+              <Flex $flexDirection="column" padding="20px 20px 0 20px">
                 <Logo />
                 <Space size={5} />
                 <Input
@@ -65,15 +60,13 @@ const Layout = ({ children }: LayoutProps) => {
                 height="calc(100vh - 120px)"
                 $flexDirection="column"
                 overflow="auto"
-                $paddingRight={4}
-                $paddingLeft={4}
-                $paddingBottom={4}
+                padding="0 20px 20px 20px"
               >
                 {children}
               </Flex>
             </Flex>
-            <Map ref={mapContainer} map={map} />
             <Toast />
+            <Map ref={mapContainer} map={map} />
           </Flex>
         </MarkerProvider>
       </CoordinatesProvider>

@@ -8,7 +8,7 @@ import { TopicInfoType } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
-import { getApi } from '../utils/getApi';
+import { getApi } from '../apis/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
@@ -26,6 +26,7 @@ const SelectedTopic = () => {
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(
+      'default',
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );
     const topicHashmap = new Map([]);
@@ -137,14 +138,15 @@ const SelectedTopic = () => {
 
         {selectedPinId && (
           <>
-            <ToggleButton isCollapsed={!isOpen} onClick={togglePinDetail}>
+            <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>
               ◀
             </ToggleButton>
             <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
               <Flex
                 $backgroundColor="white"
                 width="400px"
-                $minHeight="100vh"
+                height="100vh"
+                overflow="auto"
                 position="absolute"
                 left="400px"
                 top="0px"
@@ -169,7 +171,7 @@ const PinDetailWrapper = styled.div`
   }
 `;
 
-const ToggleButton = styled.button<{ isCollapsed: boolean }>`
+const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
   position: absolute;
   top: 50%;
   left: 800px;
@@ -183,7 +185,7 @@ const ToggleButton = styled.button<{ isCollapsed: boolean }>`
   cursor: pointer;
 
   ${(props) =>
-    props.isCollapsed &&
+    props.$isCollapsed &&
     `
     transform: rotate(180deg);
     top:45%;

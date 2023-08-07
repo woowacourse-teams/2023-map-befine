@@ -4,10 +4,9 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
-import { postApi } from '../utils/postApi';
+import { postApi } from '../apis/postApi';
 import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
-import { getApi } from '../utils/getApi';
-import { getAddress } from '../utils/getAddress';
+import { getApi } from '../apis/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { NewPinValuesType } from '../types/FormValues';
@@ -86,7 +85,8 @@ const NewPin = () => {
         const addr = data.roadAddress; // 주소 변수
 
         //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getAddress(
+        const { ConvertAdd } = await getApi(
+          'tMap',
           `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
         );
         const lat = ConvertAdd.oldLat;
@@ -107,7 +107,7 @@ const NewPin = () => {
     const getTopicId = async () => {
       if (queryParams.has('topic-id')) {
         const topicId = queryParams.get('topic-id');
-        const data = await getApi(`/topics/${topicId}`);
+        const data = await getApi('default', `/topics/${topicId}`);
         setTopic(data);
       }
     };
