@@ -139,7 +139,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 5,
                 LocalDateTime.now()
         ));
-        given(topicQueryService.findAll(any())).willReturn(responses);
+        given(topicQueryService.findAllReadable(any())).willReturn(responses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics")

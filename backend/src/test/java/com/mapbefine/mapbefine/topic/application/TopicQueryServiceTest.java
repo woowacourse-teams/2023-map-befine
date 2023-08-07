@@ -66,7 +66,7 @@ class TopicQueryServiceTest {
     void findAll() {
         // given
         // when
-        List<TopicResponse> topics = topicQueryService.findAll(authMember);
+        List<TopicResponse> topics = topicQueryService.findAllReadable(authMember);
 
         // then
         assertThat(topics).contains(TopicResponse.from(topic));

@@ -29,8 +29,10 @@ public class TopicController {
     private final TopicCommandService topicCommandService;
     private final TopicQueryService topicQueryService;
 
-    public TopicController(TopicCommandService topicCommandService,
-            TopicQueryService topicQueryService) {
+    public TopicController(
+            TopicCommandService topicCommandService,
+            TopicQueryService topicQueryService
+    ) {
         this.topicCommandService = topicCommandService;
         this.topicQueryService = topicQueryService;
     }
@@ -64,6 +66,30 @@ public class TopicController {
                 .build();
     }
 
+    @GetMapping
+    public ResponseEntity<List<TopicResponse>> findAll(AuthMember member) {
+        List<TopicResponse> topics = topicQueryService.findAllReadable(member);
+
+        return ResponseEntity.ok(topics);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TopicDetailResponse> findById(AuthMember member, @PathVariable Long id) {
+        TopicDetailResponse response = topicQueryService.findDetailById(member, id);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/ids")
+    public ResponseEntity<List<TopicDetailResponse>> findByIds(
+            AuthMember member,
+            @RequestParam List<Long> ids
+    ) {
+        List<TopicDetailResponse> responses = topicQueryService.findDetailsByIds(member, ids);
+
+        return ResponseEntity.ok(responses);
+    }
+
     @LoginRequired
     @PutMapping("/{topicId}")
     public ResponseEntity<Void> update(
@@ -82,27 +108,6 @@ public class TopicController {
         topicCommandService.delete(member, topicId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping
-    public ResponseEntity<List<TopicResponse>> findAll(AuthMember member) {
-        List<TopicResponse> topics = topicQueryService.findAll(member);
-
-        return ResponseEntity.ok(topics);
-    }
-
-    @GetMapping("/ids")
-    public ResponseEntity<List<TopicDetailResponse>> findByIds(@RequestParam List<Long> ids) {
-        List<TopicDetailResponse> responses = topicQueryService.findDetailsByIds(ids);
-
-        return ResponseEntity.ok(responses);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<TopicDetailResponse> findById(AuthMember member, @PathVariable Long id) {
-        TopicDetailResponse response = topicQueryService.findDetailById(member, id);
-
-        return ResponseEntity.ok(response);
     }
 
 }

@@ -19,17 +19,31 @@ public class TopicQueryService {
         this.topicRepository = topicRepository;
     }
 
-    public List<TopicResponse> findAll(AuthMember member) {
+    public List<TopicResponse> findAllReadable(AuthMember member) {
         return topicRepository.findAll().stream()
                 .filter(member::canRead)
                 .map(TopicResponse::from)
                 .toList();
     }
 
-    public List<TopicDetailResponse> findDetailsByIds(List<Long> ids) {
-        return topicRepository.findByIdIn(ids).stream()
+    public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> ids) {
+        List<Topic> topics = topicRepository.findByIdIn(ids);
+
+        validateReadableTopics(member, topics);
+
+        return topics.stream()
                 .map(TopicDetailResponse::from)
                 .toList();
+    }
+
+    private void validateReadableTopics(AuthMember member, List<Topic> topics) {
+        int readableCount = (int) topics.stream()
+                .filter(member::canRead)
+                .count();
+
+        if (topics.size() != readableCount) {
+            throw new IllegalArgumentException("읽을 수 없는 토픽이 존재합니다.");
+        }
     }
 
     public TopicDetailResponse findDetailById(AuthMember member, Long id) {
