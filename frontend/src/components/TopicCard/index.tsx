@@ -41,7 +41,7 @@ const TopicCard = ({
               'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
           }}
         />
-        <Space size={0} />
+        <Space size={1} />
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           &nbsp; {topicTitle}
         </Text>
