@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.pin.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -71,6 +72,10 @@ class PinTest {
                 topic,
                 member
         );
+        PinImage.createPinImageAssociatedWithPin(
+                Image.of("https://example.com/image.jpg"),
+                original
+        );
         Member memberForCopy = MemberFixture.create("복사해 갈 회원", "other@gmail.com", Role.USER);
         Topic topicForCopy = TopicFixture.createByName("복사해 갈 토픽 이름", memberForCopy);
 
@@ -78,7 +83,6 @@ class PinTest {
         Pin actual = original.copy(topicForCopy, memberForCopy);
 
         // then
-        // TODO PinImages에 대해서도 검증하기
         assertThat(original).usingRecursiveComparison()
                 .ignoringFieldsOfTypes(Topic.class, Member.class)
                 .isEqualTo(actual);
