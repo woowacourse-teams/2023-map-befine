@@ -6,8 +6,8 @@ interface SpaceProps {
 }
 
 const Space = styled.div<SpaceProps>`
-  width: ${({ size }) => spacing[size]};
-  height: ${({ size }) => spacing[size]};
+  min-width: ${({ size }) => spacing[size]};
+  min-height: ${({ size }) => spacing[size]};
 `;
 
 export default Space;
