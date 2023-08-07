@@ -145,7 +145,8 @@ const SelectedTopic = () => {
               <Flex
                 $backgroundColor="white"
                 width="400px"
-                $minHeight="100vh"
+                height="100vh"
+                overflow="auto"
                 position="absolute"
                 left="400px"
                 top="0px"
