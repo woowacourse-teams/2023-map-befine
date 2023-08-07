@@ -19,12 +19,12 @@ import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.pin.domain.PinInfo;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
+import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -120,7 +120,9 @@ class PinQueryServiceTest {
                 location,
                 topic,
                 member
-        );        PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGES.get(0)), pin);
+        );
+        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGES.get(0)),
+                pin);
         Long savedId = pinRepository.save(pin).getId();
 
         // when
@@ -132,7 +134,7 @@ class PinQueryServiceTest {
                 coordinate.getLatitude(),
                 coordinate.getLongitude(),
                 null,
-                BASE_IMAGES
+                PinImageResponse.from(List.of(pinImage))
         );
         PinDetailResponse actual = pinQueryService.findById(authMember, savedId);
 

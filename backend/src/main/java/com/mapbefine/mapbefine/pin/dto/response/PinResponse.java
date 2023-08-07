@@ -11,6 +11,7 @@ public record PinResponse(
         double latitude,
         double longitude
 ) {
+
     public static PinResponse from(Pin pin) {
         PinInfo pinInfo = pin.getPinInfo();
 
@@ -23,4 +24,5 @@ public record PinResponse(
                 pin.getLongitude()
         );
     }
+
 }

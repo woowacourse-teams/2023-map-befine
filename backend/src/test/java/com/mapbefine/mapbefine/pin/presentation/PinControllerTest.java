@@ -17,6 +17,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
+import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -96,6 +97,7 @@ class PinControllerTest extends RestDocsIntegration {
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
+
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/pins/1")
                         .header(AUTHORIZATION, authHeader)
@@ -118,7 +120,7 @@ class PinControllerTest extends RestDocsIntegration {
                 37,
                 127,
                 LocalDateTime.now(),
-                BASE_IMAGES
+                List.of(new PinImageResponse(1L, BASE_IMAGES.get(0)))
         );
 
         given(pinQueryService.findById(any(), any())).willReturn(pinDetailResponse);
@@ -170,7 +172,6 @@ class PinControllerTest extends RestDocsIntegration {
                 )));
     }
 
-
     @Test
     @DisplayName("핀 이미지 추가")
     void addImage() throws Exception {
@@ -190,9 +191,23 @@ class PinControllerTest extends RestDocsIntegration {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/pins/images")
                         .header(AUTHORIZATION, authHeader)
-                        .header(LOCATION, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pinImageCreateRequest))
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 이미지 삭제")
+    void removeImage() throws Exception {
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        String authHeader = Base64.encodeBase64String(
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/pins/images/1")
+                        .header(AUTHORIZATION, authHeader)
+                        .contentType(MediaType.APPLICATION_JSON)
         ).andDo(restDocs.document());
     }
 }
