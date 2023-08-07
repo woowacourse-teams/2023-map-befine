@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.pin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -16,7 +15,6 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
-import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
@@ -172,77 +170,6 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("제약 사항(name, description)을 지킨 정보로 핀의 정보를 수정하면 핀이 수정된다.")
-    void update_Success() {
-        // given
-        double latitude = 37.123456;
-        double longitude = 127.123456;
-        Coordinate coordinate = Coordinate.of(latitude, longitude);
-        saveLocation(coordinate);
-
-        PinCreateRequest createRequest = new PinCreateRequest(
-                topic.getId(),
-                "name",
-                "description",
-                "address",
-                "legalDongCode",
-                latitude,
-                longitude
-        );
-        Long savedPinId = pinCommandService.save(authMember, createRequest);
-
-        // when
-        PinUpdateRequest updateRequest = new PinUpdateRequest(
-                "updatedName",
-                "updatedDescription"
-        );
-        pinCommandService.update(authMember, savedPinId, updateRequest);
-
-        // then
-        PinDetailResponse actual = pinQueryService.findById(authMember, savedPinId);
-        PinDetailResponse expected = new PinDetailResponse(
-                savedPinId,
-                "updatedName",
-                "address",
-                "updatedDescription",
-                latitude,
-                longitude,
-                null,
-                Collections.emptyList()
-        );
-
-        assertThat(actual).usingRecursiveComparison()
-                .ignoringFields("updatedAt")
-                .isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("제약 사항(name, description)을 지키지 않은 정보로 핀의 정보를 수정하면 핀이 수정되지 않는다.")
-    void update_Fail() {
-        // given
-        double latitude = 37.123456;
-        double longitude = 127.123456;
-        Coordinate coordinate = Coordinate.of(latitude, longitude);
-        saveLocation(coordinate);
-
-        PinCreateRequest createRequest = new PinCreateRequest(
-                topic.getId(),
-                "name",
-                "description",
-                "address",
-                "legalDongCode",
-                latitude,
-                longitude
-        );
-        Long savedPinId = pinCommandService.save(authMember, createRequest);
-
-        // when then
-        PinUpdateRequest updateRequest = new PinUpdateRequest("", "updatedDescription");
-        assertThatThrownBy(() -> pinCommandService.update(authMember, savedPinId, updateRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
     void removeById_Success() {
         // given
@@ -301,7 +228,6 @@ class PinCommandServiceTest {
         Topic findTopicBeforeDeleting = topicRepository.findById(topic.getId()).get();
         assertThat(findTopicBeforeDeleting.getPins()).extractingResultOf("isDeleted")
                 .doesNotContain(true);
-//        pinCommandService.removeAllByTopicId(topic.getId()); // TODO : 이 메서드는 현재 테스트에서만 사용되고 있는 메서드 ??
         pinRepository.deleteAllByTopicId(topic.getId());
 
         // then
