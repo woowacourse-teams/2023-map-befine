@@ -5,6 +5,9 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
+import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
+import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
+import java.util.List;
 
 public class TopicFixture {
 
@@ -43,4 +46,29 @@ public class TopicFixture {
         );
     }
 
+    public static TopicCreateRequest createPublicAndAllMembersCreateRequestWithPins(
+            List<Long> pinIds
+    ) {
+        return new TopicCreateRequest(
+                "아무나 읽을 수 있는 토픽",
+                IMAGE_URL,
+                "아무나 읽을 수 있는 토픽입니다.",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS,
+                pinIds
+        );
+    }
+
+    public static TopicMergeRequest createPublicAndAllMembersMergeRequestWithTopics(
+            List<Long> topicIds
+    ) {
+        return new TopicMergeRequest(
+                "아무나 읽을 수 있는 토픽",
+                IMAGE_URL,
+                "아무나 읽을 수 있는 토픽입니다.",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS,
+                topicIds
+        );
+    }
 }

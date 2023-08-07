@@ -13,6 +13,7 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +57,10 @@ public class TopicCommandService {
     }
 
     private Member findCreatorByAuthMember(AuthMember member) {
+        if (Objects.isNull(member.getMemberId())) {
+            throw new IllegalArgumentException("Guest는 토픽을 생성할 수 없습니다.");
+        }
+
         return memberRepository.findById(member.getMemberId())
                 .orElseThrow(NoSuchElementException::new);
     }
