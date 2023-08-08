@@ -26,7 +26,7 @@ const SeeAllCardList = ({ url }: SeeAllCardListProps) => {
         topics.map((topic, idx) => (
           <Fragment key={topic.id}>
             <TopicCard
-              topicSize="horizontal"
+              topicShape="horizontal"
               topicId={topic.id}
               topicImage={topic.image}
               topicTitle={topic.name}

@@ -6,9 +6,10 @@ import Image from '../common/Image';
 import { SyntheticEvent } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
+import SeeTogetherButton from '../SeeTogetherButton';
 
 export interface TopicCardProps {
-  topicSize: 'vertical' | 'horizontal';
+  topicShape: 'vertical' | 'horizontal';
   topicId: number;
   topicImage: string;
   topicTitle: string;
@@ -17,7 +18,7 @@ export interface TopicCardProps {
 }
 
 const TopicCard = ({
-  topicSize,
+  topicShape,
   topicId,
   topicImage,
   topicTitle,
@@ -30,10 +31,10 @@ const TopicCard = ({
     routePage(`/topics/${topicId}`, [topicId]);
   };
 
-  if (topicSize === 'horizontal') {
+  if (topicShape === 'horizontal') {
     return (
       <HorizontalWrapper onClick={goToSelectedTopic}>
-        <Flex>
+        <Flex position="relative">
           <HorizontalTopicImage
             height="148px"
             width="148px"
@@ -61,6 +62,7 @@ const TopicCard = ({
             <Text color="gray" $fontSize="small" $fontWeight="normal">
               즐겨찾기 10명
             </Text>
+            <SeeTogetherButton />
           </Box>
         </Flex>
       </HorizontalWrapper>
@@ -69,7 +71,7 @@ const TopicCard = ({
 
   return (
     <VerticalWrapper onClick={goToSelectedTopic}>
-      <Box>
+      <Box position="relative">
         <VerticalTopicImage
           width="172px"
           height="172px"
@@ -92,6 +94,7 @@ const TopicCard = ({
             {`핀 ${topicPinCount}개 | 
             ${topicUpdatedAt.split('T')[0].replaceAll('-', '.')}`}
           </Text>
+          <SeeTogetherButton />
         </Box>
       </Box>
     </VerticalWrapper>

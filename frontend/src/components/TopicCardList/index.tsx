@@ -32,7 +32,7 @@ const TopicCardList = () => {
             return (
               <Fragment key={index}>
                 <TopicCard
-                  topicSize="vertical"
+                  topicShape="vertical"
                   topicId={topic.id}
                   topicImage={topic.image}
                   topicTitle={topic.name}
