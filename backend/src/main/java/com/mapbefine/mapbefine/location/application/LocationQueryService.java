@@ -7,7 +7,6 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
-import com.mapbefine.mapbefine.location.dto.CoordinateRequest;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
@@ -22,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class LocationQueryService {
 
-    private static final double NEAR_DISTANCE_METERS = 3000.0;
+    private static final double NEAR_DISTANCE_METERS = 3000;
 
     private final LocationRepository locationRepository;
 
@@ -30,24 +29,30 @@ public class LocationQueryService {
         this.locationRepository = locationRepository;
     }
 
-    public List<TopicResponse> findNearbyTopicsSortedByPinCount(AuthMember member, CoordinateRequest request) {
-        Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
-        List<Location> nearLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate,
-                NEAR_DISTANCE_METERS);
+    public List<TopicResponse> findNearbyTopicsSortedByPinCount(
+            AuthMember member,
+            double latitude,
+            double longitude
+    ) {
+        Coordinate coordinate = Coordinate.of(latitude, longitude);
+        List<Location> nearLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(
+                coordinate,
+                NEAR_DISTANCE_METERS
+        );
 
-        Map<Topic, Long> topicCounts = countTopicsInLocations(nearLocation);
+        Map<Topic, Long> pinCountsByTopic = countPinsByTopicInLocations(nearLocation);
 
-        return sortTopicsByCounts(topicCounts, member);
+        return sortTopicsByPinCounts(pinCountsByTopic, member);
     }
 
-    private Map<Topic, Long> countTopicsInLocations(List<Location> locations) {
+    private Map<Topic, Long> countPinsByTopicInLocations(List<Location> locations) {
         return locations.stream()
                 .map(Location::getPins)
                 .flatMap(Collection::stream)
                 .collect(groupingBy(Pin::getTopic, counting()));
     }
 
-    private List<TopicResponse> sortTopicsByCounts(Map<Topic, Long> topicCounts, AuthMember member) {
+    private List<TopicResponse> sortTopicsByPinCounts(Map<Topic, Long> topicCounts, AuthMember member) {
         return topicCounts.entrySet().stream()
                 .filter(entry -> member.canRead(entry.getKey()))
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))

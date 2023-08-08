@@ -5,7 +5,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
-import com.mapbefine.mapbefine.location.dto.CoordinateRequest;
 import io.restassured.*;
 import io.restassured.response.*;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -32,17 +31,14 @@ public class LocationIntegrationTest extends IntegrationTest {
     void findNearbyTopicsSortedByPinCount_Success() {
         //given
         Coordinate baseCoordinate = LocationFixture.BASE_COORDINATE;
-        CoordinateRequest coordinateRequest = new CoordinateRequest(
-                baseCoordinate.getLatitude(),
-                baseCoordinate.getLongitude()
-        );
 
         //when
         ExtractableResponse<Response> response = RestAssured.given()
                 .log().all()
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(coordinateRequest)
+                .queryParam("latitude", baseCoordinate.getLatitude())
+                .queryParam("longitude", baseCoordinate.getLongitude())
                 .when().get("/locations/bests")
                 .then().log().all()
                 .extract();

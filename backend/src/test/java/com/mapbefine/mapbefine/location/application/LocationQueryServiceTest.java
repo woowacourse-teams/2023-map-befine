@@ -9,7 +9,6 @@ import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
-import com.mapbefine.mapbefine.location.dto.CoordinateRequest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -74,14 +73,13 @@ class LocationQueryServiceTest {
     void findNearbyTopicsSortedByPinCount() {
         // given
         Coordinate baseCoordinate = LocationFixture.BASE_COORDINATE;
-        CoordinateRequest currentLocation = new CoordinateRequest(
+
+        // when
+        List<TopicResponse> currentTopics = locationQueryService.findNearbyTopicsSortedByPinCount(
+                authMember,
                 baseCoordinate.getLatitude(),
                 baseCoordinate.getLongitude()
         );
-
-        // when
-        List<TopicResponse> currentTopics = locationQueryService.findNearbyTopicsSortedByPinCount(authMember,
-                currentLocation);
 
         // then
         List<TopicResponse> expected = topics.stream()
