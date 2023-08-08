@@ -111,6 +111,7 @@ class MemberControllerTest extends RestDocsIntegration {
     void findMemberTopicPermissionById() throws Exception {
         MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = new MemberTopicPermissionDetailResponse(
                 1L,
+                LocalDateTime.now(),
                 new MemberDetailResponse(
                     1L,
                     "member",

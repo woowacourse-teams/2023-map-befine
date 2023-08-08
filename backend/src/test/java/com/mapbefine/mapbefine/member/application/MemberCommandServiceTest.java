@@ -62,6 +62,7 @@ class MemberCommandServiceTest {
 
         // then
         assertThat(member).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(memberWithPermission);
     }
 
@@ -90,6 +91,7 @@ class MemberCommandServiceTest {
 
         // then
         assertThat(member).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(memberWithPermission);
     }
 

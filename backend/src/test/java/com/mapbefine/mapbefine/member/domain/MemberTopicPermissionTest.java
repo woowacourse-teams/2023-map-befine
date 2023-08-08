@@ -28,8 +28,10 @@ class MemberTopicPermissionTest {
 
         // then
         assertThat(memberTopicPermission.getMember()).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(member);
         assertThat(memberTopicPermission.getTopic()).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(topic);
     }
 
@@ -54,8 +56,10 @@ class MemberTopicPermissionTest {
         assertThat(topicsWithPermission).hasSize(1);
         assertThat(memberTopicPermissions).hasSize(1);
         assertThat(topicsWithPermission.get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(topic);
         assertThat(memberTopicPermissions.get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(memberTopicPermission);
     }
 

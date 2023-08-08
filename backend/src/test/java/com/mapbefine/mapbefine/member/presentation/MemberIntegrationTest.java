@@ -20,9 +20,9 @@ import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
+import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
-import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -220,6 +220,7 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(memberTopicPermissionDetailResponse)
                 .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
                 .usingRecursiveComparison()
+                .ignoringFields("updatedAt")
                 .isEqualTo(MemberDetailResponse.from(member));
     }
 
@@ -284,7 +285,6 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(memberResponses).hasSize(2)
                 .usingRecursiveComparison()
-                .ignoringFields("id")
                 .isEqualTo(List.of(MemberResponse.from(member), MemberResponse.from(memberr)));
     }
 
@@ -318,7 +318,7 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(memberDetailResponse)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "updateAt")
+                .ignoringFields("updateAt")
                 .isEqualTo(MemberDetailResponse.from(member));
     }
 

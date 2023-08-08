@@ -19,4 +19,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     List<Topic> findByCreator(Member creator);
 
+    List<Topic> findByCreatorId(Long creatorId);
+
 }
