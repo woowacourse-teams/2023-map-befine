@@ -215,32 +215,33 @@ class MemberCommandServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
-//    @Test
-//    @DisplayName("유저를 저장한다.")
-//    void save() {
-//        // given
-//        Member member = MemberFixture.create(
-//                "member",
-//                "member@naver.com",
-//                Role.USER
-//        );
-//        MemberCreateRequest memberCreateRequest = new MemberCreateRequest(
-//                member.getMemberInfo().getName(),
-//                member.getMemberInfo().getEmail(),
-//                member.getMemberInfo().getImageUrl(),
-//                member.getMemberInfo().getRole()
-//        );
-//
-//        // when
-//        Long savedId = memberCommandService.save(memberCreateRequest);
-//        Member savedResult = memberRepository.findById(savedId)
-//                .orElseThrow(NoSuchElementException::new);
-//
-//        // then
-//        assertThat(savedResult).usingRecursiveComparison()
-//                .ignoringFields("id")
-//                .isEqualTo(member);
-//    }
+    @Test
+    @DisplayName("유저를 저장한다.")
+    void save() {
+        // given
+        Member member = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.USER
+        );
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest(
+                member.getMemberInfo().getName(),
+                member.getMemberInfo().getEmail(),
+                member.getMemberInfo().getImageUrl(),
+                member.getMemberInfo().getRole()
+        );
+
+        // when
+        Long savedId = memberCommandService.save(memberCreateRequest);
+        Member savedResult = memberRepository.findById(savedId)
+                .orElseThrow(NoSuchElementException::new);
+
+        // then
+        assertThat(savedResult).usingRecursiveComparison()
+                .ignoringFields("id")
+                .ignoringFields("createdAt", "updatedAt")
+                .isEqualTo(member);
+    }
 
     @Test
     @DisplayName("이미 존재하는 이름으로 유저를 저장할 때 예외가 발생한다.")
