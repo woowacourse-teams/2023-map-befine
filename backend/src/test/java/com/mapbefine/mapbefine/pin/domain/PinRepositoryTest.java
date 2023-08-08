@@ -10,6 +10,7 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -52,12 +53,7 @@ class PinRepositoryTest {
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
     void deleteById_Success() {
         // given
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                PinInfo.of("name", "description"),
-                location,
-                topic,
-                member
-        );
+        Pin pin = PinFixture.create(location, topic, member);
         pinRepository.save(pin);
         Long pinId = pin.getId();
 
@@ -78,13 +74,7 @@ class PinRepositoryTest {
     void deleteAllByTopicId_Success() {
         // given
         for (int i = 0; i < 10; i++) {
-            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                    PinInfo.of("name", "description"),
-                    location,
-                    topic,
-                    member
-            );
-            pinRepository.save(pin);
+            pinRepository.save(PinFixture.create(location, topic, member));
         }
 
         // when

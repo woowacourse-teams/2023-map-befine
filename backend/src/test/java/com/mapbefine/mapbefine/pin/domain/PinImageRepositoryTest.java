@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.pin.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -11,6 +10,7 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -52,7 +52,7 @@ class PinImageRepositoryTest {
     @DisplayName("핀 이미지를 삭제하면, soft-deleting 된다.")
     void deleteById_Success() {
         //given
-        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of("https://example.com/image.jpg"), pin);
+        PinImage pinImage = PinImageFixture.create(pin);
         pinImageRepository.save(pinImage);
         Long pinImageId = pinImage.getId();
 
@@ -72,13 +72,14 @@ class PinImageRepositoryTest {
     @DisplayName("특정 핀의 모든 핀 아미지를 삭제하면, soft-deleting 된다.")
     void deleteAllByPinId_Success() {
         //given
-        PinImage pinImage1 = PinImage.createPinImageAssociatedWithPin(Image.of("https://example.com/image.jpg"), pin);
-        PinImage pinImage2 = PinImage.createPinImageAssociatedWithPin(Image.of("https://example.com/image2.jpg"), pin);
+        PinImage pinImage1 = PinImageFixture.create(pin);
+        PinImage pinImage2 = PinImageFixture.create(pin);
         pinImageRepository.save(pinImage1);
         pinImageRepository.save(pinImage2);
 
         //when
         assertThat(pinImage1.isDeleted()).isFalse();
+        assertThat(pinImage2.isDeleted()).isFalse();
         pinImageRepository.deleteAllByPinId(pin.getId());
 
         //then
