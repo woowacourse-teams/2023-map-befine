@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import SeeAllCardList from '../components/SeeAllCardList';
 import Text from '../components/common/Text';
+import Space from '../components/common/Space';
 
 const SeeAllTopics = () => {
   const { state } = useLocation();

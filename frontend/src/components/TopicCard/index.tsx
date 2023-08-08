@@ -27,12 +27,12 @@ const TopicCard = ({
   const { routePage } = useNavigator();
 
   const goToSelectedTopic = () => {
-    routePage(`topics/${topicId}`, [topicId]);
+    routePage(`/topics/${topicId}`, [topicId]);
   };
 
   if (topicSize === 'horizontal') {
     return (
-      <HorizontalWrapper>
+      <HorizontalWrapper onClick={goToSelectedTopic}>
         <Flex>
           <HorizontalTopicImage
             height="148px"
