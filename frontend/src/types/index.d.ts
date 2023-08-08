@@ -6,6 +6,6 @@ declare module '*.svg' {
 
 declare global {
   interface Window {
-    Tmapv2: Tmapv2;
+    Tmapv3: Tmapv3;
   }
 }

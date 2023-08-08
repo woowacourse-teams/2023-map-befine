@@ -36,8 +36,8 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
     if (clickedMarker) {
       clickedMarker.setMap(null);
     }
-    const marker = new window.Tmapv2.Marker({
-      position: new window.Tmapv2.LatLng(
+    const marker = new window.Tmapv3.Marker({
+      position: new window.Tmapv3.LatLng(
         clickedCoordinate.latitude,
         clickedCoordinate.longitude,
       ),
@@ -60,8 +60,8 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         currentTopicId = coordinate.topicId;
       }
 
-      const marker = new window.Tmapv2.Marker({
-        position: new window.Tmapv2.LatLng(
+      const marker = new window.Tmapv3.Marker({
+        position: new window.Tmapv3.LatLng(
           coordinate.latitude,
           coordinate.longitude,
         ),
