@@ -37,7 +37,6 @@ public class TopicQueryService {
         throw new IllegalArgumentException("조회할 수 없는 Topic 입니다.");
     }
 
-    // TODO: 2023/08/07 토픽의 id가 존재하지 않는 경우도 검증해야 하는가 ?
     public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> ids) {
         List<Topic> topics = topicRepository.findByIdIn(ids);
 
