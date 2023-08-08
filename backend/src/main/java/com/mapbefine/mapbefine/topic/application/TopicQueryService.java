@@ -41,11 +41,18 @@ public class TopicQueryService {
     public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> ids) {
         List<Topic> topics = topicRepository.findByIdIn(ids);
 
+        validateTopicsCount(ids, topics);
         validateReadableTopics(member, topics);
 
         return topics.stream()
                 .map(TopicDetailResponse::from)
                 .toList();
+    }
+
+    private void validateTopicsCount(List<Long> topicIds, List<Topic> topics) {
+        if (topicIds.size() != topics.size()) {
+            throw new IllegalArgumentException("존재하지 않는 토픽이 존재합니다");
+        }
     }
 
     private void validateReadableTopics(AuthMember member, List<Topic> topics) {

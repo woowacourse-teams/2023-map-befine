@@ -177,7 +177,7 @@ class TopicQueryServiceTest {
 
     @Test
     @DisplayName("권한이 없는 토픽을 여러개의 ID로 조회하면, 예외가 발생한다.")
-    void findDetailByIds_Fail() {
+    void findDetailByIds_Fail1() {
         //given
         Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(member);
         Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -193,4 +193,24 @@ class TopicQueryServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("읽을 수 없는 토픽이 존재합니다.");
     }
+
+    @Test
+    @DisplayName("조회하려는 토픽 중 존재하지 않는 ID가 존재하면, 예외가 발생한다.")
+    void findDetailByIds_Fail2() {
+        //given
+        Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
+
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        //when then
+        AuthMember guest = AuthMember.from(member);
+        List<Long> topicIds = List.of(topic1.getId(), topic2.getId(), Long.MAX_VALUE);
+
+        assertThatThrownBy(() -> topicQueryService.findDetailsByIds(guest, topicIds))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 토픽이 존재합니다");
+    }
+
 }
