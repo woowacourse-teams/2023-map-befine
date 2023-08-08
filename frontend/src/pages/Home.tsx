@@ -43,16 +43,19 @@ const Home = () => {
     <Box position="relative">
       <TopicListContainer
         containerTitle="인기 급상승한 지도"
+        containerDescription="즐겨찾기가 많이 된 지도를 살펴보세요."
         routeWhenSeeAll={goToPopularTopics}
       />
       <Space size={4} />
       <TopicListContainer
         containerTitle="내 주변인 지도"
+        containerDescription="반경 3km 이내 지도를 확인해보세요."
         routeWhenSeeAll={goToNearByMeTopics}
       />
       <Space size={4} />
       <TopicListContainer
         containerTitle="새로운 지도"
+        containerDescription="방금 핀이 추가된 지도를 확인해보세요."
         routeWhenSeeAll={goToLatestTopics}
       />
     </Box>
