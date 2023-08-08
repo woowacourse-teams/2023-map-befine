@@ -212,7 +212,7 @@ class PinCommandServiceTest {
                         Assertions::fail
                 );
         assertThat(pinImageRepository.findAllByPinId(pinId))
-                .extractingResultOf("isDeleted", Boolean.class)
+                .extractingResultOf("isDeleted")
                 .containsOnly(true);
     }
 

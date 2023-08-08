@@ -83,7 +83,7 @@ class PinImageRepositoryTest {
 
         //then
         assertThat(pinImageRepository.findAllByPinId(pin.getId()))
-                .extractingResultOf("isDeleted", Boolean.class)
+                .extractingResultOf("isDeleted")
                 .containsOnly(true);
     }
 }
