@@ -8,6 +8,7 @@ import CoordinatesProvider from '../../context/CoordinatesContext';
 import MarkerProvider from '../../context/MarkerContext';
 import ToastProvider from '../../context/ToastContext';
 import Toast from '../Toast';
+import Navbar from './Navbar';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -65,6 +66,7 @@ const Layout = ({ children }: LayoutProps) => {
                 {children}
               </Flex>
             </Flex>
+            <Navbar />
             <Toast />
             <Map ref={mapContainer} map={map} />
           </Flex>
