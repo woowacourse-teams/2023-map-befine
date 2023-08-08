@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
+import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -18,6 +20,7 @@ import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateReq
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.List;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,9 +31,6 @@ class MemberCommandServiceTest {
 
     @Autowired
     private MemberCommandService memberCommandService;
-
-    @Autowired
-    private MemberQueryService memberQueryService;
 
     @Autowired
     private TopicRepository topicRepository;
@@ -48,7 +48,7 @@ class MemberCommandServiceTest {
         Member admin = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", admin));
-        AuthMember authAdmin = AuthMember.from(admin);
+        AuthMember authAdmin = new Admin(admin.getId());
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
                 topic.getId(),
                 member.getId()
@@ -72,7 +72,11 @@ class MemberCommandServiceTest {
         Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
         Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        AuthMember authCreator = AuthMember.from(creator);
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
                 topic.getId(),
                 member.getId()
@@ -97,7 +101,11 @@ class MemberCommandServiceTest {
         Member notCreator = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
         Member member = memberRepository.save(MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        AuthMember authNotCreator = AuthMember.from(notCreator);
+        AuthMember authNotCreator = new User(
+                notCreator.getId(),
+                getCreatedTopics(notCreator),
+                getTopicsWithPermission(notCreator)
+        );
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
                 topic.getId(),
                 member.getId()
@@ -132,7 +140,11 @@ class MemberCommandServiceTest {
         // given
         Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        AuthMember authCreator = AuthMember.from(creator);
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
                 topic.getId(),
                 creator.getId()
@@ -165,7 +177,11 @@ class MemberCommandServiceTest {
         MemberTopicPermission memberTopicPermission =
                 MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
         memberTopicPermissionRepository.save(memberTopicPermission);
-        AuthMember authCreator = AuthMember.from(creator);
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
                 topic.getId(),
                 member.getId()
@@ -183,7 +199,7 @@ class MemberCommandServiceTest {
         Member admin = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", admin));
-        AuthMember authAdmin = AuthMember.from(admin);
+        AuthMember authAdmin = new Admin(admin.getId());
 
         // when
         MemberTopicPermission memberTopicPermission =
@@ -202,7 +218,11 @@ class MemberCommandServiceTest {
         Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
         Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        AuthMember authCreator = AuthMember.from(creator);
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
 
         // when
         MemberTopicPermission memberTopicPermission =
@@ -222,7 +242,11 @@ class MemberCommandServiceTest {
         Member nonCreator = memberRepository.save(MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
         Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        AuthMember authNonCreator = AuthMember.from(nonCreator);
+        AuthMember authNonCreator = new User(
+                nonCreator.getId(),
+                getCreatedTopics(nonCreator),
+                getTopicsWithPermission(nonCreator)
+        );
 
         // when
         MemberTopicPermission memberTopicPermission =
@@ -245,7 +269,11 @@ class MemberCommandServiceTest {
                         Role.USER
                 )
         );
-        AuthMember authCreator = AuthMember.from(creator);
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
 
         // when then
         assertThatThrownBy(() -> memberCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE))
@@ -276,7 +304,7 @@ class MemberCommandServiceTest {
 
         // then
         assertThat(savedResult).usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "createdAt", "updatedAt")
                 .isEqualTo(member);
     }
 
@@ -324,6 +352,20 @@ class MemberCommandServiceTest {
         // when
         assertThatThrownBy(() -> memberCommandService.save(memberCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private List<Long> getTopicsWithPermission(Member member) {
+        return member.getTopicsWithPermissions()
+                .stream()
+                .map(Topic::getId)
+                .toList();
+    }
+
+    private List<Long> getCreatedTopics(Member member) {
+        return member.getCreatedTopics()
+                .stream()
+                .map(Topic::getId)
+                .toList();
     }
 
 }

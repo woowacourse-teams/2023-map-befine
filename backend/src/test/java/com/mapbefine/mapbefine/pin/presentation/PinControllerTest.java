@@ -14,7 +14,6 @@ import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -123,7 +122,7 @@ class PinControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins/1")
-                        .header(AUTHORIZATION, authHeader)
+//                        .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
 

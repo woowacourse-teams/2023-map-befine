@@ -45,25 +45,18 @@ public class Location extends BaseTimeEntity {
             double latitude,
             double longitude
     ) {
-        return new Location(
-                new Address(
-                        parcelBaseAddress,
-                        roadBaseAddress,
-                        legalDongCode
-                ),
-                Coordinate.of(
-                        latitude,
-                        longitude
-                )
+        Address address = new Address(
+                parcelBaseAddress,
+                roadBaseAddress,
+                legalDongCode
         );
+        Coordinate coordinate = Coordinate.of(latitude, longitude);
+
+        return new Location(address, coordinate);
     }
 
     public void addPin(Pin pin) {
         pins.add(pin);
-    }
-
-    public boolean isDuplicateCoordinate(Coordinate otherCoordinate) {
-        return coordinate.isDuplicateCoordinate(otherCoordinate);
     }
 
     public boolean isSameAddress(String otherAddress) {
@@ -73,7 +66,6 @@ public class Location extends BaseTimeEntity {
     public double getLatitude() {
         return coordinate.getLatitude();
     }
-
 
     public double getLongitude() {
         return coordinate.getLongitude();

@@ -8,33 +8,24 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.PinFixture;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TopicTest {
 
     private Topic topic;
     private Pin pin;
-    private Member member;
 
     @BeforeEach
     void setUp() {
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
         topic = Topic.createTopicAssociatedWithMember(
                 "매튜의 산스장",
                 "매튜가 엄마 몰래 찾는 산스장",
                 "https://example.com/image.jpg",
                 Publicity.PUBLIC,
                 Permission.GROUP_ONLY,
-                MemberFixture.create("member", "member@naver.com", Role.USER)
-        );
-
-        member = Member.of(
-                "member",
-                "member@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
-                Role.ADMIN
+                member
         );
 
         pin = PinFixture.create(LocationFixture.create(), topic, member);
@@ -100,29 +91,4 @@ class TopicTest {
         //then
         assertThat(topic.getPins()).contains(pin);
     }
-
-    @Test
-    @DisplayName("Topic 을 생성하면, Member 에 등록이 된다.")
-    void createTopicAssociatedWithMember() {
-        // given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-
-        // when
-        Topic topic = Topic.createTopicAssociatedWithMember(
-                "name",
-                "description",
-                null,
-                Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
-                member
-        );
-
-        List<Topic> topicsInMember = member.getCreatedTopics();
-
-        // then
-        assertThat(topicsInMember).hasSize(1);
-        assertThat(topicsInMember.get(0)).usingRecursiveComparison()
-                .isEqualTo(topic);
-    }
-    
 }

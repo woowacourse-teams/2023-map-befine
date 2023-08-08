@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Guest;
+import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -192,9 +194,14 @@ class MemberQueryServiceTest {
                         creator
                 )
         );
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
 
         // when
-        List<PinResponse> response = memberQueryService.findPinsByMember(AuthMember.from(creator));
+        List<PinResponse> response = memberQueryService.findPinsByMember(authCreator);
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -204,19 +211,9 @@ class MemberQueryServiceTest {
     @Test
     @DisplayName("존재하지 않는 유저가 Pin 을 조회할 때 예외가 발생한다.")
     void findPinsByMember_whenNoneExists_thenFail() {
-        // given
-        Member member = memberRepository.save(
-                MemberFixture.create(
-                        "member",
-                        "member@naver.com",
-                        Role.USER
-                )
-        );
-        memberRepository.delete(member);
-
-        // when then
-        assertThatThrownBy(() -> memberQueryService.findPinsByMember(AuthMember.from(member)))
-                .isInstanceOf(NoSuchElementException.class);
+        // given when then
+        assertThatThrownBy(() -> memberQueryService.findPinsByMember(new Guest()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -228,9 +225,14 @@ class MemberQueryServiceTest {
         );
         Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", creator));
         Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", creator));
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
 
         // when
-        List<TopicResponse> response = memberQueryService.findTopicsByMember(AuthMember.from(creator));
+        List<TopicResponse> response = memberQueryService.findTopicsByMember(authCreator);
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -240,19 +242,23 @@ class MemberQueryServiceTest {
     @Test
     @DisplayName("존재하지 않는 유저가 본인이 만든 토픽을 조회할 때 예외가 발생한다.")
     void findTopicsByMember_whenNoneExists_thenFail() {
-        // given
-        Member member = memberRepository.save(
-                MemberFixture.create(
-                        "member",
-                        "member@naver.com",
-                        Role.USER
-                )
-        );
-        memberRepository.delete(member);
+        // given when then
+        assertThatThrownBy(() -> memberQueryService.findTopicsByMember(new Guest()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 
-        // when then
-        assertThatThrownBy(() -> memberQueryService.findTopicsByMember(AuthMember.from(member)))
-                .isInstanceOf(NoSuchElementException.class);
+    private List<Long> getTopicsWithPermission(Member member) {
+        return member.getTopicsWithPermissions()
+                .stream()
+                .map(Topic::getId)
+                .toList();
+    }
+
+    private List<Long> getCreatedTopics(Member member) {
+        return member.getCreatedTopics()
+                .stream()
+                .map(Topic::getId)
+                .toList();
     }
 
 }

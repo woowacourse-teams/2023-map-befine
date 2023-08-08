@@ -7,17 +7,19 @@ import ShowDetail from '../assets/showDetail.svg';
 import Share from '../assets/share.svg';
 import { useEffect, useState } from 'react';
 import { PinType } from '../types/Pin';
-import { getApi } from '../utils/getApi';
+import { getApi } from '../apis/getApi';
 import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';
 import useFormValues from '../hooks/useFormValues';
 import { DefaultPinValuesType } from '../types/FormValues';
+import useToast from '../hooks/useToast';
 
 const PinDetail = ({ pinId }: { pinId: number }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { showToast } = useToast();
   const { formValues, setFormValues, onChangeInput } =
     useFormValues<DefaultPinValuesType>({
       id: 0,
@@ -32,7 +34,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
 
   useEffect(() => {
     const getPinData = async () => {
-      const pinData = await getApi(`/pins/${pinId}`);
+      const pinData = await getApi('default', `/pins/${pinId}`);
       setPin(pinData);
       setFormValues({
         id: pinData.id,
@@ -61,9 +63,9 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   const copyContent = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
+      showToast('info', '핀 링크가 복사되었습니다.');
     } catch (err) {
-      if (typeof err === 'string') throw new Error(err);
-      throw new Error('[ERROR] clipboard error');
+      showToast('error', '핀 링크를 복사하는데 실패했습니다.');
     }
   };
 
@@ -105,7 +107,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
           핀을 만든 사람
         </Text>
         <Text color="gray" $fontSize="small" $fontWeight="normal">
-          {pin.updatedAt}
+          {`${pin.updatedAt.split('T')[0].split('-').join('.')} 업데이트`}
         </Text>
       </Flex>
       <Space size={2} />
@@ -135,7 +137,8 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어디에 있나요?
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
+        <Space size={1} />
+        <Text color="black" $fontSize="small" $fontWeight="normal">
           {pin.address}
         </Text>
       </Flex>
@@ -144,17 +147,18 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           어떤 곳인가요?
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
+        <Space size={1} />
+        <Text color="black" $fontSize="small" $fontWeight="normal">
           {pin.description}
         </Text>
       </Flex>
       <Space size={7} />
       <Flex $justifyContent="center">
-        <Clipping cursor={'pointer'} />
+        <Clipping />
         <Space size={4} />
-        <Share cursor={'pointer'} onClick={copyContent} />
+        <Share cursor="pointer" onClick={copyContent} />
         <Space size={4} />
-        <ShowDetail cursor={'pointer'} />
+        <ShowDetail />
       </Flex>
     </>
   );
