@@ -71,4 +71,12 @@ public class Location extends BaseTimeEntity {
         return coordinate.getLongitude();
     }
 
+    public String getRoadBaseAddress() {
+        return address.getRoadBaseAddress();
+    }
+
+    public String getLegalDongCode() {
+        return address.getLegalDongCode();
+    }
+
 }

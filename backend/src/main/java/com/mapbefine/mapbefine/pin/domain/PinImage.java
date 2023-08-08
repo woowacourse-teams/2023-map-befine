@@ -50,4 +50,5 @@ public class PinImage extends BaseTimeEntity {
     public String getImageUrl() {
         return image.getImageUrl();
     }
+
 }
