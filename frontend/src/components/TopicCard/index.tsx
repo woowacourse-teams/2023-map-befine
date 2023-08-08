@@ -62,7 +62,9 @@ const TopicCard = ({
             <Text color="gray" $fontSize="small" $fontWeight="normal">
               즐겨찾기 10명
             </Text>
-            <SeeTogetherButton />
+            <HorizontalButtonWrapper>
+              <SeeTogetherButton />
+            </HorizontalButtonWrapper>
           </Box>
         </Flex>
       </HorizontalWrapper>
@@ -94,7 +96,9 @@ const TopicCard = ({
             {`핀 ${topicPinCount}개 | 
             ${topicUpdatedAt.split('T')[0].replaceAll('-', '.')}`}
           </Text>
-          <SeeTogetherButton />
+          <VerticalButtonWrapper>
+            <SeeTogetherButton />
+          </VerticalButtonWrapper>
         </Box>
       </Box>
     </VerticalWrapper>
@@ -115,6 +119,18 @@ const HorizontalWrapper = styled.li`
   box-shadow: 2px 4px 4px 2px rgba(69, 69, 69, 0.25);
   cursor: pointer;
   border-radius: ${({ theme }) => theme.radius.small};
+`;
+
+const VerticalButtonWrapper = styled.div`
+  position: absolute;
+  top: 48%;
+  right: 12px;
+`;
+
+const HorizontalButtonWrapper = styled.div`
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
 `;
 
 const VerticalTopicImage = styled(Image)`

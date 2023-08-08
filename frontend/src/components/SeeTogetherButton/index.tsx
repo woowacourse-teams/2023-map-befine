@@ -5,13 +5,12 @@ import { postApi } from '../../apis/postApi';
 import { getApi } from '../../apis/getApi';
 import { MouseEventHandler, useContext } from 'react';
 import { SeeTogetherContext } from '../../context/SeeTogetherContext';
+import Button from '../common/Button';
 
 const SeeTogetherButton = () => {
   const { setSeeTogetherTopic } = useContext(SeeTogetherContext);
 
-  const onClickWatchGather = async (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) => {
+  const onClickWatchGather = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
     // await postApi('', {});
@@ -21,26 +20,30 @@ const SeeTogetherButton = () => {
   };
 
   return (
-    <CircleFlex
-      $justifyContent="center"
-      $alignItems="flex-end"
-      width="32px"
-      height="32px"
-      $backgroundColor="primary"
-      position="absolute"
-      top="50%"
-      right="12px"
-      onClick={onClickWatchGather}
-    >
+    <CircleButton onClick={onClickWatchGather}>
       <Text color="white" $fontSize="extraLarge" $fontWeight="normal">
         +
       </Text>
-    </CircleFlex>
+    </CircleButton>
   );
 };
 
-const CircleFlex = styled(Flex)`
+const CircleButton = styled.button`
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ theme }) => theme.color.primary};
+  border: 0;
   border-radius: 50%;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-size: 14px;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
 `;
 
 export default SeeTogetherButton;
