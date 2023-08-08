@@ -25,9 +25,9 @@ const Home = () => {
     routePage('topics/see-all', LATEST_TOPICS_URL);
   };
 
-  useEffect(() => {
-    setWidth('100vw');
-  }, []);
+  // useEffect(() => {
+  //   setWidth('100vw');
+  // }, []);
 
   return (
     <Box position="relative">
