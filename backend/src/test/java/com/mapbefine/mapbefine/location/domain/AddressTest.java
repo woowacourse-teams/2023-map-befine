@@ -37,6 +37,7 @@ class AddressTest {
             //when
             boolean otherParcelAddress = address.isSameAddress("다른 지번 주소");
             boolean otherRoadAddress = address.isSameAddress("다른 도로명 주소");
+
             //then
             assertThat(otherParcelAddress).isFalse();
             assertThat(otherRoadAddress).isFalse();

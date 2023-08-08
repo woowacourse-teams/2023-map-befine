@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class LocationQueryService {
 
-    private static final double NEAR_DISTANCE = 3000.0;
+    private static final double NEAR_DISTANCE_METERS = 3000.0;
 
     private final LocationRepository locationRepository;
 
@@ -32,7 +32,8 @@ public class LocationQueryService {
 
     public List<TopicResponse> findNearbyTopicsSortedByPinCount(AuthMember member, CoordinateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
-        List<Location> nearLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, NEAR_DISTANCE);
+        List<Location> nearLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate,
+                NEAR_DISTANCE_METERS);
 
         Map<Topic, Long> topicCounts = countTopicsInLocations(nearLocation);
 

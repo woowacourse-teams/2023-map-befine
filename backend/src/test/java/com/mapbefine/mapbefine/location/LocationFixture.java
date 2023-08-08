@@ -25,13 +25,13 @@ public class LocationFixture {
      * SIXTY_FOUR_THIRTY_METER: 직선 거리 약 6430.905 미터
      * */
     public static final Coordinate BASE_COORDINATE = Coordinate.of(37.6273677, 127.0447364);
-    public static final Coordinate UNDER_METER = Coordinate.of(37.6273644, 127.0447427);
+    public static final Coordinate UNDER_ONE_METER = Coordinate.of(37.6273644, 127.0447427);
     public static final Coordinate SEVEN_METER = Coordinate.of(37.6274194, 127.0447922);
     public static final Coordinate EIGHTEEN_FORTY_SIX_METER = Coordinate.of(37.6316286, 127.0650012);
     public static final Coordinate SIXTY_FOUR_THIRTY_METER = Coordinate.of(37.6507643, 127.1115283);
 
     public static final List<Coordinate> COORDINATES = List.of(
-            LocationFixture.UNDER_METER,
+            LocationFixture.UNDER_ONE_METER,
             LocationFixture.SEVEN_METER,
             LocationFixture.EIGHTEEN_FORTY_SIX_METER,
             LocationFixture.SIXTY_FOUR_THIRTY_METER

@@ -31,7 +31,7 @@ class LocationRepositoryTest {
     @ParameterizedTest
     @MethodSource(value = "coordinates_Fail")
     @DisplayName("범위 내의 Pin을 검색한다")
-    void findAllByCoordinateAndDistanceInMeters(double distance, int size) {
+    void findAllByCoordinateAndDistanceInMeters_Success(double distance, int size) {
         //when
         List<Location> locations = locationRepository.findAllByCoordinateAndDistanceInMeters(
                 LocationFixture.BASE_COORDINATE, distance);
