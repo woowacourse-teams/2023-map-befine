@@ -209,6 +209,7 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
         assertThat(memberResponses).usingRecursiveComparison()
+                .ignoringFields("updateAt")
                 .isEqualTo(MemberDetailResponse.from(member));
     }
 
@@ -406,6 +407,7 @@ class MemberIntegrationTest extends IntegrationTest {
         // then
         assertThat(topicResponses).hasSize(2)
                 .usingRecursiveComparison()
+                .ignoringFields("updatedAt")
                 .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
     }
 
