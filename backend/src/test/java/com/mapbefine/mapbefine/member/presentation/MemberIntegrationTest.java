@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.member.presentation;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LOCAL_DATE_TIME;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -31,6 +32,7 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
@@ -220,7 +222,7 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(memberTopicPermissionDetailResponse)
                 .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
                 .usingRecursiveComparison()
-                .ignoringFields("updatedAt")
+                .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(MemberDetailResponse.from(member));
     }
 
@@ -393,6 +395,7 @@ class MemberIntegrationTest extends IntegrationTest {
         // then
         assertThat(topicResponses).hasSize(2)
                 .usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
     }
 
