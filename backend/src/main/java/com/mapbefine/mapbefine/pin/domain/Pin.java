@@ -77,10 +77,10 @@ public class Pin extends BaseTimeEntity {
                 topic,
                 creator
         );
-
         location.addPin(pin);
         topic.addPin(pin);
         creator.addPin(pin);
+
         return pin;
     }
 
@@ -100,9 +100,9 @@ public class Pin extends BaseTimeEntity {
         return copy;
     }
 
-    private void copyPinImages(Pin copy) {
+    private void copyPinImages(Pin pin) {
         for (PinImage pinImage : pinImages) {
-            PinImage.createPinImageAssociatedWithPin(pinImage.getImage(), copy);
+            PinImage.createPinImageAssociatedWithPin(pinImage.getImage(), pin);
         }
     }
 
