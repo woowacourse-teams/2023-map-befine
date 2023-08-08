@@ -35,12 +35,17 @@ public class TopicCommandService {
         this.memberRepository = memberRepository;
     }
 
-    public Long saveEmptyTopic(AuthMember member, TopicCreateRequest request) {
+    public Long saveTopic(AuthMember member, TopicCreateRequest request) {
         Topic topic = convertToTopic(member, request);
+        List<Long> pinIds = request.pins();
 
-        Topic savedTopic = topicRepository.save(topic);
+        if (pinIds.size() > 0) {
+            copyPinsToTopic(member, topic, pinIds);
+        }
 
-        return savedTopic.getId();
+        topicRepository.save(topic);
+
+        return topic.getId();
     }
 
     private Topic convertToTopic(AuthMember member, TopicCreateRequest request) {
@@ -65,16 +70,15 @@ public class TopicCommandService {
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    public Long saveTopicWithPins(AuthMember member, TopicCreateRequest request) {
-        Topic topic = convertToTopic(member, request);
-
-        List<Pin> originalPins = findAllPins(request.pins());
+    private void copyPinsToTopic(
+            AuthMember member,
+            Topic topic,
+            List<Long> pinIds
+    ) {
+        List<Pin> originalPins = findAllPins(pinIds);
         validateCopyablePins(member, originalPins);
-        copyPinsToTopic(originalPins, topic);
 
-        Topic savedTopic = topicRepository.save(topic);
-
-        return savedTopic.getId();
+        originalPins.forEach(pin -> pin.copyToTopic(topic));
     }
 
     private List<Pin> findAllPins(List<Long> pinIds) {
@@ -97,22 +101,18 @@ public class TopicCommandService {
         }
     }
 
-    private void copyPinsToTopic(List<Pin> pins, Topic topic) {
-        pins.forEach(pin -> pin.copyToTopic(topic));
-    }
-
     public Long merge(AuthMember member, TopicMergeRequest request) {
         Topic topic = convertToTopic(member, request);
-
         List<Topic> originalTopics = findAllTopics(request.topics());
+
         validateCopyableTopics(member, originalTopics);
+
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
+        originalPins.forEach(pin -> pin.copyToTopic(topic));
 
-        copyPinsToTopic(originalPins, topic);
+        topicRepository.save(topic);
 
-        Topic savedTopic = topicRepository.save(topic);
-
-        return savedTopic.getId();
+        return topic.getId();
     }
 
     private Topic convertToTopic(AuthMember member, TopicMergeRequest request) {

@@ -44,7 +44,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getEmail()).getBytes()
         );
-        given(topicCommandService.saveEmptyTopic(any(), any())).willReturn(1L);
+        given(topicCommandService.saveTopic(any(), any())).willReturn(1L);
 
         TopicCreateRequest topicCreateRequest = new TopicCreateRequest(
                 "준팍의 안갈집",

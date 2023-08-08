@@ -65,7 +65,7 @@ class TopicCommandServiceTest {
                 );
 
         //when
-        Long topicId = topicCommandService.saveEmptyTopic(user, request);
+        Long topicId = topicCommandService.saveTopic(user, request);
 
         //then
         TopicDetailResponse detail = topicQueryService.findDetailById(user, topicId);
@@ -87,7 +87,7 @@ class TopicCommandServiceTest {
                 );
 
         //when then
-        assertThatThrownBy(() -> topicCommandService.saveEmptyTopic(guest, request))
+        assertThatThrownBy(() -> topicCommandService.saveTopic(guest, request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Guest는 토픽을 생성할 수 없습니다.");
     }
@@ -113,7 +113,7 @@ class TopicCommandServiceTest {
                         List.of(pin1.getId(), pin2.getId())
                 );
 
-        Long topicId = topicCommandService.saveTopicWithPins(user, request);
+        Long topicId = topicCommandService.saveTopic(user, request);
 
         //then
         TopicDetailResponse detail = topicQueryService.findDetailById(user, topicId);
@@ -148,7 +148,7 @@ class TopicCommandServiceTest {
                 );
 
         //when then
-        assertThatThrownBy(() -> topicCommandService.saveTopicWithPins(guest, request))
+        assertThatThrownBy(() -> topicCommandService.saveTopic(guest, request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Guest는 토픽을 생성할 수 없습니다.");
     }
@@ -176,7 +176,7 @@ class TopicCommandServiceTest {
                         List.of(pin1.getId(), pin2.getId())
                 );
         //when then
-        assertThatThrownBy(() -> topicCommandService.saveTopicWithPins(user, request))
+        assertThatThrownBy(() -> topicCommandService.saveTopic(user, request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("복사할 수 없는 pin이 존재합니다.");
     }
