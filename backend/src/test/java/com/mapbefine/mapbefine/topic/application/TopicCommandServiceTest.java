@@ -16,6 +16,8 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
+import com.mapbefine.mapbefine.topic.domain.Permission;
+import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -287,7 +289,9 @@ class TopicCommandServiceTest {
         TopicUpdateRequest request = new TopicUpdateRequest(
                 "수정된 이름",
                 "https://map-befine-official.github.io/favicon.png",
-                "수정된 설명"
+                "수정된 설명",
+                Publicity.PRIVATE,
+                Permission.GROUP_ONLY
         );
 
         topicCommandService.updateTopicInfo(user, topic.getId(), request);
@@ -317,7 +321,9 @@ class TopicCommandServiceTest {
         TopicUpdateRequest request = new TopicUpdateRequest(
                 "수정된 이름",
                 "https://map-befine-official.github.io/favicon.png",
-                "수정된 설명"
+                "수정된 설명",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS
         );
 
         assertThatThrownBy(() -> topicCommandService.updateTopicInfo(user, topic.getId(), request))

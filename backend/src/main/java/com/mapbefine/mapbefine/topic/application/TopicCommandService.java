@@ -165,6 +165,7 @@ public class TopicCommandService {
         validateUpdateAuth(member, topic);
 
         topic.updateTopicInfo(request.name(), request.description(), request.image());
+        topic.updateTopicStatus(request.publicity(), request.permission());
     }
 
     private Topic findTopic(Long topicId) {

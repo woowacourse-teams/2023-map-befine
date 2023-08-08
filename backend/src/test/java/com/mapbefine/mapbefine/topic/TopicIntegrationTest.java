@@ -205,7 +205,9 @@ class TopicIntegrationTest extends IntegrationTest {
         TopicUpdateRequest 송파_데이트코스 = new TopicUpdateRequest(
                 "송파 데이트코스",
                 "https://map-befine-official.github.io/favicon.png",
-                "수정한 토픽"
+                "수정한 토픽",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS
         );
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -340,7 +342,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .param("ids",topicId1 + "," + topicId2)
+                .param("ids", topicId1 + "," + topicId2)
                 .when().get("/topics/ids")
                 .then().log().all()
                 .extract();

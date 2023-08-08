@@ -95,8 +95,13 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getEmail()).getBytes()
         );
-        TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest("준팍의 안갈집",
-                "https://map-befine-official.github.io/favicon.png", "준팍이 두번 다시 안갈집");
+        TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest(
+                "준팍의 안갈집",
+                "https://map-befine-official.github.io/favicon.png",
+                "준팍이 두번 다시 안갈집",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS
+        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/topics/1")
