@@ -121,7 +121,7 @@ class PinControllerTest extends RestDocsIntegration {
                 List.of(new PinImageResponse(1L, BASE_IMAGES.get(0)))
         );
 
-        given(pinQueryService.findById(any(), any())).willReturn(pinDetailResponse);
+        given(pinQueryService.findDetailById(any(), any())).willReturn(pinDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins/1")
@@ -159,7 +159,7 @@ class PinControllerTest extends RestDocsIntegration {
                 )
         );
 
-        given(pinQueryService.findAll(any())).willReturn(pinResponses);
+        given(pinQueryService.findAllReadable(any())).willReturn(pinResponses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins")

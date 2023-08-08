@@ -67,14 +67,14 @@ public class PinController {
 
     @GetMapping("/{pinId}")
     public ResponseEntity<PinDetailResponse> findById(AuthMember member, @PathVariable Long pinId) {
-        PinDetailResponse response = pinQueryService.findById(member, pinId);
+        PinDetailResponse response = pinQueryService.findDetailById(member, pinId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<List<PinResponse>> findAll(AuthMember member) {
-        List<PinResponse> allResponses = pinQueryService.findAll(member);
+        List<PinResponse> allResponses = pinQueryService.findAllReadable(member);
 
         return ResponseEntity.ok(allResponses);
     }

@@ -22,7 +22,7 @@ public class PinQueryService {
     }
 
     // TODO: 2023/08/08 isDeleted 제외하고 조회하기
-    public List<PinResponse> findAll(AuthMember member) {
+    public List<PinResponse> findAllReadable(AuthMember member) {
         return pinRepository.findAll()
                 .stream()
                 .filter(pin -> member.canRead(pin.getTopic()))
@@ -31,7 +31,7 @@ public class PinQueryService {
     }
 
     // TODO: 2023/08/08 isDeleted 제외하고 조회하기
-    public PinDetailResponse findById(AuthMember member, Long pinId) {
+    public PinDetailResponse findDetailById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
         validateReadAuth(member, pin.getTopic());

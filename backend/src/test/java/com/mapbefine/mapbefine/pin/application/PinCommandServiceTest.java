@@ -103,7 +103,7 @@ class PinCommandServiceTest {
         Long savedPinId = pinCommandService.save(authMember, request);
 
         // then
-        PinDetailResponse actual = pinQueryService.findById(authMember, savedPinId);
+        PinDetailResponse actual = pinQueryService.findDetailById(authMember, savedPinId);
         PinDetailResponse expected = new PinDetailResponse(
                 savedPinId,
                 "name",
@@ -157,7 +157,7 @@ class PinCommandServiceTest {
         Long savedPinId = pinCommandService.save(authMember, request);
 
         // then
-        PinDetailResponse actual = pinQueryService.findById(authMember, savedPinId);
+        PinDetailResponse actual = pinQueryService.findDetailById(authMember, savedPinId);
         PinDetailResponse expected = new PinDetailResponse(
                 savedPinId,
                 "name",
@@ -236,7 +236,7 @@ class PinCommandServiceTest {
         );
         long pinId = pinCommandService.save(authMember, createRequest);
         pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE));
-        List<PinImageResponse> pinImages = pinQueryService.findById(authMember, pinId)
+        List<PinImageResponse> pinImages = pinQueryService.findDetailById(authMember, pinId)
                 .images();
         PinImageResponse pinImage = pinImages.get(0);
         Long pinImageId = pinImage.id();

@@ -104,7 +104,7 @@ class PinQueryServiceTest {
         }
 
         // when
-        List<PinResponse> responses = pinQueryService.findAll(authMember);
+        List<PinResponse> responses = pinQueryService.findAllReadable(authMember);
 
         // then
         assertThat(responses).usingRecursiveComparison()
@@ -136,7 +136,7 @@ class PinQueryServiceTest {
                 null,
                 PinImageResponse.from(List.of(pinImage))
         );
-        PinDetailResponse actual = pinQueryService.findById(authMember, savedId);
+        PinDetailResponse actual = pinQueryService.findDetailById(authMember, savedId);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -148,7 +148,7 @@ class PinQueryServiceTest {
     @DisplayName("존재하지 않는 핀의 Id 를 넘기면 예외를 발생시킨다.")
     void findById_Fail() {
         // given when then
-        assertThatThrownBy(() -> pinQueryService.findById(authMember, 1L))
+        assertThatThrownBy(() -> pinQueryService.findDetailById(authMember, 1L))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
