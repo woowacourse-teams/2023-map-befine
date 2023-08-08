@@ -54,8 +54,8 @@ public class TopicInfo {
     }
 
     private static void validateName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name null");
+        if (Objects.isNull(name)) {
+            throw new IllegalArgumentException("이름은 null일 수 없스빈다.");
         }
         if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
             throw new IllegalArgumentException("이름 길이 이상");
@@ -63,8 +63,8 @@ public class TopicInfo {
     }
 
     private static void validateDescription(String description) {
-        if (description == null) {
-            throw new IllegalArgumentException("description null");
+        if (Objects.isNull(description)) {
+            throw new IllegalArgumentException("설명은 null일 수 없습니다.");
         }
         if (description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
             throw new IllegalArgumentException("description 길이 이상");
