@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PROTECTED;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Lob;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,7 +37,7 @@ public class PinInfo {
     }
 
     private static void validateName(String name) {
-        if (name == null) {
+        if (Objects.isNull(name)) {
             throw new IllegalArgumentException("핀 이름은 필수입니다.");
         }
         if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
@@ -45,7 +46,7 @@ public class PinInfo {
     }
 
     private static void validateDescription(String description) {
-        if (description == null) {
+        if (Objects.isNull(description)) {
             throw new IllegalArgumentException("핀 설명은 필수입니다.");
         }
         if (description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
