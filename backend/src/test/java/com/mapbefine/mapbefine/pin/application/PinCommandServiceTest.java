@@ -1,8 +1,10 @@
 package com.mapbefine.mapbefine.pin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -18,6 +20,7 @@ import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
@@ -37,22 +40,16 @@ class PinCommandServiceTest {
 
     @Autowired
     private PinCommandService pinCommandService;
-
     @Autowired
     private PinQueryService pinQueryService;
-
     @Autowired
     private PinRepository pinRepository;
-
     @Autowired
     private LocationRepository locationRepository;
-
     @Autowired
     private TopicRepository topicRepository;
-
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private PinImageRepository pinImageRepository;
 
@@ -60,20 +57,16 @@ class PinCommandServiceTest {
     private Topic topic;
     private Member member;
     private AuthMember authMember;
+    private PinCreateRequest createRequest;
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("user1", "userfirst@naver.com", Role.USER));
         location = locationRepository.save(LocationFixture.create());
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
-        authMember = AuthMember.from(member);
-    }
 
-    @Test
-    @DisplayName("핀을 저장하려는 위치(Location)가 존재하면 해당 위치에 핀을 저장한다.")
-    void saveIfExistLocation_Success() {
-        // given
-        PinCreateRequest request = new PinCreateRequest(
+        authMember = AuthMember.from(member);
+        createRequest = new PinCreateRequest(
                 topic.getId(),
                 "name",
                 "description",
@@ -82,9 +75,13 @@ class PinCommandServiceTest {
                 location.getLatitude(),
                 location.getLongitude()
         );
+    }
 
-        // when
-        long savedPinId = pinCommandService.save(authMember, request);
+    @Test
+    @DisplayName("핀을 저장하려는 위치(Location)가 존재하면 해당 위치에 핀을 저장한다.")
+    void saveIfExistLocation_Success() {
+        // given, when
+        long savedPinId = pinCommandService.save(authMember, createRequest);
         PinDetailResponse actual = pinQueryService.findDetailById(authMember, savedPinId);
         Pin pin = pinRepository.findById(savedPinId).get();
         Location savedLocation = pin.getLocation();
@@ -103,7 +100,7 @@ class PinCommandServiceTest {
         double newLatitude = 37.123456;
         double newLongitude = 127.123456;
 
-        PinCreateRequest request = new PinCreateRequest(
+        PinCreateRequest createRequest = new PinCreateRequest(
                 topic.getId(),
                 "name",
                 "description",
@@ -114,7 +111,7 @@ class PinCommandServiceTest {
         );
 
         // when
-        long savedPinId = pinCommandService.save(authMember, request);
+        long savedPinId = pinCommandService.save(authMember, createRequest);
         PinDetailResponse actual = pinQueryService.findDetailById(authMember, savedPinId);
         Pin pin = pinRepository.findById(savedPinId).get();
         Location savedLocation = pin.getLocation();
@@ -133,9 +130,8 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀을 삭제하면 해당 핀을 soft delete 하고, 해당 핀의 이미지들도 soft delete 한다.")
-    void removeById_Success() {
-        // given
+    @DisplayName("권한이 없는 토픽에 핀을 저장하면 예외를 발생시킨다.")
+    void save_FailByForbidden() {
         PinCreateRequest createRequest = new PinCreateRequest(
                 topic.getId(),
                 "name",
@@ -146,6 +142,25 @@ class PinCommandServiceTest {
                 location.getLongitude()
         );
 
+        assertThatThrownBy(() -> pinCommandService.save(new Guest(), createRequest))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("권한이 없는 토픽에 핀을 수정하면 예외를 발생시킨다.")
+    void update_FailByForbidden() {
+        long pinId = pinCommandService.save(authMember, createRequest);
+
+        assertThatThrownBy(() -> pinCommandService.update(
+                new Guest(), pinId, new PinUpdateRequest("name", "description"))
+        ).isInstanceOf(IllegalArgumentException.class);
+
+    }
+
+    @Test
+    @DisplayName("핀을 삭제하면 해당 핀을 soft delete 하고, 해당 핀의 이미지들도 soft delete 한다.")
+    void removeById_Success() {
+        // given
         long pinId = pinCommandService.save(authMember, createRequest);
         Pin pin = pinRepository.findById(pinId).get();
         PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGE), pin);
@@ -165,25 +180,48 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀 이미지의 id를 전달받아 해당하는 핀 이미지를 soft delete 한다.")
-    void removeImage_Success() {
-        // given
-        PinCreateRequest createRequest = new PinCreateRequest(
-                topic.getId(),
-                "name",
-                "description",
-                location.getRoadBaseAddress(),
-                location.getLegalDongCode(),
-                location.getLatitude(),
-                location.getLongitude()
-        );
-
+    @DisplayName("권한이 없는 토픽의 핀을 삭제하면 예외를 발생시킨다.")
+    void removeById_FailByForbidden() {
         long pinId = pinCommandService.save(authMember, createRequest);
-        pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE));
-        List<PinImageResponse> pinImages = pinQueryService.findDetailById(authMember, pinId)
-                .images();
-        PinImageResponse pinImage = pinImages.get(0);
-        Long pinImageId = pinImage.id();
+
+        assertThatThrownBy(() -> pinCommandService.removeById(new Guest(), pinId))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("핀 id를 전달받아 해당하는 핀에 핀 이미지를 추가한다.")
+    void addImage_Success() {
+        // given
+        long pinId = pinCommandService.save(authMember, createRequest);
+
+        // when
+        long pinImageId = savePinImageAndGetId(pinId);
+
+        // then
+        pinImageRepository.findById(pinImageId)
+                .ifPresentOrElse(
+                        found -> assertThat(found.getImageUrl()).isEqualTo(BASE_IMAGE),
+                        Assertions::fail
+                );;
+    }
+
+    @Test
+    @DisplayName("권한이 없는 토픽의 핀에 핀 이미지를 추가하면 예외를 발생시킨다.")
+    void addImage_FailByForbidden() {
+        // given
+        long pinId = pinCommandService.save(authMember, createRequest);
+
+        // when, then
+        assertThatThrownBy(() -> pinCommandService.addImage(new Guest(), new PinImageCreateRequest(pinId, BASE_IMAGE)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("핀 이미지의 id를 전달받아 해당하는 핀 이미지를 soft delete 한다.")
+    void removeImageById_Success() {
+        // given
+        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinImageId = savePinImageAndGetId(pinId);
 
         // when
         pinCommandService.removeImage(authMember, pinImageId);
@@ -195,4 +233,23 @@ class PinCommandServiceTest {
                                 Assertions::fail
                         );
     }
+
+    private long savePinImageAndGetId(long pinId) {
+        pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE));
+        List<PinImageResponse> pinImages = pinQueryService.findDetailById(authMember, pinId)
+                .images();
+        PinImageResponse pinImage = pinImages.get(0);
+        return pinImage.id();
+    }
+
+    @Test
+    @DisplayName("권한이 없는 토픽의 핀 이미지를 삭제하면 예외를 발생시킨다.")
+    void removeImageById_FailByForbidden() {
+        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinImageId = savePinImageAndGetId(pinId);
+
+        assertThatThrownBy(() -> pinCommandService.removeImage(new Guest(), pinImageId))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }

@@ -44,34 +44,42 @@ class PinQueryServiceTest {
     private MemberRepository memberRepository;
 
     private Location location;
-    private Topic topic;
-    private Member member;
-    private AuthMember authMember;
+    private Topic publicUser1Topic;
+    private Topic privateUser2Topic;
+    private Member user1;
+    private Member user2;
+    private AuthMember authMemberUser1;
 
     @BeforeEach
     void setUp() {
         location = locationRepository.save(LocationFixture.create());
-        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
-        authMember = AuthMember.from(member);
-        topic = topicRepository.save(TopicFixture.createByName("topic", member));
+        user1 = memberRepository.save(MemberFixture.create("user1", "userfirst@naver.com", Role.USER));
+        user2 = memberRepository.save(MemberFixture.create("user2", "usersecond@naver.com", Role.USER));
+        publicUser1Topic = topicRepository.save(TopicFixture.createByName("topic", user1));
+        privateUser2Topic = topicRepository.save(TopicFixture.createPrivateByName("private", user2));
+
+        authMemberUser1 = AuthMember.from(user1);
     }
 
     @Test
-    @DisplayName("핀 목록을 가져온다.")
+    @DisplayName("현재 권한에서 조회 가능한 핀 목록을 가져온다.")
     void findAllReadable_Success() {
         // given
+        Pin notExpected = pinRepository.save(PinFixture.create(location, privateUser2Topic, user2));
+
         List<PinResponse> expected = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Pin pin = PinFixture.create(location, topic, member);
+        for (int i = 0; i < 5; i++) {
+            Pin pin = PinFixture.create(location, publicUser1Topic, user1);
             pinRepository.save(pin);
             expected.add(PinResponse.from(pin));
         }
 
         // when
-        List<PinResponse> responses = pinQueryService.findAllReadable(authMember);
+        List<PinResponse> actual = pinQueryService.findAllReadable(authMemberUser1);
 
         // then
-        assertThat(responses).usingRecursiveComparison()
+        assertThat(actual).doesNotContain(PinResponse.from(notExpected));
+        assertThat(actual).usingRecursiveComparison()
                 .isEqualTo(expected);
     }
 
@@ -79,13 +87,13 @@ class PinQueryServiceTest {
     @DisplayName("핀의 Id 를 넘기면 핀을 가져온다.")
     void findDetailById_Success() {
         // given
-        Pin pin = PinFixture.create(location, topic, member);
+        Pin pin = PinFixture.create(location, publicUser1Topic, user1);
         PinImageFixture.create(pin);
         pinRepository.save(pin);
         Long pinId = pin.getId();
 
         // when
-        PinDetailResponse actual = pinQueryService.findDetailById(authMember, pinId);
+        PinDetailResponse actual = pinQueryService.findDetailById(authMemberUser1, pinId);
 
         // then
         assertThat(actual).usingRecursiveComparison()
@@ -95,10 +103,21 @@ class PinQueryServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 핀의 Id 를 넘기면 예외를 발생시킨다.")
-    void findById_Fail() {
-        // given when then
-        assertThatThrownBy(() -> pinQueryService.findDetailById(authMember, 1L))
+    void findDetailById_FailByNonExisting() {
+        // given, when, then
+        assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, 1L))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("현재 권한에서 조회할 수 없는 핀의 Id 를 넘기면 예외를 발생시킨다.")
+    void findDetailById_FailByForbidden() {
+        // given
+        Pin pin = pinRepository.save(PinFixture.create(location, privateUser2Topic, user2));
+
+        // when, then
+        assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, pin.getId()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

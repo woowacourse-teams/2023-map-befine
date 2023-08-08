@@ -19,6 +19,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,10 +51,10 @@ public class PinCommandService {
 
 
     public long save(AuthMember authMember, PinCreateRequest request) {
-        Member member = findMember(authMember.getMemberId());
         Topic topic = findTopic(request.topicId());
         validatePinCreateOrUpdate(authMember, topic);
 
+        Member member = findMember(authMember.getMemberId());
         Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 PinInfo.of(request.name(), request.description()),
                 findDuplicateOrCreatePinLocation(request),
@@ -65,14 +66,20 @@ public class PinCommandService {
         return pin.getId();
     }
 
-    private Topic findTopic(long topicId) {
+    private Topic findTopic(Long topicId) {
+        if (Objects.isNull(topicId)) {
+            throw new NoSuchElementException("토픽을 찾을 수 없습니다.");
+        }
         return topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
+                .orElseThrow(() -> new NoSuchElementException("토픽을 찾을 수 없습니다."));
     }
 
-    private Member findMember(long memberId) {
+    private Member findMember(Long memberId) {
+        if (Objects.isNull(memberId)) {
+            throw new NoSuchElementException("회원 정보를 찾을 수 없습니다.");
+        }
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new NoSuchElementException("회원 정보를 찾을 수 없습니다."));
     }
 
     private Location findDuplicateOrCreatePinLocation(PinCreateRequest request) {
