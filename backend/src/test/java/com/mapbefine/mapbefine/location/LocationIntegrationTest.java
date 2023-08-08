@@ -6,9 +6,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.dto.CoordinateRequest;
-import com.mapbefine.mapbefine.member.MemberFixture;
-import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.Role;
 import io.restassured.*;
 import io.restassured.response.*;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -24,9 +21,9 @@ public class LocationIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setAuthHeader() {
-        Member member = MemberFixture.create(Role.USER);
+        String email = "member@naver.com";
         authHeader = Base64.encodeBase64String(
-                ("Basic" + member.getEmail()).getBytes()
+                ("Basic" + email).getBytes()
         );
     }
 
