@@ -18,8 +18,10 @@ import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
@@ -173,10 +175,13 @@ class MemberIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {});
+        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = response.as(new TypeRef<>() {});
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(memberResponses).usingRecursiveComparison()
+        assertThat(memberTopicPermissionResponses)
+                .hasSize(2)
+                .extracting(MemberTopicPermissionResponse::memberResponse)
+                .usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(member1), MemberResponse.from(member2)));
     }
 
@@ -209,10 +214,12 @@ class MemberIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        MemberDetailResponse memberResponses = response.as(MemberDetailResponse.class);
+        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = response.as(MemberTopicPermissionDetailResponse.class);
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(memberResponses).usingRecursiveComparison()
+        assertThat(memberTopicPermissionDetailResponse)
+                .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
+                .usingRecursiveComparison()
                 .isEqualTo(MemberDetailResponse.from(member));
     }
 

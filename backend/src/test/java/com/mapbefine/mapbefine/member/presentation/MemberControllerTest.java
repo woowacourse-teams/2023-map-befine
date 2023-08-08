@@ -14,6 +14,8 @@ import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
@@ -74,23 +76,29 @@ class MemberControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
     void findMemberTopicPermissionAll() throws Exception {
-        List<MemberResponse> memberResponses = List.of(
-                new MemberResponse(
+        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = List.of(
+                new MemberTopicPermissionResponse(
                         1L,
-                        "member",
-                        "member@naver.com"
+                        new MemberResponse(
+                                1L,
+                                "member",
+                                "member@naver.com"
+                        )
                 ),
-                new MemberResponse(
-                        2L,
-                        "memberr",
-                        "memberr@naver.com"
+                new MemberTopicPermissionResponse(
+                        1L,
+                        new MemberResponse(
+                                2L,
+                                "memberr",
+                                "memberr@naver.com"
+                        )
                 )
         );
         String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberResponses.get(0).email()).getBytes()
+                ("Basic " + memberTopicPermissionResponses.get(0).memberResponse().email()).getBytes()
         );
 
-        given(memberQueryService.findAllWithPermission(any())).willReturn(memberResponses);
+        given(memberQueryService.findAllWithPermission(any())).willReturn(memberTopicPermissionResponses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/permissions/topics/1")
@@ -101,18 +109,21 @@ class MemberControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
     void findMemberTopicPermissionById() throws Exception {
-        MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
+        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = new MemberTopicPermissionDetailResponse(
                 1L,
-                "member",
-                "member@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
-                LocalDateTime.now()
+                new MemberDetailResponse(
+                    1L,
+                    "member",
+                    "member@naver.com",
+                    "https://map-befine-official.github.io/favicon.png",
+                    LocalDateTime.now()
+                )
         );
         String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberDetailResponse.email()).getBytes()
+                ("Basic " + memberTopicPermissionDetailResponse.memberDetailResponse().email()).getBytes()
         );
 
-        given(memberQueryService.findMemberTopicPermissionById(any())).willReturn(memberDetailResponse);
+        given(memberQueryService.findMemberTopicPermissionById(any())).willReturn(memberTopicPermissionDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/permissions/1")

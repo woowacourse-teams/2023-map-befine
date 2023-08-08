@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.pin.Domain;
+package com.mapbefine.mapbefine.pin.domain;
 
 import com.mapbefine.mapbefine.member.domain.Member;
 import java.util.List;

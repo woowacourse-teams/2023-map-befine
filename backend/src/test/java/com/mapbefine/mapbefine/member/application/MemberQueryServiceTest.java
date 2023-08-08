@@ -16,9 +16,11 @@ import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -77,12 +79,13 @@ class MemberQueryServiceTest {
         );
 
         // when
-        List<MemberResponse> memberResponses = memberQueryService.findAllWithPermission(topic1.getId());
+        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = memberQueryService.findAllWithPermission(topic1.getId());
         MemberResponse memberResponse1 = MemberResponse.from(member1InTopic1);
         MemberResponse memberResponse2 = MemberResponse.from(member2InTopic1);
 
         // then
-        assertThat(memberResponses).hasSize(2)
+        assertThat(memberTopicPermissionResponses).hasSize(2)
+                .extracting(MemberTopicPermissionResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(memberResponse1, memberResponse2));
     }
@@ -103,11 +106,14 @@ class MemberQueryServiceTest {
         ).getId();
 
         // when
-        MemberDetailResponse memberDetailResponse = memberQueryService.findMemberTopicPermissionById(savedId);
+        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse =
+                memberQueryService.findMemberTopicPermissionById(savedId);
         MemberDetailResponse permissionUserResponse = MemberDetailResponse.from(permissionUser);
 
         // then
-        assertThat(memberDetailResponse).usingRecursiveComparison()
+        assertThat(memberTopicPermissionDetailResponse)
+                .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
+                .usingRecursiveComparison()
                 .isEqualTo(permissionUserResponse);
     }
 

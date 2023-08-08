@@ -3,7 +3,7 @@ package com.mapbefine.mapbefine.member.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

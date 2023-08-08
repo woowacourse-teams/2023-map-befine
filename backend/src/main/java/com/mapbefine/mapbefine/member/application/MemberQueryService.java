@@ -7,8 +7,10 @@ import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -82,22 +84,21 @@ public class MemberQueryService {
         }
     }
 
-    public List<MemberResponse> findAllWithPermission(Long topicId) {
+    public List<MemberTopicPermissionResponse> findAllWithPermission(Long topicId) {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(NoSuchElementException::new);
 
         return memberTopicPermissionRepository.findByTopic(topic)
                 .stream()
-                .map(MemberTopicPermission::getMember)
-                .map(MemberResponse::from)
+                .map(MemberTopicPermissionResponse::from)
                 .toList();
     }
 
-    public MemberDetailResponse findMemberTopicPermissionById(Long permissionId) {
+    public MemberTopicPermissionDetailResponse findMemberTopicPermissionById(Long permissionId) {
         MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
                 .orElseThrow(NoSuchElementException::new);
 
-        return MemberDetailResponse.from(memberTopicPermission.getMember());
+        return MemberTopicPermissionDetailResponse.from(memberTopicPermission);
     }
 
 }

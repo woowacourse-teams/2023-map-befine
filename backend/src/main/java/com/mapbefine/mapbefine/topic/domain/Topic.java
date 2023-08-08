@@ -5,7 +5,7 @@ import static lombok.AccessLevel.PROTECTED;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
