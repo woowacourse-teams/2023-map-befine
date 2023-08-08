@@ -53,6 +53,7 @@ public class TopicStatus {
         }
     }
 
+    // TODO: 2023/08/09 해당 정책으로 인해, TopicStatus는 불변 객체로 만들 수 없을까 ?
     private void validatePermission(Permission permission) {
         if (this.permission.isAllMembers() && permission.isGroupOnly()) {
             throw new IllegalArgumentException("권한 범위는 줄어들 수 없습니다.");

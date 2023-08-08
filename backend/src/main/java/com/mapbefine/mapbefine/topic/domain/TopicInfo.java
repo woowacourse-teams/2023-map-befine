@@ -79,19 +79,6 @@ public class TopicInfo {
         return Image.from(imageUrl);
     }
 
-    public void update(
-            String name,
-            String description,
-            String imageUrl
-    ) {
-        validateName(name);
-        validateDescription(description);
-
-        this.name = name;
-        this.description = description;
-        this.image = createImage(imageUrl);
-    }
-
     public String getImageUrl() {
         return image.getImageUrl();
     }

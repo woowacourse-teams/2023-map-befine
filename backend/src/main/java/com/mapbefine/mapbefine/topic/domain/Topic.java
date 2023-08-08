@@ -79,7 +79,7 @@ public class Topic extends BaseTimeEntity {
             String description,
             String imageUrl
     ) {
-        topicInfo.update(name, description, imageUrl);
+        this.topicInfo = TopicInfo.of(name, description, imageUrl);
     }
 
     public void updateTopicStatus(Publicity publicity, Permission permission) {
