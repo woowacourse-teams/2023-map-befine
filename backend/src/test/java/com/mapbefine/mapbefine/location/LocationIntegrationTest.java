@@ -20,8 +20,6 @@ import org.springframework.http.MediaType;
 
 public class LocationIntegrationTest extends IntegrationTest {
 
-    private static final String BASIC_FORMAT = "Basic %s";
-
     private String authHeader;
 
     @BeforeEach
@@ -48,7 +46,7 @@ public class LocationIntegrationTest extends IntegrationTest {
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(coordinateRequest)
-                .when().get("/location/best")
+                .when().get("/locations/bests")
                 .then().log().all()
                 .extract();
 

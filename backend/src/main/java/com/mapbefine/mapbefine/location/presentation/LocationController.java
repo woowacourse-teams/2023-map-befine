@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/location")
+@RequestMapping("/locations")
 public class LocationController {
 
     private final LocationQueryService locationQueryService;
@@ -21,7 +21,7 @@ public class LocationController {
         this.locationQueryService = locationQueryService;
     }
 
-    @GetMapping("/best")
+    @GetMapping("/bests")
     public ResponseEntity<List<TopicResponse>> findNearbyTopicsSortedByPinCount(
             AuthMember member,
             @RequestBody CoordinateRequest request
