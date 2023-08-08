@@ -20,6 +20,7 @@ import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
+import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -65,7 +66,6 @@ class PinCommandServiceTest {
     void setUp() {
         locationRepository.deleteAll();
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
-        authMember = AuthMember.from(member);
         topic = topicRepository.save(
                 Topic.createTopicAssociatedWithMember(
                         "topicName",
@@ -76,6 +76,7 @@ class PinCommandServiceTest {
                         member
                 )
         );
+        authMember = AuthMember.from(member);
     }
 
     @Test
@@ -210,43 +211,6 @@ class PinCommandServiceTest {
         assertThat(pinImages).isEmpty();
     }
 
-    // TODO PinCommandServiceTest에서 테스트할 내용이 맞을까요? 토픽테스트에서 하는 건 어떨까요?
-    @Test
-    @DisplayName("토픽을 삭제하면 이와 관련된 모든 핀들이 soft-deleting 된다.")
-    void removeAllByTopicId_Success() {
-        // given
-        double latitude = 37.123456;
-        double longitude = 127.123456;
-        Coordinate coordinate = Coordinate.of(latitude, longitude);
-        saveLocation(coordinate);
-
-        PinCreateRequest createRequest = new PinCreateRequest(
-                topic.getId(),
-                "name",
-                "description",
-                "address",
-                "legalDongCode",
-                latitude,
-                longitude
-        );
-
-        for (int i = 0; i < 10; i++) {
-            pinCommandService.save(authMember, createRequest);
-        }
-
-        // when
-        Topic findTopicBeforeDeleting = topicRepository.findById(topic.getId()).get();
-        assertThat(findTopicBeforeDeleting.getPins()).extractingResultOf("isDeleted")
-                .doesNotContain(true);
-        pinRepository.deleteAllByTopicId(topic.getId());
-
-        // then
-        Topic findTopicAfterDeleting = topicRepository.findById(topic.getId()).get();
-
-        assertThat(findTopicAfterDeleting.getPins()).extractingResultOf("isDeleted")
-                .doesNotContain(false);
-    }
-
     @Test
     @DisplayName("핀 이미지의 id를 전달받아 해당하는 핀 이미지를 hard delete 한다.")
     void removeImage_Success() {
@@ -266,12 +230,16 @@ class PinCommandServiceTest {
                 longitude
         );
         long pinId = pinCommandService.save(authMember, createRequest);
-        long pinImageId = pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE));
+        pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE));
+        List<PinImageResponse> pinImages = pinQueryService.findById(authMember, pinId)
+                .images();
+        PinImageResponse deleteImage = pinImages.get(0);
+        Long deleteImageId = deleteImage.id();
 
         // when
-        pinCommandService.removeImage(authMember, pinImageId);
+        pinCommandService.removeImage(authMember, deleteImageId);
 
         // then
-        assertThat(pinImageRepository.findById(pinImageId)).isEmpty();
+        assertThat(pinImageRepository.findById(deleteImageId)).isEmpty();
     }
 }

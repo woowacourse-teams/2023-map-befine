@@ -118,7 +118,7 @@ public class PinCommandService {
         throw new IllegalArgumentException("해당 토픽의 핀을 삭제할 권한이 없습니다.");
     }
 
-    public long addImage(AuthMember authMember, PinImageCreateRequest request) {
+    public void addImage(AuthMember authMember, PinImageCreateRequest request) {
         Pin pin = pinRepository.findById(request.pinId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
 
@@ -126,7 +126,7 @@ public class PinCommandService {
             // TODO pin.addImage()가 특히 자연스러운 로직인거 같은데 setter 안쓰는 일관성 유지를 위해 일단 이렇게 했습니다.. 계속 이렇게 할지 논의 필요해보여요
             PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of(request.imageUrl()), pin);
             pinImageRepository.save(pinImage);
-            return pinImage.getId();
+            return;
         }
         throw new IllegalArgumentException("해당 토픽의 핀을 수정할 권한이 없습니다.");
     }

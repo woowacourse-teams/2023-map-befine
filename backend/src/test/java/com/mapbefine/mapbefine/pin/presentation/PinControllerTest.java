@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.pin.presentation;
 
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
-import static org.apache.http.HttpHeaders.LOCATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -63,7 +62,6 @@ class PinControllerTest extends RestDocsIntegration {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/pins")
                         .header(AUTHORIZATION, authHeader)
-                        .header(LOCATION, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pinCreateRequest))
         ).andDo(restDocs.document());
@@ -184,9 +182,6 @@ class PinControllerTest extends RestDocsIntegration {
                 1L,
                 "https://map-befine-official.github.io/favicon.png"
         );
-
-        given(pinCommandService.addImage(any(), any())).willReturn(1L);
-
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/pins/images")

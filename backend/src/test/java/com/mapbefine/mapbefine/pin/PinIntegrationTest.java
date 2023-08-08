@@ -13,11 +13,13 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import io.restassured.*;
 import io.restassured.response.*;
+import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -112,9 +114,7 @@ class PinIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin을 생성하면 저장된 Pin의 Location 헤더값과 201을 반환한다.")
     void addIfNotExistDuplicateLocation_Success() {
-        //given
-
-        //when
+        //given, when
         ExtractableResponse<Response> response = createPin(createRequestNoDuplicateLocation);
 
         //then
@@ -154,12 +154,7 @@ class PinIntegrationTest extends IntegrationTest {
         long pinId = createPinAndGetId(createRequestNoDuplicateLocation);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .header(AUTHORIZATION, authHeader)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/pins/" + pinId)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = findById(pinId);
 
         // then
         assertThat(response.jsonPath().getString("name"))
@@ -168,6 +163,16 @@ class PinIntegrationTest extends IntegrationTest {
                 .isEqualTo(createRequestNoDuplicateLocation.description());
         assertThat(response.jsonPath().getString("address"))
                 .isEqualTo(createRequestNoDuplicateLocation.address());
+    }
+
+    private ExtractableResponse<Response> findById(long pinId) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/pins/" + pinId)
+                .then().log().all()
+                .extract();
+        return response;
     }
 
     private long createPinAndGetId(PinCreateRequest request) {
@@ -205,9 +210,13 @@ class PinIntegrationTest extends IntegrationTest {
     void removeImage_Success() {
         // given
         long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        createPinImage(pinId);
+        ExtractableResponse<Response> pinResponse = findById(pinId);
+        List<PinImageResponse> images = pinResponse.jsonPath().getList("images", PinImageResponse.class);
+        PinImageResponse deleteImage = images.get(0);
 
         // when
-        long pinImageId = createPinImageAndGetId(pinId);
+        long pinImageId = deleteImage.id();
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -217,12 +226,6 @@ class PinIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    private long createPinImageAndGetId(long pinId) {
-        ExtractableResponse<Response> response = createPinImage(pinId);
-        String locationHeader = response.header("Location");
-        return Long.parseLong(locationHeader.split("/")[3]);
     }
 
 }
