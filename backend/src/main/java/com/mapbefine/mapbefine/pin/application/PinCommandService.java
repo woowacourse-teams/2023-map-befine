@@ -50,23 +50,29 @@ public class PinCommandService {
 
 
     public long save(AuthMember authMember, PinCreateRequest request) {
-        Topic topic = topicRepository.findById(request.topicId())
+        Member member = findMember(authMember.getMemberId());
+        Topic topic = findTopic(request.topicId());
+        validatePinCreateOrUpdate(authMember, topic);
+
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+                PinInfo.of(request.name(), request.description()),
+                findDuplicateOrCreatePinLocation(request),
+                topic,
+                member
+        );
+        pinRepository.save(pin);
+
+        return pin.getId();
+    }
+
+    private Topic findTopic(long topicId) {
+        return topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
+    }
 
-        if (authMember.canPinCreateOrUpdate(topic)) {
-            Member member = memberRepository.findById(authMember.getMemberId())
-                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                    PinInfo.of(request.name(), request.description()),
-                    findDuplicateOrCreatePinLocation(request),
-                    topic,
-                    member
-            );
-            pinRepository.save(pin);
-
-            return pin.getId();
-        }
-        throw new IllegalArgumentException("해당 토픽의 핀을 생성할 권한이 없습니다.");
+    private Member findMember(long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
     }
 
     private Location findDuplicateOrCreatePinLocation(PinCreateRequest request) {
@@ -85,8 +91,9 @@ public class PinCommandService {
                 pinCreateRequest.address(),
                 pinCreateRequest.legalDongCode()
         );
+        Location location = new Location(address, coordinate);
 
-        return locationRepository.save(new Location(address, coordinate));
+        return locationRepository.save(location);
     }
 
     public void update(
@@ -94,51 +101,51 @@ public class PinCommandService {
             Long pinId,
             PinUpdateRequest request
     ) {
-        Pin pin = pinRepository.findById(pinId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+        Pin pin = findPin(pinId);
+        validatePinCreateOrUpdate(authMember, pin.getTopic());
 
-        if (authMember.canPinCreateOrUpdate(pin.getTopic())) {
-            pin.updatePinInfo(request.name(), request.description());
-            pinRepository.save(pin);
-            return;
-        }
-        throw new IllegalArgumentException("해당 토픽의 핀을 수정할 권한이 없습니다.");
+        pin.updatePinInfo(request.name(), request.description());
+    }
+
+    private Pin findPin(Long pinId) {
+        return pinRepository.findById(pinId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
     }
 
     public void removeById(AuthMember authMember, Long pinId) {
-        Pin pin = pinRepository.findById(pinId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+        Pin pin = findPin(pinId);
+        validatePinCreateOrUpdate(authMember, pin.getTopic());
 
-        if (authMember.canDelete(pin.getTopic())) {
-            pinRepository.deleteById(pinId);
-            pinImageRepository.deleteAllByPinId(pinId);
-            return;
-        }
-        throw new IllegalArgumentException("해당 토픽의 핀을 삭제할 권한이 없습니다.");
+        pinRepository.deleteById(pinId);
+        pinImageRepository.deleteAllByPinId(pinId);
     }
 
     public void addImage(AuthMember authMember, PinImageCreateRequest request) {
-        Pin pin = pinRepository.findById(request.pinId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+        Pin pin = findPin(request.pinId());
+        validatePinCreateOrUpdate(authMember, pin.getTopic());
 
-        if (authMember.canPinCreateOrUpdate(pin.getTopic())) {
-            // TODO pin.addImage()가 특히 자연스러운 로직인거 같은데 setter 안쓰는 일관성 유지를 위해 일단 이렇게 했습니다.. 계속 이렇게 할지 논의 필요해보여요
-            PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of(request.imageUrl()), pin);
-            pinImageRepository.save(pinImage);
-            return;
-        }
-        throw new IllegalArgumentException("해당 토픽의 핀을 수정할 권한이 없습니다.");
+        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of(request.imageUrl()), pin);
+        pinImageRepository.save(pinImage);
     }
 
     public void removeImage(AuthMember authMember, Long pinImageId) {
-        PinImage pinImage = pinImageRepository.findById(pinImageId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀 이미지입니다."));
-
+        PinImage pinImage = findPinImage(pinImageId);
         Pin pin = pinImage.getPin();
-        if (authMember.canDelete(pin.getTopic())) {
-            pinImageRepository.deleteById(pinImageId);
+        validatePinCreateOrUpdate(authMember, pin.getTopic());
+        
+        pinImageRepository.deleteById(pinImageId);
+    }
+
+    private PinImage findPinImage(Long pinImageId) {
+        return pinImageRepository.findById(pinImageId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀 이미지입니다."));
+    }
+
+    private void validatePinCreateOrUpdate(AuthMember authMember, Topic topic) {
+        if (authMember.canPinCreateOrUpdate(topic)) {
             return;
         }
-        throw new IllegalArgumentException("해당 토픽의 핀을 수정할 권한이 없습니다.");
+
+        throw new IllegalArgumentException("핀 생성 및 수정 권한이 없습니다.");
     }
 }

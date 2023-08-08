@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
+import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
@@ -33,11 +34,17 @@ public class PinQueryService {
     public PinDetailResponse findById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+        validateReadAuth(member, pin.getTopic());
 
-        if (member.canRead(pin.getTopic())) {
-            return PinDetailResponse.from(pin);
+        return PinDetailResponse.from(pin);
+    }
+
+    private void validateReadAuth(AuthMember member, Topic topic) {
+        if (member.canRead(topic)) {
+            return;
         }
-        throw new IllegalArgumentException("해당 토픽의 핀 조회 권한이 없습니다.");
+
+        throw new IllegalArgumentException("조회 권한이 없습니다.");
     }
 
 }
