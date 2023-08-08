@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PinCommandService {
 
-    private static final double DUPLICATE_LOCATION_DISTANCE = 10.0;
+    private static final double DUPLICATE_LOCATION_DISTANCE_METERS = 10.0;
 
     private final PinRepository pinRepository;
     private final LocationRepository locationRepository;
@@ -73,7 +73,7 @@ public class PinCommandService {
     private Location findDuplicateOrCreatePinLocation(PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
 
-        return locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, DUPLICATE_LOCATION_DISTANCE)
+        return locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, DUPLICATE_LOCATION_DISTANCE_METERS)
                 .stream()
                 .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
