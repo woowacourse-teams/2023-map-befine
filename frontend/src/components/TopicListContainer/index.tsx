@@ -1,7 +1,6 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
-import Space from '../common/Space';
 import TopicCardList from '../TopicCardList';
 
 interface TopicListContainerProps {
@@ -14,7 +13,6 @@ const TopicListContainer = ({
   routeWhenSeeAll,
 }: TopicListContainerProps) => (
   <section>
-    <Space size={4} />
     <Flex $justifyContent="space-between" $alignItems="baseline">
       <Text color="black" $fontSize="large" $fontWeight="bold" tabIndex={0}>
         {containerTitle}

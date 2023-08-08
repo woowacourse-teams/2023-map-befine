@@ -56,7 +56,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <Space size={4} />
               </Flex>
               <Flex
-                height="calc(100vh - 60px)"
+                height="calc(100vh - 40px)"
                 $flexDirection="column"
                 overflow="auto"
                 padding="0 20px 20px 20px"
