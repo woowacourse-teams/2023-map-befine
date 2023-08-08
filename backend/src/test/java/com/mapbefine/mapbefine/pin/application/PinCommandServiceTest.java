@@ -224,7 +224,7 @@ class PinCommandServiceTest {
         long pinImageId = savePinImageAndGetId(pinId);
 
         // when
-        pinCommandService.removeImage(authMember, pinImageId);
+        pinCommandService.removeImageById(authMember, pinImageId);
 
         // then
         pinImageRepository.findById(pinImageId)
@@ -248,7 +248,7 @@ class PinCommandServiceTest {
         long pinId = pinCommandService.save(authMember, createRequest);
         long pinImageId = savePinImageAndGetId(pinId);
 
-        assertThatThrownBy(() -> pinCommandService.removeImage(new Guest(), pinImageId))
+        assertThatThrownBy(() -> pinCommandService.removeImageById(new Guest(), pinImageId))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -135,7 +135,7 @@ public class PinCommandService {
         pinImageRepository.save(pinImage);
     }
 
-    public void removeImage(AuthMember authMember, Long pinImageId) {
+    public void removeImageById(AuthMember authMember, Long pinImageId) {
         PinImage pinImage = findPinImage(pinImageId);
         Pin pin = pinImage.getPin();
         validatePinCreateOrUpdate(authMember, pin.getTopic());

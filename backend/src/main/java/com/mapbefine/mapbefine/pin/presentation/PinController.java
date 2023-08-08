@@ -90,7 +90,7 @@ public class PinController {
     @LoginRequired
     @DeleteMapping("/images/{pinImageId}")
     public ResponseEntity<Void> removeImage(AuthMember member, @PathVariable Long pinImageId) {
-        pinCommandService.removeImage(member, pinImageId);
+        pinCommandService.removeImageById(member, pinImageId);
 
         return ResponseEntity.noContent().build();
     }
