@@ -78,6 +78,7 @@ public class PinController {
         return ResponseEntity.ok(allResponses);
     }
 
+    @LoginRequired
     @PostMapping("/images")
     public ResponseEntity<Void> addImage(AuthMember member, @RequestBody PinImageCreateRequest request) {
         long savedId = pinCommandService.addImage(member, request);
@@ -86,6 +87,7 @@ public class PinController {
                 .build();
     }
 
+    @LoginRequired
     @DeleteMapping("/images/{pinImageId}")
     public ResponseEntity<Void> removeImage(AuthMember member, @PathVariable Long pinImageId) {
         pinCommandService.removeImage(member, pinImageId);
