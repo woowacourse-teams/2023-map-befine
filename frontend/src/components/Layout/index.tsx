@@ -10,6 +10,7 @@ import ToastProvider from '../../context/ToastContext';
 import Toast from '../Toast';
 import { styled } from 'styled-components';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
+import SeeTogetherProvider from '../../context/SeeTogetherContext';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -44,29 +45,31 @@ const Layout = ({ children }: LayoutProps) => {
     <ToastProvider>
       <CoordinatesProvider>
         <MarkerProvider>
-          <Flex height="100vh" width="100vw" overflow="hidden">
-            <LayoutFlex
-              $flexDirection="column"
-              $minWidth={width}
-              height="100vh"
-              $backgroundColor="white"
-            >
-              <Flex $flexDirection="column" padding="20px 20px 0 20px">
-                <Logo />
-                <Space size={4} />
-              </Flex>
-              <Flex
-                height="calc(100vh - 40px)"
+          <SeeTogetherProvider>
+            <Flex height="100vh" width="100vw" overflow="hidden">
+              <LayoutFlex
                 $flexDirection="column"
-                overflow="auto"
-                padding="0 20px 20px 20px"
+                $minWidth={width}
+                height="100vh"
+                $backgroundColor="white"
               >
-                {children}
-              </Flex>
-            </LayoutFlex>
-            <Toast />
-            <Map ref={mapContainer} map={map} $minWidth={width} />
-          </Flex>
+                <Flex $flexDirection="column" padding="20px 20px 0 20px">
+                  <Logo />
+                  <Space size={4} />
+                </Flex>
+                <Flex
+                  height="calc(100vh - 40px)"
+                  $flexDirection="column"
+                  overflow="auto"
+                  padding="0 20px 20px 20px"
+                >
+                  {children}
+                </Flex>
+              </LayoutFlex>
+              <Toast />
+              <Map ref={mapContainer} map={map} $minWidth={width} />
+            </Flex>
+          </SeeTogetherProvider>
         </MarkerProvider>
       </CoordinatesProvider>
     </ToastProvider>
