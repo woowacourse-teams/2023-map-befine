@@ -20,6 +20,7 @@ public class PinQueryService {
         this.pinRepository = pinRepository;
     }
 
+    // TODO: 2023/08/08 isDeleted 제외하고 조회하기
     public List<PinResponse> findAll(AuthMember member) {
         return pinRepository.findAll()
                 .stream()
@@ -28,6 +29,7 @@ public class PinQueryService {
                 .toList();
     }
 
+    // TODO: 2023/08/08 isDeleted 제외하고 조회하기
     public PinDetailResponse findById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));

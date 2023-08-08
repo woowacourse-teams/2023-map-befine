@@ -1,6 +1,8 @@
 package com.mapbefine.mapbefine.pin.domain;
 
+import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.common.entity.Image;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,11 +13,12 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class PinImage {
+public class PinImage extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +30,10 @@ public class PinImage {
     @ManyToOne
     @JoinColumn(name = "pin_id")
     private Pin pin;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "false")
+    private boolean isDeleted = false;
 
     private PinImage(Image image, Pin pin) {
         this.image = image;

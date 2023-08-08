@@ -27,6 +27,7 @@ import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -180,7 +181,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀을 삭제하면 해당 핀을 soft delete 하고, 해당 핀의 이미지들은 hard delete 한다.")
+    @DisplayName("핀을 삭제하면 해당 핀을 soft delete 하고, 해당 핀의 이미지들도 soft delete 한다.")
     void removeById_Success() {
         // given
         double latitude = 37.123456;
@@ -197,22 +198,26 @@ class PinCommandServiceTest {
                 latitude,
                 longitude
         );
-        Long savedPinId = pinCommandService.save(authMember, createRequest);
-        Pin pin = pinRepository.findById(savedPinId).get();
+        long pinId = pinCommandService.save(authMember, createRequest);
+        Pin pin = pinRepository.findById(pinId).get();
         PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGE), pin);
 
         // when
-        pinCommandService.removeById(authMember, savedPinId);
+        pinCommandService.removeById(authMember, pinId);
 
         // then
-        Pin deletedPin = pinRepository.findById(savedPinId).get();
-        assertThat(deletedPin.isDeleted()).isTrue();
-        List<PinImage> pinImages = pinImageRepository.findAllByPinId(savedPinId);
-        assertThat(pinImages).isEmpty();
+        pinRepository.findById(pinId)
+                .ifPresentOrElse(
+                        found -> assertThat(found.isDeleted()).isTrue(),
+                        Assertions::fail
+                );
+        assertThat(pinImageRepository.findAllByPinId(pinId))
+                .extractingResultOf("isDeleted", Boolean.class)
+                .containsOnly(true);
     }
 
     @Test
-    @DisplayName("핀 이미지의 id를 전달받아 해당하는 핀 이미지를 hard delete 한다.")
+    @DisplayName("핀 이미지의 id를 전달받아 해당하는 핀 이미지를 soft delete 한다.")
     void removeImage_Success() {
         // given
         double latitude = 37.123456;
@@ -233,13 +238,17 @@ class PinCommandServiceTest {
         pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE));
         List<PinImageResponse> pinImages = pinQueryService.findById(authMember, pinId)
                 .images();
-        PinImageResponse deleteImage = pinImages.get(0);
-        Long deleteImageId = deleteImage.id();
+        PinImageResponse pinImage = pinImages.get(0);
+        Long pinImageId = pinImage.id();
 
         // when
-        pinCommandService.removeImage(authMember, deleteImageId);
+        pinCommandService.removeImage(authMember, pinImageId);
 
         // then
-        assertThat(pinImageRepository.findById(deleteImageId)).isEmpty();
+        pinImageRepository.findById(pinImageId)
+                        .ifPresentOrElse(
+                                found -> assertThat(found.isDeleted()).isTrue(),
+                                Assertions::fail
+                        );
     }
 }

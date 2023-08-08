@@ -34,7 +34,6 @@ public class PinCommandService {
     private final MemberRepository memberRepository;
     private final PinImageRepository pinImageRepository;
 
-    // TODO 예외처리 패턴 추상화
     public PinCommandService(
             PinRepository pinRepository,
             LocationRepository locationRepository,
