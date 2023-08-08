@@ -5,24 +5,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
-import com.mapbefine.mapbefine.common.entity.Image;
-import com.mapbefine.mapbefine.location.domain.Address;
-import com.mapbefine.mapbefine.location.domain.Coordinate;
+import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
-import com.mapbefine.mapbefine.pin.domain.PinImage;
-import com.mapbefine.mapbefine.pin.domain.PinInfo;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
-import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
-import com.mapbefine.mapbefine.topic.domain.Permission;
-import com.mapbefine.mapbefine.topic.domain.Publicity;
+import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.ArrayList;
@@ -35,72 +31,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
 class PinQueryServiceTest {
-    private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     @Autowired
     private PinQueryService pinQueryService;
-
     @Autowired
     private TopicRepository topicRepository;
-
     @Autowired
     private PinRepository pinRepository;
-
     @Autowired
     private LocationRepository locationRepository;
-
     @Autowired
     private MemberRepository memberRepository;
 
     private Location location;
-
-    private Coordinate coordinate;
-
     private Topic topic;
     private Member member;
     private AuthMember authMember;
 
     @BeforeEach
     void setUp() {
-        double latitude = 37.123456;
-        double longitude = 127.123456;
-        coordinate = Coordinate.of(latitude, longitude);
-        location = saveLocation(coordinate);
+        location = locationRepository.save(LocationFixture.create());
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = AuthMember.from(member);
-        topic = topicRepository.save(
-                Topic.createTopicAssociatedWithMember(
-                        "topicName",
-                        "topicDescription",
-                        "https://map-befine-official.github.io/favicon.png",
-                        Publicity.PUBLIC,
-                        Permission.ALL_MEMBERS,
-                        member
-                )
-        );
+        topic = topicRepository.save(TopicFixture.createByName("topic", member));
     }
 
     @Test
     @DisplayName("핀 목록을 가져온다.")
-    void findAll_Success() {
+    void findAllReadable_Success() {
         // given
         List<PinResponse> expected = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                    PinInfo.of("name", "description"),
-                    location,
-                    topic,
-                    member
-            );
-            Long savedId = pinRepository.save(pin).getId();
-            expected.add(new PinResponse(
-                    savedId,
-                    "name",
-                    "road",
-                    "description",
-                    coordinate.getLatitude(),
-                    coordinate.getLongitude()
-            ));
+            Pin pin = PinFixture.create(location, topic, member);
+            pinRepository.save(pin);
+            expected.add(PinResponse.from(pin));
         }
 
         // when
@@ -113,35 +77,20 @@ class PinQueryServiceTest {
 
     @Test
     @DisplayName("핀의 Id 를 넘기면 핀을 가져온다.")
-    void findById_Success() {
+    void findDetailById_Success() {
         // given
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                PinInfo.of("name", "description"),
-                location,
-                topic,
-                member
-        );
-        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGES.get(0)),
-                pin);
-        Long savedId = pinRepository.save(pin).getId();
+        Pin pin = PinFixture.create(location, topic, member);
+        PinImageFixture.create(pin);
+        pinRepository.save(pin);
+        Long pinId = pin.getId();
 
         // when
-        PinDetailResponse expected = new PinDetailResponse(
-                savedId,
-                "name",
-                "road",
-                "description",
-                coordinate.getLatitude(),
-                coordinate.getLongitude(),
-                null,
-                PinImageResponse.from(List.of(pinImage))
-        );
-        PinDetailResponse actual = pinQueryService.findDetailById(authMember, savedId);
+        PinDetailResponse actual = pinQueryService.findDetailById(authMember, pinId);
 
         // then
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("updatedAt")
-                .isEqualTo(expected);
+                .isEqualTo(PinDetailResponse.from(pin));
     }
 
     @Test
@@ -150,21 +99,6 @@ class PinQueryServiceTest {
         // given when then
         assertThatThrownBy(() -> pinQueryService.findDetailById(authMember, 1L))
                 .isInstanceOf(NoSuchElementException.class);
-    }
-
-
-    private Location saveLocation(Coordinate coordinate) {
-        Address address = new Address(
-                "parcel",
-                "road",
-                "legalDongCode"
-        );
-        Location location = new Location(
-                address,
-                coordinate
-        );
-
-        return locationRepository.save(location);
     }
 
 }
