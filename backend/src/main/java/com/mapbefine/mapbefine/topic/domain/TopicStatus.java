@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +35,14 @@ public class TopicStatus {
     }
 
     private static void validateTopicStatus(Publicity publicity, Permission permission) {
+        if (Objects.isNull(publicity)) {
+            throw new IllegalArgumentException("공개 범위는 null일 수 없습니다.");
+        }
+
+        if (Objects.isNull(permission)) {
+            throw new IllegalArgumentException("권한 설정은 null일 수 없습니다.");
+        }
+
         if (publicity.isPrivate() && permission.isAllMembers()) {
             throw new IllegalArgumentException("공개 범위가 혼자 볼 지도인 경우, 권한 설정이 소속 회원이어야합니다.");
         }

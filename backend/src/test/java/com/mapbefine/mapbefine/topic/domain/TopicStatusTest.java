@@ -74,6 +74,32 @@ class TopicStatusTest {
             assertThat(topicStatus.isAllMembers()).isTrue();
         }
 
+        @Test
+        @DisplayName("공개 범위가 null인 경우, 예외가 발생한다.")
+        public void whenPublicityIsNull_Fail() {
+            //given
+            Publicity publicity = null;
+            Permission permission = Permission.ALL_MEMBERS;
+
+            //when //then
+            assertThatThrownBy(() -> TopicStatus.of(publicity, permission))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("공개 범위는 null일 수 없습니다.");
+        }
+
+        @Test
+        @DisplayName("권한 설정이 null인 경우, 예외가 발생한다.")
+        public void whenPermissionIsNull_Fail() {
+            //given
+            Publicity publicity = Publicity.PUBLIC;
+            Permission permission = null;
+
+            //when //then
+            assertThatThrownBy(() -> TopicStatus.of(publicity, permission))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("권한 설정은 null일 수 없습니다.");
+        }
+
     }
 
     @Nested
