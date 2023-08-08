@@ -5,13 +5,17 @@ import TopicCard from '../TopicCard';
 import Space from '../common/Space';
 import { MarkerContext } from '../../context/MarkerContext';
 import Flex from '../common/Flex';
+import { useLocation } from 'react-router-dom';
 
 const TopicCardList = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
   const { markers, removeMarkers } = useContext(MarkerContext);
+  const { state: url } = useLocation();
 
   const getAndSetDataFromServer = async () => {
-    const topics = await getApi('default', '/topics');
+    const topics = url
+      ? await getApi('default', url)
+      : await getApi('default', '/topics');
     setTopics(topics);
   };
 
@@ -22,13 +26,13 @@ const TopicCardList = () => {
 
   return (
     <ul>
-      <Flex width="360px" height="288px" overflow="auto">
+      <Flex width="360px" height="292px" overflow="auto">
         {topics &&
           topics.map((topic, index) => {
             return (
               <Fragment key={index}>
                 <TopicCard
-                  topicSize="small"
+                  topicSize="vertical"
                   topicId={topic.id}
                   topicImage={topic.image}
                   topicTitle={topic.name}
