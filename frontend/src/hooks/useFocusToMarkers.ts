@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 const useFocusToMarker = (map: any, markers: any) => {
-  const bounds = useRef(new window.Tmapv2.LatLngBounds());
+  const bounds = useRef(new window.Tmapv3.LatLngBounds());
 
   useEffect(() => {
     if (markers.length === 1) {
@@ -9,7 +9,7 @@ const useFocusToMarker = (map: any, markers: any) => {
     }
 
     if (markers.length > 1) {
-      bounds.current = new window.Tmapv2.LatLngBounds();
+      bounds.current = new window.Tmapv3.LatLngBounds();
       markers.forEach((marker: any) => {
         bounds.current.extend(marker.getPosition());
       });

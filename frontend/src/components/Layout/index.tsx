@@ -15,20 +15,20 @@ type LayoutProps = {
 
 declare global {
   interface Window {
-    Tmapv2: any;
+    Tmapv3: any;
     daum: any;
   }
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const { Tmapv2 } = window;
+  const { Tmapv3 } = window;
   const mapContainer = useRef(null);
 
   const [map, setMap] = useState(null);
 
   useEffect(() => {
-    const map = new Tmapv2.Map(mapContainer.current, {
-      center: new Tmapv2.LatLng(37.5154, 127.1029),
+    const map = new Tmapv3.Map(mapContainer.current, {
+      center: new Tmapv3.LatLng(37.5154, 127.1029),
     });
     map.setZoomLimit(8, 17);
     setMap(map);
