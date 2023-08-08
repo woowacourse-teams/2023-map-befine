@@ -2,6 +2,8 @@ import Space from '../components/common/Space';
 import Box from '../components/common/Box';
 import useNavigator from '../hooks/useNavigator';
 import TopicListContainer from '../components/TopicListContainer';
+import { useContext, useEffect } from 'react';
+import { LayoutWidthContext } from '../context/LayoutWidthContext';
 
 const POPULAR_TOPICS_URL = 'popular';
 const NEAR_BY_ME_TOPICS_URL = 'near';
@@ -9,6 +11,7 @@ const LATEST_TOPICS_URL = 'latest';
 
 const Home = () => {
   const { routePage } = useNavigator();
+  const { setWidth } = useContext(LayoutWidthContext);
 
   const goToPopularTopics = () => {
     routePage('topics/see-all', POPULAR_TOPICS_URL);
@@ -21,6 +24,10 @@ const Home = () => {
   const goToLatestTopics = () => {
     routePage('topics/see-all', LATEST_TOPICS_URL);
   };
+
+  useEffect(() => {
+    setWidth('100vw');
+  }, []);
 
   return (
     <Box position="relative">
