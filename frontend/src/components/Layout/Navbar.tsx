@@ -56,7 +56,7 @@ const Navbar = () => {
         </Flex>
         // <AddButton style={{ position: 'absolute', bottom: '60' }} />
       )}
-      <Favorite fill="red" onClick={() => routePage('/favorite')} />
+      <Favorite onClick={() => routePage('/favorite')} />
       <Keep fill="red" onClick={() => routePage('/keep')} />
     </Flex>
   );
