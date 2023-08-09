@@ -92,9 +92,11 @@ public class MemberCommandService {
     }
 
     private void validateMemberCanTopicUpdate(AuthMember authMember, Topic topic) {
-        if (!authMember.canTopicUpdate(topic)) {
-            throw new IllegalArgumentException("해당 유저는 해당 토픽에서 다른 유저에게 권한을 줄 수 없습니다.");
+        if (authMember.canTopicUpdate(topic)) {
+            return;
         }
+
+        throw new IllegalArgumentException("해당 유저는 해당 토픽에서 다른 유저에게 권한을 줄 수 없습니다.");
     }
 
     private void validateSelfPermission(

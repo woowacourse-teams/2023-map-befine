@@ -55,6 +55,7 @@ public class Member extends BaseTimeEntity {
                 imageUrl,
                 role
         );
+
         return new Member(memberInfo);
     }
 
