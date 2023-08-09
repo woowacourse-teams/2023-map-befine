@@ -101,6 +101,7 @@ const NewTopic = () => {
           onChangeInput={onChangeInput}
           tabIndex={1}
           errorMessage={errorMessages.image}
+          maxLength={2048}
         />
 
         <Space size={1} />
@@ -116,6 +117,7 @@ const NewTopic = () => {
           tabIndex={2}
           errorMessage={errorMessages.name}
           autoFocus
+          maxLength={20}
         />
 
         <Space size={1} />
@@ -130,6 +132,7 @@ const NewTopic = () => {
           onChangeInput={onChangeInput}
           tabIndex={3}
           errorMessage={errorMessages.description}
+          maxLength={100}
         />
 
         <Space size={6} />

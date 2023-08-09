@@ -171,6 +171,7 @@ const NewPin = () => {
           tabIndex={1}
           errorMessage={errorMessages.name}
           autoFocus
+          maxLength={50}
         />
 
         <Space size={1} />
@@ -210,6 +211,7 @@ const NewPin = () => {
           onChangeInput={onChangeInput}
           tabIndex={3}
           errorMessage={errorMessages.description}
+          maxLength={1000}
         />
 
         <Space size={6} />

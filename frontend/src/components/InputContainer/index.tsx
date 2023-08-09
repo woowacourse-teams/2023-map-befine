@@ -21,6 +21,7 @@ interface InputContainerProps {
   errorMessage: string;
   readOnly?: boolean;
   autoFocus?: boolean;
+  maxLength?: number;
 }
 
 const InputContainer = ({
@@ -35,6 +36,7 @@ const InputContainer = ({
   errorMessage,
   readOnly,
   autoFocus,
+  maxLength,
 }: InputContainerProps) => {
   const onChangeUserInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -68,6 +70,7 @@ const InputContainer = ({
           $hasBadWord={errorMessage.length > 0}
           readOnly={readOnly}
           autoFocus={autoFocus}
+          maxLength={maxLength}
         />
       ) : (
         <Textarea
@@ -77,6 +80,7 @@ const InputContainer = ({
           onChange={onChangeUserInput}
           tabIndex={tabIndex}
           $hasBadWord={errorMessage.length > 0}
+          maxLength={maxLength}
         />
       )}
       <Space size={0} />
