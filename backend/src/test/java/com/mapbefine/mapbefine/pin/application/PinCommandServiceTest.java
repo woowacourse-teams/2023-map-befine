@@ -132,16 +132,7 @@ class PinCommandServiceTest {
     @Test
     @DisplayName("권한이 없는 토픽에 핀을 저장하면 예외를 발생시킨다.")
     void save_FailByForbidden() {
-        PinCreateRequest createRequest = new PinCreateRequest(
-                topic.getId(),
-                "name",
-                "description",
-                location.getRoadBaseAddress(),
-                location.getLegalDongCode(),
-                location.getLatitude(),
-                location.getLongitude()
-        );
-
+        
         assertThatThrownBy(() -> pinCommandService.save(new Guest(), createRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
