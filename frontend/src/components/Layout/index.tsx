@@ -1,8 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import Map from '../Map';
 import Flex from '../common/Flex';
-import Input from '../common/Input';
-import Space from '../common/Space';
 import Logo from './Logo';
 import CoordinatesProvider from '../../context/CoordinatesContext';
 import MarkerProvider from '../../context/MarkerContext';
@@ -11,6 +9,8 @@ import Toast from '../Toast';
 import { styled } from 'styled-components';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 import SeeTogetherProvider from '../../context/SeeTogetherContext';
+import Navbar from './Navbar';
+import Back from '../../assets/Back.svg';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -66,6 +66,7 @@ const Layout = ({ children }: LayoutProps) => {
                   {children}
                 </Flex>
               </LayoutFlex>
+              <Navbar />
               <Toast />
               <Map ref={mapContainer} map={map} $minWidth={width} />
             </Flex>
