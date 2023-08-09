@@ -88,7 +88,7 @@ public class MemberCommandService {
     ) {
         validateMemberCanTopicUpdate(authMember, topic);
         validateSelfPermission(authMember, request);
-        validateDuplicatePermission(member, topic);
+        validateDuplicatePermission(topic.getId(), member.getId());
     }
 
     private void validateMemberCanTopicUpdate(AuthMember authMember, Topic topic) {
@@ -106,8 +106,8 @@ public class MemberCommandService {
         }
     }
 
-    private void validateDuplicatePermission(Member member, Topic topic) {
-        if (memberTopicPermissionRepository.existsByTopicAndMember(topic, member)) {
+    private void validateDuplicatePermission(Long topicId, Long memberId) {
+        if (memberTopicPermissionRepository.existsByTopicIdAndMemberId(topicId, memberId)) {
             throw new IllegalArgumentException("권한은 중복으로 줄 수 없습니다.");
         }
     }

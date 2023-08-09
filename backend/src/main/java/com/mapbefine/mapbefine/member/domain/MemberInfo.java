@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -76,7 +77,7 @@ public class MemberInfo {
     }
 
     private static void validateNickName(String nickName) {
-        if (nickName == null) {
+        if (Objects.isNull(nickName)) {
             throw new IllegalArgumentException("닉네임은 필수로 입력해야합니다.");
         }
         if (nickName.isBlank() || nickName.length() > MAX_NICK_NAME_LENGTH) {
@@ -85,7 +86,7 @@ public class MemberInfo {
     }
 
     private static void validateEmail(String email) {
-        if (email == null) {
+        if (Objects.isNull(email)) {
             throw new IllegalArgumentException("이메일은 필수로 입력해야합니다.");
         }
 
@@ -95,7 +96,7 @@ public class MemberInfo {
     }
 
     private static void validateRole(Role role) {
-        if (role == null) {
+        if (Objects.isNull(role)) {
             throw new IllegalArgumentException("역할은 필수로 입력해야합니다.");
         }
     }

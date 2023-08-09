@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.topic.domain;
 
-import com.mapbefine.mapbefine.member.domain.Member;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,8 +15,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update Topic t set t.isDeleted = true where t.id = :topicId")
     void deleteById(@Param("topicId") Long topicId);
-
-    List<Topic> findByCreator(Member creator);
 
     List<Topic> findByCreatorId(Long creatorId);
 

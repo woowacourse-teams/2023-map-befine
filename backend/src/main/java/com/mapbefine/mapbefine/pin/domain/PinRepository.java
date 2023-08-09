@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.pin.domain;
 
-import com.mapbefine.mapbefine.member.domain.Member;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,6 +20,6 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
 
     List<Pin> findAllByTopicId(Long topicId);
 
-    List<Pin> findByCreator(Member creator);
+    List<Pin> findByCreatorId(Long creatorId);
 
 }
