@@ -24,8 +24,8 @@ const Navbar = () => {
       $justifyContent="space-between"
       bottom="0"
     >
-      <Home stroke="red" onClick={() => routePage('/')} />
-      <All fill="red" stroke="red" onClick={() => routePage('/all')} />
+      <Home onClick={() => routePage('/')} />
+      <All onClick={() => routePage('/all')} />
       <AddButton
         onClick={() => {
           setShowButton((prev) => !prev);
@@ -54,10 +54,9 @@ const Navbar = () => {
             핀 추가하기
           </Button>
         </Flex>
-        // <AddButton style={{ position: 'absolute', bottom: '60' }} />
       )}
       <Favorite onClick={() => routePage('/favorite')} />
-      <Keep fill="red" onClick={() => routePage('/keep')} />
+      <Keep onClick={() => routePage('/keep')} />
     </Flex>
   );
 };
