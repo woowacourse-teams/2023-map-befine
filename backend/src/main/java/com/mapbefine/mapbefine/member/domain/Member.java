@@ -37,9 +37,7 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberTopicPermission> topicsWithPermissions = new ArrayList<>();
 
-    private Member(
-            MemberInfo memberInfo
-    ) {
+    private Member(MemberInfo memberInfo) {
         this.memberInfo = memberInfo;
     }
 

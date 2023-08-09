@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.member.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.MemberInfo;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
@@ -47,9 +46,9 @@ public class MemberCommandService {
                 .getId();
     }
 
-    private void validateUniqueNickName(String name) {
-        if (memberRepository.existsByMemberInfoNickName(name)) {
-            throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+    private void validateUniqueNickName(String nickName) {
+        if (memberRepository.existsByMemberInfoNickName(nickName)) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
         }
     }
 
@@ -59,21 +58,13 @@ public class MemberCommandService {
         }
     }
 
-    public Long saveMemberTopicPermission(
-            AuthMember authMember,
-            MemberTopicPermissionCreateRequest request
-    ) {
+    public Long saveMemberTopicPermission(AuthMember authMember, MemberTopicPermissionCreateRequest request) {
         Member member = memberRepository.findById(request.memberId())
                 .orElseThrow(NoSuchElementException::new);
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
 
-        validateSaveMemberTopicPermission(
-                authMember,
-                request,
-                member,
-                topic
-        );
+        validateSaveMemberTopicPermission(authMember, request, member, topic);
 
         MemberTopicPermission memberTopicPermission =
                 MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
@@ -115,10 +106,7 @@ public class MemberCommandService {
         }
     }
 
-    public void deleteMemberTopicPermission(
-            AuthMember authMember,
-            Long permissionId
-    ) {
+    public void deleteMemberTopicPermission(AuthMember authMember, Long permissionId) {
         MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
                 .orElseThrow(NoSuchElementException::new);
 
