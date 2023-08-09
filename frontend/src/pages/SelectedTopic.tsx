@@ -12,6 +12,7 @@ import { getApi } from '../apis/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
+import { LayoutWidthContext } from '../context/LayoutWidthContext';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
@@ -23,6 +24,7 @@ const SelectedTopic = () => {
   const [isOpen, setIsOpen] = useState(true);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
+  const { setWidth } = useContext(LayoutWidthContext);
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(
@@ -71,6 +73,8 @@ const SelectedTopic = () => {
 
   useEffect(() => {
     getAndSetDataFromServer();
+
+    // setWidth('400px');
 
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
