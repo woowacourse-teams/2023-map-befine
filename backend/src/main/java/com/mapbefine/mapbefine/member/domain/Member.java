@@ -49,12 +49,25 @@ public class Member extends BaseTimeEntity {
             String imageUrl,
             Role role
     ) {
-        MemberInfo memberInfo = MemberInfo.of(name, email, imageUrl, role);
+        MemberInfo memberInfo = MemberInfo.of(
+                name,
+                email,
+                imageUrl,
+                role
+        );
         return new Member(memberInfo);
     }
 
-    public void update(String name, String email, String imageUrl) {
-        memberInfo.update(name, email, imageUrl);
+    public void update(
+            String name,
+            String email,
+            String imageUrl
+    ) {
+        memberInfo.update(
+                name,
+                email,
+                imageUrl
+        );
     }
 
     public void addTopic(Topic topic) {

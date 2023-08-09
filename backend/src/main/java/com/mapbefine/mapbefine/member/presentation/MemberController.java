@@ -90,7 +90,9 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/permissions/topics/{topicId}")
-    public ResponseEntity<List<MemberTopicPermissionResponse>> findMemberTopicPermissionAll(@PathVariable Long topicId) {
+    public ResponseEntity<List<MemberTopicPermissionResponse>> findMemberTopicPermissionAll(
+            @PathVariable Long topicId
+    ) {
         List<MemberTopicPermissionResponse> responses = memberQueryService.findAllWithPermission(topicId);
 
         return ResponseEntity.ok(responses);
@@ -98,7 +100,9 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/permissions/{permissionId}")
-    public ResponseEntity<MemberTopicPermissionDetailResponse> findMemberTopicPermissionById(@PathVariable Long permissionId) {
+    public ResponseEntity<MemberTopicPermissionDetailResponse> findMemberTopicPermissionById(
+            @PathVariable Long permissionId
+    ) {
         MemberTopicPermissionDetailResponse response = memberQueryService.findMemberTopicPermissionById(permissionId);
 
         return ResponseEntity.ok(response);

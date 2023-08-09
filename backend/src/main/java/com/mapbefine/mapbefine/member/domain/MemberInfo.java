@@ -62,7 +62,11 @@ public class MemberInfo {
         );
     }
 
-    public void update(String nickName, String email, String imageUrl) {
+    public void update(
+            String nickName,
+            String email,
+            String imageUrl
+    ) {
         validateNickName(nickName);
         validateEmail(email);
 

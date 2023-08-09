@@ -29,7 +29,6 @@ public class MemberQueryService {
     private final PinRepository pinRepository;
     private final MemberTopicPermissionRepository memberTopicPermissionRepository;
 
-
     public MemberQueryService(
             MemberRepository memberRepository,
             TopicRepository topicRepository,

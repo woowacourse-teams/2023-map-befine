@@ -67,10 +67,16 @@ public class MemberCommandService {
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
 
-        validateSaveMemberTopicPermission(authMember, request, member, topic);
+        validateSaveMemberTopicPermission(
+                authMember,
+                request,
+                member,
+                topic
+        );
 
         MemberTopicPermission memberTopicPermission =
                 MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
+
         return memberTopicPermissionRepository.save(memberTopicPermission).getId();
     }
 
