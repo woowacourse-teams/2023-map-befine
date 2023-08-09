@@ -40,8 +40,8 @@ public class PinImage extends BaseTimeEntity {
         this.pin = pin;
     }
 
-    public static PinImage createPinImageAssociatedWithPin(Image image, Pin pin) {
-        PinImage pinImage = new PinImage(image, pin);
+    public static PinImage createPinImageAssociatedWithPin(String imageUrl, Pin pin) {
+        PinImage pinImage = new PinImage(Image.of(imageUrl), pin);
         pin.addPinImage(pinImage);
 
         return pinImage;

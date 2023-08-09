@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.pin.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -11,7 +10,6 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
-import com.mapbefine.mapbefine.pin.domain.PinInfo;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
@@ -56,7 +54,8 @@ public class PinCommandService {
 
         Member member = findMember(authMember.getMemberId());
         Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                PinInfo.of(request.name(), request.description()),
+                request.name(),
+                request.description(),
                 findDuplicateOrCreatePinLocation(request),
                 topic,
                 member
@@ -131,7 +130,7 @@ public class PinCommandService {
         Pin pin = findPin(request.pinId());
         validatePinCreateOrUpdate(authMember, pin.getTopic());
 
-        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of(request.imageUrl()), pin);
+        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(request.imageUrl(), pin);
         pinImageRepository.save(pinImage);
     }
 

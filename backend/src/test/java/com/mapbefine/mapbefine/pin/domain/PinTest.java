@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.pin.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -40,7 +39,8 @@ class PinTest {
     void createPinAssociatedWithLocationAndTopicAndMember_associate_Success() {
         // given, when
         Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                PinInfo.of("name", "description"),
+                "name",
+                "description",
                 location,
                 topic,
                 member
@@ -67,15 +67,13 @@ class PinTest {
     void copy_Success() {
         // given
         Pin original = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                PinInfo.of("before name", "before description"),
+                "before name",
+                "before description",
                 location,
                 topic,
                 member
         );
-        PinImage.createPinImageAssociatedWithPin(
-                Image.of("https://example.com/image.jpg"),
-                original
-        );
+        PinImage.createPinImageAssociatedWithPin("https://example.com/image.jpg", original);
         Member memberForCopy = MemberFixture.create("복사해 갈 회원", "other@gmail.com", Role.USER);
         Topic topicForCopy = TopicFixture.createByName("복사해 갈 토픽 이름", memberForCopy);
 
@@ -100,7 +98,8 @@ class PinTest {
         void createPinAssociatedWithLocationAndTopicAndMember_validate_Success() {
             // given
             Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                    VALID_PIN_INFO,
+                    VALID_PIN_INFO.getName(),
+                    VALID_PIN_INFO.getDescription(),
                     location,
                     topic,
                     member
@@ -119,7 +118,8 @@ class PinTest {
         void updatePinInfo_Success() {
             // given
             Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                    PinInfo.of("before name", "before description"),
+                    "before name",
+                    "before description",
                     location,
                     topic,
                     member

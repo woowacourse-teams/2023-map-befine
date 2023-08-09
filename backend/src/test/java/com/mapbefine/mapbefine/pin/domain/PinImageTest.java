@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.pin.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Role;
@@ -24,7 +23,7 @@ class PinImageTest {
         String imageUrl = "https://example.com/image.jpg";
 
         //when
-        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(Image.of(imageUrl), PIN);
+        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(imageUrl, PIN);
 
         //then
         assertThat(pinImage).isNotNull();

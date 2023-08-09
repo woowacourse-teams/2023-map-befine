@@ -66,13 +66,14 @@ public class Pin extends BaseTimeEntity {
     }
 
     public static Pin createPinAssociatedWithLocationAndTopicAndMember(
-            PinInfo pinInfo,
+            String name,
+            String description,
             Location location,
             Topic topic,
             Member creator
     ) {
         Pin pin = new Pin(
-                pinInfo,
+                PinInfo.of(name, description),
                 location,
                 topic,
                 creator
@@ -90,7 +91,8 @@ public class Pin extends BaseTimeEntity {
 
     public Pin copy(Topic topic, Member creator) {
         Pin copy = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                pinInfo,
+                pinInfo.getName(),
+                pinInfo.getDescription(),
                 location,
                 topic,
                 creator
@@ -102,7 +104,7 @@ public class Pin extends BaseTimeEntity {
 
     private void copyPinImages(Pin pin) {
         for (PinImage pinImage : pinImages) {
-            PinImage.createPinImageAssociatedWithPin(pinImage.getImage(), pin);
+            PinImage.createPinImageAssociatedWithPin(pinImage.getImageUrl(), pin);
         }
     }
 

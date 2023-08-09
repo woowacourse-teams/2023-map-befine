@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
-import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -154,7 +153,7 @@ class PinCommandServiceTest {
         // given
         long pinId = pinCommandService.save(authMember, createRequest);
         Pin pin = pinRepository.findById(pinId).get();
-        PinImage.createPinImageAssociatedWithPin(Image.of(BASE_IMAGE), pin);
+        PinImage.createPinImageAssociatedWithPin(BASE_IMAGE, pin);
 
         // when
         pinCommandService.removeById(authMember, pinId);
