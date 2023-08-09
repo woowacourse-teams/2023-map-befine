@@ -98,7 +98,9 @@ const NewPin = () => {
           address: addr,
         });
       },
-    }).open({});
+    }).open({
+      popupKey: 'postPopUp',
+    });
   };
 
   useEffect(() => {
