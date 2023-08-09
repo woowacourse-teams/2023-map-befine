@@ -5,8 +5,9 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -19,7 +19,7 @@ class ImageTest {
             String validImageUrl = "https://example.com/image.jpg";
 
             //when
-            Image image = Image.of(validImageUrl);
+            Image image = Image.from(validImageUrl);
 
             //then
             assertThat(image).isNotNull();
@@ -34,7 +34,7 @@ class ImageTest {
 
             //when
             //then
-            assertThatThrownBy(() -> Image.of(invalidImageUrl))
+            assertThatThrownBy(() -> Image.from(invalidImageUrl))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("잘못된 형식의 URL입니다.");
         }

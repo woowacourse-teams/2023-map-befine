@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Lob;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +16,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class TopicInfo {
 
-    private static final Image DEFAULT_IMAGE = Image.of("https://map-befine-official.github.io/favicon.png");
+    private static final Image DEFAULT_IMAGE =
+            Image.from("https://map-befine-official.github.io/favicon.png");
+
     private static final int MAX_DESCRIPTION_LENGTH = 1000;
     private static final int MAX_NAME_LENGTH = 20;
 
@@ -47,16 +50,12 @@ public class TopicInfo {
         validateName(name);
         validateDescription(description);
 
-        return new TopicInfo(
-                name,
-                description,
-                validateImageUrl(imageUrl)
-        );
+        return new TopicInfo(name, description, createImage(imageUrl));
     }
 
     private static void validateName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("Name null");
+        if (Objects.isNull(name)) {
+            throw new IllegalArgumentException("이름은 null일 수 없습니다.");
         }
         if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
             throw new IllegalArgumentException("이름 길이 이상");
@@ -64,32 +63,20 @@ public class TopicInfo {
     }
 
     private static void validateDescription(String description) {
-        if (description == null) {
-            throw new IllegalArgumentException("description null");
+        if (Objects.isNull(description)) {
+            throw new IllegalArgumentException("설명은 null일 수 없습니다.");
         }
         if (description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
             throw new IllegalArgumentException("description 길이 이상");
         }
     }
 
-    private static Image validateImageUrl(String imageUrl) {
-        if (imageUrl == null) {
+    private static Image createImage(String imageUrl) {
+        if (Objects.isNull(imageUrl)) {
             return DEFAULT_IMAGE;
         }
-        return Image.of(imageUrl);
-    }
 
-    public void update(
-            String name,
-            String description,
-            String imageUrl
-    ) {
-        validateName(name);
-        validateDescription(description);
-
-        this.name = name;
-        this.description = description;
-        this.image = validateImageUrl(imageUrl);
+        return Image.from(imageUrl);
     }
 
     public String getImageUrl() {

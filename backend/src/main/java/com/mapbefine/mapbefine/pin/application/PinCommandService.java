@@ -84,7 +84,8 @@ public class PinCommandService {
     private Location findDuplicateOrCreatePinLocation(PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
 
-        return locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate, DUPLICATE_LOCATION_DISTANCE_METERS)
+        return locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate,
+                        DUPLICATE_LOCATION_DISTANCE_METERS)
                 .stream()
                 .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
@@ -138,7 +139,7 @@ public class PinCommandService {
         PinImage pinImage = findPinImage(pinImageId);
         Pin pin = pinImage.getPin();
         validatePinCreateOrUpdate(authMember, pin.getTopic());
-        
+
         pinImageRepository.deleteById(pinImageId);
     }
 

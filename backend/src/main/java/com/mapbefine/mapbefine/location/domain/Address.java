@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.location.domain;
 
+
 import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;

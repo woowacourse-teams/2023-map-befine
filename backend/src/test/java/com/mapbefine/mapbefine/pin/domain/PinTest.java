@@ -78,7 +78,8 @@ class PinTest {
         Topic topicForCopy = TopicFixture.createByName("복사해 갈 토픽 이름", memberForCopy);
 
         // when
-        Pin actual = original.copy(topicForCopy, memberForCopy);
+        original.copyToTopic(memberForCopy, topicForCopy);
+        Pin actual = topicForCopy.getPins().get(0);
 
         // then
         assertThat(original).usingRecursiveComparison()

@@ -11,7 +11,7 @@ public record TopicDetailResponse(
         String name,
         String description,
         String image,
-        int pinCount,
+        Integer pinCount,
         LocalDateTime updatedAt,
         List<PinResponse> pins
 ) {

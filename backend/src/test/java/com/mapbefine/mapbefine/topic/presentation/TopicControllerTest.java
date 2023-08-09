@@ -37,14 +37,16 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @MockBean
     private TopicQueryService topicQueryService;
 
+    private static final Member member =
+            MemberFixture.create("member", "member@naver.com", Role.USER);
+
     @Test
     @DisplayName("토픽 새로 생성")
     void create() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
-        given(topicCommandService.createNew(any(), any())).willReturn(1L);
+        given(topicCommandService.saveTopic(any(), any())).willReturn(1L);
 
         TopicCreateRequest topicCreateRequest = new TopicCreateRequest(
                 "준팍의 안갈집",
@@ -66,11 +68,10 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 병합 생성")
     void mergeAndCreate() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
-        given(topicCommandService.createMerge(any(), any())).willReturn(1L);
+        given(topicCommandService.merge(any(), any())).willReturn(1L);
         TopicMergeRequest topicMergeRequest = new TopicMergeRequest(
                 "준팍의 안갈집",
                 "https://map-befine-official.github.io/favicon.png",
@@ -91,12 +92,16 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 수정")
     void update() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
-        TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest("준팍의 안갈집",
-                "https://map-befine-official.github.io/favicon.png", "준팍이 두번 다시 안갈집");
+        TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest(
+                "준팍의 안갈집",
+                "https://map-befine-official.github.io/favicon.png",
+                "준팍이 두번 다시 안갈집",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS
+        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/topics/1")
@@ -109,7 +114,6 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 삭제")
     void delete() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -122,7 +126,6 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 목록 조회")
     void findAll() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -139,7 +142,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 5,
                 LocalDateTime.now()
         ));
-        given(topicQueryService.findAll(any())).willReturn(responses);
+        given(topicQueryService.findAllReadable(any())).willReturn(responses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics")
@@ -150,7 +153,6 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 상세 조회")
     void findById() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
@@ -179,7 +181,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                         )
                 )
         );
-        given(topicQueryService.findById(any(), any())).willReturn(topicDetailResponse);
+        given(topicQueryService.findDetailById(any(), any())).willReturn(topicDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/1")

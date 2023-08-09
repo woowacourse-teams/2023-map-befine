@@ -90,17 +90,16 @@ public class Pin extends BaseTimeEntity {
         pinInfo = PinInfo.of(name, description);
     }
 
-    public Pin copy(Topic topic, Member creator) {
-        Pin copy = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+    public void copyToTopic(Member creator, Topic topic) {
+        Pin copiedPin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 pinInfo.getName(),
                 pinInfo.getDescription(),
                 location,
                 topic,
                 creator
         );
-        copyPinImages(copy);
 
-        return copy;
+        copyPinImages(copiedPin);
     }
 
     private void copyPinImages(Pin pin) {

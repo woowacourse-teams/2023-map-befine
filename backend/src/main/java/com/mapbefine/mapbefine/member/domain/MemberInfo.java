@@ -58,7 +58,7 @@ public class MemberInfo {
         return new MemberInfo(
                 nickName,
                 email,
-                Image.of(imageUrl),
+                Image.from(imageUrl),
                 role
         );
     }
