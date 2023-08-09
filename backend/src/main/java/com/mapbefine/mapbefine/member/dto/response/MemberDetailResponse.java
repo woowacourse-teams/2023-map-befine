@@ -9,7 +9,7 @@ public record MemberDetailResponse(
         String name,
         String email,
         String imageUrl,
-        LocalDateTime updateAt
+        LocalDateTime updatedAt
 ) {
     public static MemberDetailResponse from(Member member) {
         MemberInfo memberInfo = member.getMemberInfo();

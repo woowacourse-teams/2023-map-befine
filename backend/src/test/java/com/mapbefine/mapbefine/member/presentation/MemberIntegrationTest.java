@@ -320,7 +320,7 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(memberDetailResponse)
                 .usingRecursiveComparison()
-                .ignoringFields("updateAt")
+                .ignoringFields("updatedAt")
                 .isEqualTo(MemberDetailResponse.from(member));
     }
 
