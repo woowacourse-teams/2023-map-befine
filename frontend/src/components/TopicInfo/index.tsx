@@ -1,11 +1,14 @@
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Clipping from '../../assets/clipping.svg';
-import Share from '../../assets/share.svg';
+import Share from '../../assets/Share2.svg';
 import Button from '../common/Button';
 import Space from '../common/Space';
 import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
+import Back from '../../assets/Back.svg';
+import Favorite from '../../assets/Favorite.svg';
+import Star from '../../assets/Star2.svg';
 
 export interface TopicInfoProps {
   fullUrl?: string;
@@ -53,28 +56,52 @@ const TopicInfo = ({
       tabIndex={0}
       role="button"
     >
-      <Flex>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
-          · {topicParticipant}명의 참가자
+      <Flex padding={2} $alignItems="center" $justifyContent="space-between">
+        <Back onClick={() => routePage('/')} />
+        {/* <Space size={7} /> */}
+        <Text color="primary" $fontSize="large" $fontWeight="bold">
+          {topicTitle}
         </Text>
-        <Space size={2} />
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
-          · {pinNumber}개의 핀
-        </Text>
+        <Share cursor="pointer" onClick={copyContent} />
       </Flex>
-      <Text color="black" $fontSize="large" $fontWeight="bold">
-        {topicTitle}
-      </Text>
-      <Space size={1} />
-      <Text color="black" $fontSize="small" $fontWeight="normal">
-        {topicOwner}
-      </Text>
-      <Space size={1} />
-      <Text color="black" $fontSize="small" $fontWeight="normal">
-        {topicDescription}
-      </Text>
+
+      <Flex height="200px" $gap="4px">
+        <Flex style={{ height: '200px', width: '160px' }}>
+          <img
+            height="200px"
+            width="160px"
+            src="https://cutewallpaper.org/24/free-sun-pictures/140668415.jpg"
+          />
+        </Flex>
+
+        <Flex $flexDirection="column" width="100%">
+          <Flex height="60%" overflow="hidden" $flexDirection="column">
+            <Text color="black" $fontSize="small" $fontWeight="bold">
+              생성자 : {topicOwner}
+            </Text>
+            <Space size={1} />
+            <Text color="gray" $fontSize="small" $fontWeight="normal">
+              {topicDescription}
+            </Text>
+          </Flex>
+          <Space size={6} />
+
+          <Flex $justifyContent="space-between" $alignItems="center">
+            <Flex $flexDirection="column">
+              <Text color="gray" $fontSize="small" $fontWeight="normal">
+                장소 :{pinNumber}
+              </Text>
+              <Text color="gray" $fontSize="small" $fontWeight="normal">
+                즐겨찾기 : {pinNumber}
+              </Text>
+            </Flex>
+            <Star />
+          </Flex>
+        </Flex>
+      </Flex>
+
       <Space size={3} />
-      <Flex $justifyContent="space-between">
+      {/* <Flex $justifyContent="space-between">
         <Flex>
           <Clipping />
           <Space size={4} />
@@ -84,7 +111,7 @@ const TopicInfo = ({
           + 핀 추가하기
         </Button>
       </Flex>
-      <Space size={6} />
+      <Space size={6} /> */}
     </Flex>
   );
 };

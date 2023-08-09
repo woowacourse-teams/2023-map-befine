@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Map from '../Map';
 import Flex from '../common/Flex';
-import Input from '../common/Input';
-import Space from '../common/Space';
 import Logo from './Logo';
 import CoordinatesProvider from '../../context/CoordinatesContext';
 import MarkerProvider from '../../context/MarkerContext';
 import ToastProvider from '../../context/ToastContext';
 import Toast from '../Toast';
+import Navbar from './Navbar';
+import Back from '../../assets/Back.svg';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -50,11 +50,6 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <Flex $flexDirection="column" padding="20px 20px 0 20px">
                 <Logo />
-                <Space size={5} />
-                <Input
-                  placeholder="검색어를 입력하세요."
-                  aria-label="검색어 입력창"
-                />
               </Flex>
               <Flex
                 height="calc(100vh - 120px)"
@@ -65,6 +60,7 @@ const Layout = ({ children }: LayoutProps) => {
                 {children}
               </Flex>
             </Flex>
+            <Navbar />
             <Toast />
             <Map ref={mapContainer} map={map} />
           </Flex>
