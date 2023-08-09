@@ -1,89 +1,63 @@
 import Space from '../components/common/Space';
-import Text from '../components/common/Text';
-import TopicCard from '../components/TopicCard';
-import Button from '../components/common/Button';
-import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
-import { Fragment, useContext, useEffect, useState } from 'react';
-import { getApi } from '../apis/getApi';
-import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
-import { MarkerContext } from '../context/MarkerContext';
+import TopicListContainer from '../components/TopicListContainer';
+import { useContext, useEffect } from 'react';
+import { LayoutWidthContext } from '../context/LayoutWidthContext';
+
+const POPULAR_TOPICS_TITLE = '인기 급상승한 지도';
+const NEAR_BY_ME_TOPICS_TITLE = '내 주변인 지도';
+const LATEST_TOPICS_TITLE = '새로운 지도';
+
+const POPULAR_TOPICS_URL = '/topics';
+const NEAR_BY_ME_TOPICS_URL = '/topics';
+const LATEST_TOPICS_URL = '/topics';
 
 const Home = () => {
-  const [topics, setTopics] = useState<TopicType[]>([]);
-  const [taggedTopicIds, setTaggedTopicIds] = useState<number[]>([]);
-  const [tagTopics, setTagTopics] = useState<string[]>([]);
-  const { markers, removeMarkers } = useContext(MarkerContext);
   const { routePage } = useNavigator();
+  const { setWidth } = useContext(LayoutWidthContext);
 
-  const goToNewTopic = () => {
-    routePage('new-topic', taggedTopicIds);
+  const goToPopularTopics = () => {
+    routePage(
+      'topics/see-all',
+      `${POPULAR_TOPICS_URL}|${POPULAR_TOPICS_TITLE}`,
+    );
   };
 
-  const goToSeveralTopic = () => {
-    routePage(`topics/${taggedTopicIds.join(',')}`, taggedTopicIds.join(','));
+  const goToNearByMeTopics = () => {
+    routePage(
+      'topics/see-all',
+      `${NEAR_BY_ME_TOPICS_URL}|${NEAR_BY_ME_TOPICS_TITLE}`,
+    );
   };
 
-  const onTagCancel = () => {
-    setTagTopics([]);
-    setTaggedTopicIds([]);
+  const goToLatestTopics = () => {
+    routePage('topics/see-all', `${LATEST_TOPICS_URL}|${LATEST_TOPICS_TITLE}`);
   };
 
-  const getAndSetDataFromServer = async () => {
-    const topics = await getApi('default', '/topics');
-    setTopics(topics);
-  };
-
-  // 현재 위치 받아오기
-  useEffect(() => {
-    getAndSetDataFromServer();
-    if (markers.length > 0) removeMarkers();
-  }, []);
+  // useEffect(() => {
+  //   setWidth('100vw');
+  // }, []);
 
   return (
     <Box position="relative">
-      <Space size={2} />
-      {tagTopics.length > 0 ? (
-        <MergeOrSeeTogether
-          tag={tagTopics}
-          onClickConfirm={goToSeveralTopic}
-          onClickClose={onTagCancel}
-          confirmButton="같이보기"
-        />
-      ) : null}
+      <TopicListContainer
+        containerTitle="인기 급상승한 지도"
+        containerDescription="즐겨찾기가 많이 된 지도를 살펴보세요."
+        routeWhenSeeAll={goToPopularTopics}
+      />
       <Space size={4} />
-      <Text color="black" $fontSize="large" $fontWeight="bold" tabIndex={0}>
-        내 주변 인기 있는 토픽
-      </Text>
-      <Space size={2} />
-      <ul>
-        {topics &&
-          topics.map((topic, index) => {
-            return (
-              <Fragment key={index}>
-                <TopicCard
-                  topicId={topic.id}
-                  topicImage={topic.image}
-                  topicTitle={topic.name}
-                  topicUpdatedAt={topic.updatedAt}
-                  topicPinCount={topic.pinCount}
-                  tagTopics={tagTopics}
-                  setTagTopics={setTagTopics}
-                  taggedTopicIds={taggedTopicIds}
-                  setTaggedTopicIds={setTaggedTopicIds}
-                />
-                <Space size={4} />
-              </Fragment>
-            );
-          })}
-      </ul>
-      <Flex position="fixed" bottom="40px" left="142px">
-        <Button variant="primary" onClick={goToNewTopic}>
-          {tagTopics.length > 0 ? '토픽 병합하기' : '토픽 추가하기'}
-        </Button>
-      </Flex>
+      <TopicListContainer
+        containerTitle="내 주변인 지도"
+        containerDescription="반경 3km 이내 지도를 확인해보세요."
+        routeWhenSeeAll={goToNearByMeTopics}
+      />
+      <Space size={4} />
+      <TopicListContainer
+        containerTitle="새로운 지도"
+        containerDescription="방금 핀이 추가된 지도를 확인해보세요."
+        routeWhenSeeAll={goToLatestTopics}
+      />
     </Box>
   );
 };

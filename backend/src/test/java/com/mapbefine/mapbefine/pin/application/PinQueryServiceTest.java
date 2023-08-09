@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -58,7 +59,15 @@ class PinQueryServiceTest {
         publicUser1Topic = topicRepository.save(TopicFixture.createByName("topic", user1));
         privateUser2Topic = topicRepository.save(TopicFixture.createPrivateByName("private", user2));
 
-        authMemberUser1 = AuthMember.from(user1);
+        List<Long> topicIdsWithPermissions = user1.getTopicsWithPermissions()
+                .stream()
+                .map(Topic::getId)
+                .toList();
+        List<Long> createdTopicIds = user1.getCreatedTopics()
+                .stream()
+                .map(Topic::getId)
+                .toList();
+        authMemberUser1 = new User(user1.getId(), createdTopicIds, topicIdsWithPermissions);
     }
 
     @Test

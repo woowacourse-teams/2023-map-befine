@@ -11,11 +11,15 @@ import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
+import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -26,6 +30,7 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.common.mapper.*;
 import io.restassured.response.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +52,9 @@ class MemberIntegrationTest extends IntegrationTest {
 
     @Autowired
     private LocationRepository locationRepository;
+
+    @Autowired
+    private MemberTopicPermissionRepository memberTopicPermissionRepository;
 
     @Test
     @DisplayName("Topic 을 만든자가 특정 유저에게 권한을 준다.")
@@ -71,24 +79,17 @@ class MemberIntegrationTest extends IntegrationTest {
         );
 
         // when
-        ExtractableResponse<Response> response = saveMemberTopicPermission(authHeader, request);
-
-        // then
-        assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private ExtractableResponse<Response> saveMemberTopicPermission(
-            String authHeader,
-            MemberTopicPermissionCreateRequest request
-    ) {
-        return given().log().all()
+        ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/members/permissions")
                 .then().log().all()
                 .extract();
+
+        // then
+        assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @Test
@@ -103,22 +104,24 @@ class MemberIntegrationTest extends IntegrationTest {
                         Role.USER
                 )
         );
-        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member member = memberRepository.save(MemberFixture.create(
+                        "member",
+                        "member@naver.com",
+                        Role.USER
+                )
+        );
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
         );
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
-                topic.getId(),
-                member.getId()
-        );
 
         // when
-        ExtractableResponse<Response> newMemberTopicPermission = saveMemberTopicPermission(authHeader, request);
-        long memberTopicPermissionId = Long.parseLong(newMemberTopicPermission.header("Location").split("/")[3]);
+        MemberTopicPermission memberTopicPermission =
+                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Long savedId = memberTopicPermissionRepository.save(memberTopicPermission).getId();
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
-                .when().delete("/members/permissions/" + memberTopicPermissionId)
+                .when().delete("/members/permissions/" + savedId)
                 .then().log().all()
                 .extract();
 
@@ -139,24 +142,32 @@ class MemberIntegrationTest extends IntegrationTest {
                         Role.USER
                 )
         );
-        Member member1 = memberRepository.save(MemberFixture.create("memberrr", "memberrr@naver.com", Role.USER));
-        Member member2 = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member member1 = memberRepository.save(
+                MemberFixture.create(
+                        "memberrr",
+                        "memberrr@naver.com",
+                        Role.USER
+                )
+        );
+        Member member2 = memberRepository.save(
+                MemberFixture.create(
+                        "member",
+                        "member@naver.com",
+                        Role.USER
+                )
+        );
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
         );
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermissionCreateRequest request1 = new MemberTopicPermissionCreateRequest(
-                topic.getId(),
-                member1.getId()
-        );
-        MemberTopicPermissionCreateRequest request2 = new MemberTopicPermissionCreateRequest(
-                topic.getId(),
-                member2.getId()
-        );
+        MemberTopicPermission memberTopicPermission1 =
+                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member1);
+        MemberTopicPermission memberTopicPermission2 =
+                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member2);
 
         // when
-        saveMemberTopicPermission(authHeader, request1);
-        saveMemberTopicPermission(authHeader, request2);
+        memberTopicPermissionRepository.save(memberTopicPermission1);
+        memberTopicPermissionRepository.save(memberTopicPermission2);
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .when().get("/members/permissions/topics/" + topic.getId())
@@ -164,11 +175,13 @@ class MemberIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {
-        });
+        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = response.as(new TypeRef<>() {});
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(memberResponses).usingRecursiveComparison()
+        assertThat(memberTopicPermissionResponses)
+                .hasSize(2)
+                .extracting(MemberTopicPermissionResponse::memberResponse)
+                .usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(member1), MemberResponse.from(member2)));
     }
 
@@ -189,27 +202,25 @@ class MemberIntegrationTest extends IntegrationTest {
                 ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
         );
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
-                topic.getId(),
-                member.getId()
-        );
+        MemberTopicPermission memberTopicPermission =
+                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
 
         // when
-        ExtractableResponse<Response> newMemberTopicPermission = saveMemberTopicPermission(authHeader, request);
-        long memberTopicPermissionId = Long.parseLong(newMemberTopicPermission.header("Location").split("/")[3]);
-
+        memberTopicPermission = memberTopicPermissionRepository.save(memberTopicPermission);
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
-                .when().get("/members/permissions/" + memberTopicPermissionId)
+                .when().get("/members/permissions/" + memberTopicPermission.getId())
                 .then().log().all()
                 .extract();
 
         // then
-        MemberDetailResponse memberResponses = response.as(MemberDetailResponse.class);
+        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = response.as(MemberTopicPermissionDetailResponse.class);
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(memberResponses).usingRecursiveComparison()
-                .ignoringFields("updateAt")
+        assertThat(memberTopicPermissionDetailResponse)
+                .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
+                .usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(MemberDetailResponse.from(member));
     }
 
@@ -225,22 +236,16 @@ class MemberIntegrationTest extends IntegrationTest {
         );
 
         // when
-        ExtractableResponse<Response> response = saveMember(request);
-
-        // then
-        assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private ExtractableResponse<Response> saveMember(
-            MemberCreateRequest request
-    ) {
-        return given().log().all()
+        ExtractableResponse<Response> response = given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/members")
                 .then().log().all()
                 .extract();
+
+        // then
+        assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @Test
@@ -259,25 +264,13 @@ class MemberIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 Role.USER
         );
-        MemberCreateRequest request1 = new MemberCreateRequest(
-                member.getMemberInfo().getName(),
-                member.getMemberInfo().getEmail(),
-                member.getMemberInfo().getImageUrl(),
-                member.getMemberInfo().getRole()
-        );
-        MemberCreateRequest request2 = new MemberCreateRequest(
-                memberr.getMemberInfo().getName(),
-                memberr.getMemberInfo().getEmail(),
-                memberr.getMemberInfo().getImageUrl(),
-                memberr.getMemberInfo().getRole()
-        );
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + member.getMemberInfo().getEmail()).getBytes()
         );
 
         // when
-        saveMember(request1);
-        saveMember(request2);
+        memberRepository.save(member);
+        memberRepository.save(memberr);
 
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
@@ -286,14 +279,12 @@ class MemberIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {
-        });
+        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {});
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(memberResponses).hasSize(2)
                 .usingRecursiveComparison()
-                .ignoringFields("id")
                 .isEqualTo(List.of(MemberResponse.from(member), MemberResponse.from(memberr)));
     }
 
@@ -307,24 +298,17 @@ class MemberIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 Role.USER
         );
-        MemberCreateRequest request = new MemberCreateRequest(
-                member.getMemberInfo().getName(),
-                member.getMemberInfo().getEmail(),
-                member.getMemberInfo().getImageUrl(),
-                member.getMemberInfo().getRole()
-        );
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + member.getMemberInfo().getEmail()).getBytes()
         );
 
         // when
-        ExtractableResponse<Response> saveMemberResponse = saveMember(request);
-        Long newMemberId = Long.parseLong(saveMemberResponse.header("Location").split("/")[2]);
+        member = memberRepository.save(member);
 
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/" + newMemberId)
+                .when().get("/members/" + member.getId())
                 .then().log().all()
                 .extract();
 
@@ -334,7 +318,7 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(memberDetailResponse)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "updateAt")
+                .ignoringFields("updatedAt")
                 .isEqualTo(MemberDetailResponse.from(member));
     }
 
@@ -343,7 +327,11 @@ class MemberIntegrationTest extends IntegrationTest {
     void findPinsByMember() {
         // given
         Member creator = memberRepository.save(
-                MemberFixture.create("member", "member@naver.com", Role.USER)
+                MemberFixture.create(
+                        "member",
+                        "member@naver.com",
+                        Role.USER
+                )
         );
         Location location = locationRepository.save(LocationFixture.create());
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
@@ -372,8 +360,7 @@ class MemberIntegrationTest extends IntegrationTest {
                 .when().get("/members/pins")
                 .then().log().all()
                 .extract();
-        List<PinResponse> pinResponses = response.as(new TypeRef<>() {
-        });
+        List<PinResponse> pinResponses = response.as(new TypeRef<>() {});
 
         // then
         assertThat(pinResponses).hasSize(2)
@@ -401,13 +388,12 @@ class MemberIntegrationTest extends IntegrationTest {
                 .when().get("/members/topics")
                 .then().log().all()
                 .extract();
-        List<TopicResponse> topicResponses = response.as(new TypeRef<>() {
-        });
+        List<TopicResponse> topicResponses = response.as(new TypeRef<>() {});
 
         // then
         assertThat(topicResponses).hasSize(2)
                 .usingRecursiveComparison()
-                .ignoringFields("updatedAt")
+                .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
     }
 

@@ -6,8 +6,8 @@ import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
@@ -43,7 +43,7 @@ class LocationTest {
     @DisplayName("위치에 핀을 추가하면, 핀에도 위치가 추가된다.")
     void addPin() {
         //given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
         Topic topic = TopicFixture.createByName("쥬니의 오락실", member);
         Location location = LocationFixture.LOCATION;
 

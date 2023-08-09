@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberTopicPermissionRepository extends JpaRepository<MemberTopicPermission, Long> {
 
-    List<MemberTopicPermission> findByTopicId(Long topicId);
+    List<MemberTopicPermission> findAllByTopic(Topic topic);
 
-    boolean existsByTopicAndMember(Topic topic, Member member);
+    boolean existsByTopicIdAndMemberId(Long topicId, Long memberId);
 
 }

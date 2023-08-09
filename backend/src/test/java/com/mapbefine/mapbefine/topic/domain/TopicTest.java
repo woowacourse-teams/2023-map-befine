@@ -21,20 +21,14 @@ class TopicTest {
 
     @BeforeEach
     void setUp() {
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
         topic = Topic.createTopicAssociatedWithMember(
                 "매튜의 산스장",
                 "매튜가 엄마 몰래 찾는 산스장",
                 "https://example.com/image.jpg",
                 Publicity.PUBLIC,
                 Permission.GROUP_ONLY,
-                MemberFixture.create("member", "member@naver.com", Role.USER)
-        );
-
-        member = Member.of(
-                "member",
-                "member@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
-                Role.ADMIN
+                member
         );
 
         pin = PinFixture.create(LocationFixture.create(), topic, member);
@@ -124,5 +118,5 @@ class TopicTest {
         assertThat(topicsInMember.get(0)).usingRecursiveComparison()
                 .isEqualTo(topic);
     }
-    
+
 }

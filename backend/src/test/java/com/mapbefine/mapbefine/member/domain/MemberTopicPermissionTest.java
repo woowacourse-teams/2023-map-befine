@@ -15,7 +15,11 @@ class MemberTopicPermissionTest {
     @DisplayName("정상적인 값을 입력하면 객체가 생성된다.")
     void createMemberTopicPermission() {
         // given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        Member member = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.ADMIN
+        );
         Topic topic = TopicFixture.createByName("topic", member);
 
         // when
@@ -24,8 +28,10 @@ class MemberTopicPermissionTest {
 
         // then
         assertThat(memberTopicPermission.getMember()).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(member);
         assertThat(memberTopicPermission.getTopic()).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(topic);
     }
 
@@ -33,7 +39,11 @@ class MemberTopicPermissionTest {
     @DisplayName("MemberTopicPermission 을 생성하면, Topic 과 Member 에 등록이 된다.")
     void createPermissionAssociatedWithTopicAndMember() {
         // given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        Member member = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.ADMIN
+        );
         Topic topic = TopicFixture.createByName("topic", member);
 
         // when
@@ -46,8 +56,10 @@ class MemberTopicPermissionTest {
         assertThat(topicsWithPermission).hasSize(1);
         assertThat(memberTopicPermissions).hasSize(1);
         assertThat(topicsWithPermission.get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(topic);
         assertThat(memberTopicPermissions.get(0)).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(memberTopicPermission);
     }
 

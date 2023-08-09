@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
+import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -121,8 +122,8 @@ public class Pin extends BaseTimeEntity {
     }
 
     public String getRoadBaseAddress() {
-        return location.getAddress()
-                .getRoadBaseAddress();
+        Address address = location.getAddress();
+        return address.getRoadBaseAddress();
     }
 
 }

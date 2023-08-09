@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Guest;
+import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -16,6 +18,8 @@ import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -31,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-public class MemberQueryServiceTest {
+class MemberQueryServiceTest {
 
     @Autowired
     private MemberQueryService memberQueryService;
@@ -52,8 +56,7 @@ public class MemberQueryServiceTest {
     private PinRepository pinRepository;
 
     @Test
-    @DisplayName("Topic 에 권한이 있는자들을 모두 조회한다.")
-        // creator 는 권한이 있는자들을 조회할 때 조회되어야 할 것인가??
+    @DisplayName("Topic 에 권한이 있는자들을 모두 조회한다.") // creator 는 권한이 있는자들을 조회할 때 조회되어야 할 것인가??
     void findAllWithPermission() {
         // given
         Member member1InTopic1 = memberRepository.save(
@@ -78,12 +81,13 @@ public class MemberQueryServiceTest {
         );
 
         // when
-        List<MemberResponse> memberResponses = memberQueryService.findAllWithPermission(topic1.getId());
+        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = memberQueryService.findAllWithPermission(topic1.getId());
         MemberResponse memberResponse1 = MemberResponse.from(member1InTopic1);
         MemberResponse memberResponse2 = MemberResponse.from(member2InTopic1);
 
         // then
-        assertThat(memberResponses).hasSize(2)
+        assertThat(memberTopicPermissionResponses).hasSize(2)
+                .extracting(MemberTopicPermissionResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(memberResponse1, memberResponse2));
     }
@@ -104,11 +108,14 @@ public class MemberQueryServiceTest {
         ).getId();
 
         // when
-        MemberDetailResponse memberDetailResponse = memberQueryService.findMemberTopicPermissionById(savedId);
+        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse =
+                memberQueryService.findMemberTopicPermissionById(savedId);
         MemberDetailResponse permissionUserResponse = MemberDetailResponse.from(permissionUser);
 
         // then
-        assertThat(memberDetailResponse).usingRecursiveComparison()
+        assertThat(memberTopicPermissionDetailResponse)
+                .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
+                .usingRecursiveComparison()
                 .isEqualTo(permissionUserResponse);
     }
 
@@ -187,9 +194,14 @@ public class MemberQueryServiceTest {
                         creator
                 )
         );
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
 
         // when
-        List<PinResponse> response = memberQueryService.findPinsByMember(AuthMember.from(creator));
+        List<PinResponse> response = memberQueryService.findPinsByMember(authCreator);
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -199,13 +211,9 @@ public class MemberQueryServiceTest {
     @Test
     @DisplayName("존재하지 않는 유저가 Pin 을 조회할 때 예외가 발생한다.")
     void findPinsByMember_whenNoneExists_thenFail() {
-        // given
-        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
-        memberRepository.delete(member);
-
-        // when then
-        assertThatThrownBy(() -> memberQueryService.findPinsByMember(AuthMember.from(member)))
-                .isInstanceOf(NoSuchElementException.class);
+        // given when then
+        assertThatThrownBy(() -> memberQueryService.findPinsByMember(new Guest()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -217,9 +225,14 @@ public class MemberQueryServiceTest {
         );
         Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", creator));
         Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", creator));
+        AuthMember authCreator = new User(
+                creator.getId(),
+                getCreatedTopics(creator),
+                getTopicsWithPermission(creator)
+        );
 
         // when
-        List<TopicResponse> response = memberQueryService.findTopicsByMember(AuthMember.from(creator));
+        List<TopicResponse> response = memberQueryService.findTopicsByMember(authCreator);
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -229,13 +242,23 @@ public class MemberQueryServiceTest {
     @Test
     @DisplayName("존재하지 않는 유저가 본인이 만든 토픽을 조회할 때 예외가 발생한다.")
     void findTopicsByMember_whenNoneExists_thenFail() {
-        // given
-        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
-        memberRepository.delete(member);
+        // given when then
+        assertThatThrownBy(() -> memberQueryService.findTopicsByMember(new Guest()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 
-        // when then
-        assertThatThrownBy(() -> memberQueryService.findTopicsByMember(AuthMember.from(member)))
-                .isInstanceOf(NoSuchElementException.class);
+    private List<Long> getTopicsWithPermission(Member member) {
+        return member.getTopicsWithPermissions()
+                .stream()
+                .map(Topic::getId)
+                .toList();
+    }
+
+    private List<Long> getCreatedTopics(Member member) {
+        return member.getCreatedTopics()
+                .stream()
+                .map(Topic::getId)
+                .toList();
     }
 
 }

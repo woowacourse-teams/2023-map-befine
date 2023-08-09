@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.topic.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -11,8 +12,8 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicInfo;
@@ -45,7 +46,7 @@ class TopicCommandServiceTest {
     @BeforeEach
     void setup() {
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
-        authMember = AuthMember.from(member);
+        authMember = new Admin(member.getId());;
         TOPIC_WITH_TWO_PINS = TopicFixture.createByName("준팍의 또간집", member);
 
         Location location = LocationFixture.create();

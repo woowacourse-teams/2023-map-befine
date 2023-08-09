@@ -5,7 +5,7 @@ import com.mapbefine.mapbefine.member.domain.MemberInfo;
 
 public record MemberResponse (
         Long id,
-        String name,
+        String nickName,
         String email
 ) {
 
@@ -14,8 +14,9 @@ public record MemberResponse (
 
         return new MemberResponse(
                 member.getId(),
-                memberInfo.getName(),
+                memberInfo.getNickName(),
                 memberInfo.getEmail()
         );
     }
+
 }

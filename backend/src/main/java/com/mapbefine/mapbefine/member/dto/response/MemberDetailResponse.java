@@ -6,20 +6,21 @@ import java.time.LocalDateTime;
 
 public record MemberDetailResponse(
         Long id,
-        String name,
+        String nickName,
         String email,
         String imageUrl,
-        LocalDateTime updateAt
+        LocalDateTime updatedAt
 ) {
     public static MemberDetailResponse from(Member member) {
         MemberInfo memberInfo = member.getMemberInfo();
         
         return new MemberDetailResponse(
                 member.getId(),
-                memberInfo.getName(),
+                memberInfo.getNickName(),
                 memberInfo.getEmail(),
                 memberInfo.getImageUrl(),
                 member.getUpdatedAt()
         );
     }
+
 }

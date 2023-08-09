@@ -41,7 +41,7 @@ class TopicInfoTest {
 
         @ParameterizedTest
         @NullSource
-        @ValueSource(strings = {"", "This name is definitely more than twenty characters long"})
+        @ValueSource(strings = {"", "This nickName is definitely more than twenty characters long"})
         @DisplayName("유효한 이름이 아닌 경우 예외가 발생한다")
         void whenNameIsInvalid_thenFail(String input) {
             //given
@@ -161,7 +161,7 @@ class TopicInfoTest {
 
         @ParameterizedTest
         @NullSource
-        @ValueSource(strings = {"", "This name is definitely more than twenty characters long"})
+        @ValueSource(strings = {"", "This nickName is definitely more than twenty characters long"})
         @DisplayName("유효한 이름이 아닌 경우 예외가 발생한다")
         void whenNameIsInvalid_thenFail(String input) {
             //when

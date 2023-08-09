@@ -32,11 +32,11 @@ public class MemberCommandService {
     }
 
     public Long save(MemberCreateRequest request) {
-        validateUniqueName(request.name());
+        validateUniqueNickName(request.nickName());
         validateUniqueEmail(request.email());
 
         Member member = Member.of(
-                request.name(),
+                request.nickName(),
                 request.email(),
                 request.imageUrl(),
                 request.role()
@@ -46,9 +46,9 @@ public class MemberCommandService {
                 .getId();
     }
 
-    private void validateUniqueName(String name) {
-        if (memberRepository.existsByMemberInfoName(name)) {
-            throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+    private void validateUniqueNickName(String nickName) {
+        if (memberRepository.existsByMemberInfoNickName(nickName)) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
         }
     }
 
@@ -58,10 +58,7 @@ public class MemberCommandService {
         }
     }
 
-    public Long saveMemberTopicPermission(
-            AuthMember authMember,
-            MemberTopicPermissionCreateRequest request
-    ) {
+    public Long saveMemberTopicPermission(AuthMember authMember, MemberTopicPermissionCreateRequest request) {
         Member member = memberRepository.findById(request.memberId())
                 .orElseThrow(NoSuchElementException::new);
         Topic topic = topicRepository.findById(request.topicId())
@@ -71,6 +68,7 @@ public class MemberCommandService {
 
         MemberTopicPermission memberTopicPermission =
                 MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
+
         return memberTopicPermissionRepository.save(memberTopicPermission).getId();
     }
 
@@ -82,13 +80,15 @@ public class MemberCommandService {
     ) {
         validateMemberCanTopicUpdate(authMember, topic);
         validateSelfPermission(authMember, request);
-        validateDuplicatePermission(member, topic);
+        validateDuplicatePermission(topic.getId(), member.getId());
     }
 
     private void validateMemberCanTopicUpdate(AuthMember authMember, Topic topic) {
-        if (!authMember.canTopicUpdate(topic)) {
-            throw new IllegalArgumentException("해당 유저는 해당 토픽에서 다른 유저에게 권한을 줄 수 없습니다.");
+        if (authMember.canTopicUpdate(topic)) {
+            return;
         }
+
+        throw new IllegalArgumentException("해당 유저는 해당 토픽에서 다른 유저에게 권한을 줄 수 없습니다.");
     }
 
     private void validateSelfPermission(
@@ -100,16 +100,13 @@ public class MemberCommandService {
         }
     }
 
-    private void validateDuplicatePermission(Member member, Topic topic) {
-        if (memberTopicPermissionRepository.existsByTopicAndMember(topic, member)) {
+    private void validateDuplicatePermission(Long topicId, Long memberId) {
+        if (memberTopicPermissionRepository.existsByTopicIdAndMemberId(topicId, memberId)) {
             throw new IllegalArgumentException("권한은 중복으로 줄 수 없습니다.");
         }
     }
 
-    public void deleteMemberTopicPermission(
-            AuthMember authMember,
-            Long permissionId
-    ) {
+    public void deleteMemberTopicPermission(AuthMember authMember, Long permissionId) {
         MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
                 .orElseThrow(NoSuchElementException::new);
 

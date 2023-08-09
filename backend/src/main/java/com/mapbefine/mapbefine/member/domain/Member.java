@@ -37,24 +37,37 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberTopicPermission> topicsWithPermissions = new ArrayList<>();
 
-    private Member(
-            MemberInfo memberInfo
-    ) {
+    private Member(MemberInfo memberInfo) {
         this.memberInfo = memberInfo;
     }
 
     public static Member of(
-            String name,
+            String nickName,
             String email,
             String imageUrl,
             Role role
     ) {
-        MemberInfo memberInfo = MemberInfo.of(name, email, imageUrl, role);
+        MemberInfo memberInfo = MemberInfo.of(
+                nickName,
+                email,
+                imageUrl,
+                role
+        );
+
         return new Member(memberInfo);
     }
 
-    public void update(String name, String email, String imageUrl) {
-        memberInfo.update(name, email, imageUrl);
+    public void update(
+            String nickName,
+            String email,
+            String imageUrl
+    ) {
+        memberInfo = MemberInfo.of(
+                nickName,
+                email,
+                imageUrl,
+                memberInfo.getRole()
+        );
     }
 
     public void addTopic(Topic topic) {

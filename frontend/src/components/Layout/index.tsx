@@ -1,13 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Map from '../Map';
 import Flex from '../common/Flex';
-import Input from '../common/Input';
-import Space from '../common/Space';
 import Logo from './Logo';
 import CoordinatesProvider from '../../context/CoordinatesContext';
 import MarkerProvider from '../../context/MarkerContext';
 import ToastProvider from '../../context/ToastContext';
 import Toast from '../Toast';
+import { styled } from 'styled-components';
+import { LayoutWidthContext } from '../../context/LayoutWidthContext';
+import SeeTogetherProvider from '../../context/SeeTogetherContext';
+import Space from '../common/Space';
+import Navbar from './Navbar';
+import Back from '../../assets/Back.svg';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -23,6 +27,7 @@ declare global {
 const Layout = ({ children }: LayoutProps) => {
   const { Tmapv3 } = window;
   const mapContainer = useRef(null);
+  const { width } = useContext(LayoutWidthContext);
 
   const [map, setMap] = useState(null);
 
@@ -41,37 +46,40 @@ const Layout = ({ children }: LayoutProps) => {
     <ToastProvider>
       <CoordinatesProvider>
         <MarkerProvider>
-          <Flex height="100vh" width="100vw">
-            <Flex
-              $flexDirection="column"
-              $minWidth="400px"
-              height="100vh"
-              $backgroundColor="white"
-            >
-              <Flex $flexDirection="column" padding="20px 20px 0 20px">
-                <Logo />
-                <Space size={5} />
-                <Input
-                  placeholder="검색어를 입력하세요."
-                  aria-label="검색어 입력창"
-                />
-              </Flex>
-              <Flex
-                height="calc(100vh - 120px)"
+          <SeeTogetherProvider>
+            <Flex height="100vh" width="100vw" overflow="hidden">
+              <LayoutFlex
                 $flexDirection="column"
-                overflow="auto"
-                padding="0 20px 20px 20px"
+                $minWidth={width}
+                height="100vh"
+                $backgroundColor="white"
               >
-                {children}
-              </Flex>
+                <Flex $flexDirection="column" padding="20px 20px 0 20px">
+                  <Logo />
+                  <Space size={4} />
+                </Flex>
+                <Flex
+                  height="calc(100vh - 40px)"
+                  $flexDirection="column"
+                  overflow="auto"
+                  padding="0 20px 20px 20px"
+                >
+                  {children}
+                </Flex>
+              </LayoutFlex>
+              <Navbar />
+              <Toast />
+              <Map ref={mapContainer} map={map} $minWidth={width} />
             </Flex>
-            <Toast />
-            <Map ref={mapContainer} map={map} />
-          </Flex>
+          </SeeTogetherProvider>
         </MarkerProvider>
       </CoordinatesProvider>
     </ToastProvider>
   );
 };
+
+const LayoutFlex = styled(Flex)`
+  transition: all ease 0.3s;
+`;
 
 export default Layout;

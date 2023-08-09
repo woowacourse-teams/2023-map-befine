@@ -7,6 +7,8 @@ import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -15,6 +17,7 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +29,6 @@ public class MemberQueryService {
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
     private final MemberTopicPermissionRepository memberTopicPermissionRepository;
-
 
     public MemberQueryService(
             MemberRepository memberRepository,
@@ -55,10 +57,8 @@ public class MemberQueryService {
     }
 
     public List<TopicResponse> findTopicsByMember(AuthMember authMember) {
-        validateNull(authMember.getMemberId());
-        Member member = memberRepository.findById(authMember.getMemberId())
-                .orElseThrow(NoSuchElementException::new);
-        List<Topic> topicsByCreator = topicRepository.findByCreator(member);
+        validateNonExistsMember(authMember.getMemberId());
+        List<Topic> topicsByCreator = topicRepository.findByCreatorId(authMember.getMemberId());
 
         return topicsByCreator.stream()
                 .map(TopicResponse::from)
@@ -66,34 +66,35 @@ public class MemberQueryService {
     }
 
     public List<PinResponse> findPinsByMember(AuthMember authMember) {
-        validateNull(authMember.getMemberId());
-        Member creator = memberRepository.findById(authMember.getMemberId())
-                .orElseThrow(NoSuchElementException::new);
-        List<Pin> pinsByCreator = pinRepository.findByCreator(creator);
+        validateNonExistsMember(authMember.getMemberId());
+        List<Pin> pinsByCreator = pinRepository.findByCreatorId(authMember.getMemberId());
 
         return pinsByCreator.stream()
                 .map(PinResponse::from)
                 .toList();
     }
-
-    private void validateNull(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id 는 null 일 수 없습니다.");
+    
+    public void validateNonExistsMember(Long memberId) {
+        if (Objects.isNull(memberId)) {
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
     }
 
-    public List<MemberResponse> findAllWithPermission(Long topicId) {
-        return memberTopicPermissionRepository.findByTopicId(topicId)
+    public List<MemberTopicPermissionResponse> findAllWithPermission(Long topicId) {
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(NoSuchElementException::new);
+
+        return memberTopicPermissionRepository.findAllByTopic(topic)
                 .stream()
-                .map(MemberTopicPermission::getMember)
-                .map(MemberResponse::from)
+                .map(MemberTopicPermissionResponse::from)
                 .toList();
     }
 
-    public MemberDetailResponse findMemberTopicPermissionById(Long permissionId) {
+    public MemberTopicPermissionDetailResponse findMemberTopicPermissionById(Long permissionId) {
         MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
                 .orElseThrow(NoSuchElementException::new);
 
-        return MemberDetailResponse.from(memberTopicPermission.getMember());
+        return MemberTopicPermissionDetailResponse.from(memberTopicPermission);
     }
+
 }

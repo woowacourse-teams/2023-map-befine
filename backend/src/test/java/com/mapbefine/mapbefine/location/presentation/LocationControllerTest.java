@@ -32,7 +32,7 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @BeforeEach
     void setUp() {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
         authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
