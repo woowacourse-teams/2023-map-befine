@@ -88,11 +88,12 @@ public class Pin extends BaseTimeEntity {
      */
 
     public void copyToTopic(Topic otherTopic) {
-        PinInfo copiedPinInfo = PinInfo.of(pinInfo.getName(), pinInfo.getDescription());
-        Pin copiedPin = new Pin(copiedPinInfo, location, otherTopic);
-        location.addPin(copiedPin);
-
-        otherTopic.addPin(copiedPin);
+        createPinAssociatedWithLocationAndTopic(
+                pinInfo.getName(),
+                pinInfo.getDescription(),
+                location,
+                otherTopic
+        );
     }
 
     public void addPinImage(PinImage pinImage) {
