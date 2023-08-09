@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.member.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberInfo;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
@@ -32,11 +33,11 @@ public class MemberCommandService {
     }
 
     public Long save(MemberCreateRequest request) {
-        validateUniqueName(request.name());
+        validateUniqueNickName(request.nickName());
         validateUniqueEmail(request.email());
 
         Member member = Member.of(
-                request.name(),
+                request.nickName(),
                 request.email(),
                 request.imageUrl(),
                 request.role()
@@ -46,7 +47,7 @@ public class MemberCommandService {
                 .getId();
     }
 
-    private void validateUniqueName(String name) {
+    private void validateUniqueNickName(String name) {
         if (memberRepository.existsByMemberInfoNickName(name)) {
             throw new IllegalArgumentException("이미 존재하는 이름입니다.");
         }

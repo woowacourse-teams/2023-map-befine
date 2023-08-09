@@ -44,13 +44,13 @@ public class Member extends BaseTimeEntity {
     }
 
     public static Member of(
-            String name,
+            String nickName,
             String email,
             String imageUrl,
             Role role
     ) {
         MemberInfo memberInfo = MemberInfo.of(
-                name,
+                nickName,
                 email,
                 imageUrl,
                 role
@@ -60,14 +60,15 @@ public class Member extends BaseTimeEntity {
     }
 
     public void update(
-            String name,
+            String nickName,
             String email,
             String imageUrl
     ) {
-        memberInfo.update(
-                name,
+        memberInfo = MemberInfo.of(
+                nickName,
                 email,
-                imageUrl
+                imageUrl,
+                memberInfo.getRole()
         );
     }
 

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class MemberInfo {
 
     private static final int MAX_NICK_NAME_LENGTH = 20;
-    private static final String VALID_EMAIL_URL_REGEX = "^[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$";
+    private static final String VALID_EMAIL_URL_REGEX = "^[a-zA-Z0-9]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$";
 
     @Column(nullable = false, length = 20, unique = true)
     private String nickName;
@@ -61,19 +61,6 @@ public class MemberInfo {
                 Image.of(imageUrl),
                 role
         );
-    }
-
-    public void update(
-            String nickName,
-            String email,
-            String imageUrl
-    ) {
-        validateNickName(nickName);
-        validateEmail(email);
-
-        this.nickName = nickName;
-        this.email = email;
-        this.imageUrl = Image.of(imageUrl);
     }
 
     private static void validateNickName(String nickName) {
