@@ -47,7 +47,7 @@ public class MemberCommandService {
     }
 
     private void validateUniqueName(String name) {
-        if (memberRepository.existsByMemberInfoName(name)) {
+        if (memberRepository.existsByMemberInfoNickName(name)) {
             throw new IllegalArgumentException("이미 존재하는 이름입니다.");
         }
     }

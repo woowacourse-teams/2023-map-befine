@@ -23,8 +23,8 @@ class MemberResponseTest {
         MemberResponse memberResponse = MemberResponse.from(member);
 
         // then
-        assertThat(memberResponse.name())
-                .isEqualTo(member.getMemberInfo().getName());
+        assertThat(memberResponse.nickName())
+                .isEqualTo(member.getMemberInfo().getNickName());
         assertThat(memberResponse.email())
                 .isEqualTo(member.getMemberInfo().getEmail());
     }

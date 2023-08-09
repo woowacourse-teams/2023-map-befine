@@ -44,7 +44,7 @@ public abstract class RestDocsIntegration {
             final RestDocumentationContextProvider provider
     ) throws Exception {
         given(authInterceptor.preHandle(any(), any(), any())).willReturn(true);
-        this.restDocs = MockMvcRestDocumentation.document("{class-name}/{method-name}");
+        this.restDocs = MockMvcRestDocumentation.document("{class-nickName}/{method-nickName}");
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(
                         MockMvcRestDocumentation.documentationConfiguration(provider)

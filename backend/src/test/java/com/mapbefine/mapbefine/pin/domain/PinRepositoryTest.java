@@ -49,7 +49,7 @@ class PinRepositoryTest {
                         Role.ADMIN
                 )
         );
-        Topic topic = TopicFixture.createByName("name", member);
+        Topic topic = TopicFixture.createByName("nickName", member);
         Address address = new Address(
                 "parcel",
                 "road",
@@ -63,7 +63,7 @@ class PinRepositoryTest {
         locationRepository.save(location);
 
         Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                "name",
+                "nickName",
                 "description",
                 location,
                 topic,
@@ -89,7 +89,7 @@ class PinRepositoryTest {
                 "member@naver.com",
                 Role.ADMIN)
         );
-        Topic topic = TopicFixture.createByName("name", member);
+        Topic topic = TopicFixture.createByName("nickName", member);
         Address address = new Address(
                 "parcel",
                 "road",
@@ -102,7 +102,7 @@ class PinRepositoryTest {
 
         for (int i = 0; i < 10; i++) {
             Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                    "name",
+                    "nickName",
                     "description",
                     location,
                     topic,

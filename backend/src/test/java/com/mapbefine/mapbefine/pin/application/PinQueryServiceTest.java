@@ -84,11 +84,11 @@ class PinQueryServiceTest {
         // given
         List<PinResponse> expected = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember("name", "description", location, topic, member);
+            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember("nickName", "description", location, topic, member);
             Long savedId = pinRepository.save(pin).getId();
             expected.add(new PinResponse(
                     savedId,
-                    "name",
+                    "nickName",
                     "road",
                     "description",
                     coordinate.getLatitude(),
@@ -108,14 +108,14 @@ class PinQueryServiceTest {
     @DisplayName("핀의 Id 를 넘기면 핀을 가져온다.")
     void findById_Success() {
         // given
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember("name", "description", location, topic, member);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember("nickName", "description", location, topic, member);
         PinImage.createPinImageAssociatedWithPin(BASE_IMAGES.get(0), pin);
         Long savedId = pinRepository.save(pin).getId();
 
         // when
         PinDetailResponse expected = new PinDetailResponse(
                 savedId,
-                "name",
+                "nickName",
                 "road",
                 "description",
                 coordinate.getLatitude(),

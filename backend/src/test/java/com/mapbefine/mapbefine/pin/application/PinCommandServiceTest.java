@@ -89,7 +89,7 @@ class PinCommandServiceTest {
         // when
         PinCreateRequest request = new PinCreateRequest(
                 topic.getId(),
-                "name",
+                "nickName",
                 "description",
                 "road",
                 "legalDongCode",
@@ -104,7 +104,7 @@ class PinCommandServiceTest {
         PinDetailResponse actual = pinQueryService.findById(authMember, savedPinId);
         PinDetailResponse expected = new PinDetailResponse(
                 savedPinId,
-                "name",
+                "nickName",
                 "road",
                 "description",
                 latitude,
@@ -145,7 +145,7 @@ class PinCommandServiceTest {
         // when
         PinCreateRequest request = new PinCreateRequest(
                 topic.getId(),
-                "name",
+                "nickName",
                 "description",
                 "address",
                 "legalDongCode",
@@ -159,7 +159,7 @@ class PinCommandServiceTest {
         PinDetailResponse actual = pinQueryService.findById(authMember, savedPinId);
         PinDetailResponse expected = new PinDetailResponse(
                 savedPinId,
-                "name",
+                "nickName",
                 "address",
                 "description",
                 latitude,
@@ -180,7 +180,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("제약 사항(name, description)을 지킨 정보로 핀의 정보를 수정하면 핀이 수정된다.")
+    @DisplayName("제약 사항(nickName, description)을 지킨 정보로 핀의 정보를 수정하면 핀이 수정된다.")
     void update_Success() {
         // given
         double latitude = 37.123456;
@@ -190,7 +190,7 @@ class PinCommandServiceTest {
 
         PinCreateRequest createRequest = new PinCreateRequest(
                 topic.getId(),
-                "name",
+                "nickName",
                 "description",
                 "address",
                 "legalDongCode",
@@ -227,7 +227,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("제약 사항(name, description)을 지키지 않은 정보로 핀의 정보를 수정하면 핀이 수정되지 않는다.")
+    @DisplayName("제약 사항(nickName, description)을 지키지 않은 정보로 핀의 정보를 수정하면 핀이 수정되지 않는다.")
     void update_Fail() {
         // given
         double latitude = 37.123456;
@@ -237,7 +237,7 @@ class PinCommandServiceTest {
 
         PinCreateRequest createRequest = new PinCreateRequest(
                 topic.getId(),
-                "name",
+                "nickName",
                 "description",
                 "address",
                 "legalDongCode",
@@ -264,7 +264,7 @@ class PinCommandServiceTest {
 
         PinCreateRequest createRequest = new PinCreateRequest(
                 topic.getId(),
-                "name",
+                "nickName",
                 "description",
                 "address",
                 "legalDongCode",
@@ -297,7 +297,7 @@ class PinCommandServiceTest {
 
         PinCreateRequest createRequest = new PinCreateRequest(
                 topic.getId(),
-                "name",
+                "nickName",
                 "description",
                 "address",
                 "legalDongCode",

@@ -293,7 +293,7 @@ class MemberCommandServiceTest {
         );
         MemberInfo memberInfo = member.getMemberInfo();
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest(
-                memberInfo.getName(),
+                memberInfo.getNickName(),
                 memberInfo.getEmail(),
                 memberInfo.getImageUrl(),
                 memberInfo.getRole()
@@ -322,7 +322,7 @@ class MemberCommandServiceTest {
         memberRepository.save(member);
         MemberInfo memberInfo = member.getMemberInfo();
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest(
-                memberInfo.getName(),
+                memberInfo.getNickName(),
                 "memberr@naver.com",
                 memberInfo.getImageUrl(),
                 memberInfo.getRole()

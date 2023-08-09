@@ -83,7 +83,7 @@ class PinTest {
     @DisplayName("정상적인 정보를 통해 Update 를 진행하면 Pin 의 정보가 정상적으로 수정된다.")
     void update_Success(String name, String description) {
         // given
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember("name", "description", location, topic, member);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember("nickName", "description", location, topic, member);
 
         // when
         pin.updatePinInfo(name, description);
@@ -111,7 +111,7 @@ class PinTest {
     void update_Fail(String name, String description) {
         // given
         Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                "name",
+                "nickName",
                 "description",
                 location,
                 topic,

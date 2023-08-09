@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MemberInfo {
 
-    private static final int MAX_NAME_LENGTH = 20;
+    private static final int MAX_NICK_NAME_LENGTH = 20;
     private static final String VALID_EMAIL_URL_REGEX = "^[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$";
 
     @Column(nullable = false, length = 20, unique = true)
-    private String name;
+    private String nickName;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -33,56 +33,56 @@ public class MemberInfo {
     private Role role;
 
     private MemberInfo(
-            String name,
+            String nickName,
             String email,
             Image imageUrl,
             Role role
     ) {
-        this.name = name;
+        this.nickName = nickName;
         this.email = email;
         this.imageUrl = imageUrl;
         this.role = role;
     }
 
     public static MemberInfo of(
-            String name,
+            String nickName,
             String email,
             String imageUrl,
             Role role
     ) {
-        validateName(name);
+        validateNickName(nickName);
         validateEmail(email);
         validateRole(role);
 
         return new MemberInfo(
-                name,
+                nickName,
                 email,
                 Image.of(imageUrl),
                 role
         );
     }
 
-    public void update(String name, String email, String imageUrl) {
-        validateName(name);
+    public void update(String nickName, String email, String imageUrl) {
+        validateNickName(nickName);
         validateEmail(email);
 
-        this.name = name;
+        this.nickName = nickName;
         this.email = email;
         this.imageUrl = Image.of(imageUrl);
     }
 
-    private static void validateName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name null");
+    private static void validateNickName(String nickName) {
+        if (nickName == null) {
+            throw new IllegalArgumentException("닉네임은 필수로 입력해야합니다.");
         }
-        if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("이름 길이 이상");
+        if (nickName.isBlank() || nickName.length() > MAX_NICK_NAME_LENGTH) {
+            throw new IllegalArgumentException("닉네임 길이는 최소 1 자에서 " + MAX_NICK_NAME_LENGTH + " 자여야 합니다.");
         }
     }
 
     private static void validateEmail(String email) {
         if (email == null) {
-            throw new IllegalArgumentException("email null");
+            throw new IllegalArgumentException("이메일은 필수로 입력해야합니다.");
         }
 
         if (!RegexUtil.matches(VALID_EMAIL_URL_REGEX, email)) {
@@ -92,7 +92,7 @@ public class MemberInfo {
 
     private static void validateRole(Role role) {
         if (role == null) {
-            throw new IllegalArgumentException("role null");
+            throw new IllegalArgumentException("역할은 필수로 입력해야합니다.");
         }
     }
 

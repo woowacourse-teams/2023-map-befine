@@ -11,14 +11,14 @@ class MemberTest {
     @DisplayName("유효한 정보를 입력했을 때 객체가 정상 생성 된다.")
     void createMember_success() {
         // given
-        String name = "member";
+        String nickName = "member";
         String email = "member@naver.com";
         String imageUrl = "https://map-befine-official.github.io/favicon.png";
         Role role = Role.ADMIN;
 
         // when
         Member member = Member.of(
-                name,
+                nickName,
                 email,
                 imageUrl,
                 role
@@ -26,7 +26,7 @@ class MemberTest {
 
         // then
         assertThat(member).isNotNull();
-        assertThat(member.getMemberInfo().getName()).isEqualTo(name);
+        assertThat(member.getMemberInfo().getNickName()).isEqualTo(nickName);
         assertThat(member.getMemberInfo().getEmail()).isEqualTo(email);
         assertThat(member.getMemberInfo().getImageUrl()).isEqualTo(imageUrl);
         assertThat(member.getMemberInfo().getRole()).isEqualTo(role);

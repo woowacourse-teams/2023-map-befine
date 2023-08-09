@@ -37,7 +37,7 @@ public class PinInfo {
 
     private static void validateName(String name) {
         if (name == null) {
-            throw new IllegalArgumentException("name null");
+            throw new IllegalArgumentException("nickName null");
         }
         if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
             throw new IllegalArgumentException("이름 길이 이상");
