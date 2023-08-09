@@ -9,6 +9,7 @@ import Toast from '../Toast';
 import { styled } from 'styled-components';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 import SeeTogetherProvider from '../../context/SeeTogetherContext';
+import Space from '../common/Space';
 import Navbar from './Navbar';
 import Back from '../../assets/Back.svg';
 
