@@ -23,11 +23,11 @@ public class AuthService {
     }
 
     public boolean isMember(AuthInfo authInfo) {
-        return memberRepository.existsByEmail(authInfo.email());
+        return memberRepository.existsByMemberInfoEmail(authInfo.email());
     }
 
     public AuthMember findAuthMemberByEmail(AuthInfo authInfo) {
-        return memberRepository.findByEmail(authInfo.email())
+        return memberRepository.findByMemberInfoEmail(authInfo.email())
                 .map(this::convertToAuthMember)
                 .orElseGet(Guest::new);
     }
@@ -45,14 +45,14 @@ public class AuthService {
     }
 
     private List<Long> getTopicsWithPermission(Member member) {
-        return member.getTopicsWithPermission()
+        return member.getTopicsWithPermissions()
                 .stream()
                 .map(Topic::getId)
                 .toList();
     }
 
     private List<Long> getCreatedTopics(Member member) {
-        return member.getCreatedTopic()
+        return member.getCreatedTopics()
                 .stream()
                 .map(Topic::getId)
                 .toList();

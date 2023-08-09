@@ -43,11 +43,11 @@ class LocationTest {
     @DisplayName("위치에 핀을 추가하면, 핀에도 위치가 추가된다.")
     void addPin() {
         //given
-        Member member = MemberFixture.create(Role.USER);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
         Topic topic = TopicFixture.createByName("쥬니의 오락실", member);
         Location location = LocationFixture.LOCATION;
 
-        Pin pin = PinFixture.create(location, topic);
+        Pin pin = PinFixture.create(location, topic, member);
 
         //when
         Location pinLocation = pin.getLocation();

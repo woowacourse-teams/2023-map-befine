@@ -5,6 +5,8 @@ import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
+import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -23,22 +25,27 @@ public class PinCommandService {
     private final PinRepository pinRepository;
     private final LocationRepository locationRepository;
     private final TopicRepository topicRepository;
+    private final MemberRepository memberRepository;
 
     public PinCommandService(
             PinRepository pinRepository,
             LocationRepository locationRepository,
-            TopicRepository topicRepository
+            TopicRepository topicRepository,
+            MemberRepository memberRepository
     ) {
         this.pinRepository = pinRepository;
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
+        this.memberRepository = memberRepository;
     }
 
-    public Long save(AuthMember member, PinCreateRequest request) {
+    public Long save(AuthMember authMember, PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
-        member.canPinCreateOrUpdate(topic);
+        Member member = memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(NoSuchElementException::new);
+        authMember.canPinCreateOrUpdate(topic);
 
         Location pinLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(
                         coordinate, 10.0).stream()
@@ -46,11 +53,12 @@ public class PinCommandService {
                 .findFirst()
                 .orElseGet(() -> saveLocation(request, coordinate));
 
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic(
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 request.name(),
                 request.description(),
                 pinLocation,
-                topic
+                topic,
+                member
         );
 
         for (String pinImage : request.images()) {

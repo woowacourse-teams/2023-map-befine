@@ -45,15 +45,15 @@ class TopicCommandServiceTest {
 
     @BeforeEach
     void setup() {
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = new Admin(member.getId());;
         TOPIC_WITH_TWO_PINS = TopicFixture.createByName("준팍의 또간집", member);
 
         Location location = LocationFixture.create();
         locationRepository.save(location);
 
-        PinFixture.create(location, TOPIC_WITH_TWO_PINS);
-        PinFixture.create(location, TOPIC_WITH_TWO_PINS);
+        PinFixture.create(location, TOPIC_WITH_TWO_PINS, member);
+        PinFixture.create(location, TOPIC_WITH_TWO_PINS, member);
 
         topicRepository.save(TOPIC_WITH_TWO_PINS);
     }

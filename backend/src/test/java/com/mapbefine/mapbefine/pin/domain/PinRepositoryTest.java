@@ -42,8 +42,14 @@ class PinRepositoryTest {
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
     void deleteById_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
-        Topic topic = TopicFixture.createByName("name", member);
+        Member member = memberRepository.save(
+                MemberFixture.create(
+                        "member",
+                        "member@naver.com",
+                        Role.ADMIN
+                )
+        );
+        Topic topic = TopicFixture.createByName("nickName", member);
         Address address = new Address(
                 "parcel",
                 "road",
@@ -56,7 +62,13 @@ class PinRepositoryTest {
         topicRepository.save(topic);
         locationRepository.save(location);
 
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+                "nickName",
+                "description",
+                location,
+                topic,
+                member
+        );
         pinRepository.save(pin);
 
         // when
@@ -72,8 +84,12 @@ class PinRepositoryTest {
     @DisplayName("토픽 ID로 핀을 삭제하면 soft-deleting 된다.")
     void deleteAllByTopicId_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
-        Topic topic = TopicFixture.createByName("name", member);
+        Member member = memberRepository.save(MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.ADMIN)
+        );
+        Topic topic = TopicFixture.createByName("nickName", member);
         Address address = new Address(
                 "parcel",
                 "road",
@@ -85,7 +101,13 @@ class PinRepositoryTest {
         );
 
         for (int i = 0; i < 10; i++) {
-            Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+                    "nickName",
+                    "description",
+                    location,
+                    topic,
+                    member
+            );
         }
 
         locationRepository.save(location);

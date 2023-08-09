@@ -49,9 +49,9 @@ class PinIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void saveTopicAndLocation() {
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         topic = topicRepository.save(TopicFixture.createByName("PinIntegration 토픽", member));
         location = locationRepository.save(LocationFixture.createByCoordinate(37.5152933, 127.1029866));

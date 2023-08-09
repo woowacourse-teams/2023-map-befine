@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -40,6 +41,9 @@ public class Topic extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member creator;
 
+    @OneToMany(mappedBy = "topic")
+    private List<MemberTopicPermission> memberTopicPermissions = new ArrayList<>();
+
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
 
@@ -57,7 +61,7 @@ public class Topic extends BaseTimeEntity {
         this.creator = creator;
     }
 
-    public static Topic of(
+    public static Topic createTopicAssociatedWithMember(
             String name,
             String description,
             String imageUrl,
@@ -65,7 +69,7 @@ public class Topic extends BaseTimeEntity {
             Permission permission,
             Member creator
     ) {
-        return new Topic(
+        Topic topic = new Topic(
                 TopicInfo.of(
                         name,
                         description,
@@ -75,6 +79,8 @@ public class Topic extends BaseTimeEntity {
                 creator
         );
 
+        creator.addTopic(topic);
+        return topic;
     }
 
     public void updateTopicInfo(
@@ -99,6 +105,10 @@ public class Topic extends BaseTimeEntity {
 
     public void addPin(Pin pin) {
         pins.add(pin);
+    }
+
+    public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {
+        memberTopicPermissions.add(memberTopicPermission);
     }
 
 }

@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PROTECTED;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Location;
+import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,6 +35,10 @@ public class Pin extends BaseTimeEntity {
     @Embedded
     private PinInfo pinInfo;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member creator;
+
     @OneToMany(mappedBy = "pin", cascade = CascadeType.PERSIST)
     private List<PinImage> pinImages = new ArrayList<>();
 
@@ -52,27 +57,34 @@ public class Pin extends BaseTimeEntity {
     private Pin(
             PinInfo pinInfo,
             Location location,
-            Topic topic
+            Topic topic,
+            Member creator
     ) {
         this.pinInfo = pinInfo;
         this.location = location;
         this.topic = topic;
+        this.creator = creator;
     }
 
-    public static Pin createPinAssociatedWithLocationAndTopic(
+    public static Pin createPinAssociatedWithLocationAndTopicAndMember(
             String name,
             String description,
             Location location,
-            Topic topic
+            Topic topic,
+            Member creator
     ) {
         PinInfo pinInfo = PinInfo.of(name, description);
+
         Pin pin = new Pin(
                 pinInfo,
                 location,
-                topic
+                topic,
+                creator
         );
+
         location.addPin(pin);
         topic.addPin(pin);
+        creator.addPin(pin);
         return pin;
     }
 
@@ -80,12 +92,13 @@ public class Pin extends BaseTimeEntity {
         pinInfo.update(name, description);
     }
 
-    public Pin copy(Topic topic) {
-        return Pin.createPinAssociatedWithLocationAndTopic(
+    public Pin copy(Topic topic, Member creator) {
+        return Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 pinInfo.getName(),
                 pinInfo.getDescription(),
                 location,
-                topic
+                topic,
+                creator
         );
     }
 

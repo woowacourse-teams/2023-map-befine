@@ -46,7 +46,7 @@ class LocationQueryServiceTest {
 
     @BeforeEach
     void setup() {
-        member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = new Admin(member.getId());
 
         allPinsLocation = LocationFixture.LOCATION;
@@ -63,7 +63,7 @@ class LocationQueryServiceTest {
     private Topic createAndSaveTopic(String topicName, int pinCounts) {
         Topic topic = TopicFixture.createByName(topicName, member);
         for (int i = 0; i < pinCounts; i++) {
-            PinFixture.create(allPinsLocation, topic);
+            PinFixture.create(allPinsLocation, topic, member);
         }
         return topicRepository.save(topic);
     }

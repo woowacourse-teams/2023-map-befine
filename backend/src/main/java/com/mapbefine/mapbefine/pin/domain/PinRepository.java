@@ -20,4 +20,6 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
 
     List<Pin> findAllByTopicId(Long topicId);
 
+    List<Pin> findByCreatorId(Long creatorId);
+
 }
