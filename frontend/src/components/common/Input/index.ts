@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 
 interface InputProps {
-  hasBadWord: boolean;
+  $hasBadWord?: boolean;
 }
 
 const Input = styled.input<InputProps>`
@@ -13,7 +13,7 @@ const Input = styled.input<InputProps>`
   padding: ${({ theme }) => theme.spacing['2']};
   font-size: ${({ theme }) => theme.fontSize.small};
   border-radius: ${({ theme }) => theme.radius.small};
-  outline: ${({ hasBadWord }) => hasBadWord && 'solid 1px #FF4040'};
+  outline: ${({ $hasBadWord }) => $hasBadWord && 'solid 1px #FF4040'};
 
   &::placeholder {
     color: ${({ theme }) => theme.color.gray};

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 
 interface TextareaProps {
-  hasBadWord: boolean;
+  $hasBadWord?: boolean;
 }
 
 const Textarea = styled.textarea<TextareaProps>`
@@ -15,7 +15,7 @@ const Textarea = styled.textarea<TextareaProps>`
   border-radius: ${({ theme }) => theme.radius.small};
   padding: ${({ theme }) => theme.spacing['2']};
   font-size: ${({ theme }) => theme.fontSize.small};
-  outline: ${({ hasBadWord }) => hasBadWord && 'solid 1px #FF4040'};
+  outline: ${({ $hasBadWord }) => $hasBadWord && 'solid 1px #FF4040'};
 
   &::placeholder {
     color: ${({ theme }) => theme.color.gray};
