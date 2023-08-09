@@ -5,116 +5,84 @@ import Flex from '../components/common/Flex';
 import PinPreview from '../components/PinPreview';
 import TopicInfo from '../components/TopicInfo';
 import { TopicInfoType } from '../types/Topic';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
-import { getApi } from '../utils/getApi';
+import { getApi } from '../apis/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
-import { TagIdContext } from '../store/TagId';
-import { TopicsIdContext } from '../store/TopicsId';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
-
-const PinDetailWrapper = styled.div`
-  &.collapsedPinDetail {
-    z-index: -1;
-  }
-`;
-
-const ToggleButton = styled.button<{ isCollapsed: boolean }>`
-  position: absolute;
-  top: 50%;
-  left: 800px;
-  transform: translateY(-50%);
-  z-index: 99999;
-  height: 80px;
-  background-color: #fff;
-  padding: 12px;
-  border-radius: 4px;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-
-  ${(props) =>
-    props.isCollapsed &&
-    `
-    transform: rotate(180deg);
-    top:45%;
-    left: 400px;
-    z-index: 99999;
-    `}
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
+import { LayoutWidthContext } from '../context/LayoutWidthContext';
 
 const SelectedTopic = () => {
-  // const { topicId } = useParams();
-  const { state } = useLocation();
+  const { topicId } = useParams();
   const [tagPins, setTagPins] = useState<string[]>([]);
-
-
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
-
+  const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
+  const [isOpen, setIsOpen] = useState(true);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
-
-  const [isOpen, setIsOpen] = useState(true);
-
-  const { topicsId, setTopicsId } = useContext(TopicsIdContext) ?? {
-    topicsId: [],
-    setTopicsId: () => {},
-  };
-
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
-
-  if (state !== null) setTopicsId(state);
-
-  const onClickSetSelectedPinId = (pinId: number) => {
-    setSelectedPinId(pinId);
-
-    routePage(`/topics/${topicsId}?pinDetail=${pinId}`)
-  }
+  const { setWidth } = useContext(LayoutWidthContext);
 
   const getAndSetDataFromServer = async () => {
+    const data = await getApi(
+      'default',
+      `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
+    );
+    const topicHashmap = new Map([]);
 
-    const data: TopicInfoType[] = [];
-    for (const topicId of topicsId) {
-      data.push(await getApi(`/topics/${topicId}`));
-      // todo : setCoordinates 인자 확인
-      setCoordinates([...data[0].pins]);
-      setTopicDetail([...data]);
-    }
+    // 각 topic의 pin들의 좌표를 가져옴
+    const newCoordinates: any = [];
+
+    data.forEach((topic: any) => {
+      topic.pins.forEach((pin: any) => {
+        newCoordinates.push({
+          id: pin.id,
+          topicId: topic.id,
+          latitude: pin.latitude,
+          longitude: pin.longitude,
+        });
+      });
+    });
+
+    setCoordinates(newCoordinates);
+
+    data.forEach((topicDetailFromData: TopicInfoType) =>
+      topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
+    );
+
+    const topicDetailFromData = topicId
+      ?.split(',')
+      .map((number) => topicHashmap.get(number)) as TopicInfoType[];
+
+    if (!topicDetailFromData) return;
+
+    setTopicDetail([...topicDetailFromData]);
   };
 
   const onClickConfirm = () => {
-    routePage('/new-topic', 'pins');
+    routePage('/new-topic', taggedPinIds.join(','));
   };
 
   const onTagCancel = () => {
     setTagPins([]);
-    setTagId([]);
+    setTaggedPinIds([]);
   };
 
   useEffect(() => {
     getAndSetDataFromServer();
+
+    // setWidth('400px');
 
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
     }
     setIsOpen(true);
-  }, [searchParams,topicsId]);
+  }, [searchParams]);
 
-  useEffect(() => {
-    if (tagPins.length === 0) setTagId([]);
-  }, [tagPins, state]);
-  
   const togglePinDetail = () => {
     setIsOpen(!isOpen);
   };
@@ -126,67 +94,70 @@ const SelectedTopic = () => {
     <>
       <Flex $flexDirection="column">
         <Space size={2} />
+        {taggedPinIds.length > 0 && (
           <MergeOrSeeTogether
             tag={tagPins}
             confirmButton="뽑아오기"
             onClickConfirm={onClickConfirm}
             onClickClose={onTagCancel}
           />
-        <ul>
-          {topicDetail.length !== 0 ? (
-            topicDetail.map((topic) => {
-              return (
-                <li key={topic.id}>
-                  <TopicInfo
-                    topicParticipant={12}
-                    pinNumber={topic.pinCount}
-                    topicTitle={topic.name}
-                    topicOwner={'하지원'}
-                    topicDescription={topic.description}
-                  />
-                  {topic.pins.map((pin) => (
-                    <li key={pin.id} onClick={() => {
-                onClickSetSelectedPinId(Number(pin.id));
-                setIsOpen(true);
-              }}>
-                      <Space size={3} />
-                      <PinPreview
-                        pinTitle={pin.name}
-                        pinLocation={pin.address}
-                        pinInformation={pin.description}
-                        setSelectedPinId={setSelectedPinId}
-                        pinId={Number(pin.id)}
-                        topicId={topic.id}
-                        tagPins={tagPins}
-                        setTagPins={setTagPins}
-                      />
-                    </li>
-                  ))}
-                </li>
-              );
-            })
-          ) : (
-            <></>
-          )}
-        </ul>
+        )}
+        {topicDetail.length !== 0 ? (
+          topicDetail.map((topic, idx) => {
+            return (
+              <ul key={topic.id}>
+                {idx !== 0 && <Space size={5} />}
+                <TopicInfo
+                  fullUrl={topicId}
+                  topicId={topicId?.split(',')[idx]}
+                  topicParticipant={1}
+                  pinNumber={topic.pinCount}
+                  topicTitle={topic.name}
+                  topicOwner={'토픽을 만든 사람'}
+                  topicDescription={topic.description}
+                />
+                {topic.pins.map((pin) => (
+                  <li key={pin.id}>
+                    <Space size={3} />
+                    <PinPreview
+                      pinTitle={pin.name}
+                      pinLocation={pin.address}
+                      pinInformation={pin.description}
+                      setSelectedPinId={setSelectedPinId}
+                      pinId={Number(pin.id)}
+                      topicId={topicId}
+                      tagPins={tagPins}
+                      setTagPins={setTagPins}
+                      taggedPinIds={taggedPinIds}
+                      setTaggedPinIds={setTaggedPinIds}
+                    />
+                  </li>
+                ))}
+              </ul>
+            );
+          })
+        ) : (
+          <></>
+        )}
 
         {selectedPinId && (
           <>
-            <ToggleButton isCollapsed={!isOpen} onClick={togglePinDetail}>
+            <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>
               ◀
             </ToggleButton>
             <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
               <Flex
                 $backgroundColor="white"
                 width="400px"
-                $minHeight="100vh"
+                height="100vh"
+                overflow="auto"
                 position="absolute"
                 left="400px"
                 top="0px"
                 padding={4}
                 $flexDirection="column"
                 $borderLeft={`1px solid ${theme.color.gray}`}
-                $zIndex={99}
+                $zIndex={1}
               >
                 <PinDetail pinId={selectedPinId} />
               </Flex>
@@ -197,5 +168,38 @@ const SelectedTopic = () => {
     </>
   );
 };
+
+const PinDetailWrapper = styled.div`
+  &.collapsedPinDetail {
+    z-index: -1;
+  }
+`;
+
+const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
+  position: absolute;
+  top: 50%;
+  left: 800px;
+  transform: translateY(-50%);
+  z-index: 1;
+  height: 80px;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 4px;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+
+  ${(props) =>
+    props.$isCollapsed &&
+    `
+    transform: rotate(180deg);
+    top:45%;
+    left: 400px;
+    z-index: 1;
+    `}
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
 
 export default SelectedTopic;

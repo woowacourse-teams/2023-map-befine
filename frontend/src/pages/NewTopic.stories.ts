@@ -1,10 +1,10 @@
-import { StoryObj, Meta } from "@storybook/react";
-import NewTopic from "./NewTopic";
+import { StoryObj, Meta } from '@storybook/react';
+import NewTopic from './NewTopic';
 
 const meta = {
-  title: "Pages/NewTopic",
+  title: 'Pages/NewTopic',
   component: NewTopic,
-  tags: ["pages"],
+  tags: ['pages'],
 } as Meta<typeof NewTopic>;
 
 export default meta;

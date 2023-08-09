@@ -4,6 +4,7 @@ import NewPin from './pages/NewPin';
 import NewTopic from './pages/NewTopic';
 import RootPage from './pages/RootPage';
 import SelectedTopic from './pages/SelectedTopic';
+import SeeAllTopics from './pages/SeeAllTopics';
 
 const routes = [
   {
@@ -25,6 +26,10 @@ const routes = [
       {
         path: 'new-pin',
         element: <NewPin />,
+      },
+      {
+        path: 'topics/see-all',
+        element: <SeeAllTopics />,
       },
     ],
   },

@@ -4,15 +4,16 @@ import { colorThemeKey } from '../../../themes/color';
 import { SpaceThemeKeys } from '../../../themes/spacing';
 import { radiusKey } from '../../../themes/radius';
 
-export type BoxProps = {
+export interface BoxProps {
   display?: string;
   width?: string;
   height?: string;
-  padding?: SpaceThemeKeys;
-  $backgroundColor?: colorThemeKey;
-  border?: string;
-  overflow?: string;
+  $minWidth?: string;
   $minHeight?: string;
+  padding?: SpaceThemeKeys | string;
+  $backgroundColor?: colorThemeKey;
+  $backdropFilter?: string;
+  overflow?: string;
   color?: colorThemeKey;
   position?: string;
   right?: string;
@@ -25,17 +26,20 @@ export type BoxProps = {
   $borderBottom?: string;
   $borderLeft?: string;
   cursor?: string;
-};
+  opacity?: string;
+  $zIndex?: number;
+}
 
 const Box = styled.div<BoxProps>`
   display: ${({ display }) => display ?? 'block'};
   background-color: ${({ $backgroundColor }) =>
     $backgroundColor && theme.color[$backgroundColor]};
+  backdrop-filter: ${({ $backdropFilter }) => $backdropFilter};
   color: ${({ color }) => color && theme.color[color]};
-  padding: ${({ padding }) => padding && theme.spacing[Number(padding)]};
+  padding: ${({ padding }) => padding && convertPadding(padding)};
   width: ${({ width }) => width};
   height: ${({ height }) => height};
-  border: ${({ border }) => border};
+  min-width: ${({ $minWidth }) => $minWidth};
   min-height: ${({ $minHeight }) => $minHeight};
   overflow: ${({ overflow }) => overflow};
   position: ${({ position }) => position};
@@ -50,5 +54,14 @@ const Box = styled.div<BoxProps>`
   border-bottom: ${({ $borderBottom }) => $borderBottom};
   border-left: ${({ $borderLeft }) => $borderLeft};
   cursor: ${({ cursor }) => cursor};
+  opacity: ${({ opacity }) => opacity};
+  z-index: ${({ $zIndex }) => $zIndex};
 `;
+
+const convertPadding = (padding: SpaceThemeKeys | string) => {
+  if (typeof padding === 'string' && padding.length > 1) return padding;
+
+  return theme.spacing[Number(padding)];
+};
+
 export default Box;
