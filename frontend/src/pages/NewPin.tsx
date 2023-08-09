@@ -81,7 +81,13 @@ const NewPin = () => {
     });
   };
 
-  const onClickAddressInput = () => {
+  const onClickAddressInput = (
+    e:
+      | React.MouseEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.currentTarget.value) return;
+
     var width = 500; //팝업의 너비
     var height = 600; //팝업의 높이
     new window.daum.Postcode({
@@ -147,7 +153,9 @@ const NewPin = () => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Button type="button" variant="primary">{`${topic.name}`}</Button>
+          <Button type="button" variant="primary">
+            {topic.name}
+          </Button>
         </section>
 
         <Space size={5} />
