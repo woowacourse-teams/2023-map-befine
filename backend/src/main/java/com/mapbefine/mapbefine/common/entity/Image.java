@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Image {
 
-    private static final String IMAGE_URL_REGEX = "(http(s?):)([/|.|\\w|\\s|-])*\\.(?:jpg|gif|png)";
+    private static final String VALID_IMAGE_URL_REGEX = "(http(s?):)([/|.|\\w|\\s|-])*\\.(?:jpg|gif|png)";
 
-    @Pattern(regexp = IMAGE_URL_REGEX)
+    @Pattern(regexp = VALID_IMAGE_URL_REGEX)
     @Column(nullable = false, length = 2048)
     private String imageUrl;
 
@@ -31,7 +31,7 @@ public class Image {
     }
 
     private static void validateUrl(String imageUrl) {
-        if (RegexUtil.matches(IMAGE_URL_REGEX, imageUrl)) {
+        if (RegexUtil.matches(VALID_IMAGE_URL_REGEX, imageUrl)) {
             return;
         }
 

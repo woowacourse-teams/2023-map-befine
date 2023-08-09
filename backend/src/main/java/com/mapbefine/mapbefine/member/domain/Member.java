@@ -3,11 +3,10 @@ package com.mapbefine.mapbefine.member.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,60 +25,76 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String name;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private String imageUrl;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @Embedded
+    private MemberInfo memberInfo;
 
     @OneToMany(mappedBy = "creator")
-    private List<Topic> createdTopic = new ArrayList<>();
+    private List<Topic> createdTopics = new ArrayList<>();
+
+    @OneToMany(mappedBy = "creator")
+    private List<Pin> createdPins = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<MemberTopicPermission> topicsWithPermission = new ArrayList<>();
+    private List<MemberTopicPermission> topicsWithPermissions = new ArrayList<>();
 
-    public Member(
-            String name,
+    private Member(MemberInfo memberInfo) {
+        this.memberInfo = memberInfo;
+    }
+
+    public static Member of(
+            String nickName,
             String email,
             String imageUrl,
             Role role
     ) {
-        this.name = name;
-        this.email = email;
-        this.imageUrl = imageUrl;
-        this.role = role;
+        MemberInfo memberInfo = MemberInfo.of(
+                nickName,
+                email,
+                imageUrl,
+                role
+        );
+
+        return new Member(memberInfo);
     }
 
-    public void update(String name, String imageUrl) {
-        this.name = name;
-        this.imageUrl = imageUrl;
+    public void update(
+            String nickName,
+            String email,
+            String imageUrl
+    ) {
+        memberInfo = MemberInfo.of(
+                nickName,
+                email,
+                imageUrl,
+                memberInfo.getRole()
+        );
     }
 
     public void addTopic(Topic topic) {
-        createdTopic.add(topic);
+        createdTopics.add(topic);
+    }
+
+    public void addPin(Pin pin) {
+        createdPins.add(pin);
+    }
+
+    public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {
+        topicsWithPermissions.add(memberTopicPermission);
     }
 
     public String getRoleKey() {
-        return this.role.getKey();
+        return memberInfo.getRole().getKey();
     }
 
     public boolean isAdmin() {
-        return role == Role.ADMIN;
+        return memberInfo.getRole() == Role.ADMIN;
     }
-
     public boolean isUser() {
-        return role == Role.USER;
+        return memberInfo.getRole() == Role.USER;
     }
 
-    public List<Topic> getTopicsWithPermission() {
-        return topicsWithPermission.stream()
+    public List<Topic> getTopicsWithPermissions() {
+        return topicsWithPermissions.stream()
                 .map(MemberTopicPermission::getTopic)
                 .toList();
     }

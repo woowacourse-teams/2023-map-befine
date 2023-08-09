@@ -1,105 +1,145 @@
 import { styled } from 'styled-components';
-import Flex from '../common/Flex';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
-import { useContext } from 'react';
-import { TagIdContext } from '../../store/TagId';
+import Box from '../common/Box';
+import Image from '../common/Image';
+import { SyntheticEvent } from 'react';
+import Space from '../common/Space';
+import Flex from '../common/Flex';
+import SeeTogetherButton from '../SeeTogetherButton';
 
 export interface TopicCardProps {
+  topicShape: 'vertical' | 'horizontal';
   topicId: number;
   topicImage: string;
   topicTitle: string;
   topicUpdatedAt: string;
   topicPinCount: number;
-  tagTopics: string[];
-  setTagTopics: (value: string[]) => void;
 }
 
 const TopicCard = ({
+  topicShape,
   topicId,
   topicImage,
   topicTitle,
   topicUpdatedAt,
   topicPinCount,
-  tagTopics,
-  setTagTopics,
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
 
-  const { tagId, setTagId } = useContext(TagIdContext) ?? {
-    tagId: [],
-    setTagId: () => {},
-  };
-
   const goToSelectedTopic = () => {
-    routePage(`topics/${topicId}`, [topicId]);
+    routePage(`/topics/${topicId}`, [topicId]);
   };
 
-  const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setTagTopics([...tagTopics, topicTitle]);
-      setTagId([...tagId, topicId]);
-    } else {
-      setTagTopics(tagTopics.filter((value) => value !== topicTitle));
-      setTagId(tagId.filter((value) => value !== topicId));
-    }
-  };
+  if (topicShape === 'horizontal') {
+    return (
+      <HorizontalWrapper onClick={goToSelectedTopic}>
+        <Flex position="relative">
+          <HorizontalTopicImage
+            height="148px"
+            width="148px"
+            src={topicImage}
+            alt="토픽 이미지"
+            $objectFit="cover"
+            onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+              e.currentTarget.src =
+                'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
+            }}
+          />
+          <Box width="212px" padding={1}>
+            <Box height="60px">
+              <Text color="black" $fontSize="medium" $fontWeight="bold">
+                {topicTitle}
+              </Text>
+            </Box>
+            <Text color="black" $fontSize="small" $fontWeight="normal">
+              토픽 생성자
+            </Text>
+            <Space size={0} />
+            <Text color="gray" $fontSize="small" $fontWeight="normal">
+              핀 {topicPinCount}개
+            </Text>
+            <Text color="gray" $fontSize="small" $fontWeight="normal">
+              즐겨찾기 10명
+            </Text>
+            <HorizontalButtonWrapper>
+              <SeeTogetherButton />
+            </HorizontalButtonWrapper>
+          </Box>
+        </Flex>
+      </HorizontalWrapper>
+    );
+  }
 
   return (
-    <li>
-      <Flex
-        width="360px"
-        height="140px"
-        position="relative"
-        $flexDirection="column"
-        $alignItems="center"
-        $justifyContent="center"
-        $backgroundColor="whiteGray"
-        $borderRadius="small"
-      >
-        <MultiSelectButton
-          type="checkbox"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            onAddTagOfTopic(e)
-          }
-          checked={Boolean(tagId.includes(topicId))}
+    <VerticalWrapper onClick={goToSelectedTopic}>
+      <Box position="relative">
+        <VerticalTopicImage
+          width="172px"
+          height="172px"
+          src={topicImage}
+          alt="토픽 이미지"
+          $objectFit="cover"
+          onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+            e.currentTarget.src =
+              'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
+          }}
         />
-        <Flex
-          $flexDirection="column"
-          $alignItems="center"
-          $justifyContent="center"
-          cursor="pointer"
-          onClick={goToSelectedTopic}
-        >
-          <Text color="black" $fontSize="extraLarge" $fontWeight="normal">
-            {topicImage}
-          </Text>
-          <Text color="black" $fontSize="medium" $fontWeight="normal">
-            {topicTitle}
-          </Text>
+        <Box padding={1}>
+          <Space size={0} />
+          <Box height="60px">
+            <Text color="black" $fontSize="medium" $fontWeight="bold">
+              {topicTitle}
+            </Text>
+          </Box>
           <Text color="gray" $fontSize="small" $fontWeight="normal">
-            {`업데이트 : ${topicUpdatedAt} | 핀 개수 : ${topicPinCount}`}
+            {`핀 ${topicPinCount}개 | 
+            ${topicUpdatedAt.split('T')[0].replaceAll('-', '.')}`}
           </Text>
-        </Flex>
-      </Flex>
-    </li>
+          <VerticalButtonWrapper>
+            <SeeTogetherButton />
+          </VerticalButtonWrapper>
+        </Box>
+      </Box>
+    </VerticalWrapper>
   );
 };
 
-const MultiSelectButton = styled.input`
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.black};
-  border-radius: ${({ theme }) => theme.radius.small};
+const VerticalWrapper = styled.li`
+  width: 172px;
+  height: 276px;
+  box-shadow: 2px 4px 4px 2px rgba(69, 69, 69, 0.25);
   cursor: pointer;
+  border-radius: ${({ theme }) => theme.radius.small};
+`;
 
-  &:focus {
-    background-color: ${({ theme }) => theme.color.primary};
-  }
+const HorizontalWrapper = styled.li`
+  width: 352px;
+  height: 148px;
+  box-shadow: 2px 4px 4px 2px rgba(69, 69, 69, 0.25);
+  cursor: pointer;
+  border-radius: ${({ theme }) => theme.radius.small};
+`;
+
+const VerticalButtonWrapper = styled.div`
+  position: absolute;
+  top: 48%;
+  right: 12px;
+`;
+
+const HorizontalButtonWrapper = styled.div`
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+`;
+
+const VerticalTopicImage = styled(Image)`
+  border-top-left-radius: ${({ theme }) => theme.radius.small};
+  border-top-right-radius: ${({ theme }) => theme.radius.small};
+`;
+
+const HorizontalTopicImage = styled(Image)`
+  border-radius: ${({ theme }) => theme.radius.small};
 `;
 
 export default TopicCard;

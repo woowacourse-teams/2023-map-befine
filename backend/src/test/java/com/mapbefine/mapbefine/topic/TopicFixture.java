@@ -46,6 +46,17 @@ public class TopicFixture {
         );
     }
 
+    public static Topic createPrivateByName(String name, Member member) {
+        return Topic.createTopicAssociatedWithCreator(
+                name,
+                "설명",
+                null,
+                Publicity.PRIVATE,
+                Permission.GROUP_ONLY,
+                member
+        );
+    }
+
     public static TopicCreateRequest createPublicAndAllMembersCreateRequestWithPins(
             List<Long> pinIds
     ) {

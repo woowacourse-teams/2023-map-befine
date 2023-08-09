@@ -5,7 +5,7 @@ import Plus from '../assets/plus.svg';
 import Box from '../components/common/Box';
 import Textarea from '../components/common/Textarea';
 import Input from '../components/common/Input';
-import { putApi } from '../utils/putApi';
+import { putApi } from '../apis/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
 import { ModifyPinFormValuesType } from '../types/FormValues';
 
@@ -81,6 +81,7 @@ const UpdatedPinDetail = ({
           name="name"
           value={formValues.name}
           onChange={onChangeInput}
+          autoFocus={true}
         />
       </section>
 
@@ -105,23 +106,23 @@ const UpdatedPinDetail = ({
       <Flex $justifyContent="end">
         <Box cursor="pointer">
           <Text
-            color="primary"
-            $fontSize="default"
-            $fontWeight="normal"
-            onClick={onClickUpdatePin}
-          >
-            저장
-          </Text>
-        </Box>
-        <Space size={2} />
-        <Box cursor="pointer">
-          <Text
             color="black"
             $fontSize="default"
             $fontWeight="normal"
             onClick={onClickCancelPinUpdate}
           >
             취소
+          </Text>
+        </Box>
+        <Space size={2} />
+        <Box cursor="pointer">
+          <Text
+            color="primary"
+            $fontSize="default"
+            $fontWeight="normal"
+            onClick={onClickUpdatePin}
+          >
+            저장
           </Text>
         </Box>
       </Flex>

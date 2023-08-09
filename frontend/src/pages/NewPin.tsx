@@ -4,20 +4,22 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import Textarea from '../components/common/Textarea';
-import { postApi } from '../utils/postApi';
-import { FormEvent, useContext, useEffect, useState } from 'react';
-import { getApi } from '../utils/getApi';
-import { getAddress } from '../utils/getAddress';
+import { postApi } from '../apis/postApi';
+import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
+import { getApi } from '../apis/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { NewPinValuesType } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
+import { useLocation } from 'react-router-dom';
+import useToast from '../hooks/useToast';
 
 const NewPin = () => {
+  const { state: prevUrl } = useLocation();
   const [topic, setTopic] = useState<TopicType | null>(null);
-  const { markers, clickedMarker } = useContext(MarkerContext);
+  const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
   const { formValues, onChangeInput } = useFormValues<NewPinValuesType>({
@@ -31,6 +33,8 @@ const NewPin = () => {
     images: [],
   });
   const { routePage } = useNavigator();
+  const { showToast } = useToast();
+  const addressRef = useRef<HTMLInputElement | null>(null);
 
   const goToBack = () => {
     routePage(-1);
@@ -40,7 +44,7 @@ const NewPin = () => {
     await postApi('/pins', {
       topicId: topic?.id || 'error',
       name: formValues.name,
-      address: formValues.address,
+      address: addressRef.current?.value,
       description: formValues.description,
       latitude: clickedCoordinate.latitude,
       longitude: clickedCoordinate.longitude,
@@ -49,11 +53,16 @@ const NewPin = () => {
     });
   };
 
-  const onSubmit = async (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     await postToServer();
-      routePage(`/topics/${topic?.id}`, [topic!.id]);
+
+    if (prevUrl.length > 1) routePage(`/topics/${prevUrl}`, [topic!.id]);
+    else routePage(`/topics/${topic?.id}`, [topic!.id]);
+
+    showToast('info', `${formValues.name} 핀을 추가하였습니다.`);
+
     // 선택된 마커가 있으면 마커를 지도에서 제거
     if (clickedMarker) {
       clickedMarker.setMap(null);
@@ -76,7 +85,8 @@ const NewPin = () => {
         const addr = data.roadAddress; // 주소 변수
 
         //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getAddress(
+        const { ConvertAdd } = await getApi(
+          'tMap',
           `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
         );
         const lat = ConvertAdd.oldLat;
@@ -88,7 +98,9 @@ const NewPin = () => {
           address: addr,
         });
       },
-    }).open({});
+    }).open({
+      popupKey: 'postPopUp',
+    });
   };
 
   useEffect(() => {
@@ -97,7 +109,7 @@ const NewPin = () => {
     const getTopicId = async () => {
       if (queryParams.has('topic-id')) {
         const topicId = queryParams.get('topic-id');
-        const data = await getApi(`/topics/${topicId}`);
+        const data = await getApi('default', `/topics/${topicId}`);
         setTopic(data);
       }
     };
@@ -150,6 +162,8 @@ const NewPin = () => {
             value={formValues.name}
             onChange={onChangeInput}
             placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
+            autoFocus={true}
+            tabIndex={1}
           />
         </section>
 
@@ -169,9 +183,11 @@ const NewPin = () => {
           <Input
             name="address"
             readOnly
-            value={clickedCoordinate.address ?? formValues.address}
-            onChange={onChangeInput}
+            value={clickedCoordinate.address}
             onClick={onClickAddressInput}
+            onKeyDown={onClickAddressInput}
+            ref={addressRef}
+            tabIndex={2}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
         </section>
@@ -194,16 +210,24 @@ const NewPin = () => {
             value={formValues.description}
             onChange={onChangeInput}
             placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
+            tabIndex={3}
           />
         </section>
 
         <Space size={6} />
 
         <Flex $justifyContent="end">
-          <Button variant="primary">추가하기</Button>
-          <Space size={3} />
-          <Button type="button" variant="secondary" onClick={goToBack}>
+          <Button
+            tabIndex={5}
+            type="button"
+            variant="secondary"
+            onClick={goToBack}
+          >
             취소하기
+          </Button>
+          <Space size={3} />
+          <Button tabIndex={4} variant="primary">
+            추가하기
           </Button>
         </Flex>
       </Flex>

@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.pin.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.location.domain.Address;
+import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -10,13 +10,13 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.math.BigDecimal;
 import java.util.List;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,78 +31,61 @@ class PinRepositoryTest {
 
     @Autowired
     private TopicRepository topicRepository;
-
     @Autowired
     private PinRepository pinRepository;
-
     @Autowired
     private LocationRepository locationRepository;
-
     @Autowired
     private MemberRepository memberRepository;
+
+    private Location location;
+    private Topic topic;
+    private Member member;
+
+    @BeforeEach
+    void setUp() {
+        member = memberRepository.save(MemberFixture.create("member", "member@gmail.com", Role.USER));
+        topic = topicRepository.save(TopicFixture.createByName("topic", member));
+        location = locationRepository.save(LocationFixture.create());
+    }
 
     @Test
     @DisplayName("핀을 삭제하면 soft-deleting 된다.")
     void deleteById_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
-        Topic topic = TopicFixture.createByName("name", member);
-        Address address = new Address(
-                "parcel",
-                "road",
-                "legalDongCode"
-        );
-        Location location = new Location(
-                address,
-                DEFAULT_COORDINATE
-        );
-        topicRepository.save(topic);
-        locationRepository.save(location);
-
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+        Pin pin = PinFixture.create(location, topic, member);
         pinRepository.save(pin);
+        Long pinId = pin.getId();
 
         // when
         assertThat(pin.isDeleted()).isFalse();
-        pinRepository.deleteById(pin.getId());
+        pinRepository.deleteById(pinId);
 
         // then
-        Pin deletedPin = pinRepository.findById(pin.getId()).get();
-        assertThat(deletedPin.isDeleted()).isTrue();
+        pinRepository.findById(pinId)
+                .ifPresentOrElse(
+                        found -> assertThat(found.isDeleted()).isTrue(),
+                        Assertions::fail
+                );
     }
 
     @Test
     @DisplayName("토픽 ID로 핀을 삭제하면 soft-deleting 된다.")
     void deleteAllByTopicId_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
-        Topic topic = TopicFixture.createByName("name", member);
-        Address address = new Address(
-                "parcel",
-                "road",
-                "legalDongCode"
-        );
-        Location location = new Location(
-                address,
-                DEFAULT_COORDINATE
-        );
-
         for (int i = 0; i < 10; i++) {
-            Pin.createPinAssociatedWithLocationAndTopic("name", "description", location, topic);
+            pinRepository.save(PinFixture.create(location, topic, member));
         }
-
-        locationRepository.save(location);
-        topicRepository.save(topic);
 
         // when
         assertThat(topic.getPins()).extractingResultOf("isDeleted")
-                .doesNotContain(true);
+                .containsOnly(false);
         pinRepository.deleteAllByTopicId(topic.getId());
 
         // then
         List<Pin> deletedPins = pinRepository.findAllByTopicId(topic.getId());
         assertThat(deletedPins).extractingResultOf("isDeleted")
-                .doesNotContain(false);
+                .containsOnly(true);
     }
 
 }

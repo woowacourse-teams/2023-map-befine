@@ -30,9 +30,20 @@ public class MemberTopicPermission extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public MemberTopicPermission(Topic topic, Member member) {
+    private MemberTopicPermission(Topic topic, Member member) {
         this.topic = topic;
         this.member = member;
+    }
+
+    public static MemberTopicPermission createPermissionAssociatedWithTopicAndMember(
+            Topic topic,
+            Member member
+    ) {
+        MemberTopicPermission memberTopicPermission = new MemberTopicPermission(topic, member);
+        topic.addMemberTopicPermission(memberTopicPermission);
+        member.addMemberTopicPermission(memberTopicPermission);
+
+        return memberTopicPermission;
     }
 
 }

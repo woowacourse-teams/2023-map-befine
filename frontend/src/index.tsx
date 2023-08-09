@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import theme from './themes';
 import GlobalStyle from './GlobalStyle';
 import { StrictMode } from 'react';
+import ModalContextProvider from './context/ModalContext';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
@@ -17,8 +18,10 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <App />
+      <ModalContextProvider>
+        <GlobalStyle />
+        <App />
+      </ModalContextProvider>
     </ThemeProvider>
   </StrictMode>,
 );

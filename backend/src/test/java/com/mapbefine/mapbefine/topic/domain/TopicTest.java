@@ -4,9 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
+import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
 import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,18 +16,20 @@ class TopicTest {
     private Topic topic;
     private Pin pin;
 
+    private Member member;
+
     @BeforeEach
     void setUp() {
+        member = MemberFixture.create("member", "member@naver.com", Role.USER);
         topic = Topic.createTopicAssociatedWithCreator(
                 "매튜의 산스장",
                 "매튜가 엄마 몰래 찾는 산스장",
                 "https://example.com/image.jpg",
                 Publicity.PUBLIC,
                 Permission.GROUP_ONLY,
-                MemberFixture.create(Role.USER)
+                member
         );
-
-        pin = PinFixture.create(LocationFixture.create(), topic);
+        pin = PinFixture.create(LocationFixture.create(), topic, member);
     }
 
     @Test

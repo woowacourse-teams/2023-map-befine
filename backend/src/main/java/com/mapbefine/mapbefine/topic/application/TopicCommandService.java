@@ -3,8 +3,8 @@ package com.mapbefine.mapbefine.topic.application;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinRepository;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -78,7 +78,9 @@ public class TopicCommandService {
         List<Pin> originalPins = findAllPins(pinIds);
         validateCopyablePins(member, originalPins);
 
-        originalPins.forEach(pin -> pin.copyToTopic(topic));
+        Member creator = findCreatorByAuthMember(member);
+
+        originalPins.forEach(pin -> pin.copyToTopic(creator, topic));
     }
 
     private List<Pin> findAllPins(List<Long> pinIds) {
@@ -107,8 +109,9 @@ public class TopicCommandService {
 
         validateCopyableTopics(member, originalTopics);
 
+        Member creator = findCreatorByAuthMember(member);
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
-        originalPins.forEach(pin -> pin.copyToTopic(topic));
+        originalPins.forEach(pin -> pin.copyToTopic(creator, topic));
 
         topicRepository.save(topic);
 

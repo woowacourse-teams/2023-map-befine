@@ -25,7 +25,8 @@ class TopicRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(MemberFixture.create(Role.USER));
+        member = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(member);
     }
 
     @Test

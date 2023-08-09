@@ -3,14 +3,13 @@ package com.mapbefine.mapbefine.location.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -46,25 +45,18 @@ public class Location extends BaseTimeEntity {
             double latitude,
             double longitude
     ) {
-        return new Location(
-                new Address(
-                        parcelBaseAddress,
-                        roadBaseAddress,
-                        legalDongCode
-                ),
-                Coordinate.of(
-                        latitude,
-                        longitude
-                )
+        Address address = new Address(
+                parcelBaseAddress,
+                roadBaseAddress,
+                legalDongCode
         );
+        Coordinate coordinate = Coordinate.of(latitude, longitude);
+
+        return new Location(address, coordinate);
     }
 
     public void addPin(Pin pin) {
         pins.add(pin);
-    }
-
-    public boolean isDuplicateCoordinate(Coordinate otherCoordinate) {
-        return coordinate.isDuplicateCoordinate(otherCoordinate);
     }
 
     public boolean isSameAddress(String otherAddress) {
@@ -75,9 +67,16 @@ public class Location extends BaseTimeEntity {
         return coordinate.getLatitude();
     }
 
-
     public double getLongitude() {
         return coordinate.getLongitude();
+    }
+
+    public String getRoadBaseAddress() {
+        return address.getRoadBaseAddress();
+    }
+
+    public String getLegalDongCode() {
+        return address.getLegalDongCode();
     }
 
 }

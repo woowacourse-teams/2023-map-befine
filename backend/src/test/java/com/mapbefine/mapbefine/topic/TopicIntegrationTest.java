@@ -10,9 +10,9 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinRepository;
 import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.domain.Permission;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -52,7 +52,9 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록 없이 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithoutPins_Success() {
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(member);
+
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
                 "https://map-befine-official.github.io/favicon.png",
@@ -63,7 +65,7 @@ class TopicIntegrationTest extends IntegrationTest {
         );
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         // when
@@ -89,14 +91,14 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록과 함께 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithPins_Success() {
-        Member member = MemberFixture.create(Role.USER);
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
         memberRepository.save(member);
 
         Location location = LocationFixture.create();
         locationRepository.save(location);
 
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
-        Pin pin = PinFixture.create(location, topic);
+        Pin pin = PinFixture.create(location, topic, member);
         topicRepository.save(topic);
 
         List<Pin> pins = pinRepository.findAll();
@@ -105,7 +107,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 .toList();
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
@@ -129,9 +131,11 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("여러개의 토픽을 병합하면 201을 반환한다")
     void createMergeTopic_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(member);
+
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
@@ -183,9 +187,11 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic을 수정하면 200을 반환한다")
     void updateTopic_Success() {
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(member);
+
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         ExtractableResponse<Response> newTopic = createNewTopic(
@@ -225,10 +231,11 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic을 삭제하면 204를 반환한다")
     void deleteTopic_Success() {
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        memberRepository.save(member);
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         ExtractableResponse<Response> newTopic = createNewTopic(
                 new TopicCreateRequest(
@@ -260,10 +267,11 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 목록을 조회하면 200을 반환한다")
     void findTopics_Success() {
         //given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(member);
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         // when
@@ -283,10 +291,11 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 상세 정보를 조회하면 200을 반환한다")
     void findTopicDetail_Success() {
         //given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(member);
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         TopicCreateRequest request = new TopicCreateRequest(
                 "topicName",
@@ -317,10 +326,11 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 상세 정보 여러개를 조회하면 200을 반환한다")
     void findTopicDetailsByIds_Success() {
         //given
-        Member member = memberRepository.save(MemberFixture.create(Role.ADMIN));
+        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(member);
 
         String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getEmail()).getBytes()
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
         TopicCreateRequest request = new TopicCreateRequest(
                 "topicName",

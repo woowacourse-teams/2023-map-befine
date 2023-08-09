@@ -1,10 +1,7 @@
 package com.mapbefine.mapbefine.pin.dto.response;
 
-import com.mapbefine.mapbefine.common.entity.Image;
-import com.mapbefine.mapbefine.pin.Domain.Pin;
-import com.mapbefine.mapbefine.pin.Domain.PinImage;
-import com.mapbefine.mapbefine.pin.Domain.PinInfo;
-import java.math.BigDecimal;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinInfo;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,14 +13,10 @@ public record PinDetailResponse(
         double latitude,
         double longitude,
         LocalDateTime updatedAt,
-        List<String> images
+        List<PinImageResponse> images
 ) {
-    public static PinDetailResponse from(Pin pin) {
-        List<String> images = pin.getPinImages().stream()
-                .map(PinImage::getImage)
-                .map(Image::getImageUrl)
-                .toList();
 
+    public static PinDetailResponse from(Pin pin) {
         PinInfo pinInfo = pin.getPinInfo();
 
         return new PinDetailResponse(
@@ -34,7 +27,8 @@ public record PinDetailResponse(
                 pin.getLatitude(),
                 pin.getLongitude(),
                 pin.getUpdatedAt(),
-                images
+                PinImageResponse.from(pin.getPinImages())
         );
     }
+
 }

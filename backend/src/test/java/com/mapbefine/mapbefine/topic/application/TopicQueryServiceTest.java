@@ -37,7 +37,8 @@ class TopicQueryServiceTest {
 
     @BeforeEach
     void setup() {
-        member = memberRepository.save(MemberFixture.create(Role.USER));
+        member = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(member);
     }
 
     @Test
@@ -47,10 +48,10 @@ class TopicQueryServiceTest {
         saveAllReadableTopicOfCount(1);
         saveOnlyMemberReadableTopicOfCount(2);
 
-        AuthMember authMember = AuthMember.from(member);
+        AuthMember user = MemberFixture.createUser(member);
 
         //when
-        List<TopicResponse> topics = topicQueryService.findAllReadable(authMember);
+        List<TopicResponse> topics = topicQueryService.findAllReadable(user);
 
         //then
         assertThat(topics).hasSize(3);
@@ -162,10 +163,10 @@ class TopicQueryServiceTest {
         topicRepository.save(topic2);
 
         //when
-        AuthMember guest = AuthMember.from(member);
+        AuthMember user = MemberFixture.createUser(member);
 
         List<TopicDetailResponse> details = topicQueryService.findDetailsByIds(
-                guest,
+                user,
                 List.of(topic1.getId(), topic2.getId())
         );
 
@@ -205,10 +206,10 @@ class TopicQueryServiceTest {
         topicRepository.save(topic2);
 
         //when then
-        AuthMember guest = AuthMember.from(member);
+        AuthMember user = MemberFixture.createUser(member);
         List<Long> topicIds = List.of(topic1.getId(), topic2.getId(), Long.MAX_VALUE);
 
-        assertThatThrownBy(() -> topicQueryService.findDetailsByIds(guest, topicIds))
+        assertThatThrownBy(() -> topicQueryService.findDetailsByIds(user, topicIds))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 토픽이 존재합니다");
     }

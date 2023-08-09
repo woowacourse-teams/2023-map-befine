@@ -17,4 +17,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     void deleteById(@Param("topicId") Long topicId);
 
     boolean existsById(Long id);
+
+    List<Topic> findByCreatorId(Long creatorId);
+
 }
