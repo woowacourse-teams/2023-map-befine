@@ -9,16 +9,16 @@ export default function useMapClick(map: any) {
     if (!map) return;
     const clickHandler = async (evt: any) => {
       const roadName = await getAddressFromServer(
-        evt.latLng._lat,
-        evt.latLng._lng,
+        evt.data.lngLat._lat,
+        evt.data.lngLat._lng,
       );
       setClickedCoordinate({
-        latitude: evt.latLng._lat,
-        longitude: evt.latLng._lng,
+        latitude: evt.data.lngLat._lat,
+        longitude: evt.data.lngLat._lng,
         address: roadName,
       });
     };
-    map.on('click', clickHandler);
+    map.on('Click', clickHandler);
 
     return () => {
       if (map) {
