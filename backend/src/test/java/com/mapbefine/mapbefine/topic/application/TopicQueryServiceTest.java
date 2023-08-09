@@ -124,7 +124,7 @@ class TopicQueryServiceTest {
 
         assertThatThrownBy(() -> topicQueryService.findDetailById(guest, topic.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("조회할 수 없는 Topic 입니다.");
+                .hasMessage("조회권한이 없는 Topic 입니다.");
     }
 
     @Test

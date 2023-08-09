@@ -27,14 +27,25 @@ public class TopicQueryService {
     }
 
     public TopicDetailResponse findDetailById(AuthMember member, Long id) {
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+        Topic topic = findTopic(id);
 
+        validateReadableTopic(member, topic);
+
+        return TopicDetailResponse.from(topic);
+    }
+
+    private Topic findTopic(Long id) {
+        return topicRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+    }
+
+    private void validateReadableTopic(AuthMember member, Topic topic) {
         if (member.canRead(topic)) {
-            return TopicDetailResponse.from(topic);
+            return;
         }
 
-        throw new IllegalArgumentException("조회할 수 없는 Topic 입니다.");
+        throw new IllegalArgumentException("조회권한이 없는 Topic 입니다.");
+
     }
 
     public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> ids) {
