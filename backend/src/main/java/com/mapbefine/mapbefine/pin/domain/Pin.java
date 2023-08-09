@@ -36,13 +36,6 @@ public class Pin extends BaseTimeEntity {
     private PinInfo pinInfo;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member creator;
-
-    @OneToMany(mappedBy = "pin", cascade = CascadeType.PERSIST)
-    private List<PinImage> pinImages = new ArrayList<>();
-
-    @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
@@ -50,9 +43,16 @@ public class Pin extends BaseTimeEntity {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member creator;
+
     @Column(nullable = false)
     @ColumnDefault(value = "false")
     private boolean isDeleted = false;
+
+    @OneToMany(mappedBy = "pin", cascade = CascadeType.PERSIST)
+    private List<PinImage> pinImages = new ArrayList<>();
 
     private Pin(
             PinInfo pinInfo,
@@ -73,33 +73,40 @@ public class Pin extends BaseTimeEntity {
             Topic topic,
             Member creator
     ) {
-        PinInfo pinInfo = PinInfo.of(name, description);
-
         Pin pin = new Pin(
-                pinInfo,
+                PinInfo.of(name, description),
                 location,
                 topic,
                 creator
         );
-
         location.addPin(pin);
         topic.addPin(pin);
         creator.addPin(pin);
+
         return pin;
     }
 
     public void updatePinInfo(String name, String description) {
-        pinInfo.update(name, description);
+        pinInfo = PinInfo.of(name, description);
     }
 
     public Pin copy(Topic topic, Member creator) {
-        return Pin.createPinAssociatedWithLocationAndTopicAndMember(
+        Pin copy = Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 pinInfo.getName(),
                 pinInfo.getDescription(),
                 location,
                 topic,
                 creator
         );
+        copyPinImages(copy);
+
+        return copy;
+    }
+
+    private void copyPinImages(Pin pin) {
+        for (PinImage pinImage : pinImages) {
+            PinImage.createPinImageAssociatedWithPin(pinImage.getImageUrl(), pin);
+        }
     }
 
     public void addPinImage(PinImage pinImage) {

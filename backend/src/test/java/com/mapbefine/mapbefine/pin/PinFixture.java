@@ -12,7 +12,7 @@ public class PinFixture {
         TopicInfo topicInfo = topic.getTopicInfo();
         return Pin.createPinAssociatedWithLocationAndTopicAndMember(
                 topicInfo.getName() + "의 핀",
-                "위도: " + location.getCoordinate().getLatitude() + ", 경도: " + location.getCoordinate().getLongitude(),
+                String.format("위도: %f 경도: %f", location.getLatitude(), location.getLongitude()),
                 location,
                 topic,
                 member

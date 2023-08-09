@@ -8,13 +8,16 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.PinFixture;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TopicTest {
 
     private Topic topic;
     private Pin pin;
+    private Member member;
 
     @BeforeEach
     void setUp() {
@@ -91,4 +94,29 @@ class TopicTest {
         //then
         assertThat(topic.getPins()).contains(pin);
     }
+
+    @Test
+    @DisplayName("Topic 을 생성하면, Member 에 등록이 된다.")
+    void createTopicAssociatedWithMember() {
+        // given
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+
+        // when
+        Topic topic = Topic.createTopicAssociatedWithMember(
+                "name",
+                "description",
+                null,
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS,
+                member
+        );
+
+        List<Topic> topicsInMember = member.getCreatedTopics();
+
+        // then
+        assertThat(topicsInMember).hasSize(1);
+        assertThat(topicsInMember.get(0)).usingRecursiveComparison()
+                .isEqualTo(topic);
+    }
+
 }

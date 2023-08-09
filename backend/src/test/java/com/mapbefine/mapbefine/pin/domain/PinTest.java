@@ -1,141 +1,140 @@
 package com.mapbefine.mapbefine.pin.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.mapbefine.mapbefine.location.domain.Address;
-import com.mapbefine.mapbefine.location.domain.Coordinate;
+import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.topic.domain.Permission;
-import com.mapbefine.mapbefine.topic.domain.Publicity;
+import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.util.stream.Stream;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class PinTest {
 
-    private static final Location location = new Location(
-            new Address(
-                    "parcel",
-                    "road",
-                    "legalDongCode"
-            ),
-            Coordinate.of(
-                    38.123456,
-                    127.123456
-            )
-    );
-    private static final Member member = MemberFixture.create(
-            "member",
-            "member@naver.com",
-            Role.ADMIN
-    );
-    private static final Topic topic = Topic.createTopicAssociatedWithMember(
-            "topicName",
-            "topicDescription",
-            null,
-            Publicity.PUBLIC,
-            Permission.ALL_MEMBERS,
-            member
-    );
 
-    @ParameterizedTest
-    @MethodSource(value = "validNameAndDescription")
-    @DisplayName("올바른 정보를 주면 성공적으로 Pin 을 생성한다.")
-    void createPinAssociatedWithLocationAndTopic_Success(String name, String description) {
-        // given
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                name,
-                description,
-                location,
-                topic,
-                member
+    private static final PinInfo VALID_PIN_INFO = PinInfo.of("name", "description");
+
+    private Location location;
+    private Topic topic;
+    private Member member;
+
+    @BeforeEach
+    void setUp() {
+        location = LocationFixture.create();
+        topic = TopicFixture.createByName(
+                "topic",
+                MemberFixture.create("member", "member@naver.com", Role.ADMIN)
         );
-
-        PinInfo pinInfo = pin.getPinInfo();
-
-        // when
-        String actualName = pinInfo.getName();
-        String actualDescription = pinInfo.getDescription();
-
-        // then
-        assertThat(actualName).isEqualTo(name);
-        assertThat(actualDescription).isEqualTo(description);
+        member = MemberFixture.create("pin member", "member@naver.com", Role.ADMIN);
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "invalidNameOrDescription")
-    @DisplayName("잘못된 정보를 주면 Pin 을 생성을 실패한다.")
-    void createPinAssociatedWithLocationAndTopic_Fail(String name, String description) {
-        // given when then
-        assertThatThrownBy(() -> Pin.createPinAssociatedWithLocationAndTopicAndMember(name, description, location, topic, member))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "validNameAndDescription")
-    @DisplayName("정상적인 정보를 통해 Update 를 진행하면 Pin 의 정보가 정상적으로 수정된다.")
-    void update_Success(String name, String description) {
-        // given
-        Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember("nickName", "description", location, topic, member);
-
-        // when
-        pin.updatePinInfo(name, description);
-        PinInfo pinInfo = pin.getPinInfo();
-        String actualName = pinInfo.getName();
-        String actualDescription = pinInfo.getDescription();
-
-        // then
-        assertThat(actualName).isEqualTo(name);
-        assertThat(actualDescription).isEqualTo(description);
-    }
-
-    static Stream<Arguments> validNameAndDescription() {
-        return Stream.of(
-                Arguments.of("1", "1"),
-                Arguments.of("1", "1".repeat(1000)),
-                Arguments.of("1".repeat(50), "1"),
-                Arguments.of("1".repeat(50), "1".repeat(1000))
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "invalidNameOrDescription")
-    @DisplayName("정상적인 정보를 통해 Update 를 진행하면 Pin 의 수정을 실패한다.")
-    void update_Fail(String name, String description) {
-        // given
+    @Test
+    @DisplayName("Pin 을 생성하면, Location, Topic, Member 에 연관 관계가 등록된다.")
+    void createPinAssociatedWithLocationAndTopicAndMember_associate_Success() {
+        // given, when
         Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                "nickName",
+                "name",
                 "description",
                 location,
                 topic,
                 member
         );
 
-        // when then
-        assertThatThrownBy(() -> pin.updatePinInfo(name, description))
-                .isInstanceOf(IllegalArgumentException.class);
+        List<Pin> pinsInLocation = location.getPins();
+        List<Pin> pinsInTopic = topic.getPins();
+        List<Pin> pinsInMember = member.getCreatedPins();
+
+        // then
+        assertThat(pinsInLocation).hasSize(1);
+        assertThat(pinsInTopic).hasSize(1);
+        assertThat(pinsInMember).hasSize(1);
+        assertThat(pinsInLocation.get(0)).usingRecursiveComparison()
+                .isEqualTo(pin);
+        assertThat(pinsInTopic.get(0)).usingRecursiveComparison()
+                .isEqualTo(pin);
+        assertThat(pinsInMember.get(0)).usingRecursiveComparison()
+                .isEqualTo(pin);
     }
 
-    static Stream<Arguments> invalidNameOrDescription() {
-        return Stream.of(
-                Arguments.of(null, "1"),
-                Arguments.of("1", null),
-                Arguments.of(null, null),
-                Arguments.of("   ", "1"),
-                Arguments.of("1", "    "),
-                Arguments.of("", "1"),
-                Arguments.of("1", ""),
-                Arguments.of("1".repeat(51), "1"),
-                Arguments.of("1", "1".repeat(1001)),
-                Arguments.of("1".repeat(51), "1".repeat(1001))
+    @Test
+    @DisplayName("Pin을 복사하면 Topic, Member 외 정보가 모두 같은 새로운 Pin을 생성해 반환한다.")
+    void copy_Success() {
+        // given
+        Pin original = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+                "before name",
+                "before description",
+                location,
+                topic,
+                member
         );
+        PinImage.createPinImageAssociatedWithPin("https://example.com/image.jpg", original);
+        Member memberForCopy = MemberFixture.create("복사해 갈 회원", "other@gmail.com", Role.USER);
+        Topic topicForCopy = TopicFixture.createByName("복사해 갈 토픽 이름", memberForCopy);
+
+        // when
+        Pin actual = original.copy(topicForCopy, memberForCopy);
+
+        // then
+        assertThat(original).usingRecursiveComparison()
+                .ignoringFieldsOfTypes(Topic.class, Member.class)
+                .isEqualTo(actual);
+        assertThat(actual.getTopic()).usingRecursiveComparison()
+                .isEqualTo(topicForCopy);
+        assertThat(actual.getCreator()).usingRecursiveComparison()
+                .isEqualTo(memberForCopy);
     }
 
+    @Nested
+    class Validate {
+
+        @Test
+        @DisplayName("올바른 핀 정보를 주면 성공적으로 Pin 을 생성한다.")
+        void createPinAssociatedWithLocationAndTopicAndMember_validate_Success() {
+            // given
+            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+                    VALID_PIN_INFO.getName(),
+                    VALID_PIN_INFO.getDescription(),
+                    location,
+                    topic,
+                    member
+            );
+
+            // when
+            PinInfo actual = pin.getPinInfo();
+
+            // then
+            assertThat(actual).usingRecursiveComparison()
+                    .isEqualTo(VALID_PIN_INFO);
+        }
+
+        @Test
+        @DisplayName("올바른 핀 정보를 주면 성공적으로 Pin 을 수정한다.")
+        void updatePinInfo_Success() {
+            // given
+            Pin pin = Pin.createPinAssociatedWithLocationAndTopicAndMember(
+                    "before name",
+                    "before description",
+                    location,
+                    topic,
+                    member
+            );
+            String updateName = VALID_PIN_INFO.getName();
+            String updateDescription = VALID_PIN_INFO.getDescription();
+
+            // when
+            pin.updatePinInfo(updateName, updateDescription);
+            PinInfo actual = pin.getPinInfo();
+
+            // then
+            assertThat(actual).usingRecursiveComparison()
+                    .isEqualTo(PinInfo.of(updateName, updateDescription));
+        }
+
+    }
 }

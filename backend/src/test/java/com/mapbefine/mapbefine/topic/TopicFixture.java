@@ -19,4 +19,15 @@ public class TopicFixture {
         );
     }
 
+    public static Topic createPrivateByName(String name, Member member) {
+        return Topic.createTopicAssociatedWithMember(
+                name,
+                "설명",
+                null,
+                Publicity.PRIVATE,
+                Permission.GROUP_ONLY,
+                member
+        );
+    }
+
 }

@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.pin.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.location.LocationFixture;
-import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -11,10 +10,10 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,21 +22,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
-class PinRepositoryTest {
-    private static final Coordinate DEFAULT_COORDINATE = Coordinate.of(
-            37.5152933,
-            127.1029866
-    );
+class PinImageRepositoryTest {
 
     @Autowired
-    private TopicRepository topicRepository;
+    private PinImageRepository pinImageRepository;
     @Autowired
     private PinRepository pinRepository;
     @Autowired
     private LocationRepository locationRepository;
     @Autowired
+    private TopicRepository topicRepository;
+    @Autowired
     private MemberRepository memberRepository;
 
+    private Pin pin;
     private Location location;
     private Topic topic;
     private Member member;
@@ -47,22 +45,23 @@ class PinRepositoryTest {
         member = memberRepository.save(MemberFixture.create("member", "member@gmail.com", Role.USER));
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
         location = locationRepository.save(LocationFixture.create());
+        pin = pinRepository.save(PinFixture.create(location, topic, member));
     }
 
     @Test
-    @DisplayName("핀을 삭제하면 soft-deleting 된다.")
+    @DisplayName("핀 이미지를 삭제하면, soft-deleting 된다.")
     void deleteById_Success() {
-        // given
-        Pin pin = PinFixture.create(location, topic, member);
-        pinRepository.save(pin);
-        Long pinId = pin.getId();
+        //given
+        PinImage pinImage = PinImageFixture.create(pin);
+        pinImageRepository.save(pinImage);
+        Long pinImageId = pinImage.getId();
 
-        // when
-        assertThat(pin.isDeleted()).isFalse();
-        pinRepository.deleteById(pinId);
+        //when
+        assertThat(pinImage.isDeleted()).isFalse();
+        pinImageRepository.deleteById(pinImageId);
 
-        // then
-        pinRepository.findById(pinId)
+        //then
+        pinImageRepository.findById(pinImageId)
                 .ifPresentOrElse(
                         found -> assertThat(found.isDeleted()).isTrue(),
                         Assertions::fail
@@ -70,22 +69,22 @@ class PinRepositoryTest {
     }
 
     @Test
-    @DisplayName("토픽 ID로 핀을 삭제하면 soft-deleting 된다.")
-    void deleteAllByTopicId_Success() {
-        // given
-        for (int i = 0; i < 10; i++) {
-            pinRepository.save(PinFixture.create(location, topic, member));
-        }
+    @DisplayName("특정 핀의 모든 핀 아미지를 삭제하면, soft-deleting 된다.")
+    void deleteAllByPinId_Success() {
+        //given
+        PinImage pinImage1 = PinImageFixture.create(pin);
+        PinImage pinImage2 = PinImageFixture.create(pin);
+        pinImageRepository.save(pinImage1);
+        pinImageRepository.save(pinImage2);
 
-        // when
-        assertThat(topic.getPins()).extractingResultOf("isDeleted")
-                .containsOnly(false);
-        pinRepository.deleteAllByTopicId(topic.getId());
+        //when
+        assertThat(pinImage1.isDeleted()).isFalse();
+        assertThat(pinImage2.isDeleted()).isFalse();
+        pinImageRepository.deleteAllByPinId(pin.getId());
 
-        // then
-        List<Pin> deletedPins = pinRepository.findAllByTopicId(topic.getId());
-        assertThat(deletedPins).extractingResultOf("isDeleted")
+        //then
+        assertThat(pinImageRepository.findAllByPinId(pin.getId()))
+                .extractingResultOf("isDeleted")
                 .containsOnly(true);
     }
-
 }

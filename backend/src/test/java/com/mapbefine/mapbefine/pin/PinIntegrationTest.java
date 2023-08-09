@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
-import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -13,12 +12,13 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.*;
+import io.restassured.response.*;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,12 +31,16 @@ import org.springframework.http.MediaType;
 class PinIntegrationTest extends IntegrationTest {
 
     private static final String BASIC_FORMAT = "Basic %s";
-    private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
+    private static final String BASE_IMAGE = "https://map-befine-official.github.io/favicon.png";
 
     private Topic topic;
     private Location location;
     private Member member;
     private String authHeader;
+
+    private PinCreateRequest createRequestDuplicateLocation;
+    private PinCreateRequest createRequestNoDuplicateLocation;
+    private PinCreateRequest createRequestNoDuplicateLocation2;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -55,26 +59,42 @@ class PinIntegrationTest extends IntegrationTest {
         );
         topic = topicRepository.save(TopicFixture.createByName("PinIntegration 토픽", member));
         location = locationRepository.save(LocationFixture.createByCoordinate(37.5152933, 127.1029866));
-    }
 
-    @Test
-    @DisplayName("핀을 생성하면 저장된 Pin의 Location과 201을 반환한다.")
-    void addIfExistDuplicateLocation_Success() {
-        //given
-        Address address = location.getAddress();
-        PinCreateRequest request = new PinCreateRequest(
+        createRequestDuplicateLocation = new PinCreateRequest(
                 topic.getId(),
                 "pin",
                 "description",
-                address.getRoadBaseAddress(),
+                location.getAddress()
+                        .getRoadBaseAddress(),
                 "legalDongCode",
-                37.5152933,
-                127.1029866,
-                BASE_IMAGES
+                location.getLatitude(),
+                location.getLongitude()
         );
+        createRequestNoDuplicateLocation = new PinCreateRequest(
+                topic.getId(),
+                "pin",
+                "description",
+                "기존에 없는 주소",
+                "legalDongCode",
+                37,
+                126
+        );
+        createRequestNoDuplicateLocation2 = new PinCreateRequest(
+                topic.getId(),
+                "pine2",
+                "description",
+                "기존에 없는 주소",
+                "legalDongCode",
+                37.12345,
+                126.12345
+        );
+    }
 
-        //when
-        ExtractableResponse<Response> response = createPin(request);
+    @Test
+    @DisplayName("Pin을 생성하면 저장된 Pin의 Location 헤더값과 201을 반환한다.")
+    void addIfExistDuplicateLocation_Success() {
+        //given, when
+        ExtractableResponse<Response> response = createPin(createRequestDuplicateLocation);
 
         //then
         assertThat(response.header("Location")).isNotBlank();
@@ -92,22 +112,10 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("핀을 생성하면 저장된 Pin의 Location과 201을 반환한다.")
+    @DisplayName("Pin을 생성하면 저장된 Pin의 Location 헤더값과 201을 반환한다.")
     void addIfNotExistDuplicateLocation_Success() {
-        //given
-        PinCreateRequest request = new PinCreateRequest(
-                topic.getId(),
-                "pin",
-                "description",
-                "기존에 없는 주소",
-                "legalDongCode",
-                37,
-                126,
-                BASE_IMAGES
-        );
-
-        //when
-        ExtractableResponse<Response> response = createPin(request);
+        //given, when
+        ExtractableResponse<Response> response = createPin(createRequestNoDuplicateLocation);
 
         //then
         assertThat(response.header("Location")).isNotBlank();
@@ -115,33 +123,11 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("핀 목록을 조회하면 저장된 Pin의 목록과 200을 반환한다.")
+    @DisplayName("Pin 목록을 조회하면 저장된 Pin의 목록과 200을 반환한다.")
     void findAll_Success() {
         // given
-        PinCreateRequest request1 = new PinCreateRequest(
-                topic.getId(),
-                "pin1",
-                "description",
-                "기존에 없는 주소",
-                "legalDongCode",
-                37,
-                126,
-                BASE_IMAGES
-        );
-
-        PinCreateRequest request2 = new PinCreateRequest(
-                topic.getId(),
-                "pine2",
-                "description",
-                "기존에 없는 주소",
-                "legalDongCode",
-                37.12345,
-                126.12345,
-                BASE_IMAGES
-        );
-
-        createPin(request1);
-        createPin(request2);
+        createPin(createRequestNoDuplicateLocation);
+        createPin(createRequestNoDuplicateLocation2);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -154,41 +140,92 @@ class PinIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().jsonPath().getList("name"))
-                .contains(request1.name(), request2.name());
+                .contains(createRequestNoDuplicateLocation.name(),
+                        createRequestNoDuplicateLocation2.name());
         assertThat(response.body().jsonPath().getList("description"))
-                .contains(request1.description(), request2.description());
+                .contains(createRequestNoDuplicateLocation.description(),
+                        createRequestNoDuplicateLocation2.description());
     }
 
     @Test
-    @DisplayName("핀 상세 조회를 하면 Pin 정보와 함께 200을 반환한다.")
+    @DisplayName("Pin 상세 조회를 하면 Pin 정보와 함께 200을 반환한다.")
     void findDetail_Success() {
         // given
-        PinCreateRequest request = new PinCreateRequest(
-                topic.getId(),
-                "pin",
-                "description",
-                "기존에 없는 주소",
-                "legalDongCode",
-                37,
-                126,
-                BASE_IMAGES
-        );
-        ExtractableResponse<Response> createResponse = createPin(request);
-        String locationHeader = createResponse.header("Location");
-        long pinId = Long.parseLong(locationHeader.split("/")[2]);
+        long pinId = createPinAndGetId(createRequestNoDuplicateLocation);
 
         // when
+        ExtractableResponse<Response> response = findById(pinId);
+
+        // then
+        assertThat(response.jsonPath().getString("name"))
+                .isEqualTo(createRequestNoDuplicateLocation.name());
+        assertThat(response.jsonPath().getString("description"))
+                .isEqualTo(createRequestNoDuplicateLocation.description());
+        assertThat(response.jsonPath().getString("address"))
+                .isEqualTo(createRequestNoDuplicateLocation.address());
+    }
+
+    private ExtractableResponse<Response> findById(long pinId) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/pins/" + pinId)
                 .then().log().all()
                 .extract();
+        return response;
+    }
+
+    private long createPinAndGetId(PinCreateRequest request) {
+        ExtractableResponse<Response> createResponse = createPin(request);
+        String locationHeader = createResponse.header("Location");
+        return Long.parseLong(locationHeader.split("/")[2]);
+    }
+
+    @Test
+    @DisplayName("특정 Pin 에 대한 PinImage 를 생성하면(이미지 추가) 201을 반환한다.")
+    void addImage_Success() {
+        // given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+
+        // when
+        ExtractableResponse<Response> response = createPinImage(pinId);
 
         // then
-        assertThat(response.jsonPath().getString("name")).isEqualTo(request.name());
-        assertThat(response.jsonPath().getString("description")).isEqualTo(request.description());
-        assertThat(response.jsonPath().getString("address")).isEqualTo(request.address());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> createPinImage(long pinId) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new PinImageCreateRequest(pinId, BASE_IMAGE))
+                .when().post("/pins/images")
+                .then().log().all()
+                .extract();
+        return response;
+    }
+
+    @Test
+    @DisplayName("특정 PinImage 를 삭제하면 204를 반환한다.")
+    void removeImage_Success() {
+        // given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        createPinImage(pinId);
+        ExtractableResponse<Response> pinResponse = findById(pinId);
+        List<PinImageResponse> images = pinResponse.jsonPath().getList("images", PinImageResponse.class);
+        PinImageResponse deleteImage = images.get(0);
+
+        // when
+        long pinImageId = deleteImage.id();
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/pins/images/" + pinImageId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }

@@ -5,11 +5,13 @@ import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import java.net.URI;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,9 +37,10 @@ public class PinController {
     @LoginRequired
     @PostMapping
     public ResponseEntity<Void> add(AuthMember member, @RequestBody PinCreateRequest request) {
-        Long savedId = pinCommandService.save(member, request);
+        long savedId = pinCommandService.save(member, request);
 
-        return ResponseEntity.created(URI.create("/pins/" + savedId)).build();
+        return ResponseEntity.created(URI.create("/pins/" + savedId))
+                .build();
     }
 
     @LoginRequired
@@ -64,16 +67,32 @@ public class PinController {
 
     @GetMapping("/{pinId}")
     public ResponseEntity<PinDetailResponse> findById(AuthMember member, @PathVariable Long pinId) {
-        PinDetailResponse response = pinQueryService.findById(member, pinId);
+        PinDetailResponse response = pinQueryService.findDetailById(member, pinId);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<List<PinResponse>> findAll(AuthMember member) {
-        List<PinResponse> allResponses = pinQueryService.findAll(member);
+        List<PinResponse> allResponses = pinQueryService.findAllReadable(member);
 
         return ResponseEntity.ok(allResponses);
+    }
+
+    @LoginRequired
+    @PostMapping("/images")
+    public ResponseEntity<Void> addImage(AuthMember member, @RequestBody PinImageCreateRequest request) {
+        pinCommandService.addImage(member, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @LoginRequired
+    @DeleteMapping("/images/{pinImageId}")
+    public ResponseEntity<Void> removeImage(AuthMember member, @PathVariable Long pinImageId) {
+        pinCommandService.removeImageById(member, pinImageId);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
