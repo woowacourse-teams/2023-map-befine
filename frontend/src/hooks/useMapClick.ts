@@ -18,7 +18,7 @@ export default function useMapClick(map: any) {
         address: roadName,
       });
     };
-    map.addListener('click', clickHandler);
+    map.on('click', clickHandler);
 
     return () => {
       if (map) {

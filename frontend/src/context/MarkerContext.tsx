@@ -74,7 +74,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
 
     //newMarkers 각각에 onClick 이벤트를 추가
     newMarkers.forEach((marker: any) => {
-      marker.addListener('click', () => {
+      marker.on('click', () => {
         routePage(`/topics/${topicId}?pinDetail=${marker.id}`);
       });
     });
