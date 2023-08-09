@@ -94,7 +94,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
           {pin.name}
         </Text>
         <Box cursor="pointer">
-          <ModifyPinDetail variant="primary">수정하기</ModifyPinDetail>
+          <ModifyPinDetail variant="primary" onClick={onClickEditPin}>수정하기</ModifyPinDetail>
         </Box>
       </Flex>
       <Space size={0} />
