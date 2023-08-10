@@ -7,9 +7,6 @@ import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.location.application.LocationQueryService;
-import com.mapbefine.mapbefine.member.MemberFixture;
-import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,8 +20,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class LocationControllerTest extends RestDocsIntegration {
 
-    private static final String BASIC_FORMAT = "Basic %s";
-
     @MockBean
     private LocationQueryService locationQueryService;
     private String authHeader;
@@ -32,10 +27,7 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @BeforeEach
     void setUp() {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
+        authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
 
         responses = List.of(
                 new TopicResponse(
@@ -56,7 +48,7 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("현재 위치를 기준 토픽의 핀 개수로 나열한다.")
-    void findNearbyTopicsSortedByPinCount() throws Exception {
+    void findNearbyTopicsSortedByPinCount_Success() throws Exception {
         //given
         double latitude = 37;
         double longitude = 127;
@@ -74,4 +66,5 @@ class LocationControllerTest extends RestDocsIntegration {
                         .param("longitude", String.valueOf(longitude))
         ).andDo(restDocs.document());
     }
+
 }

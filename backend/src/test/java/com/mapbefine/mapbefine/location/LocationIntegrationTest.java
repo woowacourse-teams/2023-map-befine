@@ -9,7 +9,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -17,15 +16,10 @@ import org.springframework.http.MediaType;
 
 public class LocationIntegrationTest extends IntegrationTest {
 
-    private String authHeader;
+    private final String authHeader = Base64.encodeBase64String(
+            "Basic member@naver.com".getBytes()
+    );
 
-    @BeforeEach
-    void setAuthHeader() {
-        String email = "member@naver.com";
-        authHeader = Base64.encodeBase64String(
-                ("Basic" + email).getBytes()
-        );
-    }
 
     @Test
     @DisplayName("현재 위치의 좌표를 보내주면 주변 Topic을 핀 갯수 순으로 정렬하여 반환한다.")

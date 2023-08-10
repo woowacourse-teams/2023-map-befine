@@ -26,8 +26,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@ServiceTest
+@DataJpaTest
 class LocationQueryServiceTest {
 
     @Autowired
@@ -36,7 +37,7 @@ class LocationQueryServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private TopicRepository topicRepository;
-    @Autowired
+
     private LocationQueryService locationQueryService;
 
     private Member member;
@@ -46,6 +47,8 @@ class LocationQueryServiceTest {
 
     @BeforeEach
     void setup() {
+        locationQueryService = new LocationQueryService(locationRepository);
+
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = new Admin(member.getId());
 

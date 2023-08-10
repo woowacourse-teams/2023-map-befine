@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.topic;
 
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
@@ -35,7 +36,7 @@ import org.springframework.http.MediaType;
 class TopicIntegrationTest extends IntegrationTest {
 
     private static final String BASIC_FORMAT = "Basic %s";
-    private static final String AUTHORIZATION = "Authorization";
+
 
     @Autowired
     private PinRepository pinRepository;
