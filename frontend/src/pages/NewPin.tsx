@@ -36,7 +36,6 @@ const NewPin = () => {
     });
   const { routePage } = useNavigator();
   const { showToast } = useToast();
-  const addressRef = useRef<HTMLInputElement | null>(null);
 
   const goToBack = () => {
     routePage(-1);
@@ -46,7 +45,7 @@ const NewPin = () => {
     await postApi('/pins', {
       topicId: topic?.id || 'error',
       name: formValues.name,
-      address: addressRef.current?.value,
+      address: clickedCoordinate.address,
       description: formValues.description,
       latitude: clickedCoordinate.latitude,
       longitude: clickedCoordinate.longitude,
@@ -58,7 +57,12 @@ const NewPin = () => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (hasErrorMessage(errorMessages) || hasNullValue(formValues)) {
+    if (clickedCoordinate.address?.length === 0) {
+      showToast('error', '장소의 위치를 입력해주세요.');
+      return;
+    }
+
+    if (hasErrorMessage(errorMessages) || hasNullValue(formValues, 'address')) {
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }
@@ -131,7 +135,6 @@ const NewPin = () => {
       }
     };
 
-    formValues.address = '';
     getTopicId();
   }, []);
 
@@ -198,7 +201,6 @@ const NewPin = () => {
             value={clickedCoordinate.address}
             onClick={onClickAddressInput}
             onKeyDown={onClickAddressInput}
-            ref={addressRef}
             tabIndex={2}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
