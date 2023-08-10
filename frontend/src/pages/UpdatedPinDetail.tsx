@@ -7,12 +7,12 @@ import Textarea from '../components/common/Textarea';
 import Input from '../components/common/Input';
 import { putApi } from '../apis/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
-import { ModifyPinFormValuesType } from '../types/FormValues';
+import { ModifyPinFormProps } from '../types/FormValues';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
   pinId: number;
-  formValues: ModifyPinFormValuesType;
+  formValues: ModifyPinFormProps;
   setSearchParams: SetURLSearchParams;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChangeInput: (
