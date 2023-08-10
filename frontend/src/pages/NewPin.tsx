@@ -171,7 +171,7 @@ const NewPin = () => {
           isRequired={true}
           name="name"
           value={formValues.name}
-          placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
+          placeholder="50글자 이내로 장소의 이름을 입력해주세요."
           onChangeInput={onChangeInput}
           tabIndex={1}
           errorMessage={errorMessages.name}
