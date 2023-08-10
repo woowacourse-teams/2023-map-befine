@@ -18,7 +18,7 @@ public class AtlasQueryService {
         this.atlasRepository = atlasRepository;
     }
 
-    public List<TopicResponse> findAtlasByMember(AuthMember member) {
+    public List<TopicResponse> findTopicsByMember(AuthMember member) {
         return atlasRepository.findAllByMemberId(member.getMemberId())
                 .stream()
                 .map(Atlas::getTopic)

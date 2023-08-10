@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/atlantes")
+@RequestMapping("/atlas")
 public class AtlasController {
 
     private final AtlasCommandService atlasCommandService;
@@ -29,15 +29,15 @@ public class AtlasController {
 
     @LoginRequired
     @GetMapping
-    public ResponseEntity<List<TopicResponse>> showTopics(AuthMember member) {
-        List<TopicResponse> topicResponses = atlasQueryService.findAtlasByMember(member);
+    public ResponseEntity<List<TopicResponse>> findTopicsFromAtlas(AuthMember member) {
+        List<TopicResponse> topicResponses = atlasQueryService.findTopicsByMember(member);
 
         return ResponseEntity.ok(topicResponses);
     }
 
     @LoginRequired
     @PostMapping("/{topicId}")
-    public ResponseEntity<Void> addTopic(AuthMember authMember, @PathVariable Long topicId) {
+    public ResponseEntity<Void> addTopicToAtlas(AuthMember authMember, @PathVariable Long topicId) {
         atlasCommandService.addTopic(authMember, topicId);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -45,9 +45,10 @@ public class AtlasController {
 
     @LoginRequired
     @DeleteMapping("/{topicId}")
-    public ResponseEntity<Void> removeAtlas(AuthMember authMember, @PathVariable Long topicId) {
+    public ResponseEntity<Void> removeTopicFromAtlas(AuthMember authMember, @PathVariable Long topicId) {
         atlasCommandService.removeTopic(authMember, topicId);
 
         return ResponseEntity.noContent().build();
     }
+
 }
