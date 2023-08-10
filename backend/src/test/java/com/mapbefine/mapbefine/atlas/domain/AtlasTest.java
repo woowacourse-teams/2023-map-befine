@@ -40,8 +40,8 @@ class AtlasTest {
         @ParameterizedTest
         @MethodSource(value = "memberTopicProvider")
         @DisplayName("입력값이 null이면 예외가 발생된다.")
-        void validation_fail() {
-            assertThatThrownBy(() -> Atlas.from(null, MEMBER))
+        void validation_fail(Topic topic, Member member) {
+            assertThatThrownBy(() -> Atlas.from(topic, member))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("토픽과 멤버는 Null이어선 안됩니다.");
         }
@@ -50,7 +50,7 @@ class AtlasTest {
             return Stream.of(
                     Arguments.of(null, MEMBER),
                     Arguments.of(TOPIC, null),
-                    Arguments.of(TOPIC, MEMBER)
+                    Arguments.of(null, null)
             );
         }
     }
