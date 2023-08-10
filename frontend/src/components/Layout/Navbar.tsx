@@ -13,6 +13,10 @@ const Navbar = () => {
   const { routePage } = useNavigator();
   const [showButton, setShowButton] = useState(false);
 
+  const loginButtonClick = () => {
+    window.location.href = 'http://localhost:8080/oauth/kakao';
+  };
+
   return (
     <Flex
       width="400px"
@@ -27,9 +31,10 @@ const Navbar = () => {
       <Home onClick={() => routePage('/')} />
       <All onClick={() => routePage('/all')} />
       <AddButton
-        onClick={() => {
-          setShowButton((prev) => !prev);
-        }}
+        onClick={
+          //setShowButton((prev) => !prev);
+          loginButtonClick
+        }
       />
       {showButton && (
         <Flex
