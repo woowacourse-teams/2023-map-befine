@@ -9,7 +9,7 @@ const KakaoRedirectPage = () => {
   const handleOAuthKakao = async (code: any) => {
     try {
       const url = `http://localhost:8080/oauth/login/kakao?code=${code}`;
-      const data = await getApi('default', url);
+      const data = await getApi('login', url);
       // 아마도 data.accessToken 이런식으로 정보가 담겨서 올듯??
       window.alert('로그인 성공: ' + data);
     } catch (error) {
