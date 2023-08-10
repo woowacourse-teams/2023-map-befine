@@ -119,8 +119,8 @@ const ErrorText = styled.span`
 const CurrentLengthOfInput = styled.span`
   display: block;
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 4px;
+  right: 4px;
   color: ${({ theme }) => theme.color.gray};
   font-size: ${({ theme }) => theme.fontSize.extraSmall};
 `;
@@ -128,8 +128,8 @@ const CurrentLengthOfInput = styled.span`
 const CurrentLengthOfTextarea = styled.span`
   display: block;
   position: absolute;
-  bottom: 12px;
-  right: 8px;
+  bottom: 8px;
+  right: 4px;
   color: ${({ theme }) => theme.color.gray};
   font-size: ${({ theme }) => theme.fontSize.extraSmall};
 `;
