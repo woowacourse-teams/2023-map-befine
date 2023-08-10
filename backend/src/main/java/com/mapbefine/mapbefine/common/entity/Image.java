@@ -24,15 +24,18 @@ public class Image {
         this.imageUrl = imageUrl;
     }
 
-    public static Image of(String imageUrl) {
+    public static Image from(String imageUrl) {
         validateUrl(imageUrl);
+
         return new Image(imageUrl);
     }
 
     private static void validateUrl(String imageUrl) {
-        if (!RegexUtil.matches(VALID_IMAGE_URL_REGEX, imageUrl)) {
-            throw new IllegalArgumentException("잘못된 형식의 URL입니다.");
+        if (RegexUtil.matches(VALID_IMAGE_URL_REGEX, imageUrl)) {
+            return;
         }
+
+        throw new IllegalArgumentException("잘못된 형식의 URL입니다.");
     }
 
 }

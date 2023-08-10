@@ -13,6 +13,7 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,116 +35,170 @@ public class TopicCommandService {
         this.memberRepository = memberRepository;
     }
 
-    public long createNew(AuthMember authMember, TopicCreateRequest request) {
-        Topic topic = createNewTopic(authMember, request);
-        Member member = memberRepository.findById(authMember.getMemberId())
-                .orElseThrow(NoSuchElementException::new);
-
+    public Long saveTopic(AuthMember member, TopicCreateRequest request) {
+        Topic topic = convertToTopic(member, request);
         List<Long> pinIds = request.pins();
-        List<Pin> original = pinRepository.findAllById(pinIds);
 
-        validateExist(pinIds.size(), original.size());
-        pinRepository.saveAll(copyPins(original, topic, member));
+        if (pinIds.size() > 0) {
+            copyPinsToTopic(member, topic, pinIds);
+        }
 
-        return topic.getId();
-    }
-
-    public long createMerge(AuthMember authMember, TopicMergeRequest request) {
-        List<Long> topicIds = request.topics();
-        List<Topic> topics = findTopicsByIds(authMember, topicIds);
-        Member member = memberRepository.findById(authMember.getMemberId())
-                .orElseThrow(NoSuchElementException::new);
-
-        validateExist(topicIds.size(), topics.size());
-        Topic topic = createMergeTopic(authMember, request);
-
-        List<Pin> original = getPinFromTopics(topics);
-        pinRepository.saveAll(copyPins(original, topic, member));
+        topicRepository.save(topic);
 
         return topic.getId();
     }
 
-    public void updateTopicInfo(
-            AuthMember member,
-            Long id,
-            TopicUpdateRequest request
-    ) {
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
-        member.canTopicUpdate(topic);
+    private Topic convertToTopic(AuthMember member, TopicCreateRequest request) {
+        Member creator = findCreatorByAuthMember(member);
 
-        topic.updateTopicInfo(
+        return Topic.createTopicAssociatedWithCreator(
                 request.name(),
                 request.description(),
-                request.image()
+                request.image(),
+                request.publicity(),
+                request.permission(),
+                creator
         );
     }
 
-    public void delete(AuthMember member, Long id) {
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
-        member.canDelete(topic);
+    private Member findCreatorByAuthMember(AuthMember member) {
+        if (Objects.isNull(member.getMemberId())) {
+            throw new IllegalArgumentException("Guest는 토픽을 생성할 수 없습니다.");
+        }
 
-        pinRepository.deleteAllByTopicId(id);
-        topicRepository.deleteById(id);
+        return memberRepository.findById(member.getMemberId())
+                .orElseThrow(NoSuchElementException::new);
     }
 
-    private List<Topic> findTopicsByIds(AuthMember member, List<Long> topicIds) {
-        return topicRepository.findAllById(topicIds)
-                .stream()
+    private void copyPinsToTopic(
+            AuthMember member,
+            Topic topic,
+            List<Long> pinIds
+    ) {
+        List<Pin> originalPins = findAllPins(pinIds);
+        validateCopyablePins(member, originalPins);
+
+        Member creator = findCreatorByAuthMember(member);
+
+        originalPins.forEach(pin -> pin.copyToTopic(creator, topic));
+    }
+
+    private List<Pin> findAllPins(List<Long> pinIds) {
+        List<Pin> findPins = pinRepository.findAllById(pinIds);
+
+        if (pinIds.size() != findPins.size()) {
+            throw new IllegalArgumentException("존재하지 않는 핀 Id가 존재합니다.");
+        }
+
+        return findPins;
+    }
+
+    private void validateCopyablePins(AuthMember member, List<Pin> originalPins) {
+        int copyablePinCount = (int) originalPins.stream()
+                .filter(pin -> member.canRead(pin.getTopic()))
+                .count();
+
+        if (copyablePinCount != originalPins.size()) {
+            throw new IllegalArgumentException("복사할 수 없는 pin이 존재합니다.");
+        }
+    }
+
+    public Long merge(AuthMember member, TopicMergeRequest request) {
+        Topic topic = convertToTopic(member, request);
+        List<Topic> originalTopics = findAllTopics(request.topics());
+
+        validateCopyableTopics(member, originalTopics);
+
+        Member creator = findCreatorByAuthMember(member);
+        List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
+        originalPins.forEach(pin -> pin.copyToTopic(creator, topic));
+
+        topicRepository.save(topic);
+
+        return topic.getId();
+    }
+
+    private Topic convertToTopic(AuthMember member, TopicMergeRequest request) {
+        Member creator = findCreatorByAuthMember(member);
+
+        return Topic.createTopicAssociatedWithCreator(
+                request.name(),
+                request.description(),
+                request.image(),
+                request.publicity(),
+                request.permission(),
+                creator
+        );
+    }
+
+    private List<Topic> findAllTopics(List<Long> topicIds) {
+        List<Topic> findTopics = topicRepository.findAllById(topicIds);
+
+        if (topicIds.size() != findTopics.size()) {
+            throw new IllegalArgumentException("존재하지 않는 토픽 Id가 존재합니다.");
+        }
+
+        return findTopics;
+    }
+
+    private void validateCopyableTopics(AuthMember member, List<Topic> originalTopics) {
+        int copyablePinCount = (int) originalTopics.stream()
                 .filter(member::canRead)
-                .toList();
+                .count();
+
+        if (copyablePinCount != originalTopics.size()) {
+            throw new IllegalArgumentException("복사할 수 없는 토픽이 존재합니다.");
+        }
     }
 
-    private List<Pin> getPinFromTopics(List<Topic> topics) {
+    private List<Pin> getAllPinsFromTopics(List<Topic> topics) {
         return topics.stream()
                 .map(Topic::getPins)
                 .flatMap(Collection::stream)
                 .toList();
     }
 
-    private Topic createMergeTopic(AuthMember member, TopicMergeRequest request) {
-        Member creator = findCreatorByAuthMember(member);
-        Topic topic = Topic.createTopicAssociatedWithMember(
-                request.name(),
-                request.description(),
-                request.image(),
-                request.publicity(),
-                request.permission(),
-                creator
-        );
-        return topicRepository.save(topic);
+    public void updateTopicInfo(
+            AuthMember member,
+            Long topicId,
+            TopicUpdateRequest request
+    ) {
+        Topic topic = findTopic(topicId);
 
+        validateUpdateAuth(member, topic);
+
+        topic.updateTopicInfo(request.name(), request.description(), request.image());
+        topic.updateTopicStatus(request.publicity(), request.permission());
     }
 
-    private Topic createNewTopic(AuthMember member, TopicCreateRequest request) {
-        Member creator = findCreatorByAuthMember(member);
-        Topic topic = Topic.createTopicAssociatedWithMember(
-                request.name(),
-                request.description(),
-                request.image(),
-                request.publicity(),
-                request.permission(),
-                creator
-        );
-        return topicRepository.save(topic);
+    private Topic findTopic(Long topicId) {
+        return topicRepository.findById(topicId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
     }
 
-    private Member findCreatorByAuthMember(AuthMember member) {
-        return memberRepository.findById(member.getMemberId())
-                .orElseThrow(NoSuchElementException::new);
-    }
-
-    private void validateExist(int idCount, int existCount) {
-        if (idCount != existCount) {
-            throw new IllegalArgumentException("찾을 수 없는 ID가 포함되어 있습니다.");
+    private void validateUpdateAuth(AuthMember member, Topic topic) {
+        if (member.canTopicUpdate(topic)) {
+            return;
         }
+
+        throw new IllegalArgumentException("업데이트 권한이 없습니다.");
     }
 
-    private List<Pin> copyPins(List<Pin> pins, Topic topic, Member member) {
-        return pins.stream()
-                .map(original -> original.copy(topic, member))
-                .toList();
+    public void delete(AuthMember member, Long topicId) {
+        Topic topic = findTopic(topicId);
+
+        validateDeleteAuth(member, topic);
+
+        pinRepository.deleteAllByTopicId(topicId);
+        topicRepository.deleteById(topicId);
+    }
+
+    private void validateDeleteAuth(AuthMember member, Topic topic) {
+        if (member.canDelete(topic)) {
+            return;
+        }
+
+        throw new IllegalArgumentException("삭제 권한이 없습니다.");
     }
 
 }

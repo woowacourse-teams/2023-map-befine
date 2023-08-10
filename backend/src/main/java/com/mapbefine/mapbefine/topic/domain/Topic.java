@@ -61,7 +61,7 @@ public class Topic extends BaseTimeEntity {
         this.creator = creator;
     }
 
-    public static Topic createTopicAssociatedWithMember(
+    public static Topic createTopicAssociatedWithCreator(
             String name,
             String description,
             String imageUrl,
@@ -69,17 +69,12 @@ public class Topic extends BaseTimeEntity {
             Permission permission,
             Member creator
     ) {
-        Topic topic = new Topic(
-                TopicInfo.of(
-                        name,
-                        description,
-                        imageUrl
-                ),
-                TopicStatus.of(publicity, permission),
-                creator
-        );
+        TopicInfo topicInfo = TopicInfo.of(name, description, imageUrl);
+        TopicStatus topicStatus = TopicStatus.of(publicity, permission);
+        Topic topic = new Topic(topicInfo, topicStatus, creator);
 
         creator.addTopic(topic);
+
         return topic;
     }
 
@@ -88,11 +83,7 @@ public class Topic extends BaseTimeEntity {
             String description,
             String imageUrl
     ) {
-        topicInfo.update(
-                name,
-                description,
-                imageUrl
-        );
+        this.topicInfo = TopicInfo.of(name, description, imageUrl);
     }
 
     public void updateTopicStatus(Publicity publicity, Permission permission) {

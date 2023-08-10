@@ -5,10 +5,10 @@ import com.mapbefine.mapbefine.topic.domain.TopicInfo;
 import java.time.LocalDateTime;
 
 public record TopicResponse(
-        long id,
+        Long id,
         String name,
         String image,
-        int pinCount,
+        Integer pinCount,
         LocalDateTime updatedAt
 ) {
     public static TopicResponse from(Topic topic) {
