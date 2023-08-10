@@ -17,6 +17,7 @@ interface InputContainerProps {
   onChangeInput: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     isRequired: boolean,
+    maxLength?: number,
   ) => void;
   tabIndex: number;
   errorMessage: string;
@@ -42,6 +43,11 @@ const InputContainer = ({
   const onChangeUserInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    if (maxLength) {
+      onChangeInput(e, isRequired, maxLength);
+      return;
+    }
+
     onChangeInput(e, isRequired);
   };
 
@@ -76,7 +82,7 @@ const InputContainer = ({
           />
           {maxLength && (
             <CurrentLengthOfInput>
-              {value.length > maxLength ? maxLength : value.length}/{maxLength}
+              {value.length}/{maxLength}
             </CurrentLengthOfInput>
           )}
         </Box>
@@ -93,7 +99,7 @@ const InputContainer = ({
           />
           {maxLength && (
             <CurrentLengthOfTextarea>
-              {value.length > maxLength ? maxLength : value.length}/{maxLength}
+              {value.length}/{maxLength}
             </CurrentLengthOfTextarea>
           )}
         </Box>

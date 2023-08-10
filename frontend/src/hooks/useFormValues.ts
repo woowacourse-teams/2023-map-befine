@@ -24,8 +24,13 @@ const useFormValues = <T extends Record<keyof T, string>>(initValues: T) => {
   const onChangeInput = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     isRequired: boolean,
+    maxLength?: number,
   ) => {
     const { name, value } = e.target;
+
+    if (value.length - 1 === maxLength) {
+      return;
+    }
 
     setFormValues((prevValues: T) => ({
       ...prevValues,
