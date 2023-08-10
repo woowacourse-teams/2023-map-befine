@@ -79,11 +79,11 @@ public class TopicQueryService {
         }
     }
 
-
     public List<TopicResponse> findAllByOrderByUpdatedAtDesc(AuthMember member) {
         return pinRepository.findAllByOrderByUpdatedAtDesc()
                 .stream()
                 .map(Pin::getTopic)
+                .distinct()
                 .filter(member::canRead)
                 .map(TopicResponse::from)
                 .toList();

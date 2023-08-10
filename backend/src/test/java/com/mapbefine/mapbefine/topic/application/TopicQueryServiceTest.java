@@ -5,11 +5,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
-import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.location.LocationFixture;
+import com.mapbefine.mapbefine.location.domain.Location;
+import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -20,23 +25,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@ServiceTest
+@DataJpaTest
 class TopicQueryServiceTest {
-
-    @Autowired
-    private TopicQueryService topicQueryService;
-
-    @Autowired
-    private MemberRepository memberRepository;
 
     @Autowired
     private TopicRepository topicRepository;
 
+    @Autowired
+    private PinRepository pinRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    private TopicQueryService topicQueryService;
     private Member member;
 
     @BeforeEach
     void setup() {
+        topicQueryService = new TopicQueryService(pinRepository, topicRepository);
+
         member = MemberFixture.create("member", "member@naver.com", Role.USER);
         memberRepository.save(member);
     }
@@ -214,4 +226,32 @@ class TopicQueryServiceTest {
                 .hasMessage("존재하지 않는 토픽이 존재합니다");
     }
 
+    @Test
+    @DisplayName("핀 수정일 기준으로 토픽을 나열한다")
+    void findAllByOrderByUpdatedAtDesc_Success() {
+        // given
+        Location location = LocationFixture.create();
+        locationRepository.save(location);
+
+        List<Topic> topics = List.of(
+                TopicFixture.createByName("5등", member),
+                TopicFixture.createByName("4등", member),
+                TopicFixture.createByName("3등", member),
+                TopicFixture.createByName("2등", member),
+                TopicFixture.createByName("1등", member)
+
+        );
+        topicRepository.saveAll(topics);
+
+        List<Pin> pins = topics.stream()
+                .map(topic -> PinFixture.create(location, topic, member))
+                .toList();
+        pinRepository.saveAll(pins);
+
+        // when
+        List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(new Guest());
+
+        // then
+        assertThat(responses).isNotEmpty();
+    }
 }

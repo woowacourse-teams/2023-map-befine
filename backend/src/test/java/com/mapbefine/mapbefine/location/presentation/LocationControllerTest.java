@@ -22,13 +22,12 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @MockBean
     private LocationQueryService locationQueryService;
-    private String authHeader;
+    private final String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
+
     private List<TopicResponse> responses;
 
     @BeforeEach
     void setUp() {
-        authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
         responses = List.of(
                 new TopicResponse(
                         1L,

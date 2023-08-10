@@ -21,12 +21,15 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
+import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +37,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 class TopicIntegrationTest extends IntegrationTest {
-
-    private static final String BASIC_FORMAT = "Basic %s";
-
 
     @Autowired
     private PinRepository pinRepository;
@@ -50,12 +50,28 @@ class TopicIntegrationTest extends IntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
+
+    private Member member;
+    private Topic topic;
+    private Location location;
+    private String authHeader;
+
+    @BeforeEach
+    void setMember() {
+        member = memberRepository.save(
+                MemberFixture.create("other", "other@othter.com", Role.ADMIN)
+        );
+        topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
+        location = locationRepository.save(LocationFixture.create());
+        authHeader = Base64.encodeBase64String(
+                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
+        );
+    }
+
+
     @Test
     @DisplayName("Pin 목록 없이 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithoutPins_Success() {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
-
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
                 "https://map-befine-official.github.io/favicon.png",
@@ -63,10 +79,6 @@ class TopicIntegrationTest extends IntegrationTest {
                 Publicity.PUBLIC,
                 Permission.ALL_MEMBERS,
                 Collections.emptyList()
-        );
-
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
 
         // when
@@ -77,8 +89,7 @@ class TopicIntegrationTest extends IntegrationTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    private ExtractableResponse<Response> createNewTopic(TopicCreateRequest request,
-            String authHeader) {
+    private ExtractableResponse<Response> createNewTopic(TopicCreateRequest request, String authHeader) {
         return RestAssured.given()
                 .log().all()
                 .header(AUTHORIZATION, authHeader)
@@ -92,24 +103,13 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록과 함께 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithPins_Success() {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
 
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
-        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
-        Pin pin = PinFixture.create(location, topic, member);
-        topicRepository.save(topic);
+        PinFixture.create(location, topic, member);
 
         List<Pin> pins = pinRepository.findAll();
         List<Long> pinIds = pins.stream()
                 .map(Pin::getId)
                 .toList();
-
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
 
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
@@ -132,13 +132,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("여러개의 토픽을 병합하면 201을 반환한다")
     void createMergeTopic_Success() {
         // given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
-
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
-
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
                 "https://map-befine-official.github.io/favicon.png",
@@ -188,13 +181,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic을 수정하면 200을 반환한다")
     void updateTopic_Success() {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
-
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
-
         ExtractableResponse<Response> newTopic = createNewTopic(
                 new TopicCreateRequest(
                         "준팍의 또간집",
@@ -232,12 +218,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic을 삭제하면 204를 반환한다")
     void deleteTopic_Success() {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        memberRepository.save(member);
-
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
         ExtractableResponse<Response> newTopic = createNewTopic(
                 new TopicCreateRequest(
                         "준팍의 또간집",
@@ -267,14 +247,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Topic 목록을 조회하면 200을 반환한다")
     void findTopics_Success() {
-        //given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
-
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
-
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -292,12 +264,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 상세 정보를 조회하면 200을 반환한다")
     void findTopicDetail_Success() {
         //given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
-
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
         TopicCreateRequest request = new TopicCreateRequest(
                 "topicName",
                 "https://map-befine-official.github.io/favicon.png",
@@ -327,12 +293,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 상세 정보 여러개를 조회하면 200을 반환한다")
     void findTopicDetailsByIds_Success() {
         //given
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
-
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
         TopicCreateRequest request = new TopicCreateRequest(
                 "topicName",
                 "https://map-befine-official.github.io/favicon.png",
@@ -358,7 +318,45 @@ class TopicIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
+        List<TopicDetailResponse> responses = response.jsonPath().getList(".", TopicDetailResponse.class);
+
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responses).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("")
+    void findAllByOrderByUpdatedAtDesc_Success() {
+        // given
+        Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", member));
+        Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", member));
+        Topic topic3 = topicRepository.save(TopicFixture.createByName("topic3", member));
+
+        List<Pin> pins = List.of(
+                PinFixture.create(location, topic1, member),
+                PinFixture.create(location, topic2, member),
+                PinFixture.create(location, topic2, member),
+                PinFixture.create(location, topic3, member),
+                PinFixture.create(location, topic3, member),
+                PinFixture.create(location, topic3, member)
+        );
+
+        pinRepository.saveAll(pins);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/topics/newest")
+                .then().log().all()
+                .extract();
+
+        List<TopicResponse> topicResponses = response.jsonPath().getList(".", TopicResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(topicResponses).hasSize(3);
+        assertThat(topicResponses.get(0).pinCount()).isEqualTo(3);
+        assertThat(topicResponses.get(2).pinCount()).isEqualTo(1);
     }
 }
