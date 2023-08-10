@@ -5,6 +5,7 @@ import NewTopic from './pages/NewTopic';
 import RootPage from './pages/RootPage';
 import SelectedTopic from './pages/SelectedTopic';
 import SeeAllTopics from './pages/SeeAllTopics';
+import KakaoRedirectPage from './pages/KakaoRedirectPage';
 
 const routes = [
   {
@@ -31,8 +32,11 @@ const routes = [
         path: 'topics/see-all',
         element: <SeeAllTopics />,
       },
+      {
+        path: 'oauth/redirected/kakao',
+        element: <KakaoRedirectPage />,
+      },
     ],
   },
 ];
-
 export default createBrowserRouter(routes);
