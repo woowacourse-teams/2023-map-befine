@@ -24,6 +24,13 @@ logging:
     org.hibernate.type: trace
     org.hibernate.stat: debug
 
+oauth:
+  kakao:
+    client_id: ${OAUTH_KAKAO_CLIENT_ID}
+    redirect_uri: ${OAUTH_KAKAO_REDIRECT_URI}
+    client_secret: ${OAUTH_KAKAO_CLIENT_SECRET}
+    scope: ${OAUTH_KAKAO_SCOPE}
+
 security:
   jwt:
     token:
