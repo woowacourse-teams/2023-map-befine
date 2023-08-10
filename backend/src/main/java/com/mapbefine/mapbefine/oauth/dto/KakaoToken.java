@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.oauth;
+package com.mapbefine.mapbefine.oauth.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
