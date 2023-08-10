@@ -85,6 +85,13 @@ public class TopicController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/newest")
+    public ResponseEntity<List<TopicResponse>> findAllByOrderByUpdatedAtDesc(AuthMember member) {
+        List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(member);
+
+        return ResponseEntity.ok(responses);
+    }
+
     @LoginRequired
     @PutMapping("/{topicId}")
     public ResponseEntity<Void> update(

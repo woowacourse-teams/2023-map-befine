@@ -1,6 +1,8 @@
 package com.mapbefine.mapbefine.topic.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
@@ -13,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class TopicQueryService {
 
+    private final PinRepository pinRepository;
     private final TopicRepository topicRepository;
 
-    public TopicQueryService(final TopicRepository topicRepository) {
+    public TopicQueryService(PinRepository pinRepository, TopicRepository topicRepository) {
+        this.pinRepository = pinRepository;
         this.topicRepository = topicRepository;
     }
 
@@ -75,4 +79,13 @@ public class TopicQueryService {
         }
     }
 
+
+    public List<TopicResponse> findAllByOrderByUpdatedAtDesc(AuthMember member) {
+        return pinRepository.findAllByOrderByUpdatedAtDesc()
+                .stream()
+                .map(Pin::getTopic)
+                .filter(member::canRead)
+                .map(TopicResponse::from)
+                .toList();
+    }
 }
