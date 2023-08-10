@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/atlantes")
 public class AtlasController {
 
-    private AtlasCommandService atlasCommandService;
-    private AtlasQueryService atlasQueryService;
+    private final AtlasCommandService atlasCommandService;
+    private final AtlasQueryService atlasQueryService;
 
     public AtlasController(AtlasCommandService atlasCommandService, AtlasQueryService atlasQueryService) {
         this.atlasCommandService = atlasCommandService;
