@@ -22,6 +22,7 @@ const SelectedTopic = () => {
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
   const [isOpen, setIsOpen] = useState(true);
+  const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
   const { setWidth } = useContext(LayoutWidthContext);
@@ -130,6 +131,7 @@ const SelectedTopic = () => {
                       setTagPins={setTagPins}
                       taggedPinIds={taggedPinIds}
                       setTaggedPinIds={setTaggedPinIds}
+                      setIsEditPinDetail={setIsEditPinDetail}
                     />
                   </li>
                 ))}
@@ -159,7 +161,11 @@ const SelectedTopic = () => {
                 $borderLeft={`1px solid ${theme.color.gray}`}
                 $zIndex={1}
               >
-                <PinDetail pinId={selectedPinId} />
+                <PinDetail
+                  pinId={selectedPinId}
+                  isEditPinDetail={isEditPinDetail}
+                  setIsEditPinDetail={setIsEditPinDetail}
+                />
               </Flex>
             </PinDetailWrapper>
           </>

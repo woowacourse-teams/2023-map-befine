@@ -7,6 +7,8 @@ import { putApi } from '../apis/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
 import { ModifyPinFormProps } from '../types/FormValues';
 import InputContainer from '../components/InputContainer';
+import { hasErrorMessage, hasNullValue } from '../validations';
+import useToast from '../hooks/useToast';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
@@ -31,6 +33,8 @@ const UpdatedPinDetail = ({
   setIsEditing,
   onChangeInput,
 }: UpdatedPinDetailProps) => {
+  const { showToast } = useToast();
+
   const removeQueryString = (key: string) => {
     const updatedSearchParams = { ...Object.fromEntries(searchParams) };
     delete updatedSearchParams[key];
@@ -38,6 +42,11 @@ const UpdatedPinDetail = ({
   };
 
   const onClickUpdatePin = async () => {
+    if (hasErrorMessage(errorMessages) || hasNullValue(formValues)) {
+      showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
+      return;
+    }
+
     await putApi(`/pins/${pinId}`, formValues);
     setIsEditing(false);
     removeQueryString('edit');

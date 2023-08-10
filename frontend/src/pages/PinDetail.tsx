@@ -16,18 +16,32 @@ import Button from '../components/common/Button';
 import { styled } from 'styled-components';
 import { ModalPortal, useModalContext } from '../context/ModalContext';
 
-const PinDetail = ({ pinId }: { pinId: number }) => {
+interface PinDetailProps {
+  pinId: number;
+  isEditPinDetail: boolean;
+  setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const PinDetail = ({
+  pinId,
+  isEditPinDetail,
+  setIsEditPinDetail,
+}: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const { showToast } = useToast();
   const { isModalOpen, openModal, closeModal } = useModalContext();
-  const { formValues, errorMessages, setFormValues, onChangeInput } =
-    useFormValues<ModifyPinFormProps>({
-      name: '',
-      images: [],
-      description: '',
-    });
+  const {
+    formValues,
+    errorMessages,
+    setFormValues,
+    setErrorMessages,
+    onChangeInput,
+  } = useFormValues<ModifyPinFormProps>({
+    name: '',
+    images: [],
+    description: '',
+  });
 
   useEffect(() => {
     const getPinData = async () => {
@@ -48,7 +62,12 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   };
 
   const onClickEditPin = () => {
-    setIsEditing(true);
+    setIsEditPinDetail(true);
+    setErrorMessages({
+      name: '',
+      images: '',
+      description: '',
+    });
     updateQueryString('edit', 'true');
   };
 
@@ -63,12 +82,12 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
 
   if (!pin) return <></>;
 
-  if (isEditing)
+  if (isEditPinDetail)
     return (
       <UpdatedPinDetail
         searchParams={searchParams}
         setSearchParams={setSearchParams}
-        setIsEditing={setIsEditing}
+        setIsEditing={setIsEditPinDetail}
         pinId={pinId}
         formValues={formValues}
         errorMessages={errorMessages}

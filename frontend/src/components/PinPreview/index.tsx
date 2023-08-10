@@ -16,6 +16,7 @@ export interface PinPreviewProps {
   setTagPins: (value: string[]) => void;
   taggedPinIds: number[];
   setTaggedPinIds: React.Dispatch<React.SetStateAction<number[]>>;
+  setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PinPreview = ({
@@ -29,6 +30,7 @@ const PinPreview = ({
   setTagPins,
   taggedPinIds,
   setTaggedPinIds,
+  setIsEditPinDetail,
 }: PinPreviewProps) => {
   const { routePage } = useNavigator();
 
@@ -62,7 +64,7 @@ const PinPreview = ({
 
   const onClickSetSelectedPinId = () => {
     setSelectedPinId(pinId);
-
+    setIsEditPinDetail(false);
     routePage(`/topics/${topicId}?pinDetail=${pinId}`);
   };
 

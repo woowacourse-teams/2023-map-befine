@@ -55,7 +55,13 @@ const useFormValues = <T extends Record<keyof T, string | string[]>>(
     setErrorMessages((prev) => ({ ...prev, [name]: '' }));
   };
 
-  return { formValues, errorMessages, setFormValues, onChangeInput };
+  return {
+    formValues,
+    errorMessages,
+    setFormValues,
+    setErrorMessages,
+    onChangeInput,
+  };
 };
 
 export default useFormValues;
