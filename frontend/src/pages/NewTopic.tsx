@@ -4,23 +4,25 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import { postApi } from '../apis/postApi';
 import useNavigator from '../hooks/useNavigator';
-import { NewTopicFormValuesType } from '../types/FormValues';
+import { NewTopicFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { useLocation } from 'react-router-dom';
 import useToast from '../hooks/useToast';
 import InputContainer from '../components/InputContainer';
+import { hasErrorMessage, hasNullValue } from '../validations';
+
+type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
 const DEFAULT_IMAGE =
   'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
 
 const NewTopic = () => {
-  const { formValues, errorMessages, onChangeInput } = useFormValues<
-    Omit<NewTopicFormValuesType, 'topics'>
-  >({
-    name: '',
-    description: '',
-    image: '',
-  });
+  const { formValues, errorMessages, onChangeInput } =
+    useFormValues<NewTopicFormValuesType>({
+      name: '',
+      description: '',
+      image: '',
+    });
   const { routePage } = useNavigator();
   const { state: taggedIds } = useLocation();
   const { showToast } = useToast();
@@ -32,11 +34,7 @@ const NewTopic = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (
-      Object.values(errorMessages).some(
-        (errorMessage) => errorMessage.length > 0,
-      )
-    ) {
+    if (hasErrorMessage(errorMessages) || hasNullValue(formValues, 'image')) {
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }

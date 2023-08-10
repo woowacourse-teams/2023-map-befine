@@ -8,13 +8,19 @@ import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
 import { getApi } from '../apis/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { NewPinValuesType } from '../types/FormValues';
+import { NewPinFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { useLocation } from 'react-router-dom';
 import useToast from '../hooks/useToast';
 import InputContainer from '../components/InputContainer';
+import { hasErrorMessage, hasNullValue } from '../validations';
+
+type NewPinFormValueType = Pick<
+  NewPinFormProps,
+  'name' | 'address' | 'description'
+>;
 
 const NewPin = () => {
   const { state: prevUrl } = useLocation();
@@ -22,13 +28,12 @@ const NewPin = () => {
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
-  const { formValues, errorMessages, onChangeInput } = useFormValues<
-    Pick<NewPinValuesType, 'name' | 'address' | 'description'>
-  >({
-    name: '',
-    address: '',
-    description: '',
-  });
+  const { formValues, errorMessages, onChangeInput } =
+    useFormValues<NewPinFormValueType>({
+      name: '',
+      address: '',
+      description: '',
+    });
   const { routePage } = useNavigator();
   const { showToast } = useToast();
   const addressRef = useRef<HTMLInputElement | null>(null);
@@ -53,19 +58,12 @@ const NewPin = () => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (
-      Object.values(errorMessages).some(
-        (errorMessage) => errorMessage.length > 0,
-      )
-    ) {
+    if (hasErrorMessage(errorMessages) || hasNullValue(formValues)) {
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }
 
     await postToServer();
-
-    if (prevUrl.length > 1) routePage(`/topics/${prevUrl}`, [topic!.id]);
-    else routePage(`/topics/${topic?.id}`, [topic!.id]);
 
     showToast('info', `${formValues.name} 핀을 추가하였습니다.`);
 
@@ -79,6 +77,13 @@ const NewPin = () => {
       longitude: '',
       address: '',
     });
+
+    if (prevUrl && prevUrl.length > 1) {
+      routePage(`/topics/${prevUrl}`, [topic!.id]);
+      return;
+    }
+
+    routePage(`/topics/${topic?.id}`, [topic!.id]);
   };
 
   const onClickAddressInput = (

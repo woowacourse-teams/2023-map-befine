@@ -8,3 +8,19 @@ export const validateCurse = (userInput: string) => {
 export const validatePolitically = (userInput: string) => {
   return REG_EXP_POLITICALLY.test(userInput);
 };
+
+export const hasErrorMessage = <T extends object>(errorMessages: T) => {
+  return Object.values(errorMessages).some(
+    (errorMessage) => errorMessage.length > 0,
+  );
+};
+
+export const hasNullValue = <T extends object>(
+  formValues: T,
+  notRequiredKey?: keyof T,
+) => {
+  return Object.entries(formValues).some(([key, value]) => {
+    if (notRequiredKey && key === notRequiredKey) return false;
+    return value.length === 0;
+  });
+};
