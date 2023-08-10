@@ -91,7 +91,7 @@ const NewPin = () => {
       | React.MouseEvent<HTMLInputElement>
       | React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (e.currentTarget.value) return;
+    if (!(e.type === 'click') && e.currentTarget.value) return;
 
     var width = 500; //팝업의 너비
     var height = 600; //팝업의 높이
