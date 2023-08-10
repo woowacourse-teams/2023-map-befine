@@ -5,6 +5,7 @@ import Space from '../common/Space';
 import Text from '../common/Text';
 import Textarea from '../common/Textarea';
 import { ForwardedRef, forwardRef } from 'react';
+import Box from '../common/Box';
 
 interface InputContainerProps {
   tagType: 'input' | 'textarea';
@@ -61,27 +62,41 @@ const InputContainer = ({
       </Flex>
       <Space size={0} />
       {tagType === 'input' ? (
-        <Input
-          name={name}
-          value={value}
-          placeholder={placeholder}
-          onChange={onChangeUserInput}
-          tabIndex={tabIndex}
-          $hasBadWord={errorMessage.length > 0}
-          readOnly={readOnly}
-          autoFocus={autoFocus}
-          maxLength={maxLength}
-        />
+        <Box position="relative">
+          <Input
+            name={name}
+            value={value}
+            placeholder={placeholder}
+            onChange={onChangeUserInput}
+            tabIndex={tabIndex}
+            $hasBadWord={errorMessage.length > 0}
+            readOnly={readOnly}
+            autoFocus={autoFocus}
+            maxLength={maxLength}
+          />
+          {maxLength && (
+            <CurrentLengthOfInput>
+              {value.length > maxLength ? maxLength : value.length}/{maxLength}
+            </CurrentLengthOfInput>
+          )}
+        </Box>
       ) : (
-        <Textarea
-          name={name}
-          value={value}
-          placeholder={placeholder}
-          onChange={onChangeUserInput}
-          tabIndex={tabIndex}
-          $hasBadWord={errorMessage.length > 0}
-          maxLength={maxLength}
-        />
+        <Box position="relative">
+          <Textarea
+            name={name}
+            value={value}
+            placeholder={placeholder}
+            onChange={onChangeUserInput}
+            tabIndex={tabIndex}
+            $hasBadWord={errorMessage.length > 0}
+            maxLength={maxLength}
+          />
+          {maxLength && (
+            <CurrentLengthOfTextarea>
+              {value.length > maxLength ? maxLength : value.length}/{maxLength}
+            </CurrentLengthOfTextarea>
+          )}
+        </Box>
       )}
       <Space size={0} />
       <ErrorText>{errorMessage}</ErrorText>
@@ -93,6 +108,24 @@ const ErrorText = styled.span`
   height: 20px;
   font-size: 14px;
   color: #ff4040;
+`;
+
+const CurrentLengthOfInput = styled.span`
+  display: block;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  color: ${({ theme }) => theme.color.gray};
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+`;
+
+const CurrentLengthOfTextarea = styled.span`
+  display: block;
+  position: absolute;
+  bottom: 12px;
+  right: 8px;
+  color: ${({ theme }) => theme.color.gray};
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
 `;
 
 export default InputContainer;

@@ -95,7 +95,7 @@ const NewTopic = () => {
           isRequired={false}
           name="image"
           value={formValues.image}
-          placeholder="원하시는 이미지가 있을 경우 이미지 URL을 입력해주세요."
+          placeholder="이미지 URL을 입력해주세요."
           onChangeInput={onChangeInput}
           tabIndex={1}
           errorMessage={errorMessages.image}
