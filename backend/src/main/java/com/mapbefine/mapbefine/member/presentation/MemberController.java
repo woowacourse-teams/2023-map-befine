@@ -4,7 +4,6 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
-import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
@@ -36,13 +35,6 @@ public class MemberController {
     ) {
         this.memberCommandService = memberCommandService;
         this.memberQueryService = memberQueryService;
-    }
-
-    @PostMapping
-    public ResponseEntity<Void> add(@RequestBody MemberCreateRequest request) {
-        Long savedId = memberCommandService.save(request);
-
-        return ResponseEntity.created(URI.create("/members/" + savedId)).build();
     }
 
     @LoginRequired

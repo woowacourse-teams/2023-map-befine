@@ -28,6 +28,9 @@ public class Member extends BaseTimeEntity {
     @Embedded
     private MemberInfo memberInfo;
 
+    @Embedded
+    private OauthId oauthId;
+
     @OneToMany(mappedBy = "creator")
     private List<Topic> createdTopics = new ArrayList<>();
 
@@ -37,15 +40,17 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberTopicPermission> topicsWithPermissions = new ArrayList<>();
 
-    private Member(MemberInfo memberInfo) {
+    private Member(MemberInfo memberInfo, OauthId oauthId) {
         this.memberInfo = memberInfo;
+        this.oauthId = oauthId;
     }
 
     public static Member of(
             String nickName,
             String email,
             String imageUrl,
-            Role role
+            Role role,
+            OauthId oauthId
     ) {
         MemberInfo memberInfo = MemberInfo.of(
                 nickName,
@@ -54,7 +59,7 @@ public class Member extends BaseTimeEntity {
                 role
         );
 
-        return new Member(memberInfo);
+        return new Member(memberInfo, oauthId);
     }
 
     public void update(

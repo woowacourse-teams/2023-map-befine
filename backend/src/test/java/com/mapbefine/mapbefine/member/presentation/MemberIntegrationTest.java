@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.member.presentation;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +14,6 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
@@ -28,9 +27,8 @@ import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.common.mapper.*;
+import io.restassured.response.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
@@ -62,10 +60,9 @@ class MemberIntegrationTest extends IntegrationTest {
     void addMemberTopicPermission() {
         // given
         Member creator = memberRepository.save(
-                Member.of(
+                MemberFixture.create(
                         "memberr",
                         "memberr@naver.com",
-                        "https://map-befine-official.github.io/favicon.png",
                         Role.USER
                 )
         );
@@ -98,13 +95,13 @@ class MemberIntegrationTest extends IntegrationTest {
     void deleteMemberTopicPermission() {
         // given
         Member creator = memberRepository.save(
-                Member.of(
+                MemberFixture.create(
                         "memberr",
                         "memberr@naver.com",
-                        "https://map-befine-official.github.io/favicon.png",
                         Role.USER
                 )
         );
+
         Member member = memberRepository.save(MemberFixture.create(
                         "member",
                         "member@naver.com",
@@ -136,10 +133,9 @@ class MemberIntegrationTest extends IntegrationTest {
     void findMemberTopicPermissionAll() {
         // given
         Member creator = memberRepository.save(
-                Member.of(
+                MemberFixture.create(
                         "memberr",
                         "memberr@naver.com",
-                        "https://map-befine-official.github.io/favicon.png",
                         Role.USER
                 )
         );
@@ -191,10 +187,9 @@ class MemberIntegrationTest extends IntegrationTest {
     void findMemberTopicPermissionById() {
         // given
         Member creator = memberRepository.save(
-                Member.of(
+                MemberFixture.create(
                         "memberr",
                         "memberr@naver.com",
-                        "https://map-befine-official.github.io/favicon.png",
                         Role.USER
                 )
         );
@@ -226,43 +221,17 @@ class MemberIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("유저를 생성한다.")
-    void add() {
-        // given
-        MemberCreateRequest request = new MemberCreateRequest(
-                "member",
-                "member@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
-                Role.USER
-        );
-
-        // when
-        ExtractableResponse<Response> response = given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    @Test
     @DisplayName("유저 목록을 조회한다.")
     void findAllMember() {
         // given
-        Member member = Member.of(
+        Member member = MemberFixture.create(
                 "member",
                 "member@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
                 Role.USER
         );
-        Member memberr = Member.of(
+        Member memberr = MemberFixture.create(
                 "memberr",
                 "memberr@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
                 Role.USER
         );
         String authHeader = Base64.encodeBase64String(
@@ -293,10 +262,9 @@ class MemberIntegrationTest extends IntegrationTest {
     @DisplayName("유저를 단일 조회한다.")
     void findMemberById() {
         // given
-        Member member = Member.of(
-                "member",
-                "member@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
+        Member member = MemberFixture.create(
+                "memberr",
+                "memberr@naver.com",
                 Role.USER
         );
         String authHeader = Base64.encodeBase64String(

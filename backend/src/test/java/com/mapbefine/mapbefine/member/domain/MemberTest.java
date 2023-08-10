@@ -21,8 +21,8 @@ class MemberTest {
                 nickName,
                 email,
                 imageUrl,
-                role
-        );
+                role,
+                new OauthId(1L));
 
         // then
         assertThat(member).isNotNull();

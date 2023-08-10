@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.member;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 
@@ -13,8 +14,8 @@ public class MemberFixture {
                 name,
                 email,
                 "https://map-befine-official.github.io/favicon.png",
-                role
-        );
+                role,
+                new OauthId(1L));
     }
 
     public static AuthMember createUser(Member member) {
