@@ -32,6 +32,7 @@ public class AtlasCommandService {
     public void addTopic(AuthMember authMember, Long topicId) {
         Long memberId = authMember.getMemberId();
 
+        // TODO: 2023/08/10 memberId가 없는 경우 터짐 (Guest인 경우) (단, loginRequired로 일차적으로 막아놓긴 함)
         if (isTopicAlreadyAdded(topicId, memberId)) {
             return;
         }
