@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.oauth.presentation;
 
-import com.mapbefine.mapbefine.oauth.KakaoToken;
+import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,10 +29,10 @@ public class OauthController {
     }
 
     @GetMapping("/login/kakao")
-    public ResponseEntity<KakaoToken> login(@RequestParam String code) {
-        KakaoToken token = oauthService.fetch(code);
+    public ResponseEntity<MemberDetailResponse> login(@RequestParam String code) {
+        MemberDetailResponse member = oauthService.login(code);
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(member);
     }
 
 }

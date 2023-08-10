@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 public class OauthId {
 
     @Column(nullable = false)
-    private Long oauthId;
+    private Long oauthServerId;
 
-    public OauthId(Long oauthId) {
-        this.oauthId = oauthId;
+    public OauthId(Long oauthServerId) {
+        this.oauthServerId = oauthServerId;
     }
 
 }
