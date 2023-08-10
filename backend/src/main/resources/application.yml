@@ -21,3 +21,9 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+oauth:
+  kakao:
+    client_id: ${KAKAO_CLIENT_ID}
+    redirect_uri: ${KAKAO_REDIRECT_URL}
+    client_secret: ${KAKAO_CLIENT_SECRET}
+    scope: ${KAKAO_SCOPE}
