@@ -3,20 +3,22 @@ import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import Plus from '../assets/plus.svg';
 import Box from '../components/common/Box';
-import Textarea from '../components/common/Textarea';
-import Input from '../components/common/Input';
 import { putApi } from '../apis/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
 import { ModifyPinFormProps } from '../types/FormValues';
+import InputContainer from '../components/InputContainer';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
   pinId: number;
   formValues: ModifyPinFormProps;
+  errorMessages: Record<keyof ModifyPinFormProps, string>;
   setSearchParams: SetURLSearchParams;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChangeInput: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    isRequired: boolean,
+    maxLength?: number | undefined,
   ) => void;
 }
 
@@ -24,6 +26,7 @@ const UpdatedPinDetail = ({
   searchParams,
   pinId,
   formValues,
+  errorMessages,
   setSearchParams,
   setIsEditing,
   onChangeInput,
@@ -68,38 +71,38 @@ const UpdatedPinDetail = ({
           사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
         </Text>
       </Flex>
-      <Space size={5} />
-      <section>
-        <Flex>
-          <Text color="black" $fontSize="default" $fontWeight="normal">
-            장소 이름
-          </Text>
-        </Flex>
-        <Space size={0} />
-        <Input
-          type="text"
-          name="name"
-          value={formValues.name}
-          onChange={onChangeInput}
-          autoFocus={true}
-        />
-      </section>
 
       <Space size={5} />
 
-      <section>
-        <Flex>
-          <Text color="black" $fontSize="default" $fontWeight="normal">
-            장소 설명
-          </Text>
-        </Flex>
-        <Space size={0} />
-        <Textarea
-          name="description"
-          value={formValues.description}
-          onChange={onChangeInput}
-        />
-      </section>
+      <InputContainer
+        tagType="input"
+        containerTitle="장소 이름"
+        isRequired={false}
+        name="name"
+        value={formValues.name}
+        placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
+        onChangeInput={onChangeInput}
+        tabIndex={1}
+        errorMessage={errorMessages.name}
+        autoFocus
+        maxLength={50}
+      />
+
+      <Space size={5} />
+
+      <InputContainer
+        tagType="input"
+        containerTitle="장소 설명"
+        isRequired={false}
+        name="description"
+        value={formValues.description}
+        placeholder="1000자 이내로 장소에 대한 의견을 남겨주세요."
+        onChangeInput={onChangeInput}
+        tabIndex={2}
+        errorMessage={errorMessages.description}
+        autoFocus
+        maxLength={1000}
+      />
 
       <Space size={3} />
 

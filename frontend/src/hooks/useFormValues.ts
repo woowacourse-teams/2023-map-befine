@@ -15,7 +15,9 @@ const initErrorMessages = <T extends Record<keyof T, string>>(
   );
 };
 
-const useFormValues = <T extends Record<keyof T, string>>(initValues: T) => {
+const useFormValues = <T extends Record<keyof T, string | string[]>>(
+  initValues: T,
+) => {
   const [formValues, setFormValues] = useState<T>(initValues);
   const [errorMessages, setErrorMessages] = useState<Record<keyof T, string>>(
     initErrorMessages(initValues),
