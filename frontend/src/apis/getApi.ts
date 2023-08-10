@@ -1,6 +1,6 @@
 export const getApi = (type: 'tMap' | 'default' | 'login', url: string) =>
   fetch(
-    type === ('tMap' || 'login')
+    (type === 'tMap') || (type === 'login')
       ? url
       : `${process.env.REACT_APP_API_DEFAULT + url}`,
     {
