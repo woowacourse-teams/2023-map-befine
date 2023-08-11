@@ -96,6 +96,16 @@ class TopicControllerTest extends RestDocsIntegration {
     }
 
     @Test
+    @DisplayName("핀을 권한이 있는 토픽에 복사할 수 있다.")
+    void copyPin() throws Exception {
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/topics/1/copy?pinIds=1,2,3")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+    }
+
+    @Test
     @DisplayName("토픽 수정")
     void update() throws Exception {
 

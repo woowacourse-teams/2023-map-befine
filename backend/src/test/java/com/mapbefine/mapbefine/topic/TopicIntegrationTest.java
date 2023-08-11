@@ -174,6 +174,47 @@ class TopicIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("기존 토픽에 핀을 복사하면 200을 반환한다")
+    void copyPin_Success() {
+        // given
+
+        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
+                "준팍의 또간집",
+                "https://map-befine-official.github.io/favicon.png",
+                "준팍이 2번 이상 간집 ",
+                Publicity.PUBLIC,
+                Permission.ALL_MEMBERS,
+                Collections.emptyList()
+        );
+
+        ExtractableResponse<Response> newTopic = createNewTopic(준팍의_또간집, authHeader);
+        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
+
+        List<Pin> pins = List.of(PinFixture.create(location, topic, member),
+                PinFixture.create(location, topic, member),
+                PinFixture.create(location, topic, member)
+        );
+
+        List<Long> pinIds = pinRepository.saveAll(pins).stream()
+                .map(Pin::getId)
+                .toList();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("pinIds", pinIds)
+                .when().post("/topics/{topicId}/copy", topicId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+    }
+
+    @Test
     @DisplayName("Topic을 수정하면 200을 반환한다")
     void updateTopic_Success() {
         ExtractableResponse<Response> newTopic = createNewTopic(
