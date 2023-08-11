@@ -491,8 +491,63 @@ class MemberIntegrationTest extends IntegrationTest {
                         MemberTopicBookmarkResponse.from(bookmarkedTopic1),
                         MemberTopicBookmarkResponse.from(bookmarkedTopic2))
                 );
-
     }
 
+    @Test
+    @DisplayName("유저의 즐겨찾기 토픽을 삭제한다.")
+    void deleteTopicInBookmark_Success() {
+        //given
+        Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(creator);
+
+        Topic topic = TopicFixture.createByName("topic1", creator);
+        topicRepository.save(topic);
+
+        MemberTopicBookmark bookmarkedTopic =
+                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic, creator);
+        memberTopicBookmarkRepository.save(bookmarkedTopic);
+
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
+        );
+
+        //when then
+        given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .when().delete("/members/bookmarks/" + bookmarkedTopic.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("유저의 즐겨찾기 토픽을 전체 삭제한다.")
+    void deleteAllTopicsInBookmark_Success() {
+        //given
+        Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(creator);
+
+        Topic topic1 = TopicFixture.createByName("topic1", creator);
+        Topic topic2 = TopicFixture.createByName("topic1", creator);
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        MemberTopicBookmark bookmarkedTopic1 =
+                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic1, creator);
+        MemberTopicBookmark bookmarkedTopic2 =
+                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic2, creator);
+        memberTopicBookmarkRepository.save(bookmarkedTopic1);
+        memberTopicBookmarkRepository.save(bookmarkedTopic2);
+
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
+        );
+
+        //when then
+        given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .when().delete("/members/bookmarks/")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
 
 }

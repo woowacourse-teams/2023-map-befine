@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.member.presentation;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -308,6 +309,32 @@ class MemberControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/bookmarks")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("유저의 토픽 즐겨찾기 목록 삭제")
+    public void deleteTopicInBookmark() throws Exception {
+        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
+
+        doNothing().when(memberCommandService).deleteTopicInBookmark(any(), any());
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/members/bookmarks/" + 1L)
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("유저의 토픽 즐겨찾기 전체 삭제")
+    public void deleteAllTopicsInBookmark() throws Exception {
+        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
+
+        doNothing().when(memberCommandService).deleteAllBookmarks(any());
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/members/bookmarks")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
