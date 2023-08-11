@@ -40,6 +40,7 @@ const CircleButton = styled.button`
   cursor: pointer;
   box-sizing: border-box;
   font-size: 14px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.5);
 
   &:hover {
     filter: brightness(0.9);
