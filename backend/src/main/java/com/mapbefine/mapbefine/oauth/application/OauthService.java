@@ -1,13 +1,14 @@
 package com.mapbefine.mapbefine.oauth.application;
 
+import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.oauth.KakaoApiClient;
 import com.mapbefine.mapbefine.oauth.dto.KakaoMemberResponse;
 import com.mapbefine.mapbefine.oauth.dto.KakaoToken;
+import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -17,10 +18,14 @@ public class OauthService {
 
     private KakaoApiClient kakaoApiClient;
     private MemberRepository memberRepository;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public OauthService(KakaoApiClient kakaoApiClient, MemberRepository memberRepository) {
+    public OauthService(KakaoApiClient kakaoApiClient,
+                        MemberRepository memberRepository,
+                        JwtTokenProvider jwtTokenProvider) {
         this.kakaoApiClient = kakaoApiClient;
         this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public String getAuthCodeRequestUrl() {
@@ -31,7 +36,7 @@ public class OauthService {
                 + "&scope=" + SCOPE;
     }
 
-    public MemberDetailResponse login(String code) {
+    public LoginInfoResponse login(String code) {
         KakaoToken kakaoToken = kakaoApiClient.fetchToken(tokenRequestParams(code));
 
         KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember(
@@ -41,11 +46,11 @@ public class OauthService {
         Long oauthId = kakaoMemberResponse.id();
         Member member = memberRepository.findByOauthIdOauthServerId(oauthId)
                 .orElseGet(() -> register(kakaoMemberResponse, oauthId));
-
         // TODO: 2023/08/10 nickname을 소셜 로그인으로 받아온 정보를 저장함으로서, nickname의 unique를 보장할 수 없어짐
         //  일부 사용자가 직접 입력하는 플로우를 추가할 필요가 있음
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
 
-        return MemberDetailResponse.from(member);
+        return LoginInfoResponse.of(accessToken, member);
     }
 
     private MultiValueMap<String, String> tokenRequestParams(String code) {
