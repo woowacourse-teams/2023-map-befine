@@ -35,13 +35,12 @@ public class OauthService {
     }
 
     public LoginInfoResponse login(OauthServerType oauthServerType, String code) {
+        // TODO: 2023/08/11 nickname 카카오에서 받은 값 그대로 쓰지 않고 UUID 사용해 unique 하게 만들기
         Member oauthMember = oauthMemberClientComposite.fetch(oauthServerType, code);
         OauthId oauthId = oauthMember.getOauthId();
         Member savedMember = memberRepository.findByOauthId(oauthId)
                 .orElseGet(() -> register(oauthMember));
 
-        // TODO: 2023/08/10 nickname을 소셜 로그인으로 받아온 정보를 저장함으로서, nickname의 unique를 보장할 수 없어짐
-        //  일부 사용자가 직접 입력하는 플로우를 추가할 필요가 있음
         String accessToken = jwtTokenProvider.createToken(String.valueOf(savedMember.getId()));
 
         return LoginInfoResponse.of(accessToken, savedMember);

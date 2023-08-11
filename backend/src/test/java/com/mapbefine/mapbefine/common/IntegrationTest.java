@@ -11,6 +11,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IntegrationTest {
 
+    @Autowired
+    protected TestAccessTokenProvider testAccessTokenProvider;
+
     @LocalServerPort
     private int port;
 
