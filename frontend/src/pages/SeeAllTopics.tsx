@@ -4,11 +4,14 @@ import Text from '../components/common/Text';
 import Space from '../components/common/Space';
 import { styled } from 'styled-components';
 import Box from '../components/common/Box';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { FULLSCREEN } from '../constants';
 
 const SeeAllTopics = () => {
   const { state } = useLocation();
   const url = state.split('|')[0];
   const title = state.split('|')[1];
+  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
 
   return (
     <Wrapper>

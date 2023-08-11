@@ -48,7 +48,6 @@ const TopicInfo = ({
 
   return (
     <Flex
-      width="360px"
       position="relative"
       $flexDirection="column"
       $backgroundColor="white"

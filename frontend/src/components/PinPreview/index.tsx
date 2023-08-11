@@ -86,7 +86,6 @@ const PinPreview = ({
 
   return (
     <Flex
-      width="360px"
       height="150px"
       position="relative"
       $flexDirection="column"

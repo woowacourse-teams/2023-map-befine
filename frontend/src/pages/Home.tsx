@@ -2,9 +2,9 @@ import Space from '../components/common/Space';
 import Box from '../components/common/Box';
 import useNavigator from '../hooks/useNavigator';
 import TopicListContainer from '../components/TopicListContainer';
-import { useContext, useEffect } from 'react';
-import { LayoutWidthContext } from '../context/LayoutWidthContext';
 import { styled } from 'styled-components';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { FULLSCREEN } from '../constants';
 
 const POPULAR_TOPICS_TITLE = '인기 급상승한 지도';
 const NEAR_BY_ME_TOPICS_TITLE = '내 주변인 지도';
@@ -16,7 +16,7 @@ const LATEST_TOPICS_URL = '/topics';
 
 const Home = () => {
   const { routePage } = useNavigator();
-  const { setWidth } = useContext(LayoutWidthContext);
+  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
 
   const goToPopularTopics = () => {
     routePage(
@@ -35,10 +35,6 @@ const Home = () => {
   const goToLatestTopics = () => {
     routePage('topics/see-all', `${LATEST_TOPICS_URL}|${LATEST_TOPICS_TITLE}`);
   };
-
-  useEffect(() => {
-    setWidth('100vw');
-  }, []);
 
   return (
     <Wrapper position="relative">

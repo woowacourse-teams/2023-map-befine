@@ -12,7 +12,8 @@ import { getApi } from '../apis/getApi';
 import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
-import { LayoutWidthContext } from '../context/LayoutWidthContext';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
@@ -25,7 +26,7 @@ const SelectedTopic = () => {
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
-  const { setWidth } = useContext(LayoutWidthContext);
+  const { width } = useSetLayoutWidth(SIDEBAR);
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(
@@ -75,8 +76,6 @@ const SelectedTopic = () => {
   useEffect(() => {
     getAndSetDataFromServer();
 
-    setWidth('400px');
-
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
@@ -93,7 +92,10 @@ const SelectedTopic = () => {
 
   return (
     <>
-      <Flex $flexDirection="column">
+      <Flex
+        width={`calc(${width} - ${LAYOUT_PADDING})`}
+        $flexDirection="column"
+      >
         <Space size={2} />
         {taggedPinIds.length > 0 && (
           <MergeOrSeeTogether
@@ -150,11 +152,11 @@ const SelectedTopic = () => {
             <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
               <Flex
                 $backgroundColor="white"
-                width="400px"
+                width={width}
                 height="100vh"
                 overflow="auto"
                 position="absolute"
-                left="400px"
+                left={width}
                 top="0px"
                 padding={4}
                 $flexDirection="column"

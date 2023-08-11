@@ -4,7 +4,7 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import { postApi } from '../apis/postApi';
-import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
+import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../apis/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
@@ -16,6 +16,8 @@ import { useLocation } from 'react-router-dom';
 import useToast from '../hooks/useToast';
 import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 
 type NewPinFormValueType = Pick<
   NewPinFormProps,
@@ -36,6 +38,7 @@ const NewPin = () => {
     });
   const { routePage } = useNavigator();
   const { showToast } = useToast();
+  const { width } = useSetLayoutWidth(SIDEBAR);
 
   const goToBack = () => {
     routePage(-1);
@@ -143,7 +146,10 @@ const NewPin = () => {
   return (
     <form onSubmit={onSubmit}>
       <Space size={4} />
-      <Flex $flexDirection="column">
+      <Flex
+        width={`calc(${width} - ${LAYOUT_PADDING})`}
+        $flexDirection="column"
+      >
         <Text color="black" $fontSize="large" $fontWeight="bold">
           핀 추가
         </Text>
