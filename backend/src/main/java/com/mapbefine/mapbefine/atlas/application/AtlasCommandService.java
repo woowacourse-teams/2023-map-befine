@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,10 @@ public class AtlasCommandService {
     public void addTopic(AuthMember authMember, Long topicId) {
         Long memberId = authMember.getMemberId();
 
-        // TODO: 2023/08/10 memberId가 없는 경우 터짐 (Guest인 경우) (단, loginRequired로 일차적으로 막아놓긴 함)
+        if (Objects.isNull(memberId) || Objects.isNull(topicId)) {
+            throw new IllegalArgumentException("잘못된 ID가 입력되었습니다.");
+        }
+
         if (isTopicAlreadyAdded(topicId, memberId)) {
             return;
         }
