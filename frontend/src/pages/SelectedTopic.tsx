@@ -186,7 +186,7 @@ const PinDetailWrapper = styled.div`
 const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
   position: absolute;
   top: 50%;
-  left: 800px;
+  left: 744px;
   transform: translateY(-50%);
   z-index: 1;
   height: 80px;
@@ -201,7 +201,7 @@ const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
     `
     transform: rotate(180deg);
     top:45%;
-    left: 400px;
+    left: 372px;
     z-index: 1;
     `}
 
