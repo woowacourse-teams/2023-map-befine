@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.member.presentation;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -15,7 +14,6 @@ import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicBookmarkResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -264,77 +262,6 @@ class MemberControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/topics")
-                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("토픽을 유저의 즐겨찾기에 추가")
-    public void addTopicInBookmark() throws Exception {
-        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-        given(memberCommandService.addTopicInBookmark(any(), any())).willReturn(1L);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/members/bookmarks")
-                        .header(AUTHORIZATION, authHeader)
-                        .param("topicId", String.valueOf(1L))
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("유저의 토픽 즐겨찾기 목록 조회")
-    public void findTopicsInBookmark() throws Exception {
-        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
-        List<MemberTopicBookmarkResponse> response = List.of(
-                new MemberTopicBookmarkResponse(
-                        1L,
-                        1L,
-                        "준팍의 또 토픽",
-                        "https://map-befine-official.github.io/favicon.png",
-                        3,
-                        LocalDateTime.now()
-                ),
-                new MemberTopicBookmarkResponse(
-                        2L,
-                        2L,
-                        "준팍의 두번째 토픽",
-                        "https://map-befine-official.github.io/favicon.png",
-                        5,
-                        LocalDateTime.now()
-                )
-        );
-
-        given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(response);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/bookmarks")
-                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("유저의 토픽 즐겨찾기 목록 삭제")
-    public void deleteTopicInBookmark() throws Exception {
-        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
-        doNothing().when(memberCommandService).deleteTopicInBookmark(any(), any());
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/members/bookmarks/" + 1L)
-                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("유저의 토픽 즐겨찾기 전체 삭제")
-    public void deleteAllTopicsInBookmark() throws Exception {
-        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
-        doNothing().when(memberCommandService).deleteAllBookmarks(any());
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/members/bookmarks")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }

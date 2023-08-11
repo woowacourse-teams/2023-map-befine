@@ -1,5 +1,6 @@
-package com.mapbefine.mapbefine.member.domain;
+package com.mapbefine.mapbefine.bookmark.domain;
 
+import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class MemberTopicBookmark {
+public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,22 +29,22 @@ public class MemberTopicBookmark {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    private MemberTopicBookmark(Topic topic, Member member) {
+    private Bookmark(Topic topic, Member member) {
         this.topic = topic;
         this.member = member;
     }
 
     // TODO: 2023/08/11 필요한 검증이 무엇이 있을까.. 현재로썬 외부에서 검증하는 방법 밖에 ?
-    public static MemberTopicBookmark createWithAssociatedTopicAndMember(
+    public static Bookmark createWithAssociatedTopicAndMember(
             Topic topic,
             Member member
     ) {
-        MemberTopicBookmark memberTopicBookmark = new MemberTopicBookmark(topic, member);
+        Bookmark bookmark = new Bookmark(topic, member);
 
-        topic.addBookmarkedMember(memberTopicBookmark);
-        member.addTopicInBookmark(memberTopicBookmark);
+        topic.addBookmark(bookmark);
+        member.addBookmark(bookmark);
 
-        return memberTopicBookmark;
+        return bookmark;
     }
 
 }

@@ -8,7 +8,6 @@ import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicBookmarkResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -119,47 +117,6 @@ public class MemberController {
             @PathVariable Long permissionId
     ) {
         memberCommandService.deleteMemberTopicPermission(authMember, permissionId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @LoginRequired
-    @PostMapping("/bookmarks")
-    public ResponseEntity<Void> addTopicInBookmark(
-            AuthMember authMember,
-            @RequestParam Long topicId
-    ) {
-        Long bookmarkId = memberCommandService.addTopicInBookmark(authMember, topicId);
-
-        return ResponseEntity.created(URI.create("/members/bookmarks/" + bookmarkId)).build();
-    }
-
-    @LoginRequired
-    @GetMapping("/bookmarks")
-    public ResponseEntity<List<MemberTopicBookmarkResponse>> findAllTopicsInBookmark(
-            AuthMember authMember
-    ) {
-        List<MemberTopicBookmarkResponse> topicsInBookmark
-                = memberQueryService.findAllTopicsInBookmark(authMember);
-
-        return ResponseEntity.ok(topicsInBookmark);
-    }
-
-    @LoginRequired
-    @DeleteMapping("/bookmarks/{bookmarkId}")
-    public ResponseEntity<Void> deleteTopicInBookmark(
-            AuthMember authMember,
-            @PathVariable Long bookmarkId
-    ) {
-        memberCommandService.deleteTopicInBookmark(authMember, bookmarkId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @LoginRequired
-    @DeleteMapping("/bookmarks/")
-    public ResponseEntity<Void> deleteAllTopicsInBookmark(AuthMember authMember) {
-        memberCommandService.deleteAllBookmarks(authMember);
 
         return ResponseEntity.noContent().build();
     }

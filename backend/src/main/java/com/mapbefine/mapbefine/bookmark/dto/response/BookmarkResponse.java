@@ -1,11 +1,11 @@
-package com.mapbefine.mapbefine.member.dto.response;
+package com.mapbefine.mapbefine.bookmark.dto.response;
 
-import com.mapbefine.mapbefine.member.domain.MemberTopicBookmark;
+import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicInfo;
 import java.time.LocalDateTime;
 
-public record MemberTopicBookmarkResponse(
+public record BookmarkResponse(
         Long id,
         Long topicId,
         String name,
@@ -14,11 +14,11 @@ public record MemberTopicBookmarkResponse(
         LocalDateTime updatedAt
 ) {
 
-    public static MemberTopicBookmarkResponse from(MemberTopicBookmark bookmark) {
+    public static BookmarkResponse from(Bookmark bookmark) {
         Topic topic = bookmark.getTopic();
         TopicInfo topicInfo = topic.getTopicInfo();
 
-        return new MemberTopicBookmarkResponse(
+        return new BookmarkResponse(
                 bookmark.getId(),
                 topic.getId(),
                 topicInfo.getName(),

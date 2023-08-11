@@ -12,8 +12,6 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberInfo;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.MemberTopicBookmark;
-import com.mapbefine.mapbefine.member.domain.MemberTopicBookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
@@ -42,9 +40,6 @@ class MemberCommandServiceTest {
 
     @Autowired
     private MemberTopicPermissionRepository memberTopicPermissionRepository;
-
-    @Autowired
-    private MemberTopicBookmarkRepository memberTopicBookmarkRepository;
 
     @Test
     @DisplayName("Admin 이 권한을 주는 경우 정상적으로 권한이 주어진다.")
@@ -383,177 +378,6 @@ class MemberCommandServiceTest {
         // when
         assertThatThrownBy(() -> memberCommandService.save(memberCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("다른 유저의 토픽을 즐겨찾기에 추가할 수 있다.")
-    public void addTopicInBookmark_Success() {
-        //given
-        Member creator = MemberFixture.create(
-                "member",
-                "member@naver.com",
-                Role.USER
-        );
-        Topic topic = TopicFixture.createPublicAndAllMembersTopic(creator);
-
-        memberRepository.save(creator);
-        topicRepository.save(topic);
-
-        //when
-        Member otherMember = MemberFixture.create(
-                "otherMember",
-                "otherMember@naver.com",
-                Role.USER
-        );
-        memberRepository.save(otherMember);
-        Long bookmarkId = memberCommandService.addTopicInBookmark(
-                MemberFixture.createUser(otherMember),
-                topic.getId()
-        );
-
-        //then
-        MemberTopicBookmark bookmark = memberTopicBookmarkRepository.findById(bookmarkId).get();
-
-        assertThat(bookmark.getTopic().getId()).isEqualTo(topic.getId());
-        assertThat(bookmark.getMember().getId()).isEqualTo(otherMember.getId());
-    }
-
-    @Test
-    @DisplayName("권한이 없는 다른 유저의 토픽을 즐겨찾기에 추가할 수 없다.")
-    public void addTopicInBookmark_Fail1() {
-        //given
-        Member creator = MemberFixture.create(
-                "member",
-                "member@naver.com",
-                Role.USER
-        );
-        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
-
-        memberRepository.save(creator);
-        topicRepository.save(topic);
-
-        //when
-        Member otherMember = MemberFixture.create(
-                "otherMember",
-                "otherMember@naver.com",
-                Role.USER
-        );
-        memberRepository.save(otherMember);
-
-        //then
-        assertThatThrownBy(() -> memberCommandService.addTopicInBookmark(
-                MemberFixture.createUser(otherMember),
-                topic.getId()
-        )).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("토픽에 대한 권한이 없어서 즐겨찾기에 추가할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("즐겨찾기 목록에 있는 토픽을 삭제할 수 있다.")
-    public void deleteTopicInBookmark_Success() {
-        //given
-        Member creator = MemberFixture.create(
-                "member",
-                "member@naver.com",
-                Role.USER
-        );
-        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
-
-        memberRepository.save(creator);
-        topicRepository.save(topic);
-
-        Member otherMember = MemberFixture.create(
-                "otherMember",
-                "otherMember@naver.com",
-                Role.USER
-        );
-        memberRepository.save(otherMember);
-
-        MemberTopicBookmark bookmark =
-                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic, otherMember);
-        memberTopicBookmarkRepository.save(bookmark);
-
-        //when
-        AuthMember user = MemberFixture.createUser(otherMember);
-
-        assertThat(memberTopicBookmarkRepository.existsById(bookmark.getId()))
-                .isTrue();
-
-        memberCommandService.deleteTopicInBookmark(user, bookmark.getId());
-
-        //then
-        assertThat(memberTopicBookmarkRepository.existsById(bookmark.getId()))
-                .isFalse();
-    }
-
-    @Test
-    @DisplayName("즐겨찾기 목록에 있는 권한이 없는 토픽은 삭제할 수 없다.")
-    public void deleteTopicInBookmark_Fail() {
-        //given
-        Member creator = MemberFixture.create(
-                "member",
-                "member@naver.com",
-                Role.USER
-        );
-        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
-
-        memberRepository.save(creator);
-        topicRepository.save(topic);
-
-        MemberTopicBookmark bookmark =
-                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic, creator);
-        memberTopicBookmarkRepository.save(bookmark);
-
-        Member otherMember = MemberFixture.create(
-                "otherMember",
-                "otherMember@naver.com",
-                Role.USER
-        );
-        memberRepository.save(otherMember);
-
-        //when then
-        AuthMember otherUser = MemberFixture.createUser(otherMember);
-
-        assertThatThrownBy(
-                () -> memberCommandService.deleteTopicInBookmark(otherUser, bookmark.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("즐겨찾기 삭제에 대한 권한이 없습니다.");
-    }
-
-    @Test
-    @DisplayName("즐겨찾기 목록에 있는 모든 토픽을 삭제할 수 있다")
-    public void deleteAllBookmarks_Success() {
-        //given
-        Member creator = MemberFixture.create(
-                "member",
-                "member@naver.com",
-                Role.USER
-        );
-        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
-        Topic topic2 = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
-
-        memberRepository.save(creator);
-        topicRepository.save(topic1);
-        topicRepository.save(topic2);
-
-        MemberTopicBookmark bookmark1 =
-                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic1, creator);
-        MemberTopicBookmark bookmark2 =
-                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic1, creator);
-
-        memberTopicBookmarkRepository.save(bookmark1);
-        memberTopicBookmarkRepository.save(bookmark2);
-
-        //when
-        assertThat(memberTopicBookmarkRepository.findAllByMemberId(creator.getId()))
-                .hasSize(2);
-
-        AuthMember user = MemberFixture.createUser(creator);
-        memberCommandService.deleteAllBookmarks(user);
-
-        //then
-        assertThat(memberTopicBookmarkRepository.findAllByMemberId(creator.getId()))
-                .hasSize(0);
     }
 
     private List<Long> getTopicsWithPermission(Member member) {

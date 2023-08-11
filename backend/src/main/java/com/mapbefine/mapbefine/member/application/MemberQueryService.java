@@ -3,13 +3,10 @@ package com.mapbefine.mapbefine.member.application;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.MemberTopicBookmark;
-import com.mapbefine.mapbefine.member.domain.MemberTopicBookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicBookmarkResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.domain.Pin;
@@ -33,20 +30,16 @@ public class MemberQueryService {
     private final PinRepository pinRepository;
     private final MemberTopicPermissionRepository memberTopicPermissionRepository;
 
-    private final MemberTopicBookmarkRepository memberTopicBookmarkRepository;
-
     public MemberQueryService(
             MemberRepository memberRepository,
             TopicRepository topicRepository,
             PinRepository pinRepository,
-            MemberTopicPermissionRepository memberTopicPermissionRepository,
-            MemberTopicBookmarkRepository memberTopicBookmarkRepository
+            MemberTopicPermissionRepository memberTopicPermissionRepository
     ) {
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
         this.memberTopicPermissionRepository = memberTopicPermissionRepository;
-        this.memberTopicBookmarkRepository = memberTopicBookmarkRepository;
     }
 
     public MemberDetailResponse findById(Long id) {
@@ -103,16 +96,6 @@ public class MemberQueryService {
                 .orElseThrow(NoSuchElementException::new);
 
         return MemberTopicPermissionDetailResponse.from(memberTopicPermission);
-    }
-
-    public List<MemberTopicBookmarkResponse> findAllTopicsInBookmark(AuthMember authMember) {
-        validateNonExistsMember(authMember);
-        List<MemberTopicBookmark> memberTopicBookmark =
-                memberTopicBookmarkRepository.findAllByMemberId(authMember.getMemberId());
-
-        return memberTopicBookmark.stream()
-                .map(MemberTopicBookmarkResponse::from)
-                .toList();
     }
 
 }
