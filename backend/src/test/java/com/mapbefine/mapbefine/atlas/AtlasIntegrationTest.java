@@ -13,9 +13,8 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.*;
+import io.restassured.response.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,17 +39,13 @@ public class AtlasIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setMember() {
-        member = memberRepository.save(
-                MemberFixture.create("other", "other@othter.com", Role.USER)
-        );
+        member = memberRepository.save(MemberFixture.create("other", "other@othter.com", Role.USER));
         topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
-        authHeader = Base64.encodeBase64String(
-                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
-        );
+        authHeader = Base64.encodeBase64String(("Basic " + member.getMemberInfo().getEmail()).getBytes());
     }
 
     @Test
-    @DisplayName("모아보기에 추가되어있는 지도 목록을 조회한다")
+    @DisplayName("모아보기의 지도 목록 조회 시 200을 반환한다")
     void findTopicsFromAtlas_Success() {
         // when
         ExtractableResponse<Response> response = RestAssured.given()
@@ -65,7 +60,7 @@ public class AtlasIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("모아보기에 지도를 추가한다")
+    @DisplayName("모아보기에 지도를 추가 시 201을 반환한다")
     void addTopicToAtlas_Success() {
         //given
         Long topicId = topic.getId();
@@ -84,7 +79,7 @@ public class AtlasIntegrationTest extends IntegrationTest {
 
 
     @Test
-    @DisplayName("모아보기에 추가되어있는 지도를 삭제한다")
+    @DisplayName("모아보기에 추가되어있는 지도 삭제 시 204를 반환한다")
     void removeTopicFromAtlas_Success() {
         //given
         Long topicId = topic.getId();
