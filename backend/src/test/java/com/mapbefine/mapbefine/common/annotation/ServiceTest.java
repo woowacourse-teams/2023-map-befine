@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.common.annotation;
 
-import com.mapbefine.mapbefine.oauth.HttpInterfaceConfig;
+import com.mapbefine.mapbefine.common.config.MockBeansConfig;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,6 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
                 type = FilterType.ANNOTATION, value = Service.class
         )
 )
-@Import(value = {HttpInterfaceConfig.class})
+@Import(MockBeansConfig.class)
 public @interface ServiceTest {
 }

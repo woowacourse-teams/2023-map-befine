@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.oauth.OauthServerType;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 
 public class MemberFixture {
@@ -15,7 +16,18 @@ public class MemberFixture {
                 email,
                 "https://map-befine-official.github.io/favicon.png",
                 role,
-                new OauthId(1L));
+                new OauthId(1L, OauthServerType.KAKAO)
+        );
+    }
+
+    public static Member createWithOauthId(String name, String email, Role role, OauthId oauthId) {
+        return Member.of(
+                name,
+                email,
+                "https://map-befine-official.github.io/favicon.png",
+                role,
+                oauthId)
+                ;
     }
 
     public static AuthMember createUser(Member member) {

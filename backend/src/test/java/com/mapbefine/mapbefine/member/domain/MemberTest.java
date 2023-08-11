@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.member.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.oauth.OauthServerType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ class MemberTest {
                 email,
                 imageUrl,
                 role,
-                new OauthId(1L));
+                new OauthId(1L, OauthServerType.KAKAO));
 
         // then
         assertThat(member).isNotNull();
