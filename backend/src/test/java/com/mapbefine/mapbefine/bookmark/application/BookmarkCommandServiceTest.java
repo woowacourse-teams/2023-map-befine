@@ -117,13 +117,11 @@ class BookmarkCommandServiceTest {
         );
         memberRepository.save(otherMember);
 
-        Bookmark bookmark =
-                Bookmark.createWithAssociatedTopicAndMember(topic, otherMember);
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, otherMember);
         bookmarkRepository.save(bookmark);
 
         //when
         AuthMember user = MemberFixture.createUser(otherMember);
-
         assertThat(bookmarkRepository.existsById(bookmark.getId()))
                 .isTrue();
 
@@ -148,8 +146,7 @@ class BookmarkCommandServiceTest {
         memberRepository.save(creator);
         topicRepository.save(topic);
 
-        Bookmark bookmark =
-                Bookmark.createWithAssociatedTopicAndMember(topic, creator);
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, creator);
         bookmarkRepository.save(bookmark);
 
         Member otherMember = MemberFixture.create(
@@ -184,10 +181,8 @@ class BookmarkCommandServiceTest {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark1 =
-                Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
-        Bookmark bookmark2 =
-                Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
+        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
+        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
 
         bookmarkRepository.save(bookmark1);
         bookmarkRepository.save(bookmark2);

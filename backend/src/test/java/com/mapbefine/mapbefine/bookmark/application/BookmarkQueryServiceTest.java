@@ -58,9 +58,9 @@ class BookmarkQueryServiceTest {
         bookmarkRepository.save(bookmark2);
 
         //then
-        List<BookmarkResponse> topicsInBookmark
-                = bookmarkQueryService.findAllTopicsInBookmark(
-                MemberFixture.createUser(otherMember));
+        List<BookmarkResponse> topicsInBookmark = bookmarkQueryService.findAllTopicsInBookmark(
+                MemberFixture.createUser(otherMember)
+        );
 
         assertThat(topicsInBookmark).hasSize(2);
         assertThat(topicsInBookmark).extractingResultOf("topicId")

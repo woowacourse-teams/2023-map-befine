@@ -36,16 +36,10 @@ public class BookmarkCommandService {
         validateBookmarkingPermission(authMember, topic);
         Member member = getMemberById(authMember);
 
-        Bookmark bookmark
-                = Bookmark.createWithAssociatedTopicAndMember(topic, member);
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
         bookmarkRepository.save(bookmark);
 
         return bookmark.getId();
-    }
-
-    private Member getMemberById(AuthMember authMember) {
-        return memberRepository.findById(authMember.getMemberId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 멤버입니다."));
     }
 
     private Topic getTopicById(Long topicId) {
@@ -61,18 +55,22 @@ public class BookmarkCommandService {
         throw new IllegalArgumentException("토픽에 대한 권한이 없어서 즐겨찾기에 추가할 수 없습니다.");
     }
 
+    private Member getMemberById(AuthMember authMember) {
+        return memberRepository.findById(authMember.getMemberId())
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 멤버입니다."));
+    }
+
     public void deleteTopicInBookmark(AuthMember authMember, Long bookmarkId) {
         validateBookmarkDeletingPermission(authMember, bookmarkId);
 
         bookmarkRepository.deleteById(bookmarkId);
-
     }
 
     private void validateBookmarkDeletingPermission(AuthMember authMember, Long bookmarkId) {
         boolean canDelete = bookmarkRepository.existsByIdAndMemberId(
                 bookmarkId,
-                authMember.getMemberId(
-                ));
+                authMember.getMemberId()
+        );
 
         if (canDelete) {
             return;

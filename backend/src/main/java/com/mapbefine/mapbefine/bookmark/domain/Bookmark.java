@@ -35,10 +35,7 @@ public class Bookmark {
     }
 
     // TODO: 2023/08/11 필요한 검증이 무엇이 있을까.. 현재로썬 외부에서 검증하는 방법 밖에 ?
-    public static Bookmark createWithAssociatedTopicAndMember(
-            Topic topic,
-            Member member
-    ) {
+    public static Bookmark createWithAssociatedTopicAndMember(Topic topic, Member member) {
         Bookmark bookmark = new Bookmark(topic, member);
 
         topic.addBookmark(bookmark);

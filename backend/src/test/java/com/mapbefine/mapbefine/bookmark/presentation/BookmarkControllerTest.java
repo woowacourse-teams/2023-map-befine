@@ -29,6 +29,7 @@ class BookmarkControllerTest extends RestDocsIntegration {
     @DisplayName("토픽을 유저의 즐겨찾기에 추가")
     public void addTopicInBookmark() throws Exception {
         String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
+
         given(bookmarkCommandService.addTopicInBookmark(any(), any())).willReturn(1L);
 
         mockMvc.perform(

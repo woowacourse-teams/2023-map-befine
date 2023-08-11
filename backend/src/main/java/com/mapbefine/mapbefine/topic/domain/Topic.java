@@ -49,7 +49,7 @@ public class Topic extends BaseTimeEntity {
     private List<Pin> pins = new ArrayList<>();
 
     @OneToMany(mappedBy = "topic")
-    private List<Bookmark> bookmarkedMembers = new ArrayList<>();
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     @Column(nullable = false)
     @ColumnDefault(value = "false")
@@ -103,7 +103,7 @@ public class Topic extends BaseTimeEntity {
     }
 
     public void addBookmark(Bookmark bookmark) {
-        bookmarkedMembers.add(bookmark);
+        bookmarks.add(bookmark);
     }
 
     public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {

@@ -45,13 +45,10 @@ public class BookmarkController {
 
     @LoginRequired
     @GetMapping
-    public ResponseEntity<List<BookmarkResponse>> findAllTopicsInBookmark(
-            AuthMember authMember
-    ) {
-        List<BookmarkResponse> topicsInBookmark
-                = bookmarkQueryService.findAllTopicsInBookmark(authMember);
+    public ResponseEntity<List<BookmarkResponse>> findAllTopicsInBookmark(AuthMember authMember) {
+        List<BookmarkResponse> responses = bookmarkQueryService.findAllTopicsInBookmark(authMember);
 
-        return ResponseEntity.ok(topicsInBookmark);
+        return ResponseEntity.ok(responses);
     }
 
     @LoginRequired

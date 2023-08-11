@@ -86,10 +86,8 @@ public class BookmarkIntegrationTest extends IntegrationTest {
                 MemberFixture.create("otherUser", "otherUse@naver.com", Role.USER);
         memberRepository.save(otherUser);
 
-        Bookmark bookmark1 =
-                Bookmark.createWithAssociatedTopicAndMember(topic1, otherUser);
-        Bookmark bookmark2 =
-                Bookmark.createWithAssociatedTopicAndMember(topic2, otherUser);
+        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, otherUser);
+        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic2, otherUser);
 
         bookmarkRepository.save(bookmark1);
         bookmarkRepository.save(bookmark2);
@@ -129,8 +127,7 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         Topic topic = TopicFixture.createByName("topic1", creator);
         topicRepository.save(topic);
 
-        Bookmark bookmark =
-                Bookmark.createWithAssociatedTopicAndMember(topic, creator);
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, creator);
         bookmarkRepository.save(bookmark);
 
         String authHeader = Base64.encodeBase64String(
@@ -157,10 +154,8 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark1 =
-                Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
-        Bookmark bookmark2 =
-                Bookmark.createWithAssociatedTopicAndMember(topic2, creator);
+        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
+        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic2, creator);
         bookmarkRepository.save(bookmark1);
         bookmarkRepository.save(bookmark2);
 
@@ -175,4 +170,5 @@ public class BookmarkIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
+
 }
