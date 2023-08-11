@@ -153,4 +153,28 @@ public class MemberCommandService {
         throw new IllegalArgumentException("토픽에 대한 권한이 없어서 즐겨찾기에 추가할 수 없습니다.");
     }
 
+    public void deleteTopicInBookmark(AuthMember authMember, Long bookmarkId) {
+        validateBookmarkDeletingPermission(authMember, bookmarkId);
+
+        memberTopicBookmarkRepository.deleteById(bookmarkId);
+
+    }
+
+    private void validateBookmarkDeletingPermission(AuthMember authMember, Long bookmarkId) {
+        boolean canDelete = memberTopicBookmarkRepository.existsByIdAndMemberId(
+                authMember.getMemberId(),
+                bookmarkId
+        );
+
+        if (canDelete) {
+            return;
+        }
+
+        throw new IllegalArgumentException("즐겨찾기 삭제에 대한 권한이 없습니다.");
+    }
+
+    public void deleteAllBookmarks(AuthMember authMember) {
+        memberTopicBookmarkRepository.deleteAllByMemberId(authMember.getMemberId());
+    }
+
 }
