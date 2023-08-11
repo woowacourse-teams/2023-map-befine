@@ -145,4 +145,23 @@ public class MemberController {
         return ResponseEntity.ok(topicsInBookmark);
     }
 
+    @LoginRequired
+    @DeleteMapping("/bookmarks/{bookmarkId}")
+    public ResponseEntity<Void> deleteTopicInBookmark(
+            AuthMember authMember,
+            @PathVariable Long bookmarkId
+    ) {
+        memberCommandService.deleteTopicInBookmark(authMember, bookmarkId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @LoginRequired
+    @DeleteMapping("/bookmarks/")
+    public ResponseEntity<Void> deleteAllTopicsInBookmark(AuthMember authMember) {
+        memberCommandService.deleteAllBookmarks(authMember);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }
