@@ -23,9 +23,8 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.*;
+import io.restassured.response.*;
 import java.util.Collections;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -58,14 +57,10 @@ class TopicIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setMember() {
-        member = memberRepository.save(
-                MemberFixture.create("other", "other@othter.com", Role.ADMIN)
-        );
+        member = memberRepository.save(MemberFixture.create("other", "other@othter.com", Role.ADMIN));
         topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
         location = locationRepository.save(LocationFixture.create());
-        authHeader = Base64.encodeBase64String(
-                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
-        );
+        authHeader = Base64.encodeBase64String(("Basic " + member.getMemberInfo().getEmail()).getBytes());
     }
 
 
@@ -326,7 +321,7 @@ class TopicIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("핀이 추가/수정된 일자 기준 내림차순으로 토픽 목록을 조회할 경우, 200을 반환한다")
     void findAllByOrderByUpdatedAtDesc_Success() {
         // given
         Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", member));
