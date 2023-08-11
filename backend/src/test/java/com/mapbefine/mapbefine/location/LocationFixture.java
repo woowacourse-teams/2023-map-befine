@@ -16,7 +16,6 @@ public class LocationFixture {
             ROAD_ADDRESS,
             LEGAL_DONG_CODE
     );
-
     /**
      * BASE_COORDINATE 부터의 직선 거리
      * UNDER_METER: 직선 거리 약 0.669 미터,
@@ -29,7 +28,6 @@ public class LocationFixture {
     public static final Coordinate SEVEN_METER = Coordinate.of(37.6274194, 127.0447922);
     public static final Coordinate EIGHTEEN_FORTY_SIX_METER = Coordinate.of(37.6316286, 127.0650012);
     public static final Coordinate SIXTY_FOUR_THIRTY_METER = Coordinate.of(37.6507643, 127.1115283);
-
     public static final List<Coordinate> COORDINATES = List.of(
             LocationFixture.UNDER_ONE_METER,
             LocationFixture.SEVEN_METER,
@@ -37,10 +35,12 @@ public class LocationFixture {
             LocationFixture.SIXTY_FOUR_THIRTY_METER
     );
 
-    public static final Location LOCATION = new Location(ADDRESS, BASE_COORDINATE);
-
     public static Location create() {
         return new Location(ADDRESS, Coordinate.of(35, 127));
+    }
+
+    public static Location create(Address address, Coordinate coordinate) {
+        return new Location(address, coordinate);
     }
 
     public static Location from(Coordinate coordinate) {
