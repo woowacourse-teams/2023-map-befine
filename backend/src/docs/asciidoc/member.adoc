@@ -35,3 +35,11 @@ operation::member-controller-test/find-pins-by-member[snippets='http-request,htt
 === 유저가 만든 토픽 조회
 
 operation::member-controller-test/find-topics-by-member[snippets='http-request,http-response']
+
+=== 토픽을 유저의 즐겨찾기에 추가
+
+operation::member-controller-test/add-topic-in-bookmark[snippets='http-request,http-response']
+
+=== 유저의 토픽 즐겨찾기 목록 조회
+
+operation::member-controller-test/find-topics-in-bookmark[snippets='http-request,http-response']

@@ -11,6 +11,8 @@ import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmark;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
@@ -18,6 +20,7 @@ import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicBookmarkResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.PinFixture;
@@ -57,6 +60,9 @@ class MemberIntegrationTest extends IntegrationTest {
     @Autowired
     private MemberTopicPermissionRepository memberTopicPermissionRepository;
 
+    @Autowired
+    private MemberTopicBookmarkRepository memberTopicBookmarkRepository;
+
     @Test
     @DisplayName("Topic 을 만든자가 특정 유저에게 권한을 준다.")
     void addMemberTopicPermission() {
@@ -69,7 +75,8 @@ class MemberIntegrationTest extends IntegrationTest {
                         Role.USER
                 )
         );
-        Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER));
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
         );
@@ -176,7 +183,9 @@ class MemberIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = response.as(new TypeRef<>() {});
+        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = response.as(
+                new TypeRef<>() {
+                });
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
         assertThat(memberTopicPermissionResponses)
@@ -198,7 +207,8 @@ class MemberIntegrationTest extends IntegrationTest {
                         Role.USER
                 )
         );
-        Member member = memberRepository.save(MemberFixture.create("memberrr", "memberrr@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create("memberrr", "memberrr@naver.com", Role.USER));
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
         );
@@ -215,7 +225,8 @@ class MemberIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = response.as(MemberTopicPermissionDetailResponse.class);
+        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = response.as(
+                MemberTopicPermissionDetailResponse.class);
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
         assertThat(memberTopicPermissionDetailResponse)
@@ -280,7 +291,8 @@ class MemberIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {});
+        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {
+        });
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -361,7 +373,8 @@ class MemberIntegrationTest extends IntegrationTest {
                 .when().get("/members/pins")
                 .then().log().all()
                 .extract();
-        List<PinResponse> pinResponses = response.as(new TypeRef<>() {});
+        List<PinResponse> pinResponses = response.as(new TypeRef<>() {
+        });
 
         // then
         assertThat(pinResponses).hasSize(2)
@@ -389,7 +402,8 @@ class MemberIntegrationTest extends IntegrationTest {
                 .when().get("/members/topics")
                 .then().log().all()
                 .extract();
-        List<TopicResponse> topicResponses = response.as(new TypeRef<>() {});
+        List<TopicResponse> topicResponses = response.as(new TypeRef<>() {
+        });
 
         // then
         assertThat(topicResponses).hasSize(2)
@@ -397,5 +411,88 @@ class MemberIntegrationTest extends IntegrationTest {
                 .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
     }
+
+    @Test
+    @DisplayName("유저가 토픽을 즐겨찾기 목록에 추가한다.")
+    void addTopicInBookmark_Success() {
+        //given
+        Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(creator);
+
+        Topic topic = TopicFixture.createByName("topic1", creator);
+        topicRepository.save(topic);
+
+        Member otherUser =
+                MemberFixture.create("otherUser", "otherUse@naver.com", Role.USER);
+        memberRepository.save(otherUser);
+
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + otherUser.getMemberInfo().getEmail()).getBytes()
+        );
+
+        //when
+        ExtractableResponse<Response> response = given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .param("topicId", topic.getId())
+                .when().post("/members/bookmarks")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).startsWith("/members/bookmarks/")
+                .isNotNull();
+    }
+
+    @Test
+    @DisplayName("유저의 즐겨찾기 토픽 목록을 조회한다.")
+    void findTopicsInBookmarks_Success() {
+        //given
+        Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
+        memberRepository.save(creator);
+
+        Topic topic1 = TopicFixture.createByName("topic1", creator);
+        Topic topic2 = TopicFixture.createByName("topic1", creator);
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        Member otherUser =
+                MemberFixture.create("otherUser", "otherUse@naver.com", Role.USER);
+        memberRepository.save(otherUser);
+
+        MemberTopicBookmark bookmarkedTopic1 =
+                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic1, otherUser);
+        MemberTopicBookmark bookmarkedTopic2 =
+                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic2, otherUser);
+
+        memberTopicBookmarkRepository.save(bookmarkedTopic1);
+        memberTopicBookmarkRepository.save(bookmarkedTopic2);
+
+        String authHeader = Base64.encodeBase64String(
+                ("Basic " + otherUser.getMemberInfo().getEmail()).getBytes()
+        );
+
+        //when
+        List<MemberTopicBookmarkResponse> response = given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/bookmarks")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        //then
+        assertThat(response).hasSize(2)
+                .usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .isEqualTo(List.of(
+                        MemberTopicBookmarkResponse.from(bookmarkedTopic1),
+                        MemberTopicBookmarkResponse.from(bookmarkedTopic2))
+                );
+
+    }
+
 
 }
