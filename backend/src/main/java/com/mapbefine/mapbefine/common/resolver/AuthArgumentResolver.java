@@ -2,10 +2,8 @@ package com.mapbefine.mapbefine.common.resolver;
 
 import com.mapbefine.mapbefine.auth.application.AuthService;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.dto.AuthInfo;
-import com.mapbefine.mapbefine.auth.infrastructure.AuthorizationExtractor;
+import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Optional;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -16,16 +14,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String EMPTY_EMAIL = "";
-
-    private final AuthorizationExtractor<AuthInfo> authorizationExtractor;
     private final AuthService authService;
 
-    public AuthArgumentResolver(
-            AuthorizationExtractor<AuthInfo> authorizationExtractor,
-            AuthService authService
-    ) {
-        this.authorizationExtractor = authorizationExtractor;
+    public AuthArgumentResolver(AuthService authService) {
         this.authService = authService;
     }
 
@@ -54,17 +45,12 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private AuthMember createAuthMember(HttpServletRequest request) {
-        AuthInfo authInfo = getAuthInfo(request)
-                .orElseGet(() -> new AuthInfo(EMPTY_EMAIL));
-
-        return authService.findAuthMemberByEmail(authInfo);
-    }
-
-    private Optional<AuthInfo> getAuthInfo(HttpServletRequest request) {
-        try {
-            return Optional.of(authorizationExtractor.extract(request));
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
+        Long memberId = (Long) request.getAttribute("memberId");
+        if (memberId == null) {
+            return new Guest();
         }
+
+        return authService.findAuthMemberByMemberId(memberId);
     }
+
 }

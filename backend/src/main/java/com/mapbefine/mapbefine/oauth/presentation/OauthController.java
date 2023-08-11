@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.oauth.presentation;
 
-import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
+import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +29,10 @@ public class OauthController {
     }
 
     @GetMapping("/login/kakao")
-    public ResponseEntity<MemberDetailResponse> login(@RequestParam String code) {
-        MemberDetailResponse member = oauthService.login(code);
+    public ResponseEntity<LoginInfoResponse> login(@RequestParam String code) {
+        LoginInfoResponse loginInfo = oauthService.login(code);
 
-        return ResponseEntity.ok(member);
+        return ResponseEntity.ok(loginInfo);
     }
 
 }
