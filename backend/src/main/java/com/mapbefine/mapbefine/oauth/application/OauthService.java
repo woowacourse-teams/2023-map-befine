@@ -4,75 +4,50 @@ import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.OauthId;
-import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.oauth.KakaoApiClient;
-import com.mapbefine.mapbefine.oauth.dto.KakaoMemberResponse;
-import com.mapbefine.mapbefine.oauth.dto.KakaoToken;
+import com.mapbefine.mapbefine.oauth.AuthCodeRequestUrlProviderComposite;
+import com.mapbefine.mapbefine.oauth.OauthMemberClientComposite;
+import com.mapbefine.mapbefine.oauth.OauthServerType;
 import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 @Service
 public class OauthService {
 
-    private KakaoApiClient kakaoApiClient;
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
+    private AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
+    private OauthMemberClientComposite oauthMemberClientComposite;
 
-    public OauthService(KakaoApiClient kakaoApiClient,
-                        MemberRepository memberRepository,
-                        JwtTokenProvider jwtTokenProvider) {
-        this.kakaoApiClient = kakaoApiClient;
+    public OauthService(
+            MemberRepository memberRepository,
+            JwtTokenProvider jwtTokenProvider,
+            AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite,
+            OauthMemberClientComposite oauthMemberClientComposite
+    ) {
         this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.authCodeRequestUrlProviderComposite = authCodeRequestUrlProviderComposite;
+        this.oauthMemberClientComposite = oauthMemberClientComposite;
     }
 
-    public String getAuthCodeRequestUrl() {
-        return "https://kauth.kakao.com/oauth/authorize"
-                + "?response_type=" + RESPONSE_TYPE
-                + "&client_id=" + CLIENT_ID
-                + "&redirect_uri=" + REDIRECT_URI
-                + "&scope=" + SCOPE;
+    public String getAuthCodeRequestUrl(OauthServerType oauthServerType) {
+        return authCodeRequestUrlProviderComposite.provide(oauthServerType);
     }
 
-    public LoginInfoResponse login(String code) {
-        KakaoToken kakaoToken = kakaoApiClient.fetchToken(tokenRequestParams(code));
+    public LoginInfoResponse login(OauthServerType oauthServerType, String code) {
+        Member oauthMember = oauthMemberClientComposite.fetch(oauthServerType, code);
+        OauthId oauthId = oauthMember.getOauthId();
+        Member savedMember = memberRepository.findByOauthId(oauthId)
+                .orElseGet(() -> register(oauthMember));
 
-        KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember(
-                kakaoToken.tokenType() + " " + kakaoToken.accessToken()
-        );
-
-        Long oauthId = kakaoMemberResponse.id();
-        Member member = memberRepository.findByOauthIdOauthServerId(oauthId)
-                .orElseGet(() -> register(kakaoMemberResponse, oauthId));
         // TODO: 2023/08/10 nickname을 소셜 로그인으로 받아온 정보를 저장함으로서, nickname의 unique를 보장할 수 없어짐
         //  일부 사용자가 직접 입력하는 플로우를 추가할 필요가 있음
-        String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(savedMember.getId()));
 
-        return LoginInfoResponse.of(accessToken, member);
+        return LoginInfoResponse.of(accessToken, savedMember);
     }
 
-    private MultiValueMap<String, String> tokenRequestParams(String code) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", GRANT_TYPE);
-        params.add("client_id", CLIENT_ID);
-        params.add("redirect_uri", REDIRECT_URI);
-        params.add("code", code);
-        params.add("client_secret", CLIENT_SECRET);
-
-        return params;
-    }
-
-    private Member register(KakaoMemberResponse kakaoMemberResponse, Long oauthId) {
-        Member member = Member.of(
-                kakaoMemberResponse.kakaoAccount().profile().nickname(),
-                kakaoMemberResponse.kakaoAccount().email(),
-                kakaoMemberResponse.kakaoAccount().profile().profileImageUrl(),
-                Role.USER,
-                new OauthId(oauthId)
-        );
-
+    private Member register(Member member) {
         return memberRepository.save(member);
     }
 
