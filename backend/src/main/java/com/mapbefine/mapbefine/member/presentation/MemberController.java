@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -93,7 +94,8 @@ public class MemberController {
     public ResponseEntity<List<MemberTopicPermissionResponse>> findMemberTopicPermissionAll(
             @PathVariable Long topicId
     ) {
-        List<MemberTopicPermissionResponse> responses = memberQueryService.findAllWithPermission(topicId);
+        List<MemberTopicPermissionResponse> responses =
+                memberQueryService.findAllWithPermission(topicId);
 
         return ResponseEntity.ok(responses);
     }
@@ -103,17 +105,32 @@ public class MemberController {
     public ResponseEntity<MemberTopicPermissionDetailResponse> findMemberTopicPermissionById(
             @PathVariable Long permissionId
     ) {
-        MemberTopicPermissionDetailResponse response = memberQueryService.findMemberTopicPermissionById(permissionId);
+        MemberTopicPermissionDetailResponse response =
+                memberQueryService.findMemberTopicPermissionById(permissionId);
 
         return ResponseEntity.ok(response);
     }
 
     @LoginRequired
     @DeleteMapping("/permissions/{permissionId}")
-    public ResponseEntity<Void> deleteMemberTopicPermission(AuthMember authMember, @PathVariable Long permissionId) {
+    public ResponseEntity<Void> deleteMemberTopicPermission(
+            AuthMember authMember,
+            @PathVariable Long permissionId
+    ) {
         memberCommandService.deleteMemberTopicPermission(authMember, permissionId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @LoginRequired
+    @PostMapping("/bookmarks")
+    public ResponseEntity<Void> addTopicInBookmark(
+            AuthMember authMember,
+            @RequestParam Long topicId
+    ) {
+        Long bookmarkId = memberCommandService.addTopicInBookmark(authMember, topicId);
+
+        return ResponseEntity.created(URI.create("/members/bookmarks/" + bookmarkId)).build();
     }
 
 }
