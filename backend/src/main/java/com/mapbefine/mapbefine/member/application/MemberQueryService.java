@@ -3,10 +3,13 @@ package com.mapbefine.mapbefine.member.application;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmark;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicBookmarkResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.domain.Pin;
@@ -30,16 +33,20 @@ public class MemberQueryService {
     private final PinRepository pinRepository;
     private final MemberTopicPermissionRepository memberTopicPermissionRepository;
 
+    private final MemberTopicBookmarkRepository memberTopicBookmarkRepository;
+
     public MemberQueryService(
             MemberRepository memberRepository,
             TopicRepository topicRepository,
             PinRepository pinRepository,
-            MemberTopicPermissionRepository memberTopicPermissionRepository
+            MemberTopicPermissionRepository memberTopicPermissionRepository,
+            MemberTopicBookmarkRepository memberTopicBookmarkRepository
     ) {
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
         this.memberTopicPermissionRepository = memberTopicPermissionRepository;
+        this.memberTopicBookmarkRepository = memberTopicBookmarkRepository;
     }
 
     public MemberDetailResponse findById(Long id) {
@@ -57,7 +64,7 @@ public class MemberQueryService {
     }
 
     public List<TopicResponse> findTopicsByMember(AuthMember authMember) {
-        validateNonExistsMember(authMember.getMemberId());
+        validateNonExistsMember(authMember);
         List<Topic> topicsByCreator = topicRepository.findByCreatorId(authMember.getMemberId());
 
         return topicsByCreator.stream()
@@ -66,16 +73,16 @@ public class MemberQueryService {
     }
 
     public List<PinResponse> findPinsByMember(AuthMember authMember) {
-        validateNonExistsMember(authMember.getMemberId());
+        validateNonExistsMember(authMember);
         List<Pin> pinsByCreator = pinRepository.findByCreatorId(authMember.getMemberId());
 
         return pinsByCreator.stream()
                 .map(PinResponse::from)
                 .toList();
     }
-    
-    public void validateNonExistsMember(Long memberId) {
-        if (Objects.isNull(memberId)) {
+
+    public void validateNonExistsMember(AuthMember authMember) {
+        if (Objects.isNull(authMember.getMemberId())) {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
     }
@@ -91,10 +98,21 @@ public class MemberQueryService {
     }
 
     public MemberTopicPermissionDetailResponse findMemberTopicPermissionById(Long permissionId) {
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
+        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(
+                        permissionId)
                 .orElseThrow(NoSuchElementException::new);
 
         return MemberTopicPermissionDetailResponse.from(memberTopicPermission);
+    }
+
+    public List<MemberTopicBookmarkResponse> findAllTopicsInBookmark(AuthMember authMember) {
+        validateNonExistsMember(authMember);
+        List<MemberTopicBookmark> memberTopicBookmark =
+                memberTopicBookmarkRepository.findAllByMemberId(authMember.getMemberId());
+
+        return memberTopicBookmark.stream()
+                .map(MemberTopicBookmarkResponse::from)
+                .toList();
     }
 
 }

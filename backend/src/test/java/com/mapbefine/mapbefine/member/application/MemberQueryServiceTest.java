@@ -13,11 +13,14 @@ import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmark;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicBookmarkResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.PinFixture;
@@ -55,8 +58,12 @@ class MemberQueryServiceTest {
     @Autowired
     private PinRepository pinRepository;
 
+    @Autowired
+    private MemberTopicBookmarkRepository memberTopicBookmarkRepository;
+
     @Test
-    @DisplayName("Topic 에 권한이 있는자들을 모두 조회한다.") // creator 는 권한이 있는자들을 조회할 때 조회되어야 할 것인가??
+    @DisplayName("Topic 에 권한이 있는자들을 모두 조회한다.")
+        // creator 는 권한이 있는자들을 조회할 때 조회되어야 할 것인가??
     void findAllWithPermission() {
         // given
         Member member1InTopic1 = memberRepository.save(
@@ -71,17 +78,21 @@ class MemberQueryServiceTest {
         Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", member3InTopic2));
         Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", member1InTopic1));
         memberTopicPermissionRepository.save(
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic1, member1InTopic1)
+                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic1,
+                        member1InTopic1)
         );
         memberTopicPermissionRepository.save(
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic1, member2InTopic1)
+                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic1,
+                        member2InTopic1)
         );
         memberTopicPermissionRepository.save(
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic2, member3InTopic2)
+                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic2,
+                        member3InTopic2)
         );
 
         // when
-        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = memberQueryService.findAllWithPermission(topic1.getId());
+        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = memberQueryService.findAllWithPermission(
+                topic1.getId());
         MemberResponse memberResponse1 = MemberResponse.from(member1InTopic1);
         MemberResponse memberResponse2 = MemberResponse.from(member2InTopic1);
 
@@ -104,7 +115,8 @@ class MemberQueryServiceTest {
         );
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         Long savedId = memberTopicPermissionRepository.save(
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, permissionUser)
+                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic,
+                        permissionUser)
         ).getId();
 
         // when
@@ -245,6 +257,40 @@ class MemberQueryServiceTest {
         // given when then
         assertThatThrownBy(() -> memberQueryService.findTopicsByMember(new Guest()))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 목록에 추가 된 토픽을 조회할 수 있다")
+    public void findAllTopicsInBookmark_success() {
+        //given
+        Member creator = MemberFixture.create("creator", "member@naver.com", Role.USER);
+        memberRepository.save(creator);
+
+        Topic topic1 = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(creator));
+        Topic topic2 = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(creator));
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        //when
+        Member otherMember =
+                MemberFixture.create("otherMember", "otherMember@naver.com", Role.USER);
+        memberRepository.save(otherMember);
+        MemberTopicBookmark bookmarkingTopic1 =
+                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic1, otherMember);
+        MemberTopicBookmark bookmarkingTopic2 =
+                MemberTopicBookmark.createWithAssociatedTopicAndMember(topic2, otherMember);
+
+        memberTopicBookmarkRepository.save(bookmarkingTopic1);
+        memberTopicBookmarkRepository.save(bookmarkingTopic2);
+
+        //then
+        List<MemberTopicBookmarkResponse> topicsInBookmark
+                = memberQueryService.findAllTopicsInBookmark(MemberFixture.createUser(otherMember));
+
+        assertThat(topicsInBookmark).hasSize(2);
+        assertThat(topicsInBookmark).extractingResultOf("topicId")
+                .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
+
     }
 
     private List<Long> getTopicsWithPermission(Member member) {

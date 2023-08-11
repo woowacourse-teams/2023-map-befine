@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.dto.response.MemberTopicBookmarkResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -131,6 +132,17 @@ public class MemberController {
         Long bookmarkId = memberCommandService.addTopicInBookmark(authMember, topicId);
 
         return ResponseEntity.created(URI.create("/members/bookmarks/" + bookmarkId)).build();
+    }
+
+    @LoginRequired
+    @GetMapping("/bookmarks")
+    public ResponseEntity<List<MemberTopicBookmarkResponse>> findAllTopicsInBookmark(
+            AuthMember authMember
+    ) {
+        List<MemberTopicBookmarkResponse> topicsInBookmark
+                = memberQueryService.findAllTopicsInBookmark(authMember);
+
+        return ResponseEntity.ok(topicsInBookmark);
     }
 
 }
