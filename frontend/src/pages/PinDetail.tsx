@@ -2,8 +2,6 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import Plus from '../assets/plus.svg';
-import Clipping from '../assets/clipping.svg';
-import ShowDetail from '../assets/showDetail.svg';
 import Share from '../assets/share.svg';
 import { useEffect, useState } from 'react';
 import { PinType } from '../types/Pin';
@@ -12,43 +10,47 @@ import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';
 import useFormValues from '../hooks/useFormValues';
-import { DefaultPinValuesType } from '../types/FormValues';
+import { ModifyPinFormProps } from '../types/FormValues';
 import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
 import { styled } from 'styled-components';
 import { ModalPortal, useModalContext } from '../context/ModalContext';
 
-const PinDetail = ({ pinId }: { pinId: number }) => {
+interface PinDetailProps {
+  pinId: number;
+  isEditPinDetail: boolean;
+  setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const PinDetail = ({
+  pinId,
+  isEditPinDetail,
+  setIsEditPinDetail,
+}: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const { showToast } = useToast();
   const { isModalOpen, openModal, closeModal } = useModalContext();
-  const { formValues, setFormValues, onChangeInput } =
-    useFormValues<DefaultPinValuesType>({
-      id: 0,
-      name: '',
-      images: [],
-      description: '',
-      address: '',
-      latitude: '',
-      longitude: '',
-      updatedAt: '',
-    });
+  const {
+    formValues,
+    errorMessages,
+    setFormValues,
+    setErrorMessages,
+    onChangeInput,
+  } = useFormValues<ModifyPinFormProps>({
+    name: '',
+    images: [],
+    description: '',
+  });
 
   useEffect(() => {
     const getPinData = async () => {
       const pinData = await getApi('default', `/pins/${pinId}`);
       setPin(pinData);
       setFormValues({
-        id: pinData.id,
         name: pinData.name,
-        images: pinData.images,
+        images: pinData.image,
         description: pinData.description,
-        address: pinData.address,
-        latitude: pinData.latitude,
-        longitude: pinData.longitude,
-        updatedAt: pinData.updatedAt,
       });
     };
 
@@ -60,7 +62,12 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   };
 
   const onClickEditPin = () => {
-    setIsEditing(true);
+    setIsEditPinDetail(true);
+    setErrorMessages({
+      name: '',
+      images: '',
+      description: '',
+    });
     updateQueryString('edit', 'true');
   };
 
@@ -75,14 +82,15 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
 
   if (!pin) return <></>;
 
-  if (isEditing)
+  if (isEditPinDetail)
     return (
       <UpdatedPinDetail
         searchParams={searchParams}
         setSearchParams={setSearchParams}
-        setIsEditing={setIsEditing}
+        setIsEditing={setIsEditPinDetail}
         pinId={pinId}
         formValues={formValues}
+        errorMessages={errorMessages}
         onChangeInput={onChangeInput}
       />
     );
@@ -94,7 +102,9 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
           {pin.name}
         </Text>
         <Box cursor="pointer">
-          <ModifyPinDetail variant="primary" onClick={onClickEditPin}>수정하기</ModifyPinDetail>
+          <ModifyPinDetail variant="primary" onClick={onClickEditPin}>
+            수정하기
+          </ModifyPinDetail>
         </Box>
       </Flex>
       <Space size={0} />
@@ -223,7 +233,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
               <Space size={4} />
             </Flex>
 
-            <Flex $justifyContent='center'>
+            <Flex $justifyContent="center">
               <SaveToMyMapButton variant="secondary" onClick={closeModal}>
                 Close Modal
               </SaveToMyMapButton>
