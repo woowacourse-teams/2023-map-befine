@@ -18,12 +18,12 @@ interface LayoutWidthProviderProps {
 }
 
 export const LayoutWidthContext = createContext<LayoutWidthContextProps>({
-  width: '400px',
+  width: '100vw',
   setWidth: () => {},
 });
 
 const LayoutWidthProvider = ({ children }: LayoutWidthProviderProps) => {
-  const [width, setWidth] = useState<LayoutWidthValue>('400px');
+  const [width, setWidth] = useState<LayoutWidthValue>('100vw');
 
   return (
     <LayoutWidthContext.Provider

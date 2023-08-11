@@ -75,7 +75,7 @@ const SelectedTopic = () => {
   useEffect(() => {
     getAndSetDataFromServer();
 
-    // setWidth('400px');
+    setWidth('400px');
 
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {

@@ -4,6 +4,7 @@ import useNavigator from '../hooks/useNavigator';
 import TopicListContainer from '../components/TopicListContainer';
 import { useContext, useEffect } from 'react';
 import { LayoutWidthContext } from '../context/LayoutWidthContext';
+import { styled } from 'styled-components';
 
 const POPULAR_TOPICS_TITLE = '인기 급상승한 지도';
 const NEAR_BY_ME_TOPICS_TITLE = '내 주변인 지도';
@@ -35,31 +36,36 @@ const Home = () => {
     routePage('topics/see-all', `${LATEST_TOPICS_URL}|${LATEST_TOPICS_TITLE}`);
   };
 
-  // useEffect(() => {
-  //   setWidth('100vw');
-  // }, []);
+  useEffect(() => {
+    setWidth('100vw');
+  }, []);
 
   return (
-    <Box position="relative">
+    <Wrapper position="relative">
       <TopicListContainer
-        containerTitle="인기 급상승한 지도"
-        containerDescription="즐겨찾기가 많이 된 지도를 살펴보세요."
+        containerTitle="인기 급상승한 지도?"
+        containerDescription="즐겨찾기가 많이 된 지도를 확인해보세요."
         routeWhenSeeAll={goToPopularTopics}
       />
-      <Space size={4} />
+      <Space size={9} />
       <TopicListContainer
         containerTitle="내 주변인 지도"
-        containerDescription="반경 3km 이내 지도를 확인해보세요."
+        containerDescription="내 주변에 있는 지도를 확인해보세요."
         routeWhenSeeAll={goToNearByMeTopics}
       />
-      <Space size={4} />
+      <Space size={9} />
       <TopicListContainer
         containerTitle="새로운 지도"
-        containerDescription="방금 핀이 추가된 지도를 확인해보세요."
+        containerDescription="방금 새로운 핀이 추가된 지도를 확인해보세요."
         routeWhenSeeAll={goToLatestTopics}
       />
-    </Box>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled(Box)`
+  width: 1036px;
+  margin: 0 auto;
+`;
 
 export default Home;
