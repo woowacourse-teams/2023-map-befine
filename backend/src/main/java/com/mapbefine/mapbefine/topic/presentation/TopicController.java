@@ -58,6 +58,14 @@ public class TopicController {
                 .build();
     }
 
+    @LoginRequired
+    @PostMapping("/{topicId}/copy")
+    public ResponseEntity<Void> copyPin(AuthMember member, @PathVariable Long topicId, @RequestParam List<Long> pinIds) {
+        topicCommandService.copyPin(member, topicId, pinIds);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<TopicResponse>> findAll(AuthMember member) {
         List<TopicResponse> topics = topicQueryService.findAllReadable(member);
