@@ -44,13 +44,11 @@ class TopicControllerTest extends RestDocsIntegration {
     );
     private static final String AUTH_HEADER = Base64.encodeBase64String("Basic member@naver.com".getBytes());
 
-
     @MockBean
     private TopicCommandService topicCommandService;
 
     @MockBean
     private TopicQueryService topicQueryService;
-
 
     @Test
     @DisplayName("토픽 새로 생성")
