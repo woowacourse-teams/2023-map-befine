@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmark;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import jakarta.persistence.CascadeType;
@@ -46,6 +47,9 @@ public class Topic extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
+
+    @OneToMany(mappedBy = "topic")
+    private List<MemberTopicBookmark> bookmarkedMembers = new ArrayList<>();
 
     @Column(nullable = false)
     @ColumnDefault(value = "false")
@@ -96,6 +100,10 @@ public class Topic extends BaseTimeEntity {
 
     public void addPin(Pin pin) {
         pins.add(pin);
+    }
+
+    public void addBookmarkedMember(MemberTopicBookmark memberTopicBookmark) {
+        bookmarkedMembers.add(memberTopicBookmark);
     }
 
     public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {

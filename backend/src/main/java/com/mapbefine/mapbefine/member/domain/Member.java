@@ -37,6 +37,10 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberTopicPermission> topicsWithPermissions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member")
+    private List<MemberTopicBookmark> topicsInBookmark = new ArrayList<>();
+
+
     private Member(MemberInfo memberInfo) {
         this.memberInfo = memberInfo;
     }
@@ -82,6 +86,10 @@ public class Member extends BaseTimeEntity {
         topicsWithPermissions.add(memberTopicPermission);
     }
 
+    public void addTopicInBookmark(MemberTopicBookmark bookmarkedTopic) {
+        topicsInBookmark.add(bookmarkedTopic);
+    }
+
     public String getRoleKey() {
         return memberInfo.getRole().getKey();
     }
@@ -89,6 +97,7 @@ public class Member extends BaseTimeEntity {
     public boolean isAdmin() {
         return memberInfo.getRole() == Role.ADMIN;
     }
+
     public boolean isUser() {
         return memberInfo.getRole() == Role.USER;
     }
