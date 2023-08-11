@@ -12,6 +12,8 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberInfo;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmark;
+import com.mapbefine.mapbefine.member.domain.MemberTopicBookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
@@ -41,12 +43,17 @@ class MemberCommandServiceTest {
     @Autowired
     private MemberTopicPermissionRepository memberTopicPermissionRepository;
 
+    @Autowired
+    private MemberTopicBookmarkRepository memberTopicBookmarkRepository;
+
     @Test
     @DisplayName("Admin 이 권한을 주는 경우 정상적으로 권한이 주어진다.")
     void saveMemberTopicPermissionByAdmin() {
         // given
-        Member admin = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
-        Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
+        Member admin = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.ADMIN));
+        Member member = memberRepository.save(
+                MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", admin));
         AuthMember authAdmin = new Admin(admin.getId());
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
@@ -56,7 +63,8 @@ class MemberCommandServiceTest {
 
         // when
         Long savedId = memberCommandService.saveMemberTopicPermission(authAdmin, request);
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(savedId)
+        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(
+                        savedId)
                 .orElseThrow(NoSuchElementException::new);
         Member memberWithPermission = memberTopicPermission.getMember();
 
@@ -70,8 +78,10 @@ class MemberCommandServiceTest {
     @DisplayName("Topic 의 Creator 이 권한을 주는 경우 정상적으로 권한이 주어진다.")
     void saveMemberTopicPermissionByCreator() {
         // given
-        Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
-        Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
+        Member creator = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         AuthMember authCreator = new User(
                 creator.getId(),
@@ -85,7 +95,8 @@ class MemberCommandServiceTest {
 
         // when
         Long savedId = memberCommandService.saveMemberTopicPermission(authCreator, request);
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(savedId)
+        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(
+                        savedId)
                 .orElseThrow(NoSuchElementException::new);
         Member memberWithPermission = memberTopicPermission.getMember();
 
@@ -99,9 +110,12 @@ class MemberCommandServiceTest {
     @DisplayName("Creator 가 아닌 유저가 권한을 주려는 경우 예외가 발생한다.")
     void saveMemberTopicPermissionByUser() {
         // given
-        Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
-        Member notCreator = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
-        Member member = memberRepository.save(MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
+        Member creator = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member notCreator = memberRepository.save(
+                MemberFixture.create("members", "members@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         AuthMember authNotCreator = new User(
                 notCreator.getId(),
@@ -114,7 +128,8 @@ class MemberCommandServiceTest {
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.saveMemberTopicPermission(authNotCreator, request))
+        assertThatThrownBy(
+                () -> memberCommandService.saveMemberTopicPermission(authNotCreator, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -122,8 +137,10 @@ class MemberCommandServiceTest {
     @DisplayName("Guest 가 유저에게 권한을 주려는 경우 예외가 발생한다.")
     void saveMemberTopicPermissionByGuest() {
         // given
-        Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
-        Member member = memberRepository.save(MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
+        Member creator = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         AuthMember guest = new Guest();
         MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
@@ -140,7 +157,8 @@ class MemberCommandServiceTest {
     @DisplayName("본인에게 권한을 주려하는 경우 예외가 발생한다.")
     void saveMemberTopicPermissionByCreator_whenSelf_thenFail() {
         // given
-        Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member creator = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         AuthMember authCreator = new User(
                 creator.getId(),
@@ -153,7 +171,8 @@ class MemberCommandServiceTest {
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.saveMemberTopicPermission(authCreator, request))
+        assertThatThrownBy(
+                () -> memberCommandService.saveMemberTopicPermission(authCreator, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -190,7 +209,8 @@ class MemberCommandServiceTest {
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.saveMemberTopicPermission(authCreator, request))
+        assertThatThrownBy(
+                () -> memberCommandService.saveMemberTopicPermission(authCreator, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -198,8 +218,10 @@ class MemberCommandServiceTest {
     @DisplayName("Admin 이 권한을 삭제하는 경우 정상적으로 삭제가 이루어진다.")
     void deleteMemberTopicPermissionByAdmin() {
         // given
-        Member admin = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
-        Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
+        Member admin = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.ADMIN));
+        Member member = memberRepository.save(
+                MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", admin));
         AuthMember authAdmin = new Admin(admin.getId());
 
@@ -217,8 +239,10 @@ class MemberCommandServiceTest {
     @DisplayName("creator 이 권한을 삭제하는 경우 정상적으로 삭제가 이루어진다.")
     void deleteMemberTopicPermissionByCreator() {
         // given
-        Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
-        Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
+        Member creator = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         AuthMember authCreator = new User(
                 creator.getId(),
@@ -240,9 +264,12 @@ class MemberCommandServiceTest {
     @DisplayName("creator 가 아닌 유저가 권한을 삭제하는 경우 예외가 발생한다.")
     void deleteMemberTopicPermissionByUser() {
         // given
-        Member creator = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
-        Member nonCreator = memberRepository.save(MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
-        Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
+        Member creator = memberRepository.save(
+                MemberFixture.create("member", "member@naver.com", Role.USER));
+        Member nonCreator = memberRepository.save(
+                MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
+        Member member = memberRepository.save(
+                MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         AuthMember authNonCreator = new User(
                 nonCreator.getId(),
@@ -256,7 +283,8 @@ class MemberCommandServiceTest {
         Long savedId = memberTopicPermissionRepository.save(memberTopicPermission).getId();
 
         // then
-        assertThatThrownBy(() -> memberCommandService.deleteMemberTopicPermission(authNonCreator, savedId))
+        assertThatThrownBy(
+                () -> memberCommandService.deleteMemberTopicPermission(authNonCreator, savedId))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -278,7 +306,8 @@ class MemberCommandServiceTest {
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE))
+        assertThatThrownBy(
+                () -> memberCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
@@ -354,6 +383,69 @@ class MemberCommandServiceTest {
         // when
         assertThatThrownBy(() -> memberCommandService.save(memberCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저의 토픽을 즐겨찾기에 추가할 수 있다.")
+    public void addTopicInBookmark_Success() {
+        //given
+        Member creator = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.USER
+        );
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(creator);
+
+        memberRepository.save(creator);
+        topicRepository.save(topic);
+
+        //when
+        Member otherMember = MemberFixture.create(
+                "otherMember",
+                "otherMember@naver.com",
+                Role.USER
+        );
+        memberRepository.save(otherMember);
+        Long bookmarkId = memberCommandService.addTopicInBookmark(
+                MemberFixture.createUser(otherMember),
+                topic.getId()
+        );
+
+        //then
+        MemberTopicBookmark bookmark = memberTopicBookmarkRepository.findById(bookmarkId).get();
+
+        assertThat(bookmark.getTopic().getId()).isEqualTo(topic.getId());
+        assertThat(bookmark.getMember().getId()).isEqualTo(otherMember.getId());
+    }
+
+    @Test
+    @DisplayName("권한이 없는 다른 유저의 토픽을 즐겨찾기에 추가할 수 없다.")
+    public void addTopicInBookmark_Fail1() {
+        //given
+        Member creator = MemberFixture.create(
+                "member",
+                "member@naver.com",
+                Role.USER
+        );
+        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
+
+        memberRepository.save(creator);
+        topicRepository.save(topic);
+
+        //when
+        Member otherMember = MemberFixture.create(
+                "otherMember",
+                "otherMember@naver.com",
+                Role.USER
+        );
+        memberRepository.save(otherMember);
+
+        //then
+        assertThatThrownBy(() -> memberCommandService.addTopicInBookmark(
+                MemberFixture.createUser(otherMember),
+                topic.getId()
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("토픽에 대한 권한이 없어서 즐겨찾기에 추가할 수 없습니다.");
     }
 
     private List<Long> getTopicsWithPermission(Member member) {
