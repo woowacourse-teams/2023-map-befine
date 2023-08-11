@@ -162,9 +162,9 @@ public class MemberCommandService {
 
     private void validateBookmarkDeletingPermission(AuthMember authMember, Long bookmarkId) {
         boolean canDelete = memberTopicBookmarkRepository.existsByIdAndMemberId(
-                authMember.getMemberId(),
-                bookmarkId
-        );
+                bookmarkId,
+                authMember.getMemberId(
+                ));
 
         if (canDelete) {
             return;
