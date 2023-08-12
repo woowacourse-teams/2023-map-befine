@@ -29,6 +29,11 @@ jobs:
       run: chmod +x gradlew
       working-directory: backend
 
+    - name: 환경변수 설정
+      run: |
+        echo "TEST_JWT_SECRET_KEY=${{ secrets.TEST_JWT_SECRET_KEY }}" >> $GITHUB_ENV
+        echo "TEST_JWT_EXPIRE_LENGTH=${{ secrets.TEST_JWT_EXPIRE_LENGTH }}" >> $GITHUB_ENV
+
     - name: Gradle build 시작
       run: ./gradlew clean build
       working-directory: backend
