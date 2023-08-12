@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.oauth;
+package com.mapbefine.mapbefine.oauth.domain.kakao;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

@@ -3,10 +3,10 @@ package com.mapbefine.mapbefine.oauth.application;
 import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.oauth.AuthCodeRequestUrlProviderComposite;
-import com.mapbefine.mapbefine.oauth.OauthMember;
-import com.mapbefine.mapbefine.oauth.OauthMemberClientComposite;
-import com.mapbefine.mapbefine.oauth.OauthServerType;
+import com.mapbefine.mapbefine.oauth.domain.AuthCodeRequestUrlProviderComposite;
+import com.mapbefine.mapbefine.oauth.domain.OauthMember;
+import com.mapbefine.mapbefine.oauth.domain.OauthMemberClientComposite;
+import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
 import org.springframework.stereotype.Service;
 

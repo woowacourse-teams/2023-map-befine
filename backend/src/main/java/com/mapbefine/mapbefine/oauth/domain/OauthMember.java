@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.oauth;
+package com.mapbefine.mapbefine.oauth.domain;
 
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.OauthId;

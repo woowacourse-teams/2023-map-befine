@@ -1,5 +1,7 @@
-package com.mapbefine.mapbefine.oauth;
+package com.mapbefine.mapbefine.oauth.domain.kakao;
 
+import com.mapbefine.mapbefine.oauth.domain.AuthCodeRequestUrlProvider;
+import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 

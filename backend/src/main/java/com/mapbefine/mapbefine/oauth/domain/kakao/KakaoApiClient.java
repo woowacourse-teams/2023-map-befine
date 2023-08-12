@@ -1,10 +1,10 @@
-package com.mapbefine.mapbefine.oauth;
+package com.mapbefine.mapbefine.oauth.domain.kakao;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
-import com.mapbefine.mapbefine.oauth.dto.KakaoMemberResponse;
-import com.mapbefine.mapbefine.oauth.dto.KakaoToken;
+import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoMemberResponse;
+import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoToken;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
