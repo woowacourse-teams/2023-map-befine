@@ -5,15 +5,15 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestAccessTokenProvider {
+public class TestAuthHeaderProvider {
 
     private JwtTokenProvider jwtTokenProvider;
 
-    public TestAccessTokenProvider(JwtTokenProvider jwtTokenProvider) {
+    public TestAuthHeaderProvider(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public String createToken(Member member) {
+    public String createAuthHeader(Member member) {
         Long memberId = member.getId();
         return "Bearer " + jwtTokenProvider.createToken(String.valueOf(memberId));
     }

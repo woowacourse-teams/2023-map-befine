@@ -91,8 +91,8 @@ class MemberIntegrationTest extends IntegrationTest {
                         new OauthId(3L, KAKAO)
                 )
         );
-        creatorAuthHeader = testAccessTokenProvider.createToken(creator);
-        user1AuthHeader = testAccessTokenProvider.createToken(user1);
+        creatorAuthHeader = testAuthHeaderProvider.createAuthHeader(creator);
+        user1AuthHeader = testAuthHeaderProvider.createAuthHeader(user1);
     }
 
     @Test
