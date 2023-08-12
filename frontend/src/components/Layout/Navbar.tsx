@@ -68,7 +68,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
 
   const goToFavorite = () => {
     setShowButton(false);
-    routePage('/');
+    routePage('/favorite');
     setHighlightCurrentPage(() => ({
       home: false,
       seeTogether: false,
