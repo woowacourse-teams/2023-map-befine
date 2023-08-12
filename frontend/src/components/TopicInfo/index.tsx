@@ -1,20 +1,27 @@
 import Flex from '../common/Flex';
 import Text from '../common/Text';
-import Clipping from '../../assets/clipping.svg';
-import Share from '../../assets/Share2.svg';
+import Image from '../common/Image';
 import Button from '../common/Button';
 import Space from '../common/Space';
 import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
-import Back from '../../assets/Back.svg';
-import Favorite from '../../assets/Favorite.svg';
-import Star from '../../assets/Star2.svg';
+import SmallTopicPin from '../../assets/smallTopicPin.svg';
+import SmallTopicStar from '../../assets/smallTopicStar.svg';
+import ShareUrl from '../../assets/shareUrl.svg';
+import TopicFavorite from '../../assets/topicInfo_favorite.svg';
+import TopicSeeTogether from '../../assets/topicInfo_seeTogether.svg';
+
+import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import SeeTogetherButton from '../SeeTogetherButton';
+
+const FAVORITE_COUNT = 10;
 
 export interface TopicInfoProps {
   fullUrl?: string;
   topicId?: string;
+  topicImage: string;
   topicParticipant: number;
-  pinNumber: number;
+  topicPinCount: number;
   topicTitle: string;
   topicOwner: string;
   topicDescription: string;
@@ -23,8 +30,9 @@ export interface TopicInfoProps {
 const TopicInfo = ({
   fullUrl,
   topicId,
+  topicImage,
   topicParticipant,
-  pinNumber,
+  topicPinCount,
   topicTitle,
   topicOwner,
   topicDescription,
@@ -55,62 +63,66 @@ const TopicInfo = ({
       tabIndex={0}
       role="button"
     >
-      <Flex padding={2} $alignItems="center" $justifyContent="space-between">
-        <Back onClick={() => routePage('/')} />
-        {/* <Space size={7} /> */}
-        <Text color="primary" $fontSize="large" $fontWeight="bold">
-          {topicTitle}
-        </Text>
-        <Share cursor="pointer" onClick={copyContent} />
-      </Flex>
+      <Image
+        height="168px"
+        width="332px"
+        src={topicImage}
+        alt="토픽 이미지"
+        $objectFit="cover"
+        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+          e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
+        }}
+      />
 
-      <Flex height="200px" $gap="4px">
-        <Flex style={{ height: '200px', width: '160px' }}>
-          <img
-            height="200px"
-            width="160px"
-            src="https://cutewallpaper.org/24/free-sun-pictures/140668415.jpg"
-          />
+      <Space size={3} />
+
+      <Text color="black" $fontSize="large" $fontWeight="bold">
+        {topicTitle}
+      </Text>
+      <Space size={1} />
+      <Text color="black" $fontSize="small" $fontWeight="normal">
+        {topicOwner}
+      </Text>
+      <Space size={1} />
+      <Text color="black" $fontSize="small" $fontWeight="normal">
+        {topicDescription}
+      </Text>
+
+      <Space size={3} />
+
+      <Flex>
+        <Flex $alignItems="center" width="76px">
+          <Text color="black" $fontSize="small" $fontWeight="normal">
+            👨‍💻 {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
+          </Text>
         </Flex>
-
-        <Flex $flexDirection="column" width="100%">
-          <Flex height="60%" overflow="hidden" $flexDirection="column">
-            <Text color="black" $fontSize="small" $fontWeight="bold">
-              생성자 : {topicOwner}
-            </Text>
-            <Space size={1} />
-            <Text color="gray" $fontSize="small" $fontWeight="normal">
-              {topicDescription}
-            </Text>
-          </Flex>
-          <Space size={6} />
-
-          <Flex $justifyContent="space-between" $alignItems="center">
-            <Flex $flexDirection="column">
-              <Text color="gray" $fontSize="small" $fontWeight="normal">
-                장소 :{pinNumber}
-              </Text>
-              <Text color="gray" $fontSize="small" $fontWeight="normal">
-                즐겨찾기 : {pinNumber}
-              </Text>
-            </Flex>
-            <Star />
-          </Flex>
+        <Flex $alignItems="center" width="72px">
+          <SmallTopicPin />
+          <Space size={0} />
+          <Text color="black" $fontSize="small" $fontWeight="normal">
+            {topicPinCount > 999 ? '+999' : topicPinCount}개
+          </Text>
+        </Flex>
+        <Flex $alignItems="center" width="72px">
+          <SmallTopicStar />
+          <Space size={0} />
+          <Text color="black" $fontSize="small" $fontWeight="normal">
+            {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
+          </Text>
         </Flex>
       </Flex>
 
       <Space size={3} />
-      {/* <Flex $justifyContent="space-between">
-        <Flex>
-          <Clipping />
-          <Space size={4} />
-          <Share cursor="pointer" onClick={copyContent} />
-        </Flex>
-        <Button variant="primary" onClick={goToNewPin}>
-          + 핀 추가하기
-        </Button>
+
+      <Flex $justifyContent="center">
+        <TopicSeeTogether cursor="pointer" />
+        <Space size={5} />
+        <TopicFavorite cursor="pointer" />
+        <Space size={5} />
+        <ShareUrl cursor="pointer" onClick={copyContent} />
       </Flex>
-      <Space size={6} /> */}
+
+      <Space size={3} />
     </Flex>
   );
 };

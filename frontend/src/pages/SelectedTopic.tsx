@@ -13,7 +13,7 @@ import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { DEFAULT_TOPIC_IMAGE, LAYOUT_PADDING, SIDEBAR } from '../constants';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
@@ -60,6 +60,8 @@ const SelectedTopic = () => {
       .map((number) => topicHashmap.get(number)) as TopicInfoType[];
 
     if (!topicDetailFromData) return;
+
+    console.log(topicDetailFromData);
 
     setTopicDetail([...topicDetailFromData]);
   };
@@ -113,10 +115,11 @@ const SelectedTopic = () => {
                 <TopicInfo
                   fullUrl={topicId}
                   topicId={topicId?.split(',')[idx]}
+                  topicImage={DEFAULT_TOPIC_IMAGE}
                   topicParticipant={1}
-                  pinNumber={topic.pinCount}
                   topicTitle={topic.name}
                   topicOwner={'토픽을 만든 사람'}
+                  topicPinCount={topic.pinCount}
                   topicDescription={topic.description}
                 />
                 {topic.pins.map((pin) => (

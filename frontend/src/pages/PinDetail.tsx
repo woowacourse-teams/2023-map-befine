@@ -1,8 +1,6 @@
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import Plus from '../assets/plus.svg';
-import Share from '../assets/share.svg';
 import { useEffect, useState } from 'react';
 import { PinType } from '../types/Pin';
 import { getApi } from '../apis/getApi';
