@@ -9,6 +9,7 @@ import Flex from '../common/Flex';
 import SeeTogetherButton from '../SeeTogetherButton';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
+import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 
 const FAVORITE_COUNT = 10;
 
@@ -43,8 +44,7 @@ const TopicCard = ({
           alt="토픽 이미지"
           $objectFit="cover"
           onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-            e.currentTarget.src =
-              'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
+            e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
           }}
         />
 
