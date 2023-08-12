@@ -11,15 +11,15 @@ const Home = () => {
   const { width: _ } = useSetLayoutWidth(FULLSCREEN);
 
   const goToPopularTopics = () => {
-    routePage('topics/see-all/popularity');
+    routePage('see-all/popularity');
   };
 
   const goToNearByMeTopics = () => {
-    routePage('topics/see-all/near');
+    routePage('see-all/near');
   };
 
   const goToLatestTopics = () => {
-    routePage('topics/see-all/latest');
+    routePage('see-all/latest');
   };
 
   return (
