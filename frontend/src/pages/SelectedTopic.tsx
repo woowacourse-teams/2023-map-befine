@@ -61,8 +61,6 @@ const SelectedTopic = () => {
 
     if (!topicDetailFromData) return;
 
-    console.log(topicDetailFromData);
-
     setTopicDetail([...topicDetailFromData]);
   };
 
