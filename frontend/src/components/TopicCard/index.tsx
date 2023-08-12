@@ -67,15 +67,15 @@ const TopicCard = ({
 
           <Space size={0} />
 
-          <Flex $alignItems="center">
-            <Flex width="64px">
+          <Flex>
+            <Flex $alignItems="center" width="64px">
               <SmallTopicPin />
               <Space size={0} />
               <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
                 {topicPinCount > 999 ? '+999' : topicPinCount}개
               </Text>
             </Flex>
-            <Flex width="64px">
+            <Flex $alignItems="center" width="64px">
               <SmallTopicStar />
               <Space size={0} />
               <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
