@@ -10,7 +10,6 @@ import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import ShareUrl from '../../assets/shareUrl.svg';
 import TopicFavorite from '../../assets/topicInfo_favorite.svg';
 import TopicSeeTogether from '../../assets/topicInfo_seeTogether.svg';
-
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import SeeTogetherButton from '../SeeTogetherButton';
 
@@ -76,7 +75,7 @@ const TopicInfo = ({
 
       <Space size={3} />
 
-      <Text color="black" $fontSize="large" $fontWeight="bold">
+      <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
         {topicTitle}
       </Text>
       <Space size={1} />
