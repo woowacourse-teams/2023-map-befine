@@ -58,7 +58,7 @@ class TopicIntegrationTest extends IntegrationTest {
         member = memberRepository.save(MemberFixture.create("other", "other@othter.com", Role.ADMIN));
         topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
         location = locationRepository.save(LocationFixture.create());
-        authHeader = testAccessTokenProvider.createToken(member);
+        authHeader = testAuthHeaderProvider.createAuthHeader(member);
     }
 
 

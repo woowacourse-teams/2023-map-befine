@@ -12,7 +12,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 public class IntegrationTest {
 
     @Autowired
-    protected TestAccessTokenProvider testAccessTokenProvider;
+    protected TestAuthHeaderProvider testAuthHeaderProvider;
 
     @LocalServerPort
     private int port;
