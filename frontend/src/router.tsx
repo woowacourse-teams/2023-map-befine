@@ -4,7 +4,9 @@ import NewPin from './pages/NewPin';
 import NewTopic from './pages/NewTopic';
 import RootPage from './pages/RootPage';
 import SelectedTopic from './pages/SelectedTopic';
-import SeeAllTopics from './pages/SeeAllTopics';
+import SeeAllPopularTopics from './pages/SeeAllPopularTopics';
+import SeeAllNearTopics from './pages/SeeAllNearTopics';
+import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
 
 const routes = [
   {
@@ -28,8 +30,16 @@ const routes = [
         element: <NewPin />,
       },
       {
-        path: 'topics/see-all',
-        element: <SeeAllTopics />,
+        path: 'topics/see-all/popularity',
+        element: <SeeAllPopularTopics />,
+      },
+      {
+        path: 'topics/see-all/near',
+        element: <SeeAllNearTopics />,
+      },
+      {
+        path: 'topics/see-all/latest',
+        element: <SeeAllLatestTopics />,
       },
     ],
   },

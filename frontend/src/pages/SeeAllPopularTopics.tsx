@@ -7,16 +7,15 @@ import Box from '../components/common/Box';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 
+const url = '/topics';
+
 const SeeAllTopics = () => {
-  const { state } = useLocation();
-  const url = state.split('|')[0];
-  const title = state.split('|')[1];
   const { width: _ } = useSetLayoutWidth(FULLSCREEN);
 
   return (
     <Wrapper>
       <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
-        {title}
+        인기 급상승할 지도?
       </Text>
 
       <Space size={4} />
