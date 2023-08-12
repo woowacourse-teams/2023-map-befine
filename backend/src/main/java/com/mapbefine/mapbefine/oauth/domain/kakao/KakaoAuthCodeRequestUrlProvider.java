@@ -8,10 +8,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class KakaoAuthCodeRequestUrlProvider implements AuthCodeRequestUrlProvider {
 
-    private final KakaoOauthConfig kakaoOauthConfig;
+    private final KakaoOauthProperties kakaoOauthProperties;
 
-    public KakaoAuthCodeRequestUrlProvider(KakaoOauthConfig kakaoOauthConfig) {
-        this.kakaoOauthConfig = kakaoOauthConfig;
+    public KakaoAuthCodeRequestUrlProvider(KakaoOauthProperties kakaoOauthProperties) {
+        this.kakaoOauthProperties = kakaoOauthProperties;
     }
 
     @Override
@@ -24,9 +24,9 @@ public class KakaoAuthCodeRequestUrlProvider implements AuthCodeRequestUrlProvid
         return UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com/oauth/authorize")
                 .queryParam("response_type", "code")
-                .queryParam("client_id", kakaoOauthConfig.clientId())
-                .queryParam("redirect_uri", kakaoOauthConfig.redirectUri())
-                .queryParam("scope", String.join(",", kakaoOauthConfig.scope()))
+                .queryParam("client_id", kakaoOauthProperties.clientId())
+                .queryParam("redirect_uri", kakaoOauthProperties.redirectUri())
+                .queryParam("scope", String.join(",", kakaoOauthProperties.scope()))
                 .toUriString();
     }
 
