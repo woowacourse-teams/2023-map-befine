@@ -129,19 +129,22 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
-        List<TopicResponse> responses = List.of(new TopicResponse(
-                1L,
-                "준팍의 또 토픽",
-                "https://map-befine-official.github.io/favicon.png",
-                3,
-                LocalDateTime.now()
-        ), new TopicResponse(
-                2L,
-                "준팍의 두번째 토픽",
-                "https://map-befine-official.github.io/favicon.png",
-                5,
-                LocalDateTime.now()
-        ));
+        List<TopicResponse> responses = List.of(
+                new TopicResponse(
+                        1L,
+                        "준팍의 또 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        3,
+                        LocalDateTime.now(),
+                        Boolean.FALSE
+                ), new TopicResponse(
+                        2L,
+                        "준팍의 두번째 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        5,
+                        LocalDateTime.now(),
+                        Boolean.FALSE
+                ));
         given(topicQueryService.findAllReadable(any())).willReturn(responses);
 
         mockMvc.perform(
@@ -179,7 +182,8 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                                 37,
                                 127
                         )
-                )
+                ),
+                Boolean.FALSE
         );
         given(topicQueryService.findDetailById(any(), any())).willReturn(topicDetailResponse);
 
