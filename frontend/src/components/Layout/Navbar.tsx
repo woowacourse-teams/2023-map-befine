@@ -45,7 +45,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
 
   const goToSeeTogether = () => {
     setShowButton(false);
-    routePage('/');
+    routePage('/see-together');
     setHighlightCurrentPage(() => ({
       home: false,
       seeTogether: true,
