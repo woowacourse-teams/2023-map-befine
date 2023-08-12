@@ -68,7 +68,6 @@ const UpdatedPinDetail = ({
         padding={7}
         $borderRadius="small"
       >
-        <Plus />
         <Space size={1} />
         <Text
           color="white"
@@ -76,7 +75,7 @@ const UpdatedPinDetail = ({
           $fontWeight="normal"
           $textAlign="center"
         >
-          사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
+          + 사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
         </Text>
       </Flex>
 
@@ -99,7 +98,7 @@ const UpdatedPinDetail = ({
       <Space size={5} />
 
       <InputContainer
-        tagType="input"
+        tagType="textarea"
         containerTitle="장소 설명"
         isRequired={false}
         name="description"
