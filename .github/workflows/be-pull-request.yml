@@ -26,7 +26,9 @@ jobs:
         distribution: 'temurin'
         
     - name: 환경변수 설정
-      run: echo "TEST_JWT_SECRET_KEY=${{ secrets.TEST_JWT_SECRET_KEY }}" >> $GITHUB_ENV
+      run: | 
+      echo "TEST_JWT_SECRET_KEY=${{ secrets.TEST_JWT_SECRET_KEY }}" >> $GITHUB_ENV
+      echo "TEST_JWT_EXPIRE_LENGTH=${{ secrets.TEST_JWT_EXPIRE_LENGTH }}" >> $GITHUB_ENV
 
     - name: gradlew 실행 권한 부여
       run: chmod +x gradlew

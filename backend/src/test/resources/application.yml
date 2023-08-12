@@ -28,4 +28,4 @@ security:
   jwt:
     token:
       secret-key: ${TEST_JWT_SECRET_KEY}
-      expire-length: ${TEST_JWT_SECRET_KEY}
+      expire-length: ${TEST_JWT_EXPIRE_LENGTH}
