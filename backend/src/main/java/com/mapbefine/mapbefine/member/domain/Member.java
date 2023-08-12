@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.member.domain;
 
+import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
@@ -20,6 +21,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Member extends BaseTimeEntity {
+
+    private static final String DEFAULT_NICKNAME_PREFIX = "모험가";
+    private static final int DEFAULT_NICKNAME_SUFFIX_LENGTH = 7;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,6 +59,24 @@ public class Member extends BaseTimeEntity {
         );
 
         return new Member(memberInfo);
+    }
+
+    public static Member ofRandomNickname(
+            String email,
+            String imageUrl,
+            Role role,
+            OauthId oauthId
+    ) {
+        String nickName = DEFAULT_NICKNAME_PREFIX + createNicknameSuffix();
+
+        return Member.of(nickName, email, imageUrl, role, oauthId);
+    }
+
+    private static String createNicknameSuffix() {
+        return randomUUID()
+                .toString()
+                .replaceAll("-", "")
+                .substring(0, DEFAULT_NICKNAME_SUFFIX_LENGTH);
     }
 
     public void update(

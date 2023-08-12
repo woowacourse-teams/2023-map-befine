@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.oauth;
 import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toMap;
 
-import com.mapbefine.mapbefine.member.domain.Member;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -22,7 +21,7 @@ public class OauthMemberClientComposite {
                 ));
     }
 
-    public Member fetch(OauthServerType oauthServerType, String authCode) {
+    public OauthMember fetch(OauthServerType oauthServerType, String authCode) {
         return getClient(oauthServerType).fetch(authCode);
     }
 
