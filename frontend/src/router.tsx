@@ -9,6 +9,7 @@ import SeeAllNearTopics from './pages/SeeAllNearTopics';
 import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
 import SeeTogetherTopics from './pages/SeeTogetherTopics';
 import Favorite from './pages/Favorite';
+import MyPage from './pages/MyPage';
 
 const routes = [
   {
@@ -50,6 +51,10 @@ const routes = [
       {
         path: 'favorite',
         element: <Favorite />,
+      },
+      {
+        path: 'my-page',
+        element: <MyPage />,
       },
     ],
   },

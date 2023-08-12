@@ -80,7 +80,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
 
   const goToProfile = () => {
     setShowButton(false);
-    routePage('/');
+    routePage('/my-page');
     setHighlightCurrentPage(() => ({
       home: false,
       seeTogether: false,
