@@ -39,7 +39,7 @@ public class BookmarkIntegrationTest extends IntegrationTest {
     private BookmarkRepository bookmarkRepository;
 
     @Test
-    @DisplayName("유저가 토픽을 즐겨찾기 목록에 추가한다.")
+    @DisplayName("유저가 토픽을 즐겨찾기 목록에 추가하면, 201을 반환한다.")
     void addTopicInBookmark_Success() {
         //given
         Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
@@ -71,7 +71,7 @@ public class BookmarkIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("유저의 즐겨찾기 토픽 목록을 조회한다.")
+    @DisplayName("유저의 즐겨찾기 토픽 목록을 조회하면, 200을 반환한다.")
     void findTopicsInBookmarks_Success() {
         //given
         Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
@@ -118,7 +118,7 @@ public class BookmarkIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("유저의 즐겨찾기 토픽을 삭제한다.")
+    @DisplayName("유저의 즐겨찾기 토픽을 삭제하면, 204를 반환한다.")
     void deleteTopicInBookmark_Success() {
         //given
         Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
@@ -143,7 +143,7 @@ public class BookmarkIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("유저의 즐겨찾기 토픽을 전체 삭제한다.")
+    @DisplayName("유저의 즐겨찾기 토픽을 전체 삭제하면, 204를 반환한다.")
     void deleteAllTopicsInBookmark_Success() {
         //given
         Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
