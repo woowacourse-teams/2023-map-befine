@@ -25,13 +25,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         
+    - name: 환경변수 설정
+      run: echo "TEST_JWT_SECRET_KEY=${{ secrets.TEST_JWT_SECRET_KEY }}" >> $GITHUB_ENV
+
     - name: gradlew 실행 권한 부여
       run: chmod +x gradlew
-      working-directory: backend
-
-    - name: 테스트용 변수 주입
-      run: |
-        sed -i "s/\${TEST_JWT_SECRET_KEY}/${{ secrets.TEST_JWT_SECRET_KEY }}/g" backend/src/test/resources/application.yml
       working-directory: backend
 
     - name: Gradle build 시작
