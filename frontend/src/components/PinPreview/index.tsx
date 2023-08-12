@@ -4,8 +4,11 @@ import Space from '../common/Space';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import { useEffect, useRef, useState, KeyboardEvent } from 'react';
+import theme from '../../themes';
+import Box from '../common/Box';
 
 export interface PinPreviewProps {
+  idx: number;
   pinTitle: string;
   pinLocation: string;
   pinInformation: string;
@@ -20,6 +23,7 @@ export interface PinPreviewProps {
 }
 
 const PinPreview = ({
+  idx,
   pinTitle,
   pinLocation,
   pinInformation,
@@ -39,6 +43,8 @@ const PinPreview = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+
     if (e.target.checked) {
       setTagPins([...tagPins, pinTitle]);
       setTaggedPinIds((prev) => [...prev, pinId]);
@@ -88,41 +94,48 @@ const PinPreview = ({
     <Flex
       height="150px"
       position="relative"
-      $flexDirection="column"
+      $justifyContent="space-between"
       $backgroundColor="white"
-      $borderBottom="1px solid #E7E7E7"
+      $borderTop={idx === 0 ? `1px solid ${theme.color.lightGray}` : ''}
+      $borderBottom={`1px solid ${theme.color.lightGray}`}
     >
-      <MultiSelectButton
-        type="checkbox"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          onAddTagOfTopic(e)
-        }
-        onKeyDown={onInputKeyDown}
-        checked={Boolean(taggedPinIds.includes(pinId))}
-        aria-label={`${pinTitle} 핀 선택`}
-        ref={inputRef}
-      />
       <Flex
         $flexDirection="column"
         cursor="pointer"
         onClick={onClickSetSelectedPinId}
-        width="90%"
+        width="88%"
         height="95%"
         tabIndex={0}
         role="button"
       >
-        <Text color="black" $fontSize="default" $fontWeight="bold">
+        <Space size={1} />
+        <EllipsisTitle color="black" $fontSize="default" $fontWeight="bold">
           {pinTitle}
-        </Text>
+        </EllipsisTitle>
         <Space size={0} />
         <Text color="gray" $fontSize="small" $fontWeight="normal">
           {pinLocation}
         </Text>
         <Space size={3} />
-        <EllipsisText color="black" $fontSize="small" $fontWeight="normal">
+        <EllipsisDescription
+          color="black"
+          $fontSize="small"
+          $fontWeight="normal"
+        >
           {pinInformation}
-        </EllipsisText>
+        </EllipsisDescription>
       </Flex>
+      <Box>
+        <Space size={0} />
+        <MultiSelectButton
+          type="checkbox"
+          onChange={onAddTagOfTopic}
+          onKeyDown={onInputKeyDown}
+          checked={Boolean(taggedPinIds.includes(pinId))}
+          aria-label={`${pinTitle} 핀 선택`}
+          ref={inputRef}
+        />
+      </Box>
       <div
         id="live-region"
         aria-live="assertive"
@@ -135,24 +148,24 @@ const PinPreview = ({
 const MultiSelectButton = styled.input`
   width: 24px;
   height: 24px;
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background-color: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.black};
-  border-radius: ${({ theme }) => theme.radius.small};
   cursor: pointer;
-
-  &:focus {
-    background-color: ${({ theme }) => theme.color.primary};
-  }
 `;
 
-const EllipsisText = styled(Text)`
+const EllipsisTitle = styled(Text)`
   width: 100%;
   display: -webkit-box;
   word-wrap: break-word;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+const EllipsisDescription = styled(Text)`
+  width: 100%;
+  display: -webkit-box;
+  word-wrap: break-word;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   overflow: hidden;

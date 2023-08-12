@@ -47,7 +47,8 @@ export const MergeOrSeeTogether = ({
           ))}
         </Flex>
 
-        <Space size={5} />
+        <Space size={4} />
+
         <Flex
           $flexDirection="row"
           $alignItems="center"
@@ -78,6 +79,7 @@ export const MergeOrSeeTogether = ({
           </Button>
         </Flex>
       </Flex>
+      <Space size={4} />
     </>
   );
 };

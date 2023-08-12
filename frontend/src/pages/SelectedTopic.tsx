@@ -120,10 +120,10 @@ const SelectedTopic = () => {
                   topicPinCount={topic.pinCount}
                   topicDescription={topic.description}
                 />
-                {topic.pins.map((pin) => (
+                {topic.pins.map((pin, idx) => (
                   <li key={pin.id}>
-                    <Space size={3} />
                     <PinPreview
+                      idx={idx}
                       pinTitle={pin.name}
                       pinLocation={pin.address}
                       pinInformation={pin.description}
@@ -177,6 +177,12 @@ const SelectedTopic = () => {
     </>
   );
 };
+
+const MultiSelectButton = styled.input`
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+`;
 
 const PinDetailWrapper = styled.div`
   &.collapsedPinDetail {

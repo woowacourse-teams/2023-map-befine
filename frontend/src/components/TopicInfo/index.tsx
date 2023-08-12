@@ -58,7 +58,6 @@ const TopicInfo = ({
       position="relative"
       $flexDirection="column"
       $backgroundColor="white"
-      $borderBottom="1px solid #E7E7E7"
       tabIndex={0}
       role="button"
     >
