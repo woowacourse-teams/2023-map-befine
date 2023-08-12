@@ -66,9 +66,9 @@ const Layout = ({ children }: LayoutProps) => {
                 >
                   {children}
                 </Flex>
+                <Navbar layoutWidth={width} />
+                <Toast />
               </LayoutFlex>
-              <Navbar />
-              <Toast />
               <Map ref={mapContainer} map={map} $minWidth={width} />
             </Flex>
           </SeeTogetherProvider>
