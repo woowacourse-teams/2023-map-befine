@@ -4,11 +4,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
-public class KakaoAuthCodeRequestUrlProviderProvider implements AuthCodeRequestUrlProvider {
+public class KakaoAuthCodeRequestUrlProvider implements AuthCodeRequestUrlProvider {
 
     private final KakaoOauthConfig kakaoOauthConfig;
 
-    public KakaoAuthCodeRequestUrlProviderProvider(KakaoOauthConfig kakaoOauthConfig) {
+    public KakaoAuthCodeRequestUrlProvider(KakaoOauthConfig kakaoOauthConfig) {
         this.kakaoOauthConfig = kakaoOauthConfig;
     }
 
