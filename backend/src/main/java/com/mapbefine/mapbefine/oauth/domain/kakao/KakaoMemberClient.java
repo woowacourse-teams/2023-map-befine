@@ -13,14 +13,14 @@ import org.springframework.util.MultiValueMap;
 public class KakaoMemberClient implements OauthMemberClient {
 
     private KakaoApiClient kakaoApiClient;
-    private KakaoOauthConfig kakaoOauthConfig;
+    private KakaoOauthProperties kakaoOauthProperties;
 
     public KakaoMemberClient(
             KakaoApiClient kakaoApiClient,
-            KakaoOauthConfig kakaoOauthConfig
+            KakaoOauthProperties kakaoOauthProperties
     ) {
         this.kakaoApiClient = kakaoApiClient;
-        this.kakaoOauthConfig = kakaoOauthConfig;
+        this.kakaoOauthProperties = kakaoOauthProperties;
     }
 
     @Override
@@ -41,10 +41,10 @@ public class KakaoMemberClient implements OauthMemberClient {
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", kakaoOauthConfig.clientId());
-        params.add("redirect_uri", kakaoOauthConfig.redirectUri());
+        params.add("client_id", kakaoOauthProperties.clientId());
+        params.add("redirect_uri", kakaoOauthProperties.redirectUri());
         params.add("code", authCode);
-        params.add("client_secret", kakaoOauthConfig.clientSecret());
+        params.add("client_secret", kakaoOauthProperties.clientSecret());
         return params;
     }
 
