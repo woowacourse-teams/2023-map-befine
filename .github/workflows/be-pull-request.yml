@@ -1,10 +1,10 @@
-name: Backend CI For Test Validation
+name: Backend CI For Test Validation (oauth 관련 확인용)
 
 on:
   workflow_dispatch:
   
   pull_request:
-    branches: [ main, develop ]
+    branches: [ oauth-ci-test ]
     paths: backend/**
 
 permissions:
@@ -27,6 +27,11 @@ jobs:
         
     - name: gradlew 실행 권한 부여
       run: chmod +x gradlew
+      working-directory: backend
+
+    - name: 테스트용 변수 주입
+      run: |
+        sed -i "s/\${TEST_JWT_SECRET_KEY}/${{ secrets.TEST_JWT_SECRET_KEY }}/g" backend/src/test/resources/application.yml
       working-directory: backend
 
     - name: Gradle build 시작
