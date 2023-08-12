@@ -58,8 +58,10 @@ public class MemberCommandService {
         }
     }
 
-    public Long saveMemberTopicPermission(AuthMember authMember,
-            MemberTopicPermissionCreateRequest request) {
+    public Long saveMemberTopicPermission(
+            AuthMember authMember,
+            MemberTopicPermissionCreateRequest request
+    ) {
         Member member = memberRepository.findById(request.memberId())
                 .orElseThrow(NoSuchElementException::new);
         Topic topic = topicRepository.findById(request.topicId())
@@ -108,9 +110,9 @@ public class MemberCommandService {
     }
 
     public void deleteMemberTopicPermission(AuthMember authMember, Long permissionId) {
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(
-                        permissionId)
-                .orElseThrow(NoSuchElementException::new);
+        MemberTopicPermission memberTopicPermission =
+                memberTopicPermissionRepository.findById(permissionId)
+                        .orElseThrow(NoSuchElementException::new);
 
         validateMemberCanTopicUpdate(authMember, memberTopicPermission.getTopic());
 
