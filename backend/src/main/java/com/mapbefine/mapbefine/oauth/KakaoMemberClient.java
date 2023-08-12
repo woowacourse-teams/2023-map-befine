@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.oauth;
 
-import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.oauth.dto.KakaoMemberResponse;
 import com.mapbefine.mapbefine.oauth.dto.KakaoToken;
 import org.springframework.stereotype.Component;
@@ -27,13 +26,13 @@ public class KakaoMemberClient implements OauthMemberClient {
     }
 
     @Override
-    public Member fetch(String authCode) {
+    public OauthMember fetch(String authCode) {
         KakaoToken kakaoToken = kakaoApiClient.fetchToken(tokenRequestParams(authCode));
         KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember(
                 kakaoToken.tokenType() + " " + kakaoToken.accessToken()
         );
 
-        return kakaoMemberResponse.toDomain();
+        return kakaoMemberResponse.extract();
     }
 
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {

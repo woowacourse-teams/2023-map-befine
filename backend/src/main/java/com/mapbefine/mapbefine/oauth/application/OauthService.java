@@ -3,8 +3,8 @@ package com.mapbefine.mapbefine.oauth.application;
 import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.oauth.AuthCodeRequestUrlProviderComposite;
+import com.mapbefine.mapbefine.oauth.OauthMember;
 import com.mapbefine.mapbefine.oauth.OauthMemberClientComposite;
 import com.mapbefine.mapbefine.oauth.OauthServerType;
 import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
@@ -35,10 +35,8 @@ public class OauthService {
     }
 
     public LoginInfoResponse login(OauthServerType oauthServerType, String code) {
-        // TODO: 2023/08/11 nickname 카카오에서 받은 값 그대로 쓰지 않고 UUID 사용해 unique 하게 만들기
-        Member oauthMember = oauthMemberClientComposite.fetch(oauthServerType, code);
-        OauthId oauthId = oauthMember.getOauthId();
-        Member savedMember = memberRepository.findByOauthId(oauthId)
+        OauthMember oauthMember = oauthMemberClientComposite.fetch(oauthServerType, code);
+        Member savedMember = memberRepository.findByOauthId(oauthMember.getOauthId())
                 .orElseGet(() -> register(oauthMember));
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(savedMember.getId()));
@@ -46,8 +44,9 @@ public class OauthService {
         return LoginInfoResponse.of(accessToken, savedMember);
     }
 
-    private Member register(Member member) {
-        return memberRepository.save(member);
+    private Member register(OauthMember oauthMember) {
+
+        return memberRepository.save(oauthMember.toRegisterMember());
     }
 
 }
