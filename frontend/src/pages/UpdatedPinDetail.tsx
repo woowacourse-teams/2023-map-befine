@@ -41,7 +41,7 @@ const UpdatedPinDetail = ({
   };
 
   const onClickUpdatePin = async () => {
-    if (hasErrorMessage(errorMessages) || hasNullValue(formValues)) {
+    if (hasErrorMessage(errorMessages) || hasNullValue(formValues, 'images')) {
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }
