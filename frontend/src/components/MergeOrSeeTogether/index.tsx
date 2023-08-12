@@ -32,19 +32,27 @@ export const MergeOrSeeTogether = ({
           $flexWrap="wrap"
           $gap="12px 12px"
         >
-          {tag.map((title, index) => (
-            <Tag
-              key={index}
-              tabIndex={0}
-              aria-label={
-                confirmButton === '같이보기'
-                  ? `선택된 ${title} 토픽 태그`
-                  : `선택된 ${title} 핀 태그`
-              }
-            >
-              {title}
-            </Tag>
-          ))}
+          {tag.length > 2 ? (
+            <>
+              <Tag tabIndex={1}>{tag[0]}</Tag>
+              <Tag tabIndex={2}>{tag[1]}</Tag>
+              <Tag tabIndex={3}>외 {String(tag.length - 2)}개</Tag>
+            </>
+          ) : (
+            tag.map((title, index) => (
+              <Tag
+                key={`${index}-${title}`}
+                tabIndex={1}
+                aria-label={
+                  confirmButton === '같이보기'
+                    ? `선택된 ${title} 토픽 태그`
+                    : `선택된 ${title} 핀 태그`
+                }
+              >
+                {title}
+              </Tag>
+            ))
+          )}
         </Flex>
 
         <Space size={4} />
