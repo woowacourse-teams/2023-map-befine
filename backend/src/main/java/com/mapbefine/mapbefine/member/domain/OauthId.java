@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.member.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import com.mapbefine.mapbefine.oauth.OauthServerType;
+import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;

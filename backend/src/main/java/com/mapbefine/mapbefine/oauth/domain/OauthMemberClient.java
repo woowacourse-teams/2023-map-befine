@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.oauth;
+package com.mapbefine.mapbefine.oauth.domain;
 
 public interface OauthMemberClient {
 

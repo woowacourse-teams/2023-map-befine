@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.member.presentation;
 
-import static com.mapbefine.mapbefine.oauth.OauthServerType.KAKAO;
+import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
 import static io.restassured.RestAssured.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;

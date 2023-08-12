@@ -1,10 +1,10 @@
-package com.mapbefine.mapbefine.oauth.dto;
+package com.mapbefine.mapbefine.oauth.domain.kakao.dto;
 
-import static com.mapbefine.mapbefine.oauth.OauthServerType.KAKAO;
+import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.mapbefine.mapbefine.oauth.OauthMember;
+import com.mapbefine.mapbefine.oauth.domain.OauthMember;
 import java.time.LocalDateTime;
 
 @JsonNaming(SnakeCaseStrategy.class)

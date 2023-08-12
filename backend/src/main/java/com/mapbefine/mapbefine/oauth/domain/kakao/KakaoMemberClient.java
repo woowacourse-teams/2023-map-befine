@@ -1,7 +1,10 @@
-package com.mapbefine.mapbefine.oauth;
+package com.mapbefine.mapbefine.oauth.domain.kakao;
 
-import com.mapbefine.mapbefine.oauth.dto.KakaoMemberResponse;
-import com.mapbefine.mapbefine.oauth.dto.KakaoToken;
+import com.mapbefine.mapbefine.oauth.domain.OauthMember;
+import com.mapbefine.mapbefine.oauth.domain.OauthMemberClient;
+import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
+import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoMemberResponse;
+import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoToken;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;

@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.common.config;
 
-import com.mapbefine.mapbefine.oauth.OauthServerTypeConverter;
+import com.mapbefine.mapbefine.common.converter.OauthServerTypeConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

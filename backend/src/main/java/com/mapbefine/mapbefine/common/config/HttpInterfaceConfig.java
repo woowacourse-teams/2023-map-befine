@@ -1,5 +1,6 @@
-package com.mapbefine.mapbefine.oauth;
+package com.mapbefine.mapbefine.common.config;
 
+import com.mapbefine.mapbefine.oauth.domain.kakao.KakaoApiClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;

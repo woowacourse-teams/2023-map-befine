@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.member.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.oauth.OauthServerType;
+import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
