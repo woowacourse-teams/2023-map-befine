@@ -2,35 +2,62 @@ import { useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { css, keyframes, styled } from 'styled-components';
 import { ModalContext } from '../../context/ModalContext';
-type ModalWrapperType = Omit<ModalProps, 'children'>;
+type ModalWrapperType = Omit<ModalProps, 'children' | 'dimmedColor'>;
+
 interface ModalProps {
   position: 'center' | 'bottom';
   width: string;
   height: string;
+  dimmedColor: string;
   children: React.ReactNode;
+  top?: string;
+  left?: string;
 }
-const Modal = ({ position, width, height, children }: ModalProps) => {
+const Modal = ({
+  position,
+  width,
+  height,
+  dimmedColor,
+  children,
+  top,
+  left,
+}: ModalProps) => {
   const { isModalOpen, closeModal } = useContext(ModalContext);
+
   const root = document.querySelector('#root') as HTMLElement;
+
   useEffect(() => {
     const escKeyModalClose = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         closeModal();
       }
     };
+
     window.addEventListener('keydown', escKeyModalClose);
+
     return () => {
       window.removeEventListener('keydown', escKeyModalClose);
     };
   }, []);
+
   const onClickDimmedCloseModal = (e: React.MouseEvent<HTMLDivElement>) => {
     closeModal();
   };
+
   return ReactDOM.createPortal(
     isModalOpen && (
       <>
-        <WrapperDimmed onClick={onClickDimmedCloseModal} />
-        <Wrapper id="modal" position={position} width={width} height={height}>
+        <WrapperDimmed
+          dimmedColor={dimmedColor}
+          onClick={onClickDimmedCloseModal}
+        />
+        <Wrapper
+          position={position}
+          width={width}
+          height={height}
+          top={top}
+          left={left}
+        >
           {children}
         </Wrapper>
       </>
@@ -42,14 +69,18 @@ const Wrapper = styled.div<ModalWrapperType>`
   width: ${({ width }) => width || '400px'};
   height: ${({ height }) => height || '400px'};
   ${({ position }) => getModalPosition(position)};
+  top: ${({ top }) => top && top};
+  left: ${({ left }) => left && left};
 `;
-const WrapperDimmed = styled.div`
+
+const WrapperDimmed = styled.div<{ dimmedColor: string }>`
   width: 100%;
   height: 100%;
   position: fixed;
   top: 0;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: ${({ dimmedColor }) => dimmedColor};
 `;
+
 const translateModalAnimation = keyframes`
   from {
     opacity: 0;
@@ -60,6 +91,7 @@ const translateModalAnimation = keyframes`
     transform: translate(-50%, 0);
   }
 `;
+
 const openModalAnimation = keyframes`
   from {
     opacity: 0;
@@ -68,6 +100,7 @@ const openModalAnimation = keyframes`
     opacity: 1;
   }
 `;
+
 const getModalPosition = (position: 'center' | 'bottom' | 'absolute') => {
   switch (position) {
     case 'center':
@@ -79,6 +112,7 @@ const getModalPosition = (position: 'center' | 'bottom' | 'absolute') => {
         border-radius: ${({ theme }) => theme.radius.medium};
         animation: ${openModalAnimation} 0.3s ease 1;
       `;
+
     case 'bottom':
       return css`
         position: fixed;
@@ -91,4 +125,5 @@ const getModalPosition = (position: 'center' | 'bottom' | 'absolute') => {
       `;
   }
 };
+
 export default Modal;

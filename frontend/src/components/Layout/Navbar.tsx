@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { styled } from 'styled-components';
 import useNavigator from '../../hooks/useNavigator';
 import Flex from '../common/Flex';
@@ -15,6 +15,8 @@ import FocusSeeTogether from '../../assets/nav_seeTogether_focus.svg';
 import FocusFavorite from '../../assets/nav_favorite_focus.svg';
 import FocusAddMapOrPin from '../../assets/nav_addMapOrPin_focus.svg';
 import FocusProfile from '../../assets/nav_profile_focus.svg';
+import Modal from '../Modal';
+import { ModalContext } from '../../context/ModalContext';
 
 interface NavBarProps {
   layoutWidth: '100vw' | '372px';
@@ -22,7 +24,7 @@ interface NavBarProps {
 
 const Navbar = ({ layoutWidth }: NavBarProps) => {
   const { routePage } = useNavigator();
-  const [showButton, setShowButton] = useState(false);
+  const { openModal, closeModal } = useContext(ModalContext);
   const [highlightCurrentPage, setHighlightCurrentPage] = useState({
     home: true,
     seeTogether: false,
@@ -32,7 +34,6 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
   });
 
   const goToHome = () => {
-    setShowButton(false);
     routePage('/');
     setHighlightCurrentPage(() => ({
       home: true,
@@ -44,7 +45,6 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
   };
 
   const goToSeeTogether = () => {
-    setShowButton(false);
     routePage('/see-together');
     setHighlightCurrentPage(() => ({
       home: false,
@@ -56,7 +56,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
   };
 
   const onClickAddMapOrPin = () => {
-    setShowButton((prev) => !prev);
+    openModal();
     setHighlightCurrentPage(() => ({
       home: false,
       seeTogether: false,
@@ -67,7 +67,6 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
   };
 
   const goToFavorite = () => {
-    setShowButton(false);
     routePage('/favorite');
     setHighlightCurrentPage(() => ({
       home: false,
@@ -79,7 +78,6 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
   };
 
   const goToProfile = () => {
-    setShowButton(false);
     routePage('/my-page');
     setHighlightCurrentPage(() => ({
       home: false,
@@ -163,30 +161,36 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      {showButton && (
-        <Flex
-          position="absolute"
-          bottom="60px"
-          $justifyContent="center"
-          padding="20px"
-          left="0"
-          width="100%"
-        >
-          <Button
+      <Modal
+        position="center"
+        width="232px"
+        height="44px"
+        dimmedColor="rgba(0,0,0,0)"
+        top="calc(100vh - 100px)"
+        left={layoutWidth === '100vw' ? '' : `${372 / 2}px`}
+      >
+        <Flex $justifyContent="center" width="100%">
+          <RouteButton
             variant="primary"
             onClick={() => {
               routePage('/new-topic');
-              setShowButton(false);
+              closeModal();
             }}
           >
             지도 추가하기
-          </Button>
+          </RouteButton>
           <Space size={4} />
-          <Button variant="primary" onClick={() => routePage('/')}>
+          <RouteButton
+            variant="primary"
+            onClick={() => {
+              routePage('/');
+              closeModal();
+            }}
+          >
             핀 추가하기
-          </Button>
+          </RouteButton>
         </Flex>
-      )}
+      </Modal>
     </Wrapper>
   );
 };
@@ -212,4 +216,12 @@ const IconSpace = styled(Space)<{ layoutWidth: '100vw' | '372px' }>`
   display: ${({ layoutWidth }) => (layoutWidth === '100vw' ? 'block' : 'none')};
 `;
 
+const RouteButton = styled(Button)`
+  box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.5);
+`;
+
+const ModalWrapper = styled(Flex)`
+  width: 100%;
+  height: 100%;
+`;
 export default Navbar;
