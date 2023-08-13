@@ -5,7 +5,6 @@ import TopicListContainer from '../components/TopicListContainer';
 import { styled } from 'styled-components';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
-import Modal from '../components/Modal';
 
 const Home = () => {
   const { routePage } = useNavigator();
@@ -14,12 +13,15 @@ const Home = () => {
   const goToPopularTopics = () => {
     routePage('see-all/popularity');
   };
+
   const goToNearByMeTopics = () => {
     routePage('see-all/near');
   };
+
   const goToLatestTopics = () => {
     routePage('see-all/latest');
   };
+
   return (
     <>
       <Wrapper position="relative">
@@ -41,19 +43,19 @@ const Home = () => {
           routeWhenSeeAll={goToLatestTopics}
         />
       </Wrapper>
-      <Modal position="center" width="300px" height="300px">
-        <ModalWrapper>this is modal</ModalWrapper>
-      </Modal>
     </>
   );
 };
+
 const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
 `;
+
 const ModalWrapper = styled.div`
   width: 300px;
   height: 300px;
   background-color: white;
 `;
+
 export default Home;
