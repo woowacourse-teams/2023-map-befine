@@ -7,8 +7,8 @@ import com.mapbefine.mapbefine.auth.infrastructure.AuthorizationExtractor;
 import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Objects;
-import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -55,12 +55,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private boolean isAuthMemberNotRequired(HandlerMethod handlerMethod) {
-        for (MethodParameter parameter : handlerMethod.getMethodParameters()) {
-            if (parameter.getParameterType().equals(AuthMember.class)) {
-                return false;
-            }
-        }
-        return true;
+        return Arrays.stream(handlerMethod.getMethodParameters())
+                .noneMatch(parameter -> parameter.getParameterType().equals(AuthMember.class));
     }
 
     private boolean isLoginRequired(HandlerMethod handlerMethod) {
