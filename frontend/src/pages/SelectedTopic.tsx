@@ -9,7 +9,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../apis/getApi';
-import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
+import PullPin from '../components/PullPin';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
@@ -100,7 +100,7 @@ const SelectedTopic = () => {
       >
         <Space size={2} />
         {taggedPinIds.length > 0 && (
-          <MergeOrSeeTogether
+          <PullPin
             tag={tagPins}
             confirmButton="뽑아오기"
             onClickConfirm={onClickConfirm}
