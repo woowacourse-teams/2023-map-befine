@@ -13,7 +13,7 @@ import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
 import ShareUrl from '../assets/shareUrl.svg';
 import { styled } from 'styled-components';
-import { ModalPortal, useModalContext } from '../context/ModalContext';
+import { ModalPortal, useModalContext } from '../context/AbsoluteModalContext';
 
 interface PinDetailProps {
   pinId: number;
