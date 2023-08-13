@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.oauth.presentation;
 
-import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
+import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;

@@ -80,6 +80,7 @@ class OauthServiceTest {
     void login() {
         // given when
         LoginInfoResponse response = oauthService.login(KAKAO, "auth");
+        System.out.println(response);
 
         // then
         assertThat(response.accessToken()).isNotNull();

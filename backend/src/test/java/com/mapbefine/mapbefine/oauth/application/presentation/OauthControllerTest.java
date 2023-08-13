@@ -1,49 +1,62 @@
 package com.mapbefine.mapbefine.oauth.application.presentation;
 
+import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
 import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
+import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
-import com.mapbefine.mapbefine.oauth.domain.kakao.KakaoOauthProperties;
-import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoMemberResponse;
-import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoToken;
-import org.junit.jupiter.api.BeforeEach;
+import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class OauthControllerTest extends RestDocsIntegration {
 
-    @Autowired
+    @MockBean
     private OauthService oauthService;
 
-    @MockBean
-    private KakaoOauthProperties kakaoOauthProperties;
+    @Test
+    @DisplayName("kakao 소셜 로그인 Redirection Url 반환")
+    void redirection() throws Exception {
+        // given
+        given(oauthService.getAuthCodeRequestUrl(KAKAO)).willReturn(
+                "https://kauth.kakao.com/oauth/authorize?"
+                + "response_type=code"
+                + "&client_id={client_id}"
+                + "&redirect_uri={redirection_uri}"
+                + "&scope={scope}"
+        );
 
-    @MockBean
-    private KakaoToken kakaoToken;
-
-    @MockBean
-    private KakaoMemberResponse kakaoMemberResponse;
-
-    @BeforeEach
-    void beforeEach() {
-        given(kakaoOauthProperties.clientId()).willReturn("[client_id]");
-        given(kakaoOauthProperties.scope()).willReturn(new String[] {"[scope]"});
-        given(kakaoOauthProperties.redirectUri()).willReturn("[redirection_uri]");
-
-        given(kakaoToken.tokenType()).willReturn("tokenType");
-        given(kakaoToken.accessToken()).willReturn("accessToken");
+        // when then
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/oauth/kakao")
+        ).andDo(restDocs.document());
     }
 
     @Test
-    @DisplayName("Kakao Redirection Url 요청")
-    void redirection() throws Exception {
-        // given when then
+    @DisplayName("소셜 로그인 성공시 로그인한 유저 정보 반환")
+    void login() throws Exception {
+        // given
+        String code = "auth_code";
+        LoginInfoResponse response = new LoginInfoResponse(
+                testAuthHeaderProvider.createAuthHeaderById(Long.MAX_VALUE),
+                new MemberDetailResponse(
+                        Long.MAX_VALUE,
+                        "모험가03fcb0d",
+                        "yshert@naver.com",
+                        "https://map-befine-official.github.io/favicon.png",
+                        LocalDateTime.now()
+                )
+        );
+        given(oauthService.login(KAKAO, code)).willReturn(response);
+
+        // when then
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/oauth/kakao")
+                MockMvcRequestBuilders.get("/oauth/login/kakao")
+                        .param("code", code)
         ).andDo(restDocs.document());
     }
 

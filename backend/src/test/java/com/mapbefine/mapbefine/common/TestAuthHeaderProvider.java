@@ -15,6 +15,14 @@ public class TestAuthHeaderProvider {
 
     public String createAuthHeader(Member member) {
         Long memberId = member.getId();
+        return generateToken(memberId);
+    }
+
+    public String createAuthHeaderById(Long id) {
+        return generateToken(id);
+    }
+
+    private String generateToken(Long memberId) {
         return "Bearer " + jwtTokenProvider.createToken(String.valueOf(memberId));
     }
 
