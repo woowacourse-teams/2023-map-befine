@@ -4,6 +4,7 @@ import com.mapbefine.mapbefine.auth.application.AuthService;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Objects;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -39,14 +40,14 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private void validateRequest(HttpServletRequest request) {
-        if (request == null) {
+        if (Objects.isNull(request)) {
             throw new IllegalArgumentException("정상적인 요청이 아닙니다.");
         }
     }
 
     private AuthMember createAuthMember(HttpServletRequest request) {
         Long memberId = (Long) request.getAttribute("memberId");
-        if (memberId == null) {
+        if (Objects.isNull(memberId)) {
             return new Guest();
         }
 
