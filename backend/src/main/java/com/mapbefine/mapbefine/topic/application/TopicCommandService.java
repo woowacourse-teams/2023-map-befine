@@ -160,7 +160,7 @@ public class TopicCommandService {
 
     public void copyPin(AuthMember member, Long topicId, List<Long> pinIds) {
         Topic topic = findTopic(topicId);
-        validatePinCreateOrUpdateAuth(member, topic);
+        validatePinCreateOrUpdateAuthInTopic(member, topic);
 
         validateCopyPinSelected(pinIds);
 
@@ -172,7 +172,7 @@ public class TopicCommandService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
     }
 
-    private void validatePinCreateOrUpdateAuth(AuthMember member, Topic topic) {
+    private void validatePinCreateOrUpdateAuthInTopic(AuthMember member, Topic topic) {
         if (member.canPinCreateOrUpdate(topic)) {
             return;
         }
