@@ -54,11 +54,6 @@ public class AtlasCommandService {
         return atlasRepository.existsByMemberIdAndTopicId(memberId, topicId);
     }
 
-    private Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(NoSuchElementException::new);
-    }
-
     private Topic findTopicById(Long topicId) {
         return topicRepository.findById(topicId)
                 .orElseThrow(NoSuchElementException::new);
@@ -69,6 +64,11 @@ public class AtlasCommandService {
             return;
         }
         throw new IllegalArgumentException("해당 지도에 접근권한이 없습니다.");
+    }
+
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public void removeTopic(AuthMember authMember, Long topicId) {
