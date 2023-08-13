@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MockBeansConfig {
 
-    @MockBean
-    private OauthService oauthService;
+//    @MockBean
+//    private OauthService oauthService;
+
 }
