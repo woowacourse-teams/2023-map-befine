@@ -40,10 +40,7 @@ public class TopicQueryService {
     }
 
     private TopicResponse convertToResponse(List<Topic> topicsInAtlas, Topic topic) {
-        if (topicsInAtlas.contains(topic)) {
-            return TopicResponse.from(topic, true);
-        }
-        return TopicResponse.from(topic, false);
+        return TopicResponse.from(topic, topicsInAtlas.contains(topic));
     }
 
     public TopicDetailResponse findDetailById(AuthMember member, Long id) {
@@ -69,10 +66,7 @@ public class TopicQueryService {
     }
 
     private TopicDetailResponse convertToDetailResponse(List<Topic> topicsInAtlas, Topic topic) {
-        if (topicsInAtlas.contains(topic)) {
-            return TopicDetailResponse.from(topic, true);
-        }
-        return TopicDetailResponse.from(topic, false);
+        return TopicDetailResponse.from(topic, topicsInAtlas.contains(topic));
     }
 
     public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> ids) {

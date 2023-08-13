@@ -80,10 +80,7 @@ public class MemberQueryService {
     }
 
     private TopicResponse convertToResponse(List<Topic> topicsInAtlas, Topic topic) {
-        if (topicsInAtlas.contains(topic)) {
-            return TopicResponse.from(topic, true);
-        }
-        return TopicResponse.from(topic, false);
+        return TopicResponse.from(topic, topicsInAtlas.contains(topic));
     }
 
     public List<PinResponse> findPinsByMember(AuthMember authMember) {
