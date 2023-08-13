@@ -86,7 +86,7 @@ const useSetNavbarHighlight = (pageName: string) => {
 
       return;
     }
-  });
+  }, []);
 
   return { navbarHighlights };
 };
