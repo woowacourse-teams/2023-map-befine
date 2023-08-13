@@ -6,11 +6,13 @@ import { styled } from 'styled-components';
 import Box from '../components/common/Box';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const url = '/topics';
 
 const SeeAllTopics = () => {
   const { width: _ } = useSetLayoutWidth(FULLSCREEN);
+  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
 
   return (
     <Wrapper>

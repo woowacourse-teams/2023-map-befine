@@ -14,6 +14,7 @@ import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { DEFAULT_TOPIC_IMAGE, LAYOUT_PADDING, SIDEBAR } from '../constants';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
@@ -27,6 +28,7 @@ const SelectedTopic = () => {
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
+  const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi(

@@ -17,6 +17,7 @@ import FocusAddMapOrPin from '../../assets/nav_addMapOrPin_focus.svg';
 import FocusProfile from '../../assets/nav_profile_focus.svg';
 import Modal from '../Modal';
 import { ModalContext } from '../../context/ModalContext';
+import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
 
 interface NavBarProps {
   layoutWidth: '100vw' | '372px';
@@ -25,75 +26,34 @@ interface NavBarProps {
 const Navbar = ({ layoutWidth }: NavBarProps) => {
   const { routePage } = useNavigator();
   const { openModal, closeModal } = useContext(ModalContext);
-  const [highlightCurrentPage, setHighlightCurrentPage] = useState({
-    home: true,
-    seeTogether: false,
-    addMapOrPin: false,
-    favorite: false,
-    profile: false,
-  });
+  const { navbarHighlights } = useContext(NavbarHighlightsContext);
 
   const goToHome = () => {
     routePage('/');
-    setHighlightCurrentPage(() => ({
-      home: true,
-      seeTogether: false,
-      addMapOrPin: false,
-      favorite: false,
-      profile: false,
-    }));
   };
 
   const goToSeeTogether = () => {
     routePage('/see-together');
-    setHighlightCurrentPage(() => ({
-      home: false,
-      seeTogether: true,
-      addMapOrPin: false,
-      favorite: false,
-      profile: false,
-    }));
   };
 
   const onClickAddMapOrPin = () => {
     openModal();
-    setHighlightCurrentPage(() => ({
-      home: false,
-      seeTogether: false,
-      addMapOrPin: true,
-      favorite: false,
-      profile: false,
-    }));
   };
 
   const goToFavorite = () => {
     routePage('/favorite');
-    setHighlightCurrentPage(() => ({
-      home: false,
-      seeTogether: false,
-      addMapOrPin: false,
-      favorite: true,
-      profile: false,
-    }));
   };
 
   const goToProfile = () => {
     routePage('/my-page');
-    setHighlightCurrentPage(() => ({
-      home: false,
-      seeTogether: false,
-      addMapOrPin: false,
-      favorite: false,
-      profile: true,
-    }));
   };
 
   return (
     <Wrapper layoutWidth={layoutWidth}>
       <IconWrapper onClick={goToHome}>
-        {highlightCurrentPage.home ? <FocusHome /> : <Home />}
+        {navbarHighlights.home ? <FocusHome /> : <Home />}
         <Text
-          color={highlightCurrentPage.home ? 'primary' : 'darkGray'}
+          color={navbarHighlights.home ? 'primary' : 'darkGray'}
           $fontSize="extraSmall"
           $fontWeight="normal"
         >
@@ -104,13 +64,9 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
       <IconSpace size={7} layoutWidth={layoutWidth} />
 
       <IconWrapper onClick={goToSeeTogether}>
-        {highlightCurrentPage.seeTogether ? (
-          <FocusSeeTogether />
-        ) : (
-          <SeeTogether />
-        )}
+        {navbarHighlights.seeTogether ? <FocusSeeTogether /> : <SeeTogether />}
         <Text
-          color={highlightCurrentPage.seeTogether ? 'primary' : 'darkGray'}
+          color={navbarHighlights.seeTogether ? 'primary' : 'darkGray'}
           $fontSize="extraSmall"
           $fontWeight="normal"
         >
@@ -121,13 +77,9 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
       <IconSpace size={7} layoutWidth={layoutWidth} />
 
       <IconWrapper onClick={onClickAddMapOrPin}>
-        {highlightCurrentPage.addMapOrPin ? (
-          <FocusAddMapOrPin />
-        ) : (
-          <AddMapOrPin />
-        )}
+        {navbarHighlights.addMapOrPin ? <FocusAddMapOrPin /> : <AddMapOrPin />}
         <Text
-          color={highlightCurrentPage.addMapOrPin ? 'primary' : 'darkGray'}
+          color={navbarHighlights.addMapOrPin ? 'primary' : 'darkGray'}
           $fontSize="extraSmall"
           $fontWeight="normal"
         >
@@ -138,9 +90,9 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
       <IconSpace size={7} layoutWidth={layoutWidth} />
 
       <IconWrapper onClick={goToFavorite}>
-        {highlightCurrentPage.favorite ? <FocusFavorite /> : <Favorite />}
+        {navbarHighlights.favorite ? <FocusFavorite /> : <Favorite />}
         <Text
-          color={highlightCurrentPage.favorite ? 'primary' : 'darkGray'}
+          color={navbarHighlights.favorite ? 'primary' : 'darkGray'}
           $fontSize="extraSmall"
           $fontWeight="normal"
         >
@@ -151,9 +103,9 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
       <IconSpace size={7} layoutWidth={layoutWidth} />
 
       <IconWrapper onClick={goToProfile}>
-        {highlightCurrentPage.profile ? <FocusProfile /> : <Profile />}
+        {navbarHighlights.profile ? <FocusProfile /> : <Profile />}
         <Text
-          color={highlightCurrentPage.profile ? 'primary' : 'darkGray'}
+          color={navbarHighlights.profile ? 'primary' : 'darkGray'}
           $fontSize="extraSmall"
           $fontWeight="normal"
         >

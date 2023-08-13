@@ -12,6 +12,7 @@ import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
@@ -29,6 +30,7 @@ const NewTopic = () => {
   const { state: taggedIds } = useLocation();
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
+  const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
 
   const goToBack = () => {
     routePage(-1);

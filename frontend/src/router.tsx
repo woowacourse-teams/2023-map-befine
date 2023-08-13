@@ -9,7 +9,7 @@ import SeeAllNearTopics from './pages/SeeAllNearTopics';
 import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
 import SeeTogetherTopics from './pages/SeeTogetherTopics';
 import Favorite from './pages/Favorite';
-import MyPage from './pages/MyPage';
+import Profile from './pages/Profile';
 
 const routes = [
   {
@@ -54,7 +54,7 @@ const routes = [
       },
       {
         path: 'my-page',
-        element: <MyPage />,
+        element: <Profile />,
       },
     ],
   },

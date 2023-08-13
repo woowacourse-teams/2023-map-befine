@@ -5,10 +5,12 @@ import TopicListContainer from '../components/TopicListContainer';
 import { styled } from 'styled-components';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const Home = () => {
   const { routePage } = useNavigator();
   const { width: _ } = useSetLayoutWidth(FULLSCREEN);
+  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
 
   const goToPopularTopics = () => {
     routePage('see-all/popularity');

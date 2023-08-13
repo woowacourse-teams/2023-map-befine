@@ -18,6 +18,7 @@ import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 type NewPinFormValueType = Pick<
   NewPinFormProps,
@@ -26,6 +27,7 @@ type NewPinFormValueType = Pick<
 
 const NewPin = () => {
   const { state: prevUrl } = useLocation();
+  const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
   const [topic, setTopic] = useState<TopicType | null>(null);
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
