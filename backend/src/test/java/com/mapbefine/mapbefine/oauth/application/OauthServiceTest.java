@@ -17,7 +17,6 @@ import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoMemberResponse;
 import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoToken;
 import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -118,9 +117,6 @@ class OauthServiceTest {
         oauthService.login(KAKAO, "auth");
 
         // then
-        // 중복으로 저장되지 않는다는 것을 assertDoesNotThrow 로 표현해봤어요..
-        // findByMemberInfoEmail 했을 때 size 가 2가 아닌지 확인하는 것을 고려해봤지만
-        // 현재로서는 반환 타입이 Optional<Member> 라서 검증하지 못했네용..
         assertDoesNotThrow(() -> oauthService.login(KAKAO, "auth"));
     }
 

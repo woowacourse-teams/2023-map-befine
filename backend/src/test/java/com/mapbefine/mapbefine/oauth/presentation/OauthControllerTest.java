@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.oauth.application.presentation;
+package com.mapbefine.mapbefine.oauth.presentation;
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
 import static org.mockito.BDDMockito.given;
