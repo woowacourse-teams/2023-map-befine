@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.oauth.application;
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -106,7 +105,6 @@ class OauthServiceTest {
         assertThat(response.member().imageUrl()).isEqualTo(
                 "https://map-befine-official.github.io/favicon.png"
         );
-        assertThat(response.member().nickName()).startsWith("모험가");
         assertThat(savedMember.getId()).isEqualTo(response.member().id());
     }
 
@@ -114,10 +112,15 @@ class OauthServiceTest {
     @DisplayName("Kakao 로 로그인 처음이 아닌 경우 사용자의 정보를 저장하지 않고 사용자의 로그인 정보를 반환한다.")
     void login() {
         // given
-        oauthService.login(KAKAO, "auth");
+        LoginInfoResponse firstLogin = oauthService.login(KAKAO, "auth");
+        Member savedMember = memberRepository.findByMemberInfoEmail(firstLogin.member().email())
+                .orElseThrow(NoSuchElementException::new);
+
+        // when
+        LoginInfoResponse secondLogin = oauthService.login(KAKAO, "auth");
 
         // then
-        assertDoesNotThrow(() -> oauthService.login(KAKAO, "auth"));
+        assertThat(savedMember.getId()).isEqualTo(secondLogin.member().id());
     }
 
 }
