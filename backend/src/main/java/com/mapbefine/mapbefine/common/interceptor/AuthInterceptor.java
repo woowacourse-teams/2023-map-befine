@@ -48,8 +48,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         request.setAttribute("memberId", memberId);
 
         if (isLoginRequired((HandlerMethod) handler)) {
-            // TODO: 2023/08/11 403 반환
-            return isMember(memberId);
+            // TODO: 2023/08/11 isMember false이면 403 반환
+            return authService.isMember(memberId);
         }
         return true;
     }
@@ -67,11 +67,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         LoginRequired loginRequired = handlerMethod.getMethodAnnotation(LoginRequired.class);
 
         return !Objects.isNull(loginRequired);
-    }
-
-    private boolean isMember(Long memberId) {
-
-        return authService.isMember(memberId);
     }
 
     private Long extractMemberIdFromToken(HttpServletRequest request) {
