@@ -2,13 +2,13 @@ import { useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { css, keyframes, styled } from 'styled-components';
 import { ModalContext } from '../../context/ModalContext';
-type ModalWrapperType = Omit<ModalProps, 'children' | 'dimmedColor'>;
+type ModalWrapperType = Omit<ModalProps, 'children' | '$dimmedColor'>;
 
 interface ModalProps {
   position: 'center' | 'bottom';
   width: string;
   height: string;
-  dimmedColor: string;
+  $dimmedColor: string;
   children: React.ReactNode;
   top?: string;
   left?: string;
@@ -17,7 +17,7 @@ const Modal = ({
   position,
   width,
   height,
-  dimmedColor,
+  $dimmedColor,
   children,
   top,
   left,
@@ -48,7 +48,7 @@ const Modal = ({
     isModalOpen && (
       <>
         <WrapperDimmed
-          dimmedColor={dimmedColor}
+          $dimmedColor={$dimmedColor}
           onClick={onClickDimmedCloseModal}
         />
         <Wrapper
@@ -73,12 +73,12 @@ const Wrapper = styled.div<ModalWrapperType>`
   left: ${({ left }) => left && left};
 `;
 
-const WrapperDimmed = styled.div<{ dimmedColor: string }>`
+const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
   width: 100%;
   height: 100%;
   position: fixed;
   top: 0;
-  background-color: ${({ dimmedColor }) => dimmedColor};
+  background-color: ${({ $dimmedColor }) => $dimmedColor};
 `;
 
 const translateModalAnimation = keyframes`
