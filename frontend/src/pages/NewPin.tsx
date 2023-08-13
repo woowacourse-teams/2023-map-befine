@@ -3,18 +3,24 @@ import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
-import Textarea from '../components/common/Textarea';
 import { postApi } from '../apis/postApi';
 import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
 import { getApi } from '../apis/getApi';
 import { TopicType } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { NewPinValuesType } from '../types/FormValues';
+import { NewPinFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { useLocation } from 'react-router-dom';
 import useToast from '../hooks/useToast';
+import InputContainer from '../components/InputContainer';
+import { hasErrorMessage, hasNullValue } from '../validations';
+
+type NewPinFormValueType = Pick<
+  NewPinFormProps,
+  'name' | 'address' | 'description'
+>;
 
 const NewPin = () => {
   const { state: prevUrl } = useLocation();
@@ -22,19 +28,14 @@ const NewPin = () => {
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
-  const { formValues, onChangeInput } = useFormValues<NewPinValuesType>({
-    topicId: 0,
-    name: '',
-    address: '',
-    description: '',
-    latitude: '',
-    longitude: '',
-    legalDongCode: '',
-    images: [],
-  });
+  const { formValues, errorMessages, onChangeInput } =
+    useFormValues<NewPinFormValueType>({
+      name: '',
+      address: '',
+      description: '',
+    });
   const { routePage } = useNavigator();
   const { showToast } = useToast();
-  const addressRef = useRef<HTMLInputElement | null>(null);
 
   const goToBack = () => {
     routePage(-1);
@@ -44,7 +45,7 @@ const NewPin = () => {
     await postApi('/pins', {
       topicId: topic?.id || 'error',
       name: formValues.name,
-      address: addressRef.current?.value,
+      address: clickedCoordinate.address,
       description: formValues.description,
       latitude: clickedCoordinate.latitude,
       longitude: clickedCoordinate.longitude,
@@ -56,10 +57,17 @@ const NewPin = () => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await postToServer();
+    if (clickedCoordinate.address?.length === 0) {
+      showToast('error', '장소의 위치를 입력해주세요.');
+      return;
+    }
 
-    if (prevUrl.length > 1) routePage(`/topics/${prevUrl}`, [topic!.id]);
-    else routePage(`/topics/${topic?.id}`, [topic!.id]);
+    if (hasErrorMessage(errorMessages) || hasNullValue(formValues, 'address')) {
+      showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
+      return;
+    }
+
+    await postToServer();
 
     showToast('info', `${formValues.name} 핀을 추가하였습니다.`);
 
@@ -73,9 +81,22 @@ const NewPin = () => {
       longitude: '',
       address: '',
     });
+
+    if (prevUrl && prevUrl.length > 1) {
+      routePage(`/topics/${prevUrl}`, [topic!.id]);
+      return;
+    }
+
+    routePage(`/topics/${topic?.id}`, [topic!.id]);
   };
 
-  const onClickAddressInput = () => {
+  const onClickAddressInput = (
+    e:
+      | React.MouseEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (!(e.type === 'click') && e.currentTarget.value) return;
+
     var width = 500; //팝업의 너비
     var height = 600; //팝업의 높이
     new window.daum.Postcode({
@@ -114,7 +135,6 @@ const NewPin = () => {
       }
     };
 
-    formValues.address = '';
     getTopicId();
   }, []);
 
@@ -122,7 +142,7 @@ const NewPin = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <Space size={6} />
+      <Space size={4} />
       <Flex $flexDirection="column">
         <Text color="black" $fontSize="large" $fontWeight="bold">
           핀 추가
@@ -141,33 +161,28 @@ const NewPin = () => {
             </Text>
           </Flex>
           <Space size={0} />
-          <Button type="button" variant="primary">{`${topic.name}`}</Button>
+          <Button type="button" variant="primary">
+            {topic.name}
+          </Button>
         </section>
 
         <Space size={5} />
 
-        <section>
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              장소 이름
-            </Text>
-            <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
-          </Flex>
-          <Space size={0} />
-          <Input
-            name="name"
-            value={formValues.name}
-            onChange={onChangeInput}
-            placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
-            autoFocus={true}
-            tabIndex={1}
-          />
-        </section>
+        <InputContainer
+          tagType="input"
+          containerTitle="장소 이름"
+          isRequired={true}
+          name="name"
+          value={formValues.name}
+          placeholder="50글자 이내로 장소의 이름을 입력해주세요."
+          onChangeInput={onChangeInput}
+          tabIndex={1}
+          errorMessage={errorMessages.name}
+          autoFocus
+          maxLength={50}
+        />
 
-        <Space size={5} />
+        <Space size={1} />
 
         <section>
           <Flex>
@@ -186,7 +201,6 @@ const NewPin = () => {
             value={clickedCoordinate.address}
             onClick={onClickAddressInput}
             onKeyDown={onClickAddressInput}
-            ref={addressRef}
             tabIndex={2}
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
@@ -194,25 +208,18 @@ const NewPin = () => {
 
         <Space size={5} />
 
-        <section>
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              장소 설명
-            </Text>
-            <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
-          </Flex>
-          <Space size={0} />
-          <Textarea
-            name="description"
-            value={formValues.description}
-            onChange={onChangeInput}
-            placeholder="장소에 대한 의견을 자유롭게 남겨주세요."
-            tabIndex={3}
-          />
-        </section>
+        <InputContainer
+          tagType="textarea"
+          containerTitle="장소 설명"
+          isRequired={true}
+          name="description"
+          value={formValues.description}
+          placeholder="1000자 이내로 장소에 대한 의견을 남겨주세요."
+          onChangeInput={onChangeInput}
+          tabIndex={3}
+          errorMessage={errorMessages.description}
+          maxLength={1000}
+        />
 
         <Space size={6} />
 
