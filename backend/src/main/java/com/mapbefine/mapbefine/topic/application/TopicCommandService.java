@@ -162,9 +162,7 @@ public class TopicCommandService {
         Topic topic = findTopic(topicId);
         validatePinCreateOrUpdateAuth(member, topic);
 
-        if (pinIds.isEmpty()) {
-            throw new IllegalArgumentException("복사할 핀을 선택해주세요");
-        }
+        validateCopyPinSelected(pinIds);
 
         copyPinsToTopic(member, topic, pinIds);
     }
@@ -179,6 +177,12 @@ public class TopicCommandService {
             return;
         }
         throw new IllegalArgumentException("핀을 추가할 권한이 없습니다.");
+    }
+
+    private void validateCopyPinSelected(List<Long> pinIds) {
+        if (pinIds.isEmpty()) {
+            throw new IllegalArgumentException("복사할 핀을 선택해주세요");
+        }
     }
 
     public void updateTopicInfo(

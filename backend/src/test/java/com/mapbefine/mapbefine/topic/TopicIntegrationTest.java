@@ -177,7 +177,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("기존 토픽에 핀을 복사하면 200을 반환한다")
     void copyPin_Success() {
         // given
-
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
                 "https://map-befine-official.github.io/favicon.png",
@@ -190,7 +189,8 @@ class TopicIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> newTopic = createNewTopic(준팍의_또간집, authHeader);
         long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
 
-        List<Pin> pins = List.of(PinFixture.create(location, topic, member),
+        List<Pin> pins = List.of(
+                PinFixture.create(location, topic, member),
                 PinFixture.create(location, topic, member),
                 PinFixture.create(location, topic, member)
         );
