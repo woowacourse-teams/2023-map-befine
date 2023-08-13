@@ -60,7 +60,7 @@ class AtlasQueryServiceTest {
     @DisplayName("멤버 ID를 이용해 모아보기할 모든 Topic들을 가져올 수 있다.")
     void findAtlasByMember_Success() {
         //when
-        List<TopicResponse> atlas = atlasQueryService.findTopicsByMember(authMember);
+        List<TopicResponse> atlas = atlasQueryService.findTopicsInAtlasByMember(authMember);
 
         //then
         Assertions.assertThat(atlas.size()).isEqualTo(topics.size());

@@ -30,7 +30,7 @@ public class AtlasController {
     @LoginRequired
     @GetMapping
     public ResponseEntity<List<TopicResponse>> findTopicsFromAtlas(AuthMember member) {
-        List<TopicResponse> topicResponses = atlasQueryService.findTopicsByMember(member);
+        List<TopicResponse> topicResponses = atlasQueryService.findTopicsInAtlasByMember(member);
 
         return ResponseEntity.ok(topicResponses);
     }

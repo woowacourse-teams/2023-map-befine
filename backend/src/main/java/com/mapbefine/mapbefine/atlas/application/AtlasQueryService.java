@@ -18,12 +18,12 @@ public class AtlasQueryService {
         this.atlasRepository = atlasRepository;
     }
 
-    public List<TopicResponse> findTopicsByMember(AuthMember member) {
+    public List<TopicResponse> findTopicsInAtlasByMember(AuthMember member) {
         return atlasRepository.findAllByMemberId(member.getMemberId())
                 .stream()
                 .map(Atlas::getTopic)
                 .filter(member::canRead)
-                .map(TopicResponse::from)
+                .map(topic -> TopicResponse.from(topic, true))
                 .toList();
     }
 

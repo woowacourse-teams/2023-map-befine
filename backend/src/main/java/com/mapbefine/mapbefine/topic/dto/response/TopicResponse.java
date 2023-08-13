@@ -9,9 +9,10 @@ public record TopicResponse(
         String name,
         String image,
         Integer pinCount,
+        Boolean isInAtlas,
         LocalDateTime updatedAt
 ) {
-    public static TopicResponse from(Topic topic) {
+    public static TopicResponse from(Topic topic, Boolean isInAtlas) {
 
         TopicInfo topicInfo = topic.getTopicInfo();
 
@@ -20,6 +21,7 @@ public record TopicResponse(
                 topicInfo.getName(),
                 topicInfo.getImageUrl(),
                 topic.countPins(),
+                isInAtlas,
                 topic.getUpdatedAt()
         );
     }

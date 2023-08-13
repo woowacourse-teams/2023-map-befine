@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.member.application;
 
+import com.mapbefine.mapbefine.atlas.domain.Atlas;
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -28,17 +30,20 @@ public class MemberQueryService {
     private final MemberRepository memberRepository;
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
+    private final AtlasRepository atlasRepository;
     private final MemberTopicPermissionRepository memberTopicPermissionRepository;
 
     public MemberQueryService(
             MemberRepository memberRepository,
             TopicRepository topicRepository,
             PinRepository pinRepository,
+            AtlasRepository atlasRepository,
             MemberTopicPermissionRepository memberTopicPermissionRepository
     ) {
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
+        this.atlasRepository = atlasRepository;
         this.memberTopicPermissionRepository = memberTopicPermissionRepository;
     }
 
@@ -60,9 +65,25 @@ public class MemberQueryService {
         validateNonExistsMember(authMember.getMemberId());
         List<Topic> topicsByCreator = topicRepository.findByCreatorId(authMember.getMemberId());
 
+        List<Topic> topicsInAtlas = getTopicsInAtlas(authMember);
+
         return topicsByCreator.stream()
-                .map(TopicResponse::from)
+                .map(topic -> convertToResponse(topicsInAtlas, topic))
                 .toList();
+    }
+
+    private List<Topic> getTopicsInAtlas(AuthMember authMember) {
+        return atlasRepository.findAllByMemberId(authMember.getMemberId())
+                .stream()
+                .map(Atlas::getTopic)
+                .toList();
+    }
+
+    private TopicResponse convertToResponse(List<Topic> topicsInAtlas, Topic topic) {
+        if (topicsInAtlas.contains(topic)) {
+            return TopicResponse.from(topic, true);
+        }
+        return TopicResponse.from(topic, false);
     }
 
     public List<PinResponse> findPinsByMember(AuthMember authMember) {
@@ -73,7 +94,7 @@ public class MemberQueryService {
                 .map(PinResponse::from)
                 .toList();
     }
-    
+
     public void validateNonExistsMember(Long memberId) {
         if (Objects.isNull(memberId)) {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");

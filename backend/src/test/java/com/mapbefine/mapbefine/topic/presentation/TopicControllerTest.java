@@ -134,12 +134,14 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 "준팍의 또 토픽",
                 "https://map-befine-official.github.io/favicon.png",
                 3,
+                false,
                 LocalDateTime.now()
         ), new TopicResponse(
                 2L,
                 "준팍의 두번째 토픽",
                 "https://map-befine-official.github.io/favicon.png",
                 5,
+                false,
                 LocalDateTime.now()
         ));
         given(topicQueryService.findAllReadable(any())).willReturn(responses);
@@ -162,6 +164,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 "준팍이 막 만든 두번째 토픽",
                 "https://map-befine-official.github.io/favicon.png",
                 2,
+                false,
                 LocalDateTime.now(),
                 List.of(
                         new PinResponse(

@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.member.presentation;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,9 +28,8 @@ import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.common.mapper.*;
+import io.restassured.response.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
@@ -395,7 +394,7 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(topicResponses).hasSize(2)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
-                .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
+                .isEqualTo(List.of(TopicResponse.from(topic1, false), TopicResponse.from(topic2, false)));
     }
 
 }

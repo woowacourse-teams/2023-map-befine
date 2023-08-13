@@ -236,7 +236,7 @@ class MemberQueryServiceTest {
 
         // then
         assertThat(response).usingRecursiveComparison()
-                .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
+                .isEqualTo(List.of(TopicResponse.from(topic1, false), TopicResponse.from(topic2, false)));
     }
 
     @Test

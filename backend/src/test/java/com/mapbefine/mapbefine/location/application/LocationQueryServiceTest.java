@@ -2,9 +2,9 @@ package com.mapbefine.mapbefine.location.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
-import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -37,6 +37,8 @@ class LocationQueryServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private TopicRepository topicRepository;
+    @Autowired
+    private AtlasRepository atlasRepository;
 
     private LocationQueryService locationQueryService;
 
@@ -47,7 +49,7 @@ class LocationQueryServiceTest {
 
     @BeforeEach
     void setup() {
-        locationQueryService = new LocationQueryService(locationRepository);
+        locationQueryService = new LocationQueryService(locationRepository, atlasRepository);
 
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = new Admin(member.getId());
@@ -87,7 +89,7 @@ class LocationQueryServiceTest {
         // then
         List<TopicResponse> expected = topics.stream()
                 .sorted(Collections.reverseOrder(Comparator.comparingInt(Topic::countPins)))
-                .map(TopicResponse::from)
+                .map(topic -> TopicResponse.from(topic, false))
                 .collect(Collectors.toList());
 
         assertThat(currentTopics).isEqualTo(expected);

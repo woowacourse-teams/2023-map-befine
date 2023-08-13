@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.location.application;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
+import com.mapbefine.mapbefine.atlas.domain.Atlas;
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -24,9 +26,11 @@ public class LocationQueryService {
     private static final double NEAR_DISTANCE_METERS = 3000;
 
     private final LocationRepository locationRepository;
+    private final AtlasRepository atlasRepository;
 
-    public LocationQueryService(LocationRepository locationRepository) {
+    public LocationQueryService(LocationRepository locationRepository, AtlasRepository atlasRepository) {
         this.locationRepository = locationRepository;
+        this.atlasRepository = atlasRepository;
     }
 
     public List<TopicResponse> findNearbyTopicsSortedByPinCount(
@@ -53,11 +57,28 @@ public class LocationQueryService {
     }
 
     private List<TopicResponse> sortTopicsByPinCounts(Map<Topic, Long> topicCounts, AuthMember member) {
+        List<Topic> topicsInAtlas = getTopicsInAtlas(member);
+
         return topicCounts.entrySet().stream()
                 .filter(entry -> member.canRead(entry.getKey()))
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .map(entry -> TopicResponse.from(entry.getKey()))
+                .map(entry -> convertToResponse(topicsInAtlas, entry.getKey()))
                 .toList();
+    }
+
+
+    private List<Topic> getTopicsInAtlas(AuthMember member) {
+        return atlasRepository.findAllByMemberId(member.getMemberId())
+                .stream()
+                .map(Atlas::getTopic)
+                .toList();
+    }
+
+    private TopicResponse convertToResponse(List<Topic> topicsInAtlas, Topic topic) {
+        if (topicsInAtlas.contains(topic)) {
+            return TopicResponse.from(topic, true);
+        }
+        return TopicResponse.from(topic, false);
     }
 
 }

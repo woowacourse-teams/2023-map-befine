@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import com.mapbefine.mapbefine.atlas.domain.Atlas;
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -14,24 +16,42 @@ import org.springframework.transaction.annotation.Transactional;
 public class TopicQueryService {
 
     private final TopicRepository topicRepository;
+    private final AtlasRepository atlasRepository;
 
-    public TopicQueryService(final TopicRepository topicRepository) {
+    public TopicQueryService(TopicRepository topicRepository, AtlasRepository atlasRepository) {
         this.topicRepository = topicRepository;
+        this.atlasRepository = atlasRepository;
     }
 
     public List<TopicResponse> findAllReadable(AuthMember member) {
+        List<Topic> topicsInAtlas = getTopicsInAtlas(member);
+
         return topicRepository.findAll().stream()
                 .filter(member::canRead)
-                .map(TopicResponse::from)
+                .map(topic -> convertToResponse(topicsInAtlas, topic))
                 .toList();
+    }
+
+    private List<Topic> getTopicsInAtlas(AuthMember member) {
+        return atlasRepository.findAllByMemberId(member.getMemberId())
+                .stream()
+                .map(Atlas::getTopic)
+                .toList();
+    }
+
+    private TopicResponse convertToResponse(List<Topic> topicsInAtlas, Topic topic) {
+        if (topicsInAtlas.contains(topic)) {
+            return TopicResponse.from(topic, true);
+        }
+        return TopicResponse.from(topic, false);
     }
 
     public TopicDetailResponse findDetailById(AuthMember member, Long id) {
         Topic topic = findTopic(id);
-
         validateReadableTopic(member, topic);
+        List<Topic> topicsInAtlas = getTopicsInAtlas(member);
 
-        return TopicDetailResponse.from(topic);
+        return convertToDetailResponse(topicsInAtlas, topic);
     }
 
     private Topic findTopic(Long id) {
@@ -48,14 +68,22 @@ public class TopicQueryService {
 
     }
 
+    private TopicDetailResponse convertToDetailResponse(List<Topic> topicsInAtlas, Topic topic) {
+        if (topicsInAtlas.contains(topic)) {
+            return TopicDetailResponse.from(topic, true);
+        }
+        return TopicDetailResponse.from(topic, false);
+    }
+
     public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> ids) {
         List<Topic> topics = topicRepository.findByIdIn(ids);
 
         validateTopicsCount(ids, topics);
         validateReadableTopics(member, topics);
+        List<Topic> topicsInAtlas = getTopicsInAtlas(member);
 
         return topics.stream()
-                .map(TopicDetailResponse::from)
+                .map(topic -> convertToDetailResponse(topicsInAtlas, topic))
                 .toList();
     }
 
