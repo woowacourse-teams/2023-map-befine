@@ -20,7 +20,7 @@ public class MemberInfo {
     private static final int MAX_NICK_NAME_LENGTH = 20;
     private static final String VALID_EMAIL_URL_REGEX = "^[a-zA-Z0-9]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$";
 
-    @Column(nullable = false, length = 20, unique = true) // Nick Name
+    @Column(nullable = false, length = 20, unique = true)
     private String nickName;
 
     @Column(nullable = false, unique = true)
