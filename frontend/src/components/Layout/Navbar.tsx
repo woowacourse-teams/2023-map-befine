@@ -20,10 +20,10 @@ import { ModalContext } from '../../context/ModalContext';
 import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
 
 interface NavBarProps {
-  layoutWidth: '100vw' | '372px';
+  $layoutWidth: '100vw' | '372px';
 }
 
-const Navbar = ({ layoutWidth }: NavBarProps) => {
+const Navbar = ({ $layoutWidth }: NavBarProps) => {
   const { routePage } = useNavigator();
   const { openModal, closeModal } = useContext(ModalContext);
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
@@ -49,7 +49,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
   };
 
   return (
-    <Wrapper layoutWidth={layoutWidth}>
+    <Wrapper $layoutWidth={$layoutWidth}>
       <IconWrapper onClick={goToHome}>
         {navbarHighlights.home ? <FocusHome /> : <Home />}
         <Text
@@ -61,7 +61,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} layoutWidth={layoutWidth} />
+      <IconSpace size={7} $layoutWidth={$layoutWidth} />
 
       <IconWrapper onClick={goToSeeTogether}>
         {navbarHighlights.seeTogether ? <FocusSeeTogether /> : <SeeTogether />}
@@ -74,7 +74,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} layoutWidth={layoutWidth} />
+      <IconSpace size={7} $layoutWidth={$layoutWidth} />
 
       <IconWrapper onClick={onClickAddMapOrPin}>
         {navbarHighlights.addMapOrPin ? <FocusAddMapOrPin /> : <AddMapOrPin />}
@@ -87,7 +87,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} layoutWidth={layoutWidth} />
+      <IconSpace size={7} $layoutWidth={$layoutWidth} />
 
       <IconWrapper onClick={goToFavorite}>
         {navbarHighlights.favorite ? <FocusFavorite /> : <Favorite />}
@@ -100,7 +100,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} layoutWidth={layoutWidth} />
+      <IconSpace size={7} $layoutWidth={$layoutWidth} />
 
       <IconWrapper onClick={goToProfile}>
         {navbarHighlights.profile ? <FocusProfile /> : <Profile />}
@@ -119,7 +119,7 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
         height="44px"
         dimmedColor="rgba(0,0,0,0)"
         top="calc(100vh - 100px)"
-        left={layoutWidth === '100vw' ? '' : `${372 / 2}px`}
+        left={$layoutWidth === '100vw' ? '' : `${372 / 2}px`}
       >
         <Flex $justifyContent="center" width="100%">
           <RouteButton
@@ -147,12 +147,12 @@ const Navbar = ({ layoutWidth }: NavBarProps) => {
   );
 };
 
-const Wrapper = styled.nav<{ layoutWidth: '100vw' | '372px' }>`
+const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
   width: 100%;
   height: 64px;
   display: flex;
-  justify-content: ${({ layoutWidth }) =>
-    layoutWidth === '100vw' ? 'center' : 'space-around'};
+  justify-content: ${({ $layoutWidth }) =>
+    $layoutWidth === '100vw' ? 'center' : 'space-around'};
   align-items: center;
 `;
 
@@ -164,8 +164,9 @@ const IconWrapper = styled.div`
   cursor: pointer;
 `;
 
-const IconSpace = styled(Space)<{ layoutWidth: '100vw' | '372px' }>`
-  display: ${({ layoutWidth }) => (layoutWidth === '100vw' ? 'block' : 'none')};
+const IconSpace = styled(Space)<{ $layoutWidth: '100vw' | '372px' }>`
+  display: ${({ $layoutWidth }) =>
+    $layoutWidth === '100vw' ? 'block' : 'none'};
 `;
 
 const RouteButton = styled(Button)`

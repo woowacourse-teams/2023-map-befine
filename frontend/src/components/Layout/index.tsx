@@ -70,7 +70,7 @@ const Layout = ({ children }: LayoutProps) => {
                     >
                       {children}
                     </Flex>
-                    <Navbar layoutWidth={width} />
+                    <Navbar $layoutWidth={width} />
                     <Toast />
                   </LayoutFlex>
                   <Map ref={mapContainer} map={map} $minWidth={width} />
