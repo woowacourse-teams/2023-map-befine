@@ -19,6 +19,9 @@ import { hasErrorMessage, hasNullValue } from '../validations';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import { ModalContext } from '../context/ModalContext';
+import Modal from '../components/Modal';
+import { styled } from 'styled-components';
 
 type NewPinFormValueType = Pick<
   NewPinFormProps,
@@ -26,7 +29,7 @@ type NewPinFormValueType = Pick<
 >;
 
 const NewPin = () => {
-  const { state: prevUrl } = useLocation();
+  const { state: topicId } = useLocation();
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
   const [topic, setTopic] = useState<TopicType | null>(null);
   const { clickedMarker } = useContext(MarkerContext);
@@ -41,6 +44,7 @@ const NewPin = () => {
   const { routePage } = useNavigator();
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
+  const { openModal } = useContext(ModalContext);
 
   const goToBack = () => {
     routePage(-1);
@@ -48,7 +52,7 @@ const NewPin = () => {
 
   const postToServer = async () => {
     await postApi('/pins', {
-      topicId: topic?.id || 'error',
+      topicId: topic?.id,
       name: formValues.name,
       address: clickedCoordinate.address,
       description: formValues.description,
@@ -87,8 +91,8 @@ const NewPin = () => {
       address: '',
     });
 
-    if (prevUrl && prevUrl.length > 1) {
-      routePage(`/topics/${prevUrl}`, [topic!.id]);
+    if (topicId && topicId.length > 1) {
+      routePage(`/topics/${topicId}`, [topic!.id]);
       return;
     }
 
@@ -130,11 +134,8 @@ const NewPin = () => {
   };
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-
     const getTopicId = async () => {
-      if (queryParams.has('topic-id')) {
-        const topicId = queryParams.get('topic-id');
+      if (topicId) {
         const data = await getApi('default', `/topics/${topicId}`);
         setTopic(data);
       }
@@ -143,111 +144,125 @@ const NewPin = () => {
     getTopicId();
   }, []);
 
-  if (!topic) return <></>;
-
   return (
-    <form onSubmit={onSubmit}>
-      <Space size={4} />
-      <Flex
-        width={`calc(${width} - ${LAYOUT_PADDING})`}
-        $flexDirection="column"
-      >
-        <Text color="black" $fontSize="large" $fontWeight="bold">
-          핀 추가
-        </Text>
+    <>
+      <form onSubmit={onSubmit}>
+        <Space size={4} />
+        <Flex
+          width={`calc(${width} - ${LAYOUT_PADDING})`}
+          $flexDirection="column"
+        >
+          <Text color="black" $fontSize="large" $fontWeight="bold">
+            핀 추가
+          </Text>
 
-        <Space size={5} />
+          <Space size={5} />
 
-        <section>
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              토픽 선택
-            </Text>
+          <section>
+            <Flex>
+              <Text color="black" $fontSize="default" $fontWeight="normal">
+                토픽 선택
+              </Text>
+              <Space size={0} />
+              <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
+                *
+              </Text>
+            </Flex>
             <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
-          </Flex>
-          <Space size={0} />
-          <Button type="button" variant="primary">
-            {topic.name}
-          </Button>
-        </section>
+            <Button type="button" variant="primary" onClick={openModal}>
+              {topic?.name ? topic?.name : '토픽 선택하기'}
+            </Button>
+          </section>
 
-        <Space size={5} />
+          <Space size={5} />
 
-        <InputContainer
-          tagType="input"
-          containerTitle="장소 이름"
-          isRequired={true}
-          name="name"
-          value={formValues.name}
-          placeholder="50글자 이내로 장소의 이름을 입력해주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={1}
-          errorMessage={errorMessages.name}
-          autoFocus
-          maxLength={50}
-        />
-
-        <Space size={1} />
-
-        <section>
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              장소 위치
-            </Text>
-            <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
-          </Flex>
-          <Space size={0} />
-          <Input
-            name="address"
-            readOnly
-            value={clickedCoordinate.address}
-            onClick={onClickAddressInput}
-            onKeyDown={onClickAddressInput}
-            tabIndex={2}
-            placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
+          <InputContainer
+            tagType="input"
+            containerTitle="장소 이름"
+            isRequired={true}
+            name="name"
+            value={formValues.name}
+            placeholder="50글자 이내로 장소의 이름을 입력해주세요."
+            onChangeInput={onChangeInput}
+            tabIndex={1}
+            errorMessage={errorMessages.name}
+            autoFocus
+            maxLength={50}
           />
-        </section>
 
-        <Space size={5} />
+          <Space size={1} />
 
-        <InputContainer
-          tagType="textarea"
-          containerTitle="장소 설명"
-          isRequired={true}
-          name="description"
-          value={formValues.description}
-          placeholder="1000자 이내로 장소에 대한 의견을 남겨주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={3}
-          errorMessage={errorMessages.description}
-          maxLength={1000}
-        />
+          <section>
+            <Flex>
+              <Text color="black" $fontSize="default" $fontWeight="normal">
+                장소 위치
+              </Text>
+              <Space size={0} />
+              <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
+                *
+              </Text>
+            </Flex>
+            <Space size={0} />
+            <Input
+              name="address"
+              readOnly
+              value={clickedCoordinate.address}
+              onClick={onClickAddressInput}
+              onKeyDown={onClickAddressInput}
+              tabIndex={2}
+              placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
+            />
+          </section>
 
-        <Space size={6} />
+          <Space size={5} />
 
-        <Flex $justifyContent="end">
-          <Button
-            tabIndex={5}
-            type="button"
-            variant="secondary"
-            onClick={goToBack}
-          >
-            취소하기
-          </Button>
-          <Space size={3} />
-          <Button tabIndex={4} variant="primary">
-            추가하기
-          </Button>
+          <InputContainer
+            tagType="textarea"
+            containerTitle="장소 설명"
+            isRequired={true}
+            name="description"
+            value={formValues.description}
+            placeholder="1000자 이내로 장소에 대한 의견을 남겨주세요."
+            onChangeInput={onChangeInput}
+            tabIndex={3}
+            errorMessage={errorMessages.description}
+            maxLength={1000}
+          />
+
+          <Space size={6} />
+
+          <Flex $justifyContent="end">
+            <Button
+              tabIndex={5}
+              type="button"
+              variant="secondary"
+              onClick={goToBack}
+            >
+              취소하기
+            </Button>
+            <Space size={3} />
+            <Button tabIndex={4} variant="primary">
+              추가하기
+            </Button>
+          </Flex>
         </Flex>
-      </Flex>
-    </form>
+      </form>
+      <Modal
+        position="center"
+        width="400px"
+        height="340px"
+        $dimmedColor="rgba(0,0,0,0.25)"
+      >
+        <ModalContentsWrapper>내 토픽 리스트</ModalContentsWrapper>
+      </Modal>
+    </>
   );
 };
+
+const ModalContentsWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: white;
+`;
 
 export default NewPin;

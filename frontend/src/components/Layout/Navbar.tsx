@@ -18,6 +18,7 @@ import FocusProfile from '../../assets/nav_profile_focus.svg';
 import Modal from '../Modal';
 import { ModalContext } from '../../context/ModalContext';
 import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
+import { useParams } from 'react-router-dom';
 
 interface NavBarProps {
   $layoutWidth: '100vw' | '372px';
@@ -25,6 +26,7 @@ interface NavBarProps {
 
 const Navbar = ({ $layoutWidth }: NavBarProps) => {
   const { routePage } = useNavigator();
+  const { topicId } = useParams();
   const { openModal, closeModal } = useContext(ModalContext);
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
 
@@ -46,6 +48,16 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
 
   const goToProfile = () => {
     routePage('/my-page');
+  };
+
+  const goToNewTopic = () => {
+    routePage('/new-topic');
+    closeModal();
+  };
+
+  const goToNewPin = () => {
+    routePage('/new-pin', topicId);
+    closeModal();
   };
 
   return (
@@ -122,23 +134,11 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         left={$layoutWidth === '100vw' ? '' : `${372 / 2}px`}
       >
         <Flex $justifyContent="center" width="100%">
-          <RouteButton
-            variant="primary"
-            onClick={() => {
-              routePage('/new-topic');
-              closeModal();
-            }}
-          >
+          <RouteButton variant="primary" onClick={goToNewTopic}>
             지도 추가하기
           </RouteButton>
           <Space size={4} />
-          <RouteButton
-            variant="primary"
-            onClick={() => {
-              routePage('/');
-              closeModal();
-            }}
-          >
+          <RouteButton variant="primary" onClick={goToNewPin}>
             핀 추가하기
           </RouteButton>
         </Flex>
