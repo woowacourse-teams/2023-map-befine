@@ -33,7 +33,7 @@ class PermissionControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("권한 추가")
-    void addMemberTopicPermission() throws Exception {
+    void addPermission() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         PermissionRequest request = new PermissionRequest(1L, 2L);
         String authHeader = Base64.encodeBase64String(
@@ -43,7 +43,7 @@ class PermissionControllerTest extends RestDocsIntegration {
         given(permissionCommandService.savePermission(any(), any())).willReturn(1L);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/members/permissions")
+                MockMvcRequestBuilders.post("/permissions")
                         .header(AUTHORIZATION, authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -52,22 +52,22 @@ class PermissionControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("권한 삭제")
-    void deleteMemberTopicPermission() throws Exception {
+    void deletePermission() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + member.getMemberInfo().getEmail()).getBytes()
         );
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/members/permissions/1")
+                MockMvcRequestBuilders.delete("/permissions/1")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
-    void findMemberTopicPermissionAll() throws Exception {
-        List<PermissionResponse> permissionRespons = List.of(
+    void findAllTopicPermissions() throws Exception {
+        List<PermissionResponse> permissionResponses = List.of(
                 new PermissionResponse(
                         1L,
                         new MemberResponse(
@@ -86,20 +86,20 @@ class PermissionControllerTest extends RestDocsIntegration {
                 )
         );
         String authHeader = Base64.encodeBase64String(
-                ("Basic " + permissionRespons.get(0).memberResponse().email()).getBytes()
+                ("Basic " + permissionResponses.get(0).memberResponse().email()).getBytes()
         );
 
-        given(permissionQueryService.findAllTopicPermissions(any())).willReturn(permissionRespons);
+        given(permissionQueryService.findAllTopicPermissions(any())).willReturn(permissionResponses);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/permissions/topics/1")
+                MockMvcRequestBuilders.get("/permissions/topics/1")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
-    void findMemberTopicPermissionById() throws Exception {
+    void findPermissionById() throws Exception {
         PermissionDetailResponse permissionDetailResponse = new PermissionDetailResponse(
                 1L,
                 LocalDateTime.now(),
@@ -118,7 +118,7 @@ class PermissionControllerTest extends RestDocsIntegration {
         given(permissionQueryService.findPermissionById(any())).willReturn(permissionDetailResponse);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/permissions/1")
+                MockMvcRequestBuilders.get("/permissions/1")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
