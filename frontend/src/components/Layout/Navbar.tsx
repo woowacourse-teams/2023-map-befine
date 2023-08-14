@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { styled } from 'styled-components';
 import useNavigator from '../../hooks/useNavigator';
 import Flex from '../common/Flex';

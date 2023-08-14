@@ -21,7 +21,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,6 @@ import org.springframework.http.MediaType;
 
 class PinIntegrationTest extends IntegrationTest {
 
-    private static final String BASIC_FORMAT = "Basic %s";
     private static final String BASE_IMAGE = "https://map-befine-official.github.io/favicon.png";
 
     private Topic topic;
@@ -55,9 +53,7 @@ class PinIntegrationTest extends IntegrationTest {
     @BeforeEach
     void saveTopicAndLocation() {
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
-        authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
+        authHeader = testAuthHeaderProvider.createAuthHeader(member);
         topic = topicRepository.save(TopicFixture.createByName("PinIntegration 토픽", member));
         location = locationRepository.save(LocationFixture.createByCoordinate(37.5152933, 127.1029866));
 

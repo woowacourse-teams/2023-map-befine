@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
@@ -20,6 +21,9 @@ const DEFAULT_IMAGE =
   'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
 
 const NewTopic = () => {
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [isAll, setIsAll] = useState(true);
+
   const { formValues, errorMessages, onChangeInput } =
     useFormValues<NewTopicFormValuesType>({
       name: '',
@@ -70,6 +74,7 @@ const NewTopic = () => {
       name: formValues.name,
       description: formValues.description,
       topics: taggedIds,
+      isPrivate: isPrivate,
     });
   };
 
@@ -81,6 +86,7 @@ const NewTopic = () => {
       name: formValues.name,
       description: formValues.description,
       pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
+      isPrivate: isPrivate,
     });
   };
 
@@ -141,7 +147,70 @@ const NewTopic = () => {
           maxLength={100}
         />
 
-        <Space size={6} />
+        <Space size={1} />
+
+        <Text color="black" $fontSize="default" $fontWeight="normal">
+          공개 여부
+        </Text>
+        <Space size={1} />
+        <Flex>
+          <div>
+            <input
+              type="radio"
+              id="public"
+              name="accessibility"
+              value="public"
+              checked={!isPrivate}
+              onChange={() => setIsPrivate(false)}
+            />
+            <label htmlFor="public">같이볼지도</label>
+          </div>
+          <Space size={2} />
+          <div>
+            <input
+              type="radio"
+              id="private"
+              name="accessibility"
+              value="private"
+              checked={isPrivate}
+              onChange={() => setIsPrivate(true)}
+            />
+            <label htmlFor="private">혼자볼지도</label>
+          </div>
+        </Flex>
+
+        <Space size={2} />
+        <Text color="black" $fontSize="default" $fontWeight="normal">
+          핀 생성 및 수정 권한
+        </Text>
+        <Space size={1} />
+        <Flex>
+          <div>
+            <input
+              type="radio"
+              id="public"
+              name="pinAuthority"
+              value="all"
+              checked={isAll}
+              onChange={() => setIsAll(true)}
+            />
+            <label htmlFor="public">모두</label>
+          </div>
+          <Space size={2} />
+          <div>
+            <input
+              type="radio"
+              id="private"
+              name="pinAuthority"
+              value="some"
+              checked={!isAll}
+              onChange={() => setIsAll(false)}
+            />
+            <label htmlFor="private">지정 인원</label>
+          </div>
+        </Flex>
+
+        <Space size={2} />
 
         <Flex $justifyContent="end">
           <Button

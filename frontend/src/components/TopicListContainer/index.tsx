@@ -1,9 +1,12 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
-import TopicCardList from '../TopicCardList';
 import Box from '../common/Box';
 import Space from '../common/Space';
+import { lazy, Suspense } from 'react';
+import TopicCardListSeleton from '../TopicCardList/TopicCardListSeleton';
+
+const TopicCardList = lazy(() => import('../TopicCardList'));
 
 interface TopicListContainerProps {
   containerTitle: string;
@@ -51,7 +54,9 @@ const TopicListContainer = ({
 
     <Space size={4} />
 
-    <TopicCardList />
+    <Suspense fallback={<TopicCardListSeleton />}>
+      <TopicCardList />
+    </Suspense>
   </section>
 );
 

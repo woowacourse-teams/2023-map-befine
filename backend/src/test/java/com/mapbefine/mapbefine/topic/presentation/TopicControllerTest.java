@@ -11,7 +11,7 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
-import com.mapbefine.mapbefine.topic.domain.Permission;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
@@ -53,7 +53,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 List.of(1L, 2L, 3L)
         );
 
@@ -77,7 +77,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 List.of(1L, 2L, 3L)
         );
 
@@ -100,7 +100,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS
+                PermissionType.ALL_MEMBERS
         );
 
         mockMvc.perform(
@@ -129,19 +129,24 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         String authHeader = Base64.encodeBase64String(
                 String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
         );
-        List<TopicResponse> responses = List.of(new TopicResponse(
-                1L,
-                "준팍의 또 토픽",
-                "https://map-befine-official.github.io/favicon.png",
-                3,
-                LocalDateTime.now()
-        ), new TopicResponse(
-                2L,
-                "준팍의 두번째 토픽",
-                "https://map-befine-official.github.io/favicon.png",
-                5,
-                LocalDateTime.now()
-        ));
+        List<TopicResponse> responses = List.of(
+                new TopicResponse(
+                        1L,
+                        "준팍의 또 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        3,
+                        0,
+                        Boolean.FALSE,
+                        LocalDateTime.now()
+                ), new TopicResponse(
+                        2L,
+                        "준팍의 두번째 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        5,
+                        0,
+                        Boolean.FALSE,
+                        LocalDateTime.now()
+                ));
         given(topicQueryService.findAllReadable(any())).willReturn(responses);
 
         mockMvc.perform(
@@ -179,7 +184,9 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                                 37,
                                 127
                         )
-                )
+                ),
+                Boolean.FALSE,
+                0
         );
         given(topicQueryService.findDetailById(any(), any())).willReturn(topicDetailResponse);
 

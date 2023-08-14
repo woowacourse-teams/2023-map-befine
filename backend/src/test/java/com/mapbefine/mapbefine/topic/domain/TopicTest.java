@@ -26,7 +26,7 @@ class TopicTest {
                 "매튜가 엄마 몰래 찾는 산스장",
                 "https://example.com/image.jpg",
                 Publicity.PUBLIC,
-                Permission.GROUP_ONLY,
+                PermissionType.GROUP_ONLY,
                 member
         );
         pin = PinFixture.create(LocationFixture.create(), topic, member);
@@ -57,18 +57,18 @@ class TopicTest {
     void updateTopicStatus() {
         //given
         Publicity publicity = Publicity.PRIVATE;
-        Permission permission = Permission.GROUP_ONLY;
+        PermissionType permissionType = PermissionType.GROUP_ONLY;
 
         //when
         topic.updateTopicStatus(
                 publicity,
-                permission
+                permissionType
         );
         TopicStatus topicStatus = topic.getTopicStatus();
 
         //then
         assertThat(topicStatus.getPublicity()).isEqualTo(publicity);
-        assertThat(topicStatus.getPermission()).isEqualTo(permission);
+        assertThat(topicStatus.getPermissionType()).isEqualTo(permissionType);
     }
 
     @Test

@@ -2,13 +2,12 @@ package com.mapbefine.mapbefine.auth.application;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
-import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.auth.domain.member.User;
-import com.mapbefine.mapbefine.auth.dto.AuthInfo;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,14 +21,17 @@ public class AuthService {
         this.memberRepository = memberRepository;
     }
 
-    public boolean isMember(AuthInfo authInfo) {
-        return memberRepository.existsByMemberInfoEmail(authInfo.email());
+    public boolean isMember(Long memberId) {
+        if (Objects.isNull(memberId)) {
+            return false;
+        }
+        return memberRepository.existsById(memberId);
     }
 
-    public AuthMember findAuthMemberByEmail(AuthInfo authInfo) {
-        return memberRepository.findByMemberInfoEmail(authInfo.email())
+    public AuthMember findAuthMemberByMemberId(Long memberId) {
+        return memberRepository.findById(memberId)
                 .map(this::convertToAuthMember)
-                .orElseGet(Guest::new);
+                .orElseThrow(() -> new IllegalArgumentException(""));
     }
 
     private AuthMember convertToAuthMember(Member member) {

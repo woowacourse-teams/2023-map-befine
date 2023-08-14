@@ -1,9 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { lazy, Suspense, useContext, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
-import PinPreview from '../components/PinPreview';
-import TopicInfo from '../components/TopicInfo';
 import { TopicInfoType } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
@@ -13,8 +11,11 @@ import PullPin from '../components/PullPin';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { DEFAULT_TOPIC_IMAGE, LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
+
+const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
@@ -31,7 +32,7 @@ const SelectedTopic = () => {
   const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi(
+    const data = await getApi<any>(
       'default',
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );
@@ -107,45 +108,22 @@ const SelectedTopic = () => {
             onClickClose={onTagCancel}
           />
         )}
-        {topicDetail.length !== 0 ? (
-          topicDetail.map((topic, idx) => {
-            return (
-              <ul key={topic.id}>
-                {idx !== 0 && <Space size={5} />}
-                <TopicInfo
-                  fullUrl={topicId}
-                  topicId={Number(topicId?.split(',')[idx])}
-                  topicImage={DEFAULT_TOPIC_IMAGE}
-                  topicParticipant={1}
-                  topicTitle={topic.name}
-                  topicOwner={'토픽을 만든 사람'}
-                  topicPinCount={topic.pinCount}
-                  topicDescription={topic.description}
-                />
-                {topic.pins.map((pin, idx) => (
-                  <li key={pin.id}>
-                    <PinPreview
-                      idx={idx}
-                      pinTitle={pin.name}
-                      pinLocation={pin.address}
-                      pinInformation={pin.description}
-                      setSelectedPinId={setSelectedPinId}
-                      pinId={Number(pin.id)}
-                      topicId={topicId}
-                      tagPins={tagPins}
-                      setTagPins={setTagPins}
-                      taggedPinIds={taggedPinIds}
-                      setTaggedPinIds={setTaggedPinIds}
-                      setIsEditPinDetail={setIsEditPinDetail}
-                    />
-                  </li>
-                ))}
-              </ul>
-            );
-          })
-        ) : (
-          <></>
-        )}
+        <Suspense fallback={<PinsOfTopicSkeleton />}>
+          {topicDetail.length !== 0 ? (
+            <PinsOfTopic
+              topicId={topicId}
+              tagPins={tagPins}
+              topicDetail={topicDetail}
+              taggedPinIds={taggedPinIds}
+              setSelectedPinId={setSelectedPinId}
+              setTagPins={setTagPins}
+              setTaggedPinIds={setTaggedPinIds}
+              setIsEditPinDetail={setIsEditPinDetail}
+            />
+          ) : (
+            <></>
+          )}
+        </Suspense>
 
         {selectedPinId && (
           <>

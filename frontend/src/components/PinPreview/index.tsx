@@ -12,11 +12,11 @@ export interface PinPreviewProps {
   pinTitle: string;
   pinLocation: string;
   pinInformation: string;
-  setSelectedPinId: (value: number) => void;
+  setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   pinId: number;
   topicId: string | undefined;
   tagPins: string[];
-  setTagPins: (value: string[]) => void;
+  setTagPins: React.Dispatch<React.SetStateAction<string[]>>;
   taggedPinIds: number[];
   setTaggedPinIds: React.Dispatch<React.SetStateAction<number[]>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
