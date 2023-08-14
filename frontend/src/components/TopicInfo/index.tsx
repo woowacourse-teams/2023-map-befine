@@ -97,7 +97,7 @@ const TopicInfo = ({
         </Flex>
       </Flex>
 
-      <Space size={1} />
+      <Space size={0} />
 
       <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
         {topicTitle}
