@@ -5,9 +5,9 @@ import TopicSkeleton from '../common/TopicSkeleton';
 const TopicCardListSeleton = () => {
   return (
     <Flex>
-      <TopicSkeleton skeletonType="vertical" />
+      <TopicSkeleton />
       <Space size={3} />
-      <TopicSkeleton skeletonType="vertical" />
+      <TopicSkeleton />
     </Flex>
   );
 };

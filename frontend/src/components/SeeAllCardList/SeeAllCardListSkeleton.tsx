@@ -5,13 +5,13 @@ import TopicSkeleton from '../common/TopicSkeleton';
 const SeeAllCardListSkeleton = () => {
   return (
     <Flex $flexDirection="column">
-      <TopicSkeleton skeletonType="horizon" />
+      <TopicSkeleton />
       <Space size={3} />
-      <TopicSkeleton skeletonType="horizon" />
+      <TopicSkeleton />
       <Space size={3} />
-      <TopicSkeleton skeletonType="horizon" />
+      <TopicSkeleton />
       <Space size={3} />
-      <TopicSkeleton skeletonType="horizon" />
+      <TopicSkeleton />
     </Flex>
   );
 };

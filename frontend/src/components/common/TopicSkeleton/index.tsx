@@ -2,34 +2,18 @@ import { keyframes, styled } from 'styled-components';
 import Flex from '../Flex';
 import Space from '../Space';
 
-type TopicSkeletonType = 'vertical' | 'horizon';
-
-interface TopicSkeletonProps {
-  skeletonType: TopicSkeletonType;
-}
-
-const TopicSkeleton = ({ skeletonType }: TopicSkeletonProps) => {
+const TopicSkeleton = () => {
   return (
     <>
-      {skeletonType === 'vertical' ? (
+      <Flex $flexDirection="row">
+        <SkeletonImg />
+        <Space size={2} />
         <Flex $flexDirection="column">
-          <SkeletonImg />
-          <Space size={2} />
           <SkeletonTitle />
-          <Space size={2} />
-          <SkeletonTitle />
+          <Space size={5} />
+          <SkeletonDescription />
         </Flex>
-      ) : (
-        <Flex $flexDirection="row">
-          <SkeletonImg />
-          <Space size={2} />
-          <Flex $flexDirection="column">
-            <SkeletonTitle />
-            <Space size={5} />
-            <SkeletonDescription />
-          </Flex>
-        </Flex>
-      )}
+      </Flex>
     </>
   );
 };

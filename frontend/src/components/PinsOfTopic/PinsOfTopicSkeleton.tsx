@@ -7,7 +7,7 @@ const PinsOfTopicSkeleton = () => {
   return (
     <Flex $flexDirection="column">
       <Space size={7} />
-      <TopicSkeleton skeletonType="horizon" />
+      <TopicSkeleton />
       <Space size={7} />
       <PinSkeleton />
       <Space size={6} />
