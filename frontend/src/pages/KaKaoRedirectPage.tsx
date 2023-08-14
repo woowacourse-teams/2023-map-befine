@@ -10,7 +10,11 @@ export const handleOAuthKakao = async (code: string) => {
   try {
     const url = `http://localhost:8080/oauth/login/kakao?code=${code}`;
     const data = await getApi<LoginResponse>('login', url);
-    // 아마도 data.accessToken 이런식으로 정보가 담겨서 올듯??
+
+    // localStorage에 data.accessToken과 data.member 저장
+    localStorage.setItem('userToken', data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.member));
+
     routePage('/');
   } catch (error) {
     window.alert('로그인 실패');
