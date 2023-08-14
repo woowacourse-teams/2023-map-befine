@@ -47,7 +47,7 @@ class AtlasControllerTest extends RestDocsIntegration {
     @DisplayName("모아보기에 추가되어있는 지도 목록을 조회한다")
     void findTopicsFromAtlas() throws Exception {
         // when
-        given(atlasQueryService.findTopicsInAtlasByMember(any()))
+        given(atlasQueryService.findAllTopicsInAtlasByMember(any()))
                 .willReturn(responses);
 
         // then
