@@ -21,9 +21,9 @@ public class BookmarkQueryService {
 
     public List<BookmarkResponse> findAllTopicsInBookmark(AuthMember authMember) {
         validateNonExistsMember(authMember);
-        List<Bookmark> bookmark = bookmarkRepository.findAllByMemberId(authMember.getMemberId());
+        List<Bookmark> bookmarks = bookmarkRepository.findAllByMemberId(authMember.getMemberId());
 
-        return bookmark.stream()
+        return bookmarks.stream()
                 .map(BookmarkResponse::from)
                 .toList();
     }
