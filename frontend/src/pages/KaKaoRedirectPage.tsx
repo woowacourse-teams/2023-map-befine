@@ -8,7 +8,7 @@ import { LoginResponse } from '../types/Login';
 export const handleOAuthKakao = async (code: string) => {
   const { routePage } = useNavigator();
   try {
-    const url = `https://mapbefine.kro.kr/api/oauth/login/kakao?code=${code}`;
+    const url = `https://mapbefine.kro.kr/oauth/login/kakao?code=${code}`;
     console.log('line12');
     const data = await getApi<LoginResponse>('login', url);
 
