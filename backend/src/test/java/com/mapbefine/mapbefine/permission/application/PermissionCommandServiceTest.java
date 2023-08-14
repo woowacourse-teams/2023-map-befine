@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.member.application;
+package com.mapbefine.mapbefine.permission.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,10 +11,10 @@ import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
-import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.permission.dto.request.PermissionCreateRequest;
+import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-class MemberCommandServiceTest {
+class PermissionCommandServiceTest {
 
     @Autowired
-    private MemberCommandService memberCommandService;
+    private PermissionCommandService permissionCommandService;
 
     @Autowired
     private TopicRepository topicRepository;
@@ -47,13 +47,13 @@ class MemberCommandServiceTest {
         Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", admin));
         AuthMember authAdmin = new Admin(admin.getId());
-        PermissionCreateRequest request = new PermissionCreateRequest(
+        PermissionRequest request = new PermissionRequest(
                 topic.getId(),
                 member.getId()
         );
 
         // when
-        Long savedId = memberCommandService.saveMemberTopicPermission(authAdmin, request);
+        Long savedId = permissionCommandService.savePermission(authAdmin, request);
         Permission permission = permissionRepository.findById(savedId)
                 .orElseThrow(NoSuchElementException::new);
         Member memberWithPermission = permission.getMember();
@@ -76,13 +76,13 @@ class MemberCommandServiceTest {
                 getCreatedTopics(creator),
                 getTopicsWithPermission(creator)
         );
-        PermissionCreateRequest request = new PermissionCreateRequest(
+        PermissionRequest request = new PermissionRequest(
                 topic.getId(),
                 member.getId()
         );
 
         // when
-        Long savedId = memberCommandService.saveMemberTopicPermission(authCreator, request);
+        Long savedId = permissionCommandService.savePermission(authCreator, request);
         Permission permission = permissionRepository.findById(savedId)
                 .orElseThrow(NoSuchElementException::new);
         Member memberWithPermission = permission.getMember();
@@ -106,13 +106,13 @@ class MemberCommandServiceTest {
                 getCreatedTopics(notCreator),
                 getTopicsWithPermission(notCreator)
         );
-        PermissionCreateRequest request = new PermissionCreateRequest(
+        PermissionRequest request = new PermissionRequest(
                 topic.getId(),
                 member.getId()
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.saveMemberTopicPermission(authNotCreator, request))
+        assertThatThrownBy(() -> permissionCommandService.savePermission(authNotCreator, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -124,13 +124,13 @@ class MemberCommandServiceTest {
         Member member = memberRepository.save(MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         AuthMember guest = new Guest();
-        PermissionCreateRequest request = new PermissionCreateRequest(
+        PermissionRequest request = new PermissionRequest(
                 topic.getId(),
                 member.getId()
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.saveMemberTopicPermission(guest, request))
+        assertThatThrownBy(() -> permissionCommandService.savePermission(guest, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -145,13 +145,13 @@ class MemberCommandServiceTest {
                 getCreatedTopics(creator),
                 getTopicsWithPermission(creator)
         );
-        PermissionCreateRequest request = new PermissionCreateRequest(
+        PermissionRequest request = new PermissionRequest(
                 topic.getId(),
                 creator.getId()
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.saveMemberTopicPermission(authCreator, request))
+        assertThatThrownBy(() -> permissionCommandService.savePermission(authCreator, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -182,13 +182,13 @@ class MemberCommandServiceTest {
                 getCreatedTopics(creator),
                 getTopicsWithPermission(creator)
         );
-        PermissionCreateRequest request = new PermissionCreateRequest(
+        PermissionRequest request = new PermissionRequest(
                 topic.getId(),
                 member.getId()
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.saveMemberTopicPermission(authCreator, request))
+        assertThatThrownBy(() -> permissionCommandService.savePermission(authCreator, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -205,7 +205,7 @@ class MemberCommandServiceTest {
         Permission permission =
                 Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
         Long savedId = permissionRepository.save(permission).getId();
-        memberCommandService.deleteMemberTopicPermission(authAdmin, savedId);
+        permissionCommandService.deleteMemberTopicPermission(authAdmin, savedId);
 
         // then
         assertThat(memberRepository.existsById(savedId)).isFalse();
@@ -228,7 +228,7 @@ class MemberCommandServiceTest {
         Permission permission =
                 Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
         Long savedId = permissionRepository.save(permission).getId();
-        memberCommandService.deleteMemberTopicPermission(authCreator, savedId);
+        permissionCommandService.deleteMemberTopicPermission(authCreator, savedId);
 
         // then
         assertThat(memberRepository.existsById(savedId)).isFalse();
@@ -254,7 +254,7 @@ class MemberCommandServiceTest {
         Long savedId = permissionRepository.save(permission).getId();
 
         // then
-        assertThatThrownBy(() -> memberCommandService.deleteMemberTopicPermission(authNonCreator, savedId))
+        assertThatThrownBy(() -> permissionCommandService.deleteMemberTopicPermission(authNonCreator, savedId))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -276,7 +276,7 @@ class MemberCommandServiceTest {
         );
 
         // when then
-        assertThatThrownBy(() -> memberCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE))
+        assertThatThrownBy(() -> permissionCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE))
                 .isInstanceOf(NoSuchElementException.class);
     }
 

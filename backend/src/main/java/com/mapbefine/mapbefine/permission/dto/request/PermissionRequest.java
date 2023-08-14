@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.permission.dto.request;
 
-public record PermissionCreateRequest(
+public record PermissionRequest(
         Long topicId,
         Long memberId
 ) {
