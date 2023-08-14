@@ -25,4 +25,5 @@ operation::pin-controller-test/delete[snippets='http-request,http-response']
 operation::pin-controller-test/add-image[snippets='http-request,http-response']
 
 === 핀 이미지 삭제
+
 operation::pin-controller-test/remove-image[snippets='http-request,http-response']

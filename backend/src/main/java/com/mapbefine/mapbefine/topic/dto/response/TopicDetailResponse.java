@@ -13,9 +13,12 @@ public record TopicDetailResponse(
         String image,
         Integer pinCount,
         LocalDateTime updatedAt,
-        List<PinResponse> pins
+        List<PinResponse> pins,
+        Boolean isBookmarked,
+        Integer bookmarkCount
 ) {
-    public static TopicDetailResponse from(Topic topic) {
+
+    public static TopicDetailResponse from(Topic topic, Boolean isBookmarked) {
         List<PinResponse> pinResponses = topic.getPins().stream()
                 .map(PinResponse::from)
                 .toList();
@@ -29,7 +32,10 @@ public record TopicDetailResponse(
                 topicInfo.getImageUrl(),
                 topic.countPins(),
                 topic.getUpdatedAt(),
-                pinResponses
+                pinResponses,
+                isBookmarked,
+                topic.countBookmarks()
         );
     }
+
 }

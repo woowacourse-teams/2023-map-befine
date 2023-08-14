@@ -6,7 +6,7 @@
     "skipLibCheck": true,
     "moduleResolution": "Node",
     "strict": true,
-    "module": "es6",
+    "module": "esnext",
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
