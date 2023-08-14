@@ -5,7 +5,7 @@ import Space from '../components/common/Space';
 
 export default function AskLoginPage() {
   const loginButtonClick = () => {
-    window.location.href = 'http://mapbefine.kro.kr/api/oauth/kakao';
+    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
   };
 
   return (
