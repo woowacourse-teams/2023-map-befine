@@ -16,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 @DataJpaTest(
         includeFilters = @Filter(
                 type = FilterType.ANNOTATION, value = Service.class
+        ),
+        excludeFilters = @Filter(
+                type = FilterType.REGEX,
+                pattern = "com.mapbefine.mapbefine.oauth.application.*"
         )
 )
 public @interface ServiceTest {

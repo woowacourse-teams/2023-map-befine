@@ -5,7 +5,6 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
 import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
-import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
 import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -29,33 +28,6 @@ public class MemberCommandService {
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
         this.memberTopicPermissionRepository = memberTopicPermissionRepository;
-    }
-
-    public Long save(MemberCreateRequest request) {
-        validateUniqueNickName(request.nickName());
-        validateUniqueEmail(request.email());
-
-        Member member = Member.of(
-                request.nickName(),
-                request.email(),
-                request.imageUrl(),
-                request.role()
-        );
-
-        return memberRepository.save(member)
-                .getId();
-    }
-
-    private void validateUniqueNickName(String nickName) {
-        if (memberRepository.existsByMemberInfoNickName(nickName)) {
-            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-        }
-    }
-
-    private void validateUniqueEmail(String email) {
-        if (memberRepository.existsByMemberInfoEmail(email)) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-        }
     }
 
     public Long saveMemberTopicPermission(AuthMember authMember, MemberTopicPermissionCreateRequest request) {

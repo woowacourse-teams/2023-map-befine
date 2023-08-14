@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.auth.dto;
 
 public record AuthInfo(
-        String email
+        String accessToken
 ) {
 }
