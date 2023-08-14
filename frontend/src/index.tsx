@@ -16,12 +16,10 @@ const root = ReactDOM.createRoot(rootElement);
 // }
 
 root.render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <ModalContextProvider>
-        <GlobalStyle />
-        <App />
-      </ModalContextProvider>
-    </ThemeProvider>
-  </StrictMode>,
+  <ThemeProvider theme={theme}>
+    <ModalContextProvider>
+      <GlobalStyle />
+      <App />
+    </ModalContextProvider>
+  </ThemeProvider>,
 );
