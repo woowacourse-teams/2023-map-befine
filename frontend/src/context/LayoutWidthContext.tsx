@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react';
 
-type LayoutWidthValue = '400px' | '100vw';
+type LayoutWidthValue = '372px' | '100vw';
 
 interface LayoutWidthContextProps {
   width: LayoutWidthValue;
@@ -18,12 +18,12 @@ interface LayoutWidthProviderProps {
 }
 
 export const LayoutWidthContext = createContext<LayoutWidthContextProps>({
-  width: '400px',
+  width: '100vw',
   setWidth: () => {},
 });
 
 const LayoutWidthProvider = ({ children }: LayoutWidthProviderProps) => {
-  const [width, setWidth] = useState<LayoutWidthValue>('400px');
+  const [width, setWidth] = useState<LayoutWidthValue>('100vw');
 
   return (
     <LayoutWidthContext.Provider

@@ -7,10 +7,12 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../apis/getApi';
-import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
+import PullPin from '../components/PullPin';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
-import { LayoutWidthContext } from '../context/LayoutWidthContext';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
@@ -26,10 +28,11 @@ const SelectedTopic = () => {
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
-  const { setWidth } = useContext(LayoutWidthContext);
+  const { width } = useSetLayoutWidth(SIDEBAR);
+  const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi(
+    const data = await getApi<any>(
       'default',
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );
@@ -76,8 +79,6 @@ const SelectedTopic = () => {
   useEffect(() => {
     getAndSetDataFromServer();
 
-    // setWidth('400px');
-
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
@@ -94,10 +95,13 @@ const SelectedTopic = () => {
 
   return (
     <>
-      <Flex $flexDirection="column">
+      <Flex
+        width={`calc(${width} - ${LAYOUT_PADDING})`}
+        $flexDirection="column"
+      >
         <Space size={2} />
         {taggedPinIds.length > 0 && (
-          <MergeOrSeeTogether
+          <PullPin
             tag={tagPins}
             confirmButton="뽑아오기"
             onClickConfirm={onClickConfirm}
@@ -129,11 +133,11 @@ const SelectedTopic = () => {
             <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
               <Flex
                 $backgroundColor="white"
-                width="400px"
+                width={width}
                 height="100vh"
                 overflow="auto"
                 position="absolute"
-                left="400px"
+                left={width}
                 top="0px"
                 padding={4}
                 $flexDirection="column"
@@ -154,6 +158,12 @@ const SelectedTopic = () => {
   );
 };
 
+const MultiSelectButton = styled.input`
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+`;
+
 const PinDetailWrapper = styled.div`
   &.collapsedPinDetail {
     z-index: -1;
@@ -163,7 +173,7 @@ const PinDetailWrapper = styled.div`
 const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
   position: absolute;
   top: 50%;
-  left: 800px;
+  left: 744px;
   transform: translateY(-50%);
   z-index: 1;
   height: 80px;
@@ -178,7 +188,7 @@ const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
     `
     transform: rotate(180deg);
     top:45%;
-    left: 400px;
+    left: 372px;
     z-index: 1;
     `}
 
