@@ -13,13 +13,13 @@ import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
+import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -47,7 +47,7 @@ class MemberQueryServiceTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private MemberTopicPermissionRepository memberTopicPermissionRepository;
+    private PermissionRepository permissionRepository;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -70,24 +70,24 @@ class MemberQueryServiceTest {
         );
         Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", member3InTopic2));
         Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", member1InTopic1));
-        memberTopicPermissionRepository.save(
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic1, member1InTopic1)
+        permissionRepository.save(
+                Permission.createPermissionAssociatedWithTopicAndMember(topic1, member1InTopic1)
         );
-        memberTopicPermissionRepository.save(
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic1, member2InTopic1)
+        permissionRepository.save(
+                Permission.createPermissionAssociatedWithTopicAndMember(topic1, member2InTopic1)
         );
-        memberTopicPermissionRepository.save(
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic2, member3InTopic2)
+        permissionRepository.save(
+                Permission.createPermissionAssociatedWithTopicAndMember(topic2, member3InTopic2)
         );
 
         // when
-        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = memberQueryService.findAllWithPermission(topic1.getId());
+        List<PermissionResponse> permissionRespons = memberQueryService.findAllWithPermission(topic1.getId());
         MemberResponse memberResponse1 = MemberResponse.from(member1InTopic1);
         MemberResponse memberResponse2 = MemberResponse.from(member2InTopic1);
 
         // then
-        assertThat(memberTopicPermissionResponses).hasSize(2)
-                .extracting(MemberTopicPermissionResponse::memberResponse)
+        assertThat(permissionRespons).hasSize(2)
+                .extracting(PermissionResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(memberResponse1, memberResponse2));
     }
@@ -103,18 +103,18 @@ class MemberQueryServiceTest {
                 MemberFixture.create("members", "members@naver.com", Role.USER)
         );
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        Long savedId = memberTopicPermissionRepository.save(
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, permissionUser)
+        Long savedId = permissionRepository.save(
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, permissionUser)
         ).getId();
 
         // when
-        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse =
+        PermissionDetailResponse permissionDetailResponse =
                 memberQueryService.findMemberTopicPermissionById(savedId);
         MemberDetailResponse permissionUserResponse = MemberDetailResponse.from(permissionUser);
 
         // then
-        assertThat(memberTopicPermissionDetailResponse)
-                .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
+        assertThat(permissionDetailResponse)
+                .extracting(PermissionDetailResponse::memberDetailResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(permissionUserResponse);
     }

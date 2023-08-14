@@ -4,11 +4,11 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
-import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
+import com.mapbefine.mapbefine.permission.dto.request.PermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.net.URI;
@@ -41,7 +41,7 @@ public class MemberController {
     @PostMapping("/permissions")
     public ResponseEntity<Void> addMemberTopicPermission(
             AuthMember authMember,
-            @RequestBody MemberTopicPermissionCreateRequest request
+            @RequestBody PermissionCreateRequest request
     ) {
         Long savedId = memberCommandService.saveMemberTopicPermission(authMember, request);
 
@@ -82,20 +82,20 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/permissions/topics/{topicId}")
-    public ResponseEntity<List<MemberTopicPermissionResponse>> findMemberTopicPermissionAll(
+    public ResponseEntity<List<PermissionResponse>> findMemberTopicPermissionAll(
             @PathVariable Long topicId
     ) {
-        List<MemberTopicPermissionResponse> responses = memberQueryService.findAllWithPermission(topicId);
+        List<PermissionResponse> responses = memberQueryService.findAllWithPermission(topicId);
 
         return ResponseEntity.ok(responses);
     }
 
     @LoginRequired
     @GetMapping("/permissions/{permissionId}")
-    public ResponseEntity<MemberTopicPermissionDetailResponse> findMemberTopicPermissionById(
+    public ResponseEntity<PermissionDetailResponse> findMemberTopicPermissionById(
             @PathVariable Long permissionId
     ) {
-        MemberTopicPermissionDetailResponse response = memberQueryService.findMemberTopicPermissionById(permissionId);
+        PermissionDetailResponse response = memberQueryService.findMemberTopicPermissionById(permissionId);
 
         return ResponseEntity.ok(response);
     }

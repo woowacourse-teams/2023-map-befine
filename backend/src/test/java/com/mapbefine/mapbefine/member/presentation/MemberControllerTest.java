@@ -10,11 +10,11 @@ import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
+import com.mapbefine.mapbefine.permission.dto.request.PermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ class MemberControllerTest extends RestDocsIntegration {
     @DisplayName("권한 추가")
     void addMemberTopicPermission() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+        PermissionCreateRequest request = new PermissionCreateRequest(
                 1L,
                 2L
         );
@@ -73,8 +73,8 @@ class MemberControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
     void findMemberTopicPermissionAll() throws Exception {
-        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = List.of(
-                new MemberTopicPermissionResponse(
+        List<PermissionResponse> permissionRespons = List.of(
+                new PermissionResponse(
                         1L,
                         new MemberResponse(
                                 1L,
@@ -82,7 +82,7 @@ class MemberControllerTest extends RestDocsIntegration {
                                 "member@naver.com"
                         )
                 ),
-                new MemberTopicPermissionResponse(
+                new PermissionResponse(
                         1L,
                         new MemberResponse(
                                 2L,
@@ -92,10 +92,10 @@ class MemberControllerTest extends RestDocsIntegration {
                 )
         );
         String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberTopicPermissionResponses.get(0).memberResponse().email()).getBytes()
+                ("Basic " + permissionRespons.get(0).memberResponse().email()).getBytes()
         );
 
-        given(memberQueryService.findAllWithPermission(any())).willReturn(memberTopicPermissionResponses);
+        given(memberQueryService.findAllWithPermission(any())).willReturn(permissionRespons);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/permissions/topics/1")
@@ -106,7 +106,7 @@ class MemberControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
     void findMemberTopicPermissionById() throws Exception {
-        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = new MemberTopicPermissionDetailResponse(
+        PermissionDetailResponse permissionDetailResponse = new PermissionDetailResponse(
                 1L,
                 LocalDateTime.now(),
                 new MemberDetailResponse(
@@ -118,10 +118,10 @@ class MemberControllerTest extends RestDocsIntegration {
                 )
         );
         String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberTopicPermissionDetailResponse.memberDetailResponse().email()).getBytes()
+                ("Basic " + permissionDetailResponse.memberDetailResponse().email()).getBytes()
         );
 
-        given(memberQueryService.findMemberTopicPermissionById(any())).willReturn(memberTopicPermissionDetailResponse);
+        given(memberQueryService.findMemberTopicPermissionById(any())).willReturn(permissionDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/permissions/1")

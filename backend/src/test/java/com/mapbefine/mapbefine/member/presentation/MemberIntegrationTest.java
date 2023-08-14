@@ -12,15 +12,15 @@ import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
+import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
+import com.mapbefine.mapbefine.permission.dto.request.PermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -55,7 +55,7 @@ class MemberIntegrationTest extends IntegrationTest {
     private LocationRepository locationRepository;
 
     @Autowired
-    private MemberTopicPermissionRepository memberTopicPermissionRepository;
+    private PermissionRepository permissionRepository;
 
     private Member creator;
     private Member user1;
@@ -102,7 +102,7 @@ class MemberIntegrationTest extends IntegrationTest {
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
 
         // when
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+        PermissionCreateRequest request = new PermissionCreateRequest(
                 topic.getId(),
                 user1.getId()
         );
@@ -124,9 +124,9 @@ class MemberIntegrationTest extends IntegrationTest {
     void deleteMemberTopicPermission() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, user1);
-        Long savedId = memberTopicPermissionRepository.save(memberTopicPermission).getId();
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, user1);
+        Long savedId = permissionRepository.save(permission).getId();
 
         // when
         ExtractableResponse<Response> response = given().log().all()
@@ -145,12 +145,12 @@ class MemberIntegrationTest extends IntegrationTest {
     void findMemberTopicPermissionAll() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermission memberTopicPermission1 =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, user1);
-        MemberTopicPermission memberTopicPermission2 =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, user2);
-        memberTopicPermissionRepository.save(memberTopicPermission1);
-        memberTopicPermissionRepository.save(memberTopicPermission2);
+        Permission permission1 =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, user1);
+        Permission permission2 =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, user2);
+        permissionRepository.save(permission1);
+        permissionRepository.save(permission2);
 
         // when
         ExtractableResponse<Response> response = given().log().all()
@@ -160,13 +160,13 @@ class MemberIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = response.as(new TypeRef<>() {
+        List<PermissionResponse> permissionRespons = response.as(new TypeRef<>() {
         });
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(memberTopicPermissionResponses)
+        assertThat(permissionRespons)
                 .hasSize(2)
-                .extracting(MemberTopicPermissionResponse::memberResponse)
+                .extracting(PermissionResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(user1), MemberResponse.from(user2)));
     }
@@ -176,24 +176,24 @@ class MemberIntegrationTest extends IntegrationTest {
     void findMemberTopicPermissionById() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, user1);
-        memberTopicPermission = memberTopicPermissionRepository.save(memberTopicPermission);
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, user1);
+        permission = permissionRepository.save(permission);
 
         // when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
-                .when().get("/members/permissions/" + memberTopicPermission.getId())
+                .when().get("/members/permissions/" + permission.getId())
                 .then().log().all()
                 .extract();
 
         // then
-        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = response.as(
-                MemberTopicPermissionDetailResponse.class);
+        PermissionDetailResponse permissionDetailResponse = response.as(
+                PermissionDetailResponse.class);
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(memberTopicPermissionDetailResponse)
-                .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
+        assertThat(permissionDetailResponse)
+                .extracting(PermissionDetailResponse::memberDetailResponse)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(MemberDetailResponse.from(user1));

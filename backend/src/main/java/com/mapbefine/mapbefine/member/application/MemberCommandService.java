@@ -3,9 +3,9 @@ package com.mapbefine.mapbefine.member.application;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
-import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
+import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
+import com.mapbefine.mapbefine.permission.dto.request.PermissionCreateRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.NoSuchElementException;
@@ -18,19 +18,19 @@ public class MemberCommandService {
 
     private final MemberRepository memberRepository;
     private final TopicRepository topicRepository;
-    private final MemberTopicPermissionRepository memberTopicPermissionRepository;
+    private final PermissionRepository permissionRepository;
 
     public MemberCommandService(
             MemberRepository memberRepository,
             TopicRepository topicRepository,
-            MemberTopicPermissionRepository memberTopicPermissionRepository
+            PermissionRepository permissionRepository
     ) {
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
-        this.memberTopicPermissionRepository = memberTopicPermissionRepository;
+        this.permissionRepository = permissionRepository;
     }
 
-    public Long saveMemberTopicPermission(AuthMember authMember, MemberTopicPermissionCreateRequest request) {
+    public Long saveMemberTopicPermission(AuthMember authMember, PermissionCreateRequest request) {
         Member member = memberRepository.findById(request.memberId())
                 .orElseThrow(NoSuchElementException::new);
         Topic topic = topicRepository.findById(request.topicId())
@@ -38,15 +38,15 @@ public class MemberCommandService {
 
         validateSaveMemberTopicPermission(authMember, request, member, topic);
 
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
 
-        return memberTopicPermissionRepository.save(memberTopicPermission).getId();
+        return permissionRepository.save(permission).getId();
     }
 
     private void validateSaveMemberTopicPermission(
             AuthMember authMember,
-            MemberTopicPermissionCreateRequest request,
+            PermissionCreateRequest request,
             Member member,
             Topic topic
     ) {
@@ -65,7 +65,7 @@ public class MemberCommandService {
 
     private void validateSelfPermission(
             AuthMember authMember,
-            MemberTopicPermissionCreateRequest request
+            PermissionCreateRequest request
     ) {
         if (authMember.getMemberId().equals(request.memberId())) {
             throw new IllegalArgumentException("본인에게 권한을 줄 수 없습니다.");
@@ -73,18 +73,18 @@ public class MemberCommandService {
     }
 
     private void validateDuplicatePermission(Long topicId, Long memberId) {
-        if (memberTopicPermissionRepository.existsByTopicIdAndMemberId(topicId, memberId)) {
+        if (permissionRepository.existsByTopicIdAndMemberId(topicId, memberId)) {
             throw new IllegalArgumentException("권한은 중복으로 줄 수 없습니다.");
         }
     }
 
     public void deleteMemberTopicPermission(AuthMember authMember, Long permissionId) {
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
+        Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow(NoSuchElementException::new);
 
-        validateMemberCanTopicUpdate(authMember, memberTopicPermission.getTopic());
+        validateMemberCanTopicUpdate(authMember, permission.getTopic());
 
-        memberTopicPermissionRepository.delete(memberTopicPermission);
+        permissionRepository.delete(permission);
     }
 
 }

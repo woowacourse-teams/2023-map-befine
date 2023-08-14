@@ -1,12 +1,12 @@
-package com.mapbefine.mapbefine.member.domain;
+package com.mapbefine.mapbefine.permission.domain;
 
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberTopicPermissionRepository extends JpaRepository<MemberTopicPermission, Long> {
+public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
-    List<MemberTopicPermission> findAllByTopic(Topic topic);
+    List<Permission> findAllByTopic(Topic topic);
 
     boolean existsByTopicIdAndMemberId(Long topicId, Long memberId);
 

@@ -3,12 +3,12 @@ package com.mapbefine.mapbefine.member.application;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
+import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -28,18 +28,18 @@ public class MemberQueryService {
     private final MemberRepository memberRepository;
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
-    private final MemberTopicPermissionRepository memberTopicPermissionRepository;
+    private final PermissionRepository permissionRepository;
 
     public MemberQueryService(
             MemberRepository memberRepository,
             TopicRepository topicRepository,
             PinRepository pinRepository,
-            MemberTopicPermissionRepository memberTopicPermissionRepository
+            PermissionRepository permissionRepository
     ) {
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
-        this.memberTopicPermissionRepository = memberTopicPermissionRepository;
+        this.permissionRepository = permissionRepository;
     }
 
     public MemberDetailResponse findById(Long id) {
@@ -80,21 +80,21 @@ public class MemberQueryService {
         }
     }
 
-    public List<MemberTopicPermissionResponse> findAllWithPermission(Long topicId) {
+    public List<PermissionResponse> findAllWithPermission(Long topicId) {
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(NoSuchElementException::new);
 
-        return memberTopicPermissionRepository.findAllByTopic(topic)
+        return permissionRepository.findAllByTopic(topic)
                 .stream()
-                .map(MemberTopicPermissionResponse::from)
+                .map(PermissionResponse::from)
                 .toList();
     }
 
-    public MemberTopicPermissionDetailResponse findMemberTopicPermissionById(Long permissionId) {
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(permissionId)
+    public PermissionDetailResponse findMemberTopicPermissionById(Long permissionId) {
+        Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow(NoSuchElementException::new);
 
-        return MemberTopicPermissionDetailResponse.from(memberTopicPermission);
+        return PermissionDetailResponse.from(permission);
     }
 
 }

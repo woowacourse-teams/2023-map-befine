@@ -10,13 +10,11 @@ import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.MemberInfo;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
+import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
-import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
+import com.mapbefine.mapbefine.permission.dto.request.PermissionCreateRequest;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -39,7 +37,7 @@ class MemberCommandServiceTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private MemberTopicPermissionRepository memberTopicPermissionRepository;
+    private PermissionRepository permissionRepository;
 
     @Test
     @DisplayName("Admin 이 권한을 주는 경우 정상적으로 권한이 주어진다.")
@@ -49,16 +47,16 @@ class MemberCommandServiceTest {
         Member member = memberRepository.save(MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", admin));
         AuthMember authAdmin = new Admin(admin.getId());
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+        PermissionCreateRequest request = new PermissionCreateRequest(
                 topic.getId(),
                 member.getId()
         );
 
         // when
         Long savedId = memberCommandService.saveMemberTopicPermission(authAdmin, request);
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(savedId)
+        Permission permission = permissionRepository.findById(savedId)
                 .orElseThrow(NoSuchElementException::new);
-        Member memberWithPermission = memberTopicPermission.getMember();
+        Member memberWithPermission = permission.getMember();
 
         // then
         assertThat(member).usingRecursiveComparison()
@@ -78,16 +76,16 @@ class MemberCommandServiceTest {
                 getCreatedTopics(creator),
                 getTopicsWithPermission(creator)
         );
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+        PermissionCreateRequest request = new PermissionCreateRequest(
                 topic.getId(),
                 member.getId()
         );
 
         // when
         Long savedId = memberCommandService.saveMemberTopicPermission(authCreator, request);
-        MemberTopicPermission memberTopicPermission = memberTopicPermissionRepository.findById(savedId)
+        Permission permission = permissionRepository.findById(savedId)
                 .orElseThrow(NoSuchElementException::new);
-        Member memberWithPermission = memberTopicPermission.getMember();
+        Member memberWithPermission = permission.getMember();
 
         // then
         assertThat(member).usingRecursiveComparison()
@@ -108,7 +106,7 @@ class MemberCommandServiceTest {
                 getCreatedTopics(notCreator),
                 getTopicsWithPermission(notCreator)
         );
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+        PermissionCreateRequest request = new PermissionCreateRequest(
                 topic.getId(),
                 member.getId()
         );
@@ -126,7 +124,7 @@ class MemberCommandServiceTest {
         Member member = memberRepository.save(MemberFixture.create("memberss", "memberss@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         AuthMember guest = new Guest();
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+        PermissionCreateRequest request = new PermissionCreateRequest(
                 topic.getId(),
                 member.getId()
         );
@@ -147,7 +145,7 @@ class MemberCommandServiceTest {
                 getCreatedTopics(creator),
                 getTopicsWithPermission(creator)
         );
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+        PermissionCreateRequest request = new PermissionCreateRequest(
                 topic.getId(),
                 creator.getId()
         );
@@ -176,15 +174,15 @@ class MemberCommandServiceTest {
                 )
         );
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
-        memberTopicPermissionRepository.save(memberTopicPermission);
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        permissionRepository.save(permission);
         AuthMember authCreator = new User(
                 creator.getId(),
                 getCreatedTopics(creator),
                 getTopicsWithPermission(creator)
         );
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
+        PermissionCreateRequest request = new PermissionCreateRequest(
                 topic.getId(),
                 member.getId()
         );
@@ -204,9 +202,9 @@ class MemberCommandServiceTest {
         AuthMember authAdmin = new Admin(admin.getId());
 
         // when
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
-        Long savedId = memberTopicPermissionRepository.save(memberTopicPermission).getId();
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Long savedId = permissionRepository.save(permission).getId();
         memberCommandService.deleteMemberTopicPermission(authAdmin, savedId);
 
         // then
@@ -227,9 +225,9 @@ class MemberCommandServiceTest {
         );
 
         // when
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
-        Long savedId = memberTopicPermissionRepository.save(memberTopicPermission).getId();
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Long savedId = permissionRepository.save(permission).getId();
         memberCommandService.deleteMemberTopicPermission(authCreator, savedId);
 
         // then
@@ -251,9 +249,9 @@ class MemberCommandServiceTest {
         );
 
         // when
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
-        Long savedId = memberTopicPermissionRepository.save(memberTopicPermission).getId();
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Long savedId = permissionRepository.save(permission).getId();
 
         // then
         assertThatThrownBy(() -> memberCommandService.deleteMemberTopicPermission(authNonCreator, savedId))
