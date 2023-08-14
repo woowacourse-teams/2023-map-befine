@@ -68,7 +68,7 @@ public class MemberQueryService {
         List<Topic> topicsInAtlas = getTopicsInAtlas(authMember);
 
         return topicsByCreator.stream()
-                .map(topic -> convertToResponse(topicsInAtlas, topic))
+                .map(topic -> TopicResponse.from(topic, isInAtlas(topicsInAtlas, topic)))
                 .toList();
     }
 
@@ -79,8 +79,8 @@ public class MemberQueryService {
                 .toList();
     }
 
-    private TopicResponse convertToResponse(List<Topic> topicsInAtlas, Topic topic) {
-        return TopicResponse.from(topic, topicsInAtlas.contains(topic));
+    private boolean isInAtlas(List<Topic> topicsInAtlas, Topic topic) {
+        return topicsInAtlas.contains(topic);
     }
 
     public List<PinResponse> findPinsByMember(AuthMember authMember) {

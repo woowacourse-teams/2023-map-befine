@@ -62,7 +62,10 @@ public class LocationQueryService {
         return topicCounts.entrySet().stream()
                 .filter(entry -> member.canRead(entry.getKey()))
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .map(entry -> convertToResponse(topicsInAtlas, entry.getKey()))
+                .map(entry -> {
+                    Topic topic = entry.getKey();
+                    return TopicResponse.from(topic, isInAtlas(topicsInAtlas, topic));
+                })
                 .toList();
     }
 
@@ -74,8 +77,8 @@ public class LocationQueryService {
                 .toList();
     }
 
-    private TopicResponse convertToResponse(List<Topic> topicsInAtlas, Topic topic) {
-        return TopicResponse.from(topic, topicsInAtlas.contains(topic));
+    private boolean isInAtlas(List<Topic> topicsInAtlas, Topic topic) {
+        return topicsInAtlas.contains(topic);
     }
 
 }

@@ -24,31 +24,31 @@ public class TopicQueryService {
     }
 
     public List<TopicResponse> findAllReadable(AuthMember member) {
-        List<Topic> topicsInAtlas = getTopicsInAtlas(member);
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
         return topicRepository.findAll().stream()
                 .filter(member::canRead)
-                .map(topic -> convertToResponse(topicsInAtlas, topic))
+                .map(topic -> TopicResponse.from(topic, isInAtlas(topicsInAtlas, topic)))
                 .toList();
     }
 
-    private List<Topic> getTopicsInAtlas(AuthMember member) {
+    private List<Topic> findTopicsInAtlas(AuthMember member) {
         return atlasRepository.findAllByMemberId(member.getMemberId())
                 .stream()
                 .map(Atlas::getTopic)
                 .toList();
     }
 
-    private TopicResponse convertToResponse(List<Topic> topicsInAtlas, Topic topic) {
-        return TopicResponse.from(topic, topicsInAtlas.contains(topic));
+    private boolean isInAtlas(List<Topic> topicsInAtlas, Topic topic) {
+        return topicsInAtlas.contains(topic);
     }
 
     public TopicDetailResponse findDetailById(AuthMember member, Long id) {
         Topic topic = findTopic(id);
         validateReadableTopic(member, topic);
-        List<Topic> topicsInAtlas = getTopicsInAtlas(member);
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
-        return convertToDetailResponse(topicsInAtlas, topic);
+        return TopicDetailResponse.from(topic, isInAtlas(topicsInAtlas, topic));
     }
 
     private Topic findTopic(Long id) {
@@ -65,19 +65,15 @@ public class TopicQueryService {
 
     }
 
-    private TopicDetailResponse convertToDetailResponse(List<Topic> topicsInAtlas, Topic topic) {
-        return TopicDetailResponse.from(topic, topicsInAtlas.contains(topic));
-    }
-
     public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> ids) {
         List<Topic> topics = topicRepository.findByIdIn(ids);
 
         validateTopicsCount(ids, topics);
         validateReadableTopics(member, topics);
-        List<Topic> topicsInAtlas = getTopicsInAtlas(member);
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
         return topics.stream()
-                .map(topic -> convertToDetailResponse(topicsInAtlas, topic))
+                .map(topic -> TopicDetailResponse.from(topic, isInAtlas(topicsInAtlas, topic)))
                 .toList();
     }
 
