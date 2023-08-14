@@ -31,7 +31,7 @@ const NotFound = () => {
         </Text>
         <Space size={5} />
         <NotFoundButton variant="secondary" onClick={() => routePage('/')}>
-          돌아가기
+          메인페이지로 가기
         </NotFoundButton>
       </Flex>
     </NotFoundContainer>
@@ -46,9 +46,6 @@ const NotFoundContainer = styled(Flex)`
 `;
 
 const NotFoundButton = styled(Button)`
-  width: 116px;
-  height: 48px;
-
   font-weight: ${({ theme }) => theme.fontWeight['bold']};
 
   &:hover {
