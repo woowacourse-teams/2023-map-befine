@@ -32,7 +32,7 @@ public class PermissionCommandService {
     }
 
     public Long savePermission(AuthMember authMember, PermissionRequest request) {
-        validateNull(authMember);
+        validateUser(authMember);
         validateSelfPermission(authMember, request);
         validateDuplicatePermission(request);
 
@@ -46,9 +46,9 @@ public class PermissionCommandService {
         return permissionRepository.save(permission).getId();
     }
 
-    private void validateNull(AuthMember authMember) {
+    private void validateUser(AuthMember authMember) {
         if (Objects.isNull(authMember.getMemberId())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Guest는 권한을 줄 수 없습니다.");
         }
     }
 
