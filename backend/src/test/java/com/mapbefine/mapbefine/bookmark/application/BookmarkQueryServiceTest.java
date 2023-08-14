@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
-import com.mapbefine.mapbefine.bookmark.dto.response.BookmarkResponse;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -13,6 +12,7 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,12 +58,12 @@ class BookmarkQueryServiceTest {
         bookmarkRepository.save(bookmark2);
 
         //then
-        List<BookmarkResponse> topicsInBookmark = bookmarkQueryService.findAllTopicsInBookmark(
+        List<TopicResponse> topicsInBookmark = bookmarkQueryService.findAllTopicsInBookmark(
                 MemberFixture.createUser(otherMember)
         );
 
         assertThat(topicsInBookmark).hasSize(2);
-        assertThat(topicsInBookmark).extractingResultOf("topicId")
+        assertThat(topicsInBookmark).extractingResultOf("id")
                 .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
 
     }

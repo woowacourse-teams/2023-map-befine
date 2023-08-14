@@ -7,8 +7,8 @@ import static org.mockito.Mockito.doNothing;
 
 import com.mapbefine.mapbefine.bookmark.application.BookmarkCommandService;
 import com.mapbefine.mapbefine.bookmark.application.BookmarkQueryService;
-import com.mapbefine.mapbefine.bookmark.dto.response.BookmarkResponse;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -44,21 +44,23 @@ class BookmarkControllerTest extends RestDocsIntegration {
     public void findTopicsInBookmark() throws Exception {
         String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
 
-        List<BookmarkResponse> response = List.of(
-                new BookmarkResponse(
-                        1L,
+        List<TopicResponse> response = List.of(
+                new TopicResponse(
                         1L,
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         3,
+                        100,
+                        Boolean.TRUE,
                         LocalDateTime.now()
                 ),
-                new BookmarkResponse(
-                        2L,
+                new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         5,
+                        150,
+                        Boolean.TRUE,
                         LocalDateTime.now()
                 )
         );

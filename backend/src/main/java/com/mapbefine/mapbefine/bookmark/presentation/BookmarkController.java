@@ -3,8 +3,8 @@ package com.mapbefine.mapbefine.bookmark.presentation;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.application.BookmarkCommandService;
 import com.mapbefine.mapbefine.bookmark.application.BookmarkQueryService;
-import com.mapbefine.mapbefine.bookmark.dto.response.BookmarkResponse;
 import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +44,8 @@ public class BookmarkController {
 
     @LoginRequired
     @GetMapping
-    public ResponseEntity<List<BookmarkResponse>> findAllTopicsInBookmark(AuthMember authMember) {
-        List<BookmarkResponse> responses = bookmarkQueryService.findAllTopicsInBookmark(authMember);
+    public ResponseEntity<List<TopicResponse>> findAllTopicsInBookmark(AuthMember authMember) {
+        List<TopicResponse> responses = bookmarkQueryService.findAllTopicsInBookmark(authMember);
 
         return ResponseEntity.ok(responses);
     }

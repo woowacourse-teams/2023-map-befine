@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
-import com.mapbefine.mapbefine.bookmark.dto.response.BookmarkResponse;
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -15,6 +14,7 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -97,7 +97,7 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         );
 
         //when
-        List<BookmarkResponse> response = given().log().all()
+        List<TopicResponse> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/bookmarks")
@@ -112,8 +112,8 @@ public class BookmarkIntegrationTest extends IntegrationTest {
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(List.of(
-                        BookmarkResponse.from(bookmark1),
-                        BookmarkResponse.from(bookmark2))
+                        TopicResponse.from(topic1, Boolean.TRUE),
+                        TopicResponse.from(topic2, Boolean.TRUE))
                 );
     }
 
