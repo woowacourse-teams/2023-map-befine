@@ -41,7 +41,7 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/atlas")
-    public ResponseEntity<List<TopicResponse>> findTopicsByMember(AuthMember authMember) {
+    public ResponseEntity<List<TopicResponse>> findAllTopicsInAtlas(AuthMember authMember) {
         List<TopicResponse> responses = memberQueryService.findAllTopicsInAtlas(authMember);
 
         return ResponseEntity.ok(responses);
@@ -49,7 +49,7 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/bookmarks")
-    public ResponseEntity<List<TopicResponse>> findPinsByMember(AuthMember authMember) {
+    public ResponseEntity<List<TopicResponse>> findAllTopicsInBookmark(AuthMember authMember) {
         List<TopicResponse> responses = memberQueryService.findAllTopicsInBookmark(authMember);
 
         return ResponseEntity.ok(responses);

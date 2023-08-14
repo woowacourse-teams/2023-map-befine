@@ -352,4 +352,28 @@ class TopicQueryServiceTest {
                 .containsExactlyInAnyOrder(Boolean.FALSE, Boolean.FALSE);
     }
 
+    @Test
+    @DisplayName("멤버 Id를 이용하여 그 멤버가 만든 모든 Topic을 확인할 수 있다.")
+    void findAllTopicsByMemberId_Success() {
+        //given
+        AuthMember authMember = new Admin(member.getId());
+
+        List<Topic> expected = topicRepository.saveAll(List.of(
+                TopicFixture.createPublicAndAllMembersTopic(member),
+                TopicFixture.createPublicAndAllMembersTopic(member),
+                TopicFixture.createPublicAndAllMembersTopic(member)
+        ));
+
+        //when
+        List<TopicResponse> actual = topicQueryService.findAllTopicsByMemberId(authMember, member.getId());
+
+        //then
+        List<Long> topicIds = expected.stream()
+                .map(Topic::getId)
+                .toList();
+        assertThat(actual).hasSize(expected.size());
+        assertThat(actual).extractingResultOf("id")
+                .isEqualTo(topicIds);
+    }
+
 }

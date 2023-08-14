@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -18,6 +19,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class MemberControllerTest extends RestDocsIntegration {
 
+    private final static String AUTH_HEADER = Base64.encodeBase64String("Basic member@naver.com".getBytes());
+
     @MockBean
     private MemberQueryService memberQueryService;
 
@@ -27,24 +30,21 @@ class MemberControllerTest extends RestDocsIntegration {
         List<MemberResponse> memberResponses = List.of(
                 new MemberResponse(
                         1L,
-                        "member",
-                        "member@naver.com"
+                        "member1",
+                        "member1@member.com"
                 ),
                 new MemberResponse(
                         2L,
-                        "memberr",
-                        "memberr@naver.com"
+                        "member2",
+                        "member2@member.com"
                 )
-        );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberResponses.get(0).email()).getBytes()
         );
 
         given(memberQueryService.findAll()).willReturn(memberResponses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }
 
@@ -58,16 +58,79 @@ class MemberControllerTest extends RestDocsIntegration {
                 "https://map-befine-official.github.io/favicon.png",
                 LocalDateTime.now()
         );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberDetailResponse.email()).getBytes()
-        );
 
         given(memberQueryService.findById(any())).willReturn(memberDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }
 
+    @Test
+    @DisplayName("유저의 모아보기 목록 조회")
+    void findAllTopicsInAtlas() throws Exception {
+        List<TopicResponse> responses = List.of(
+                new TopicResponse(
+                        1L,
+                        "준팍의 또 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        5,
+                        true,
+                        0,
+                        false,
+                        LocalDateTime.now()
+                ), new TopicResponse(
+                        2L,
+                        "준팍의 두번째 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        3,
+                        true,
+                        0,
+                        false,
+                        LocalDateTime.now()
+                )
+        );
+
+        given(memberQueryService.findAllTopicsInAtlas(any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/atlas")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+
+    }
+
+    @Test
+    @DisplayName("유저의 즐겨찾기 목록 조회")
+    void findAllTopicsInBookmark() throws Exception {
+        List<TopicResponse> responses = List.of(
+                new TopicResponse(
+                        1L,
+                        "준팍의 또 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        5,
+                        false,
+                        0,
+                        true,
+                        LocalDateTime.now()
+                ), new TopicResponse(
+                        2L,
+                        "준팍의 두번째 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        3,
+                        false,
+                        0,
+                        true,
+                        LocalDateTime.now()
+                )
+        );
+
+        given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/bookmarks")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+    }
 }

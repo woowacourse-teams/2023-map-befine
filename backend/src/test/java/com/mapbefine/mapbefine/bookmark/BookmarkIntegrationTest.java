@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.bookmark.presentation;
+package com.mapbefine.mapbefine.bookmark;
 
 import static io.restassured.RestAssured.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;

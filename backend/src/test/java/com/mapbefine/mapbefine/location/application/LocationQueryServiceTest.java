@@ -4,7 +4,6 @@ import static com.mapbefine.mapbefine.location.LocationFixture.ADDRESS;
 import static com.mapbefine.mapbefine.location.LocationFixture.BASE_COORDINATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -39,8 +38,6 @@ class LocationQueryServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private TopicRepository topicRepository;
-    @Autowired
-    private AtlasRepository atlasRepository;
     @Autowired
     private LocationQueryService locationQueryService;
 

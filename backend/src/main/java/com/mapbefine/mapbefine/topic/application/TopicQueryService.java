@@ -170,4 +170,29 @@ public class TopicQueryService {
         }
     }
 
+    public List<TopicResponse> findAllTopicsByMemberId(AuthMember authMember, Long memberId) {
+
+        if (Objects.isNull(authMember.getMemberId())) {
+            return topicRepository.findByCreatorId(memberId)
+                    .stream()
+                    .filter(authMember::canRead)
+                    .map(topic -> TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
+                    .toList();
+        }
+
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return topicRepository.findByCreatorId(memberId)
+                .stream()
+                .filter(authMember::canRead)
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked(topicsInBookMark, topic))
+                ).toList();
+    }
+
 }

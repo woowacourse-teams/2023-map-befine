@@ -198,4 +198,39 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         ).andDo(restDocs.document());
     }
 
+    @Test
+    @DisplayName("멤버 Id를 입력하면 해당 멤버가 만든 지도 목록을 조회할 수 있다.")
+    void findAllTopicsByMemberId() throws Exception {
+        String authHeader = Base64.encodeBase64String(
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        List<TopicResponse> responses = List.of(new TopicResponse(
+                1L,
+                "준팍의 또 토픽",
+                "https://map-befine-official.github.io/favicon.png",
+                3,
+                false,
+                0,
+                false,
+                LocalDateTime.now()
+        ), new TopicResponse(
+                2L,
+                "준팍의 두번째 토픽",
+                "https://map-befine-official.github.io/favicon.png",
+                5,
+                false,
+                0,
+                false,
+                LocalDateTime.now()
+        ));
+
+        given(topicQueryService.findAllTopicsByMemberId(any(), any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/topics/members/1")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
 }
