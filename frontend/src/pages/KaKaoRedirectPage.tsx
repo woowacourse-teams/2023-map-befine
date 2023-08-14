@@ -12,10 +12,11 @@ export const handleOAuthKakao = async (code: string) => {
     console.log('222');
     const url = `https://mapbefine.kro.kr/api/oauth/login/kakao?code=${code}`;
     console.log('line12');
-    const data = await getApi<LoginResponse>('login', url);
+    const data = await getApi<any>('login', url);
+    console.log('data', data);
 
-    localStorage.setItem('userToken', data.accessToken);
-    localStorage.setItem('user', JSON.stringify(data.member));
+    localStorage.setItem('userToken', data.data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.data.member));
 
     window.alert('login process');
   } catch (error) {
