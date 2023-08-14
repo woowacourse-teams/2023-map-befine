@@ -72,7 +72,7 @@ class LocationControllerTest extends RestDocsIntegration {
 
         //then
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/locations")
+                MockMvcRequestBuilders.get("/locations/bests")
                         .header(AUTHORIZATION, authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("latitude", String.valueOf(latitude))
