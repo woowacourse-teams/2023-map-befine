@@ -28,33 +28,33 @@ const Navbar = () => {
     >
       <Home onClick={() => routePage('/')} />
       <All onClick={() => routePage('/moabogi', '/topics|모아보기')} />{' '}
-      <Tooltip content="나만의 지도를 추가해보세요" position="top">
-        <AddButton onClick={() => setShowButton((prev) => !prev)} />
-        {showButton && (
-          <Flex
-            position="absolute"
-            bottom="60px"
-            $justifyContent="center"
-            padding="20px"
-            left="0"
-            width="100%"
+      {/* <Tooltip content="나만의 지도를 추가해보세요" position="top"> */}
+      <AddButton onClick={() => setShowButton((prev) => !prev)} />
+      {showButton && (
+        <Flex
+          position="absolute"
+          bottom="60px"
+          $justifyContent="center"
+          padding="20px"
+          left="0"
+          width="100%"
+        >
+          <Button
+            variant="primary"
+            onClick={() => {
+              routePage('/new-topic');
+              setShowButton(false);
+            }}
           >
-            <Button
-              variant="primary"
-              onClick={() => {
-                routePage('/new-topic');
-                setShowButton(false);
-              }}
-            >
-              지도 추가하기
-            </Button>
-            <Space size={4} />
-            <Button variant="primary" onClick={() => routePage('/')}>
-              핀 추가하기
-            </Button>
-          </Flex>
-        )}
-      </Tooltip>
+            지도 추가하기
+          </Button>
+          <Space size={4} />
+          <Button variant="primary" onClick={() => routePage('/')}>
+            핀 추가하기
+          </Button>
+        </Flex>
+      )}
+      {/* </Tooltip> */}
       <Favorite onClick={() => routePage('/zzlegyeo', '/topics|즐겨찾기')} />
       <My onClick={() => routePage('/my')} />
     </Flex>
