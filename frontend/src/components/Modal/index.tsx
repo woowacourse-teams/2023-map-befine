@@ -2,9 +2,13 @@ import { useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { css, keyframes, styled } from 'styled-components';
 import { ModalContext } from '../../context/ModalContext';
-type ModalWrapperType = Omit<ModalProps, 'children' | '$dimmedColor'>;
+type ModalWrapperType = Omit<
+  ModalProps,
+  'modalKey' | 'children' | '$dimmedColor'
+>;
 
 interface ModalProps {
+  modalKey: string;
   position: 'center' | 'bottom';
   width: string;
   height: string;
@@ -13,7 +17,9 @@ interface ModalProps {
   top?: string;
   left?: string;
 }
+
 const Modal = ({
+  modalKey,
   position,
   width,
   height,
@@ -22,14 +28,14 @@ const Modal = ({
   top,
   left,
 }: ModalProps) => {
-  const { isModalOpen, closeModal } = useContext(ModalContext);
+  const { modalOpens, closeModal } = useContext(ModalContext);
 
   const root = document.querySelector('#root') as HTMLElement;
 
   useEffect(() => {
     const escKeyModalClose = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        closeModal();
+        closeModal(modalKey);
       }
     };
 
@@ -41,11 +47,11 @@ const Modal = ({
   }, []);
 
   const onClickDimmedCloseModal = (e: React.MouseEvent<HTMLDivElement>) => {
-    closeModal();
+    closeModal(modalKey);
   };
 
   return ReactDOM.createPortal(
-    isModalOpen && (
+    modalOpens[modalKey] && (
       <>
         <WrapperDimmed
           $dimmedColor={$dimmedColor}
