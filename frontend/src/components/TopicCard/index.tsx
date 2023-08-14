@@ -88,12 +88,12 @@ const TopicCard = ({
           </Flex>
 
           <ButtonWrapper>
-            <AddFavorite id={topicId}>
-              <FavoriteSVG />
-            </AddFavorite>
             <AddSeeTogether id={topicId}>
               <SeeTogetherSVG />
             </AddSeeTogether>
+            <AddFavorite id={topicId}>
+              <FavoriteSVG />
+            </AddFavorite>
           </ButtonWrapper>
         </Box>
       </Flex>
