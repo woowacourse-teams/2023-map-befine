@@ -5,11 +5,13 @@ import NewTopic from './pages/NewTopic';
 import RootPage from './pages/RootPage';
 import SelectedTopic from './pages/SelectedTopic';
 import SeeAllTopics from './pages/SeeAllTopics';
+import NotFound from './components/NotFound';
 
 const routes = [
   {
     path: '/',
     element: <RootPage />,
+    errorElement: <NotFound />,
     children: [
       {
         path: '',
