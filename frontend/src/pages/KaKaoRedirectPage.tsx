@@ -24,11 +24,13 @@ export const handleOAuthKakao = async (code: string) => {
 
 const KakaoRedirectPage = () => {
   const location = useLocation();
-
+  console.log('location', location);
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const code = searchParams.get('code');
+    console.log('code', code);
     if (code) {
+      console.log('ifCode', code);
       handleOAuthKakao(code);
     }
   }, [location]);
