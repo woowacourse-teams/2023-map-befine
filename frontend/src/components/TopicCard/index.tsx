@@ -6,10 +6,17 @@ import Image from '../common/Image';
 import { SyntheticEvent } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
-import SeeTogetherButton from '../SeeTogetherButton';
+import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
+import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
+import SmallTopicPin from '../../assets/smallTopicPin.svg';
+import SmallTopicStar from '../../assets/smallTopicStar.svg';
+import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import AddSeeTogether from '../AddSeeTogether';
+import AddFavorite from '../AddFavorite';
+
+const FAVORITE_COUNT = 10;
 
 export interface TopicCardProps {
-  topicShape: 'vertical' | 'horizontal';
   topicId: number;
   topicImage: string;
   topicTitle: string;
@@ -18,7 +25,6 @@ export interface TopicCardProps {
 }
 
 const TopicCard = ({
-  topicShape,
   topicId,
   topicImage,
   topicTitle,
@@ -31,114 +37,89 @@ const TopicCard = ({
     routePage(`/topics/${topicId}`, [topicId]);
   };
 
-  if (topicShape === 'horizontal') {
-    return (
-      <HorizontalWrapper onClick={goToSelectedTopic}>
-        <Flex position="relative">
-          <HorizontalTopicImage
-            height="148px"
-            width="148px"
-            src={topicImage}
-            alt="토픽 이미지"
-            $objectFit="cover"
-            onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-              e.currentTarget.src =
-                'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
-            }}
-          />
-          <Box width="212px" padding={1}>
-            <Box height="60px">
-              <Text color="black" $fontSize="medium" $fontWeight="bold">
-                {topicTitle}
-              </Text>
-            </Box>
-            <Text color="black" $fontSize="small" $fontWeight="normal">
-              토픽 생성자
-            </Text>
-            <Space size={0} />
-            <Text color="gray" $fontSize="small" $fontWeight="normal">
-              핀 {topicPinCount}개
-            </Text>
-            <Text color="gray" $fontSize="small" $fontWeight="normal">
-              즐겨찾기 10명
-            </Text>
-            <HorizontalButtonWrapper>
-              <SeeTogetherButton />
-            </HorizontalButtonWrapper>
-          </Box>
-        </Flex>
-      </HorizontalWrapper>
-    );
-  }
-
   return (
-    <VerticalWrapper onClick={goToSelectedTopic}>
-      <Box position="relative">
-        <VerticalTopicImage
-          width="172px"
-          height="172px"
+    <Wrapper onClick={goToSelectedTopic}>
+      <Flex position="relative">
+        <TopicImage
+          height="138px"
+          width="138px"
           src={topicImage}
           alt="토픽 이미지"
           $objectFit="cover"
           onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-            e.currentTarget.src =
-              'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
+            e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
           }}
         />
-        <Box padding={1}>
-          <Space size={0} />
-          <Box height="60px">
-            <Text color="black" $fontSize="medium" $fontWeight="bold">
+
+        <Box width="192px" padding={1}>
+          <Box height="52px">
+            <Text color="black" $fontSize="default" $fontWeight="bold">
               {topicTitle}
             </Text>
           </Box>
-          <Text color="gray" $fontSize="small" $fontWeight="normal">
-            {`핀 ${topicPinCount}개 | 
-            ${topicUpdatedAt.split('T')[0].replaceAll('-', '.')}`}
+
+          <Text color="black" $fontSize="small" $fontWeight="normal">
+            토픽 생성자
           </Text>
-          <VerticalButtonWrapper>
-            <SeeTogetherButton />
-          </VerticalButtonWrapper>
+
+          <Space size={0} />
+
+          <Text color="gray" $fontSize="small" $fontWeight="normal">
+            {topicUpdatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
+          </Text>
+
+          <Space size={0} />
+
+          <Flex>
+            <Flex $alignItems="center" width="64px">
+              <SmallTopicPin />
+              <Space size={0} />
+              <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
+                {topicPinCount > 999 ? '+999' : topicPinCount}개
+              </Text>
+            </Flex>
+            <Flex $alignItems="center" width="64px">
+              <SmallTopicStar />
+              <Space size={0} />
+              <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
+                {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
+              </Text>
+            </Flex>
+          </Flex>
+
+          <ButtonWrapper>
+            <AddSeeTogether id={topicId}>
+              <SeeTogetherSVG />
+            </AddSeeTogether>
+            <AddFavorite id={topicId}>
+              <FavoriteSVG />
+            </AddFavorite>
+          </ButtonWrapper>
         </Box>
-      </Box>
-    </VerticalWrapper>
+      </Flex>
+    </Wrapper>
   );
 };
 
-const VerticalWrapper = styled.li`
-  width: 172px;
-  height: 276px;
-  box-shadow: 2px 4px 4px 2px rgba(69, 69, 69, 0.25);
+const Wrapper = styled.li`
+  width: 332px;
+  height: 140px;
   cursor: pointer;
+  border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
 `;
 
-const HorizontalWrapper = styled.li`
-  width: 352px;
-  height: 148px;
-  box-shadow: 2px 4px 4px 2px rgba(69, 69, 69, 0.25);
-  cursor: pointer;
-  border-radius: ${({ theme }) => theme.radius.small};
-`;
-
-const VerticalButtonWrapper = styled.div`
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
   position: absolute;
-  top: 48%;
-  right: 12px;
+  width: 72px;
+
+  top: 100px;
+  left: 60px;
 `;
 
-const HorizontalButtonWrapper = styled.div`
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-`;
-
-const VerticalTopicImage = styled(Image)`
-  border-top-left-radius: ${({ theme }) => theme.radius.small};
-  border-top-right-radius: ${({ theme }) => theme.radius.small};
-`;
-
-const HorizontalTopicImage = styled(Image)`
+const TopicImage = styled(Image)`
   border-radius: ${({ theme }) => theme.radius.small};
 `;
 

@@ -15,9 +15,6 @@ export const getApi = async <T>(
     },
   });
 
-  console.log('response', response);
-  console.log('responseJson', response.json());
-
   const responseData: T = await response.json();
   if (response.status !== 200) {
     throw new Error('API 요청에 실패했습니다.');

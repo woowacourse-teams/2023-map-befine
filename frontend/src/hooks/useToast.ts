@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import ToastProps from '../types/Toast';
 import { ToastContext } from '../context/ToastContext';
-import { toastShowTime } from '../constants';
+import { TOAST_SHOWTIME } from '../constants';
 
 let timeoutID: null | number = null;
 
@@ -18,7 +18,7 @@ const useToast = () => {
 
     timeoutID = window.setTimeout(() => {
       setToast({ show: false, type, message: '' });
-    }, toastShowTime);
+    }, TOAST_SHOWTIME);
   };
 
   return { showToast };

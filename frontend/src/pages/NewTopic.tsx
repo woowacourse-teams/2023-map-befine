@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
@@ -10,7 +11,9 @@ import { useLocation } from 'react-router-dom';
 import useToast from '../hooks/useToast';
 import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
-import { useState } from 'react';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
@@ -30,6 +33,8 @@ const NewTopic = () => {
   const { routePage } = useNavigator();
   const { state: taggedIds } = useLocation();
   const { showToast } = useToast();
+  const { width } = useSetLayoutWidth(SIDEBAR);
+  const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
 
   const goToBack = () => {
     routePage(-1);
@@ -88,7 +93,10 @@ const NewTopic = () => {
   return (
     <form onSubmit={onSubmit}>
       <Space size={4} />
-      <Flex $flexDirection="column">
+      <Flex
+        width={`calc(${width} - ${LAYOUT_PADDING})`}
+        $flexDirection="column"
+      >
         <Text color="black" $fontSize="large" $fontWeight="bold">
           토픽 생성
         </Text>
