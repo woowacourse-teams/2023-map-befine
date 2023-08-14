@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.topic;
 
 
 import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.topic.domain.Permission;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -19,7 +19,7 @@ public class TopicFixture {
                 "토픽 멤버만 읽을 수 있습니다.",
                 IMAGE_URL,
                 Publicity.PRIVATE,
-                Permission.GROUP_ONLY,
+                PermissionType.GROUP_ONLY,
                 member
         );
     }
@@ -30,7 +30,7 @@ public class TopicFixture {
                 "아무나 읽을 수 있습니다.",
                 IMAGE_URL,
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 member
         );
     }
@@ -41,7 +41,7 @@ public class TopicFixture {
                 "설명",
                 null,
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 member
         );
     }
@@ -52,7 +52,7 @@ public class TopicFixture {
                 "설명",
                 null,
                 Publicity.PRIVATE,
-                Permission.GROUP_ONLY,
+                PermissionType.GROUP_ONLY,
                 member
         );
     }
@@ -65,7 +65,7 @@ public class TopicFixture {
                 IMAGE_URL,
                 "아무나 읽을 수 있는 토픽입니다.",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 pinIds
         );
     }
@@ -78,7 +78,7 @@ public class TopicFixture {
                 IMAGE_URL,
                 "아무나 읽을 수 있는 토픽입니다.",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 topicIds
         );
     }

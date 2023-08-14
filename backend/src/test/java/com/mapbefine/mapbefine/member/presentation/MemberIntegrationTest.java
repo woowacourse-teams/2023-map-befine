@@ -12,15 +12,10 @@ import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermission;
-import com.mapbefine.mapbefine.member.domain.MemberTopicPermissionRepository;
 import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -53,9 +48,6 @@ class MemberIntegrationTest extends IntegrationTest {
 
     @Autowired
     private LocationRepository locationRepository;
-
-    @Autowired
-    private MemberTopicPermissionRepository memberTopicPermissionRepository;
 
     private Member creator;
     private Member user1;
@@ -93,110 +85,6 @@ class MemberIntegrationTest extends IntegrationTest {
         );
         creatorAuthHeader = testAuthHeaderProvider.createAuthHeader(creator);
         user1AuthHeader = testAuthHeaderProvider.createAuthHeader(user1);
-    }
-
-    @Test
-    @DisplayName("Topic 을 만든자가 특정 유저에게 권한을 준다.")
-    void addMemberTopicPermission() {
-        // given
-        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-
-        // when
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
-                topic.getId(),
-                user1.getId()
-        );
-        ExtractableResponse<Response> response = given().log().all()
-                .header(AUTHORIZATION, creatorAuthHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/members/permissions")
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    @Test
-    @DisplayName("Topic 을 만든자가 특정 유저에게 권한을 삭제한다.")
-    void deleteMemberTopicPermission() {
-        // given
-        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, user1);
-        Long savedId = memberTopicPermissionRepository.save(memberTopicPermission).getId();
-
-        // when
-        ExtractableResponse<Response> response = given().log().all()
-                .header(AUTHORIZATION, creatorAuthHeader)
-                .when().delete("/members/permissions/" + savedId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode())
-                .isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @Test
-    @DisplayName("Topic 에 권한을 가진 자들을 모두 조회한다.")
-    void findMemberTopicPermissionAll() {
-        // given
-        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermission memberTopicPermission1 =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, user1);
-        MemberTopicPermission memberTopicPermission2 =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, user2);
-        memberTopicPermissionRepository.save(memberTopicPermission1);
-        memberTopicPermissionRepository.save(memberTopicPermission2);
-
-        // when
-        ExtractableResponse<Response> response = given().log().all()
-                .header(AUTHORIZATION, creatorAuthHeader)
-                .when().get("/members/permissions/topics/" + topic.getId())
-                .then().log().all()
-                .extract();
-
-        // then
-        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = response.as(new TypeRef<>() {
-        });
-        assertThat(response.statusCode())
-                .isEqualTo(HttpStatus.OK.value());
-        assertThat(memberTopicPermissionResponses)
-                .hasSize(2)
-                .extracting(MemberTopicPermissionResponse::memberResponse)
-                .usingRecursiveComparison()
-                .isEqualTo(List.of(MemberResponse.from(user1), MemberResponse.from(user2)));
-    }
-
-    @Test
-    @DisplayName("Topic 에 권한을 가진 자를 조회한다.")
-    void findMemberTopicPermissionById() {
-        // given
-        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, user1);
-        memberTopicPermission = memberTopicPermissionRepository.save(memberTopicPermission);
-
-        // when
-        ExtractableResponse<Response> response = given().log().all()
-                .header(AUTHORIZATION, creatorAuthHeader)
-                .when().get("/members/permissions/" + memberTopicPermission.getId())
-                .then().log().all()
-                .extract();
-
-        // then
-        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = response.as(
-                MemberTopicPermissionDetailResponse.class);
-        assertThat(response.statusCode())
-                .isEqualTo(HttpStatus.OK.value());
-        assertThat(memberTopicPermissionDetailResponse)
-                .extracting(MemberTopicPermissionDetailResponse::memberDetailResponse)
-                .usingRecursiveComparison()
-                .ignoringFieldsOfTypes(LocalDateTime.class)
-                .isEqualTo(MemberDetailResponse.from(user1));
     }
 
     @Test
