@@ -43,7 +43,7 @@ const PinDetail = ({
 
   useEffect(() => {
     const getPinData = async () => {
-      const pinData = await getApi('default', `/pins/${pinId}`);
+      const pinData = await getApi<any>('default', `/pins/${pinId}`);
       setPin(pinData);
       setFormValues({
         name: pinData.name,
