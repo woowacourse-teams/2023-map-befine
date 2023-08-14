@@ -10,7 +10,7 @@ export const handleOAuthKakao = async (code: string) => {
   console.log('bye');
   try {
     console.log('222');
-    const url = `https://mapbefine.kro.kr/oauth/login/kakao?code=${code}`;
+    const url = `https://mapbefine.kro.kr/api/oauth/login/kakao?code=${code}`;
     console.log('line12');
     const data = await getApi<LoginResponse>('login', url);
 
