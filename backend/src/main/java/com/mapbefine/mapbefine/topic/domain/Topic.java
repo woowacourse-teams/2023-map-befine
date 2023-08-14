@@ -66,11 +66,11 @@ public class Topic extends BaseTimeEntity {
             String description,
             String imageUrl,
             Publicity publicity,
-            Permission permission,
+            PermissionType permissionType,
             Member creator
     ) {
         TopicInfo topicInfo = TopicInfo.of(name, description, imageUrl);
-        TopicStatus topicStatus = TopicStatus.of(publicity, permission);
+        TopicStatus topicStatus = TopicStatus.of(publicity, permissionType);
         Topic topic = new Topic(topicInfo, topicStatus, creator);
 
         creator.addTopic(topic);
@@ -86,8 +86,8 @@ public class Topic extends BaseTimeEntity {
         this.topicInfo = TopicInfo.of(name, description, imageUrl);
     }
 
-    public void updateTopicStatus(Publicity publicity, Permission permission) {
-        topicStatus.update(publicity, permission);
+    public void updateTopicStatus(Publicity publicity, PermissionType permissionType) {
+        topicStatus.update(publicity, permissionType);
     }
 
     public int countPins() {
