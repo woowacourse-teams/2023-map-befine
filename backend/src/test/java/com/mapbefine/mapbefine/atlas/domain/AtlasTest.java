@@ -30,7 +30,7 @@ class AtlasTest {
         @Test
         @DisplayName("정상적인 값이 입력되면 객체가 생성된다.")
         void success() {
-            Atlas atlas = Atlas.from(TOPIC, MEMBER);
+            Atlas atlas = Atlas.createWithAssociatedMember(TOPIC, MEMBER);
 
             assertThat(atlas).isNotNull();
             assertThat(atlas.getTopic()).isEqualTo(TOPIC);
@@ -41,9 +41,9 @@ class AtlasTest {
         @MethodSource(value = "memberTopicProvider")
         @DisplayName("입력값이 null이면 예외가 발생된다.")
         void validation_fail(Topic topic, Member member) {
-            assertThatThrownBy(() -> Atlas.from(topic, member))
+            assertThatThrownBy(() -> Atlas.createWithAssociatedMember(topic, member))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("토픽과 멤버는 Null이어선 안됩니다.");
+                    .hasMessage("지도와 유저는 Null이어선 안됩니다.");
         }
 
         static Stream<Arguments> memberTopicProvider() {

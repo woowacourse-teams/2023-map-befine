@@ -42,7 +42,7 @@ public class Permission extends BaseTimeEntity {
     ) {
         Permission permission = new Permission(topic, member);
         topic.addMemberTopicPermission(permission);
-        member.addMemberTopicPermission(permission);
+        member.addPermission(permission);
 
         return permission;
     }

@@ -5,21 +5,32 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import org.apache.tomcat.util.codec.binary.Base64;
+import com.mapbefine.mapbefine.member.MemberFixture;
+import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.Role;
+import io.restassured.*;
+import io.restassured.response.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class LocationIntegrationTest extends IntegrationTest {
 
-    private final String authHeader = Base64.encodeBase64String(
-            "Basic member@naver.com".getBytes()
-    );
+    @Autowired
+    private MemberRepository memberRepository;
 
+    private Member member;
+    private String authHeader;
+
+    @BeforeEach
+    void setMember() {
+        member = memberRepository.save(MemberFixture.create("other", "other@othter.com", Role.ADMIN));
+        authHeader = testAuthHeaderProvider.createAuthHeader(member);
+    }
 
     @Test
     @DisplayName("현재 위치의 좌표를 보내주면 주변 Topic을 핀 갯수 순으로 정렬하여 반환한다.")
