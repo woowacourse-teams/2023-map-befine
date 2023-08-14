@@ -11,5 +11,5 @@ operation::bookmark-controller-test/find-topics-in-bookmark[snippets='http-reque
 === 유저의 토픽 즐겨찾기 단일 삭제
 operation::bookmark-controller-test/delete-topic-in-bookmark[snippets='http-request,http-response']
 
-=== 유저의 토픽 즐겨찾기 전 삭제
+=== 유저의 토픽 즐겨찾기 전체 삭제
 operation::bookmark-controller-test/delete-all-topics-in-bookmark[snippets='http-request,http-response']
