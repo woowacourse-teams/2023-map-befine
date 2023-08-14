@@ -9,13 +9,14 @@ export const handleOAuthKakao = async (code: string) => {
   const { routePage } = useNavigator();
   try {
     const url = `http://mapbefine.kro.kr/api/oauth/login/kakao?code=${code}`;
+    console.log('line12');
     const data = await getApi<LoginResponse>('login', url);
-
+    console.log('line14');
     localStorage.setItem('userToken', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.member));
 
     window.alert('login process');
-    routePage('/');
+    routePage('http://mapbefine.kro.kr');
   } catch (error) {
     window.alert('로그인 실패');
   }
