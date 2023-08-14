@@ -8,13 +8,13 @@ import { LoginResponse } from '../types/Login';
 export const handleOAuthKakao = async (code: string) => {
   const { routePage } = useNavigator();
   try {
-    const url = `http://localhost:8080/oauth/login/kakao?code=${code}`;
+    const url = `http://mapbefine.kro.kr/api/oauth/login/kakao?code=${code}`;
     const data = await getApi<LoginResponse>('login', url);
 
-    // localStorage에 data.accessToken과 data.member 저장
     localStorage.setItem('userToken', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.member));
 
+    window.alert('login process');
     routePage('/');
   } catch (error) {
     window.alert('로그인 실패');
