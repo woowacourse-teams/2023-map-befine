@@ -2,13 +2,10 @@ import { keyframes, styled } from 'styled-components';
 import Image from '../components/common/Image';
 import Text from '../components/common/Text';
 import Space from '../components/common/Space';
-import useNavigator from '../hooks/useNavigator';
 
 export default function AskLoginPage() {
-  const { routePage } = useNavigator();
-
   const loginButtonClick = () => {
-    routePage;
+    window.location.href = 'http://localhost:8080/oauth/kakao';
   };
 
   return (
