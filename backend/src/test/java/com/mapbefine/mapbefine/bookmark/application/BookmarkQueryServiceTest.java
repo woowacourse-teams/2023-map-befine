@@ -65,6 +65,6 @@ class BookmarkQueryServiceTest {
         assertThat(topicsInBookmark).hasSize(2);
         assertThat(topicsInBookmark).extractingResultOf("id")
                 .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
-
     }
+
 }

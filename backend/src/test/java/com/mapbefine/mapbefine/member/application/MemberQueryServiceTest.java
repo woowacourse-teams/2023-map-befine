@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.auth.domain.member.User;
-import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -56,8 +55,6 @@ class MemberQueryServiceTest {
     @Autowired
     private PinRepository pinRepository;
 
-    @Autowired
-    private BookmarkRepository bookmarkRepository;
 
     @Test
     @DisplayName("Topic 에 권한이 있는자들을 모두 조회한다.")
