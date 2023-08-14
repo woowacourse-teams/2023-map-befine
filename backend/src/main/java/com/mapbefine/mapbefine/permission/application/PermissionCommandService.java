@@ -36,10 +36,10 @@ public class PermissionCommandService {
         validateSelfPermission(authMember, request);
         validateDuplicatePermission(request);
 
-        Topic topic = getTopic(request);
+        Topic topic = findTopic(request);
         validateMemberCanTopicUpdate(authMember, topic);
 
-        Member member = getMember(request);
+        Member member = findMember(request);
         Permission permission =
                 Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
 
@@ -67,7 +67,7 @@ public class PermissionCommandService {
         }
     }
 
-    private Topic getTopic(PermissionRequest request) {
+    private Topic findTopic(PermissionRequest request) {
         return topicRepository.findById(request.topicId())
                 .orElseThrow(NoSuchElementException::new);
     }
@@ -79,7 +79,7 @@ public class PermissionCommandService {
         throw new IllegalArgumentException("해당 지도에서 다른 유저에게 권한을 줄 수 없습니다.");
     }
 
-    private Member getMember(PermissionRequest request) {
+    private Member findMember(PermissionRequest request) {
         return memberRepository.findById(request.memberId())
                 .orElseThrow(NoSuchElementException::new);
     }
