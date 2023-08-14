@@ -114,7 +114,7 @@ const SelectedTopic = () => {
                 {idx !== 0 && <Space size={5} />}
                 <TopicInfo
                   fullUrl={topicId}
-                  topicId={topicId?.split(',')[idx]}
+                  topicId={Number(topicId?.split(',')[idx])}
                   topicImage={DEFAULT_TOPIC_IMAGE}
                   topicParticipant={1}
                   topicTitle={topic.name}
