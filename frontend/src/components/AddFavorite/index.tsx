@@ -26,6 +26,10 @@ const AddFavorite = ({ id, children }: AddFavoriteProps) => {
 
 const Wrapper = styled.div`
   cursor: pointer;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
 `;
 
 export default AddFavorite;

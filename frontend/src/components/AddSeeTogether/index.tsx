@@ -26,6 +26,10 @@ const AddSeeTogether = ({ id, children }: AddSeeTogetherProps) => {
 
 const Wrapper = styled.div`
   cursor: pointer;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
 `;
 
 export default AddSeeTogether;
