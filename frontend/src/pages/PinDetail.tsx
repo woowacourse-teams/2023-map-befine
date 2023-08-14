@@ -184,6 +184,8 @@ const PinDetail = ({
         </ShareButton>
       </Flex>
 
+      <Space size={9} />
+
       {isModalOpen && (
         <ModalPortal closeModalHandler={closeModal}>
           <>
