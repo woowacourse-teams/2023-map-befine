@@ -1,23 +1,23 @@
-export interface DefaultFormValuesType {
+export interface DefaultFormProps {
   name: string;
   address: string;
   description: string;
 }
 
-export interface NewTopicFormValuesType {
+export interface NewTopicFormProps {
   name: string;
   description: string;
   image: string;
   topics: [];
 }
 
-export interface ModifyPinFormValuesType {
+export interface ModifyPinFormProps {
   name: string;
   images: string[];
   description: string;
 }
 
-export interface DefaultPinValuesType extends ModifyPinFormValuesType {
+export interface DefaultPinFormProps extends ModifyPinFormProps {
   id: number;
   address: string;
   latitude: string;
@@ -25,7 +25,7 @@ export interface DefaultPinValuesType extends ModifyPinFormValuesType {
   updatedAt: string;
 }
 
-export interface NewPinValuesType {
+export interface NewPinFormProps {
   topicId: number;
   name: string;
   images: string[];

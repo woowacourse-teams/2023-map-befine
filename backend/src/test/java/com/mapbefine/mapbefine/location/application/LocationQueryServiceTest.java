@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.location.application;
 
+import static com.mapbefine.mapbefine.location.LocationFixture.ADDRESS;
+import static com.mapbefine.mapbefine.location.LocationFixture.BASE_COORDINATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
@@ -54,7 +56,7 @@ class LocationQueryServiceTest {
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = new Admin(member.getId());
 
-        allPinsLocation = LocationFixture.LOCATION;
+        allPinsLocation = LocationFixture.create(ADDRESS, BASE_COORDINATE);
         locationRepository.save(allPinsLocation);
 
         topics = List.of(
@@ -77,7 +79,7 @@ class LocationQueryServiceTest {
     @DisplayName("주어진 좌표의 3KM 이내 Topic들을 Pin 개수의 내림차순으로 정렬하여 조회한다.")
     void findNearbyTopicsSortedByPinCount() {
         // given
-        Coordinate baseCoordinate = LocationFixture.BASE_COORDINATE;
+        Coordinate baseCoordinate = BASE_COORDINATE;
 
         // when
         List<TopicResponse> currentTopics = locationQueryService.findNearbyTopicsSortedByPinCount(

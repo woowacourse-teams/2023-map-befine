@@ -1,9 +1,11 @@
 import { useContext, useEffect } from 'react';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import getAddressFromServer from '../lib/getAddressFromServer';
+import useToast from './useToast';
 
 export default function useMapClick(map: any) {
   const { setClickedCoordinate } = useContext(CoordinatesContext);
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (!map) return;
@@ -12,6 +14,11 @@ export default function useMapClick(map: any) {
         evt.data.lngLat._lat,
         evt.data.lngLat._lng,
       );
+
+      if (roadName.id) {
+        showToast('error', `제공되지 않는 주소 범위입니다.`);
+      }
+
       setClickedCoordinate({
         latitude: evt.data.lngLat._lat,
         longitude: evt.data.lngLat._lng,

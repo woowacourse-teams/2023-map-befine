@@ -1,8 +1,10 @@
 package com.mapbefine.mapbefine.member.domain;
 
+import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
+import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.Embedded;
@@ -21,12 +23,18 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Member extends BaseTimeEntity {
 
+    private static final String DEFAULT_NICKNAME_PREFIX = "모험가";
+    private static final int DEFAULT_NICKNAME_SUFFIX_LENGTH = 7;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Embedded
     private MemberInfo memberInfo;
+
+    @Embedded
+    private OauthId oauthId;
 
     @OneToMany(mappedBy = "creator")
     private List<Topic> createdTopics = new ArrayList<>();
@@ -35,17 +43,19 @@ public class Member extends BaseTimeEntity {
     private List<Pin> createdPins = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<MemberTopicPermission> topicsWithPermissions = new ArrayList<>();
+    private List<Permission> topicsWithPermissions = new ArrayList<>();
 
-    private Member(MemberInfo memberInfo) {
+    private Member(MemberInfo memberInfo, OauthId oauthId) {
         this.memberInfo = memberInfo;
+        this.oauthId = oauthId;
     }
 
     public static Member of(
             String nickName,
             String email,
             String imageUrl,
-            Role role
+            Role role,
+            OauthId oauthId
     ) {
         MemberInfo memberInfo = MemberInfo.of(
                 nickName,
@@ -54,7 +64,25 @@ public class Member extends BaseTimeEntity {
                 role
         );
 
-        return new Member(memberInfo);
+        return new Member(memberInfo, oauthId);
+    }
+
+    public static Member ofRandomNickname(
+            String email,
+            String imageUrl,
+            Role role,
+            OauthId oauthId
+    ) {
+        String nickName = DEFAULT_NICKNAME_PREFIX + createNicknameSuffix();
+
+        return Member.of(nickName, email, imageUrl, role, oauthId);
+    }
+
+    private static String createNicknameSuffix() {
+        return randomUUID()
+                .toString()
+                .replaceAll("-", "")
+                .substring(0, DEFAULT_NICKNAME_SUFFIX_LENGTH);
     }
 
     public void update(
@@ -78,8 +106,8 @@ public class Member extends BaseTimeEntity {
         createdPins.add(pin);
     }
 
-    public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {
-        topicsWithPermissions.add(memberTopicPermission);
+    public void addMemberTopicPermission(Permission permission) {
+        topicsWithPermissions.add(permission);
     }
 
     public String getRoleKey() {
@@ -95,7 +123,7 @@ public class Member extends BaseTimeEntity {
 
     public List<Topic> getTopicsWithPermissions() {
         return topicsWithPermissions.stream()
-                .map(MemberTopicPermission::getTopic)
+                .map(Permission::getTopic)
                 .toList();
     }
 

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class PermissionTest {
+class PermissionTypeTest {
 
     @Nested
     @DisplayName("isAllMembers 메서드를 호출했을 때 ALL_MEMBER가 ")
@@ -16,7 +16,7 @@ class PermissionTest {
         @DisplayName("아니면, false를 반환한다.")
         void fail() {
             //given
-            Permission groupOnly = Permission.GROUP_ONLY;
+            PermissionType groupOnly = PermissionType.GROUP_ONLY;
 
             //when
             //then
@@ -27,7 +27,7 @@ class PermissionTest {
         @DisplayName("맞으면 true를 반환한다.")
         void success() {
             //given
-            Permission allMembers = Permission.ALL_MEMBERS;
+            PermissionType allMembers = PermissionType.ALL_MEMBERS;
 
             //when
             //then
@@ -44,7 +44,7 @@ class PermissionTest {
         @DisplayName("아니면, false를 반환한다.")
         void fail() {
             //given
-            Permission allMembers = Permission.ALL_MEMBERS;
+            PermissionType allMembers = PermissionType.ALL_MEMBERS;
 
             //when
             //then
@@ -55,7 +55,7 @@ class PermissionTest {
         @DisplayName("맞으면 true를 반환한다.")
         void success() {
             //given
-            Permission groupOnly = Permission.GROUP_ONLY;
+            PermissionType groupOnly = PermissionType.GROUP_ONLY;
 
             //when
             //then

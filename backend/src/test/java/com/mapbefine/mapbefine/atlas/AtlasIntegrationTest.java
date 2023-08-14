@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.atlas;
 
+import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -9,13 +10,13 @@ import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import io.restassured.*;
 import io.restassured.response.*;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,9 +40,16 @@ public class AtlasIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setMember() {
-        member = memberRepository.save(MemberFixture.create("other", "other@othter.com", Role.USER));
+        member = memberRepository.save(
+                MemberFixture.createWithOauthId(
+                        "creator",
+                        "creator@naver.com",
+                        Role.USER,
+                        new OauthId(1L, KAKAO)
+                )
+        );
         topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
-        authHeader = Base64.encodeBase64String(("Basic " + member.getMemberInfo().getEmail()).getBytes());
+        authHeader = testAuthHeaderProvider.createAuthHeader(member);
     }
 
     @Test

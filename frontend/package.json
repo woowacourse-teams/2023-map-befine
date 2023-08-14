@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config webpack.dev.js --open",
     "build": "webpack --config webpack.prod.js",
-    "test": "jest --watchAll --coverage",
+    "test": "jest --coverage",
     "stylelint:fix": "stylelint 'src/**/*.{js,jsx,ts,tsx}' --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

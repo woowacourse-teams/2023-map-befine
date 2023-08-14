@@ -1,19 +1,21 @@
-package com.mapbefine.mapbefine.member.domain;
+package com.mapbefine.mapbefine.permission.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.member.MemberFixture;
+import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class MemberTopicPermissionTest {
+class PermissionTest {
 
     @Test
     @DisplayName("정상적인 값을 입력하면 객체가 생성된다.")
-    void createMemberTopicPermission() {
+    void createPermission() {
         // given
         Member member = MemberFixture.create(
                 "member",
@@ -23,14 +25,14 @@ class MemberTopicPermissionTest {
         Topic topic = TopicFixture.createByName("topic", member);
 
         // when
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
 
         // then
-        assertThat(memberTopicPermission.getMember()).usingRecursiveComparison()
+        assertThat(permission.getMember()).usingRecursiveComparison()
                 .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(member);
-        assertThat(memberTopicPermission.getTopic()).usingRecursiveComparison()
+        assertThat(permission.getTopic()).usingRecursiveComparison()
                 .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(topic);
     }
@@ -47,20 +49,20 @@ class MemberTopicPermissionTest {
         Topic topic = TopicFixture.createByName("topic", member);
 
         // when
-        MemberTopicPermission memberTopicPermission =
-                MemberTopicPermission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Permission permission =
+                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
         List<Topic> topicsWithPermission = member.getTopicsWithPermissions();
-        List<MemberTopicPermission> memberTopicPermissions = topic.getMemberTopicPermissions();
+        List<Permission> permissions = topic.getPermissions();
 
         // then
         assertThat(topicsWithPermission).hasSize(1);
-        assertThat(memberTopicPermissions).hasSize(1);
+        assertThat(permissions).hasSize(1);
         assertThat(topicsWithPermission.get(0)).usingRecursiveComparison()
                 .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(topic);
-        assertThat(memberTopicPermissions.get(0)).usingRecursiveComparison()
+        assertThat(permissions.get(0)).usingRecursiveComparison()
                 .ignoringFields("createdAt", "updatedAt")
-                .isEqualTo(memberTopicPermission);
+                .isEqualTo(permission);
     }
 
 }
