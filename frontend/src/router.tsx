@@ -12,6 +12,7 @@ import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import MoaBogi from './pages/MoaBogi';
 import Zzlegyeo from './pages/Zzlegyeo';
+import NotFound from './components/NotFound';
 
 interface routeElement {
   path: string;
@@ -26,8 +27,9 @@ const routes: routeElement[] = [
   {
     path: '/',
     element: <RootPage />,
-    errorElement: <ErrorPage />,
+    errorElement:  <NotFound />,
     withAuth: false,
+
     children: [
       {
         path: '',

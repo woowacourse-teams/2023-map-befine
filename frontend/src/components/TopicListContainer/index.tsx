@@ -1,8 +1,11 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
-import TopicCardList from '../TopicCardList';
 import Box from '../common/Box';
+import { lazy, Suspense } from 'react';
+import TopicCardListSeleton from '../TopicCardList/TopicCardListSeleton';
+
+const TopicCardList = lazy(() => import('../TopicCardList'));
 
 interface TopicListContainerProps {
   containerTitle: string;
@@ -40,7 +43,9 @@ const TopicListContainer = ({
         전체 보기
       </PointerText>
     </Flex>
-    <TopicCardList />
+    <Suspense fallback={<TopicCardListSeleton />}>
+      <TopicCardList />
+    </Suspense>
   </section>
 );
 
