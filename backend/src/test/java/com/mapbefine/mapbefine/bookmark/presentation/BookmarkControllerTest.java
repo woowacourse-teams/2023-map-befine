@@ -33,7 +33,7 @@ class BookmarkControllerTest extends RestDocsIntegration {
         given(bookmarkCommandService.addTopicInBookmark(any(), any())).willReturn(1L);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/members/bookmarks")
+                MockMvcRequestBuilders.post("/bookmarks")
                         .header(AUTHORIZATION, authHeader)
                         .param("topicId", String.valueOf(1L))
         ).andDo(restDocs.document());
@@ -66,7 +66,7 @@ class BookmarkControllerTest extends RestDocsIntegration {
         given(bookmarkQueryService.findAllTopicsInBookmark(any())).willReturn(response);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/bookmarks")
+                MockMvcRequestBuilders.get("/bookmarks")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
@@ -79,20 +79,8 @@ class BookmarkControllerTest extends RestDocsIntegration {
         doNothing().when(bookmarkCommandService).deleteTopicInBookmark(any(), any());
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/members/bookmarks/" + 1L)
-                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("유저의 토픽 즐겨찾기 전체 삭제")
-    public void deleteAllTopicsInBookmark() throws Exception {
-        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
-        doNothing().when(bookmarkCommandService).deleteAllBookmarks(any());
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/members/bookmarks")
+                MockMvcRequestBuilders.delete("/bookmarks")
+                        .param("topicId", String.valueOf(1L))
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }

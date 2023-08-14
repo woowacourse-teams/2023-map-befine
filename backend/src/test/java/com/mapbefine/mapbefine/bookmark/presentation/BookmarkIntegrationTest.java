@@ -60,13 +60,13 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .param("topicId", topic.getId())
-                .when().post("/members/bookmarks")
+                .when().post("/bookmarks")
                 .then().log().all()
                 .extract();
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).startsWith("/members/bookmarks/")
+        assertThat(response.header("Location")).startsWith("/bookmarks/")
                 .isNotNull();
     }
 
@@ -100,7 +100,7 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         List<BookmarkResponse> response = given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/bookmarks")
+                .when().get("/bookmarks")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -137,36 +137,8 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         //when then
         given().log().all()
                 .header(AUTHORIZATION, authHeader)
-                .when().delete("/members/bookmarks/" + bookmark.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    @Test
-    @DisplayName("유저의 즐겨찾기 토픽을 전체 삭제하면, 204를 반환한다.")
-    void deleteAllTopicsInBookmark_Success() {
-        //given
-        Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(creator);
-
-        Topic topic1 = TopicFixture.createByName("topic1", creator);
-        Topic topic2 = TopicFixture.createByName("topic1", creator);
-        topicRepository.save(topic1);
-        topicRepository.save(topic2);
-
-        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
-        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic2, creator);
-        bookmarkRepository.save(bookmark1);
-        bookmarkRepository.save(bookmark2);
-
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
-        );
-
-        //when then
-        given().log().all()
-                .header(AUTHORIZATION, authHeader)
-                .when().delete("/members/bookmarks")
+                .param("topicId", topic.getId())
+                .when().delete("/bookmarks")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }

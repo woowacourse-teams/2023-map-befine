@@ -10,14 +10,13 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/members/bookmarks")
+@RequestMapping("/bookmarks")
 public class BookmarkController {
 
     private final BookmarkCommandService bookmarkCommandService;
@@ -40,7 +39,7 @@ public class BookmarkController {
     ) {
         Long bookmarkId = bookmarkCommandService.addTopicInBookmark(authMember, topicId);
 
-        return ResponseEntity.created(URI.create("/members/bookmarks/" + bookmarkId)).build();
+        return ResponseEntity.created(URI.create("/bookmarks/" + bookmarkId)).build();
     }
 
     @LoginRequired
@@ -52,20 +51,12 @@ public class BookmarkController {
     }
 
     @LoginRequired
-    @DeleteMapping("{bookmarkId}")
+    @DeleteMapping
     public ResponseEntity<Void> deleteTopicInBookmark(
             AuthMember authMember,
-            @PathVariable Long bookmarkId
+            @RequestParam Long topicId
     ) {
-        bookmarkCommandService.deleteTopicInBookmark(authMember, bookmarkId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @LoginRequired
-    @DeleteMapping
-    public ResponseEntity<Void> deleteAllTopicsInBookmark(AuthMember authMember) {
-        bookmarkCommandService.deleteAllBookmarks(authMember);
+        bookmarkCommandService.deleteTopicInBookmark(authMember, topicId);
 
         return ResponseEntity.noContent().build();
     }

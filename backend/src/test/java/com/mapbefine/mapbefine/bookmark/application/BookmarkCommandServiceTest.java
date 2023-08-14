@@ -122,14 +122,12 @@ class BookmarkCommandServiceTest {
 
         //when
         AuthMember user = MemberFixture.createUser(otherMember);
-        assertThat(bookmarkRepository.existsById(bookmark.getId()))
-                .isTrue();
+        assertThat(bookmarkRepository.existsById(bookmark.getId())).isTrue();
 
-        bookmarkCommandService.deleteTopicInBookmark(user, bookmark.getId());
+        bookmarkCommandService.deleteTopicInBookmark(user, topic.getId());
 
         //then
-        assertThat(bookmarkRepository.existsById(bookmark.getId()))
-                .isFalse();
+        assertThat(bookmarkRepository.existsById(bookmark.getId())).isFalse();
     }
 
     @Test
@@ -160,7 +158,7 @@ class BookmarkCommandServiceTest {
         AuthMember otherUser = MemberFixture.createUser(otherMember);
 
         assertThatThrownBy(
-                () -> bookmarkCommandService.deleteTopicInBookmark(otherUser, bookmark.getId()))
+                () -> bookmarkCommandService.deleteTopicInBookmark(otherUser, topic.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("즐겨찾기 삭제에 대한 권한이 없습니다.");
     }
@@ -188,15 +186,13 @@ class BookmarkCommandServiceTest {
         bookmarkRepository.save(bookmark2);
 
         //when
-        assertThat(bookmarkRepository.findAllByMemberId(creator.getId()))
-                .hasSize(2);
+        assertThat(bookmarkRepository.findAllByMemberId(creator.getId())).hasSize(2);
 
         AuthMember user = MemberFixture.createUser(creator);
         bookmarkCommandService.deleteAllBookmarks(user);
 
         //then
-        assertThat(bookmarkRepository.findAllByMemberId(creator.getId()))
-                .hasSize(0);
+        assertThat(bookmarkRepository.findAllByMemberId(creator.getId())).hasSize(0);
     }
 
 }

@@ -60,23 +60,22 @@ public class BookmarkCommandService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 멤버입니다."));
     }
 
-    public void deleteTopicInBookmark(AuthMember authMember, Long bookmarkId) {
-        validateBookmarkDeletingPermission(authMember, bookmarkId);
+    public void deleteTopicInBookmark(AuthMember authMember, Long topicId) {
+        validateBookmarkDeletingPermission(authMember, topicId);
 
-        bookmarkRepository.deleteById(bookmarkId);
+        bookmarkRepository.deleteByMemberIdAndTopicId(authMember.getMemberId(), topicId);
     }
 
-    private void validateBookmarkDeletingPermission(AuthMember authMember, Long bookmarkId) {
-        boolean canDelete = bookmarkRepository.existsByIdAndMemberId(
-                bookmarkId,
-                authMember.getMemberId()
-        );
-
-        if (canDelete) {
+    private void validateBookmarkDeletingPermission(AuthMember authMember, Long topicId) {
+        if (canDeleteBookmark(authMember, topicId)) {
             return;
         }
 
         throw new IllegalArgumentException("즐겨찾기 삭제에 대한 권한이 없습니다.");
+    }
+
+    private boolean canDeleteBookmark(AuthMember authMember, Long topicId) {
+        return bookmarkRepository.existsByMemberIdAndTopicId(authMember.getMemberId(), topicId);
     }
 
     public void deleteAllBookmarks(AuthMember authMember) {
