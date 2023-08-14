@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestAuthHeaderProvider {
 
+    private static final String TOKEN_TYPE = "Bearer ";
+
     private JwtTokenProvider jwtTokenProvider;
 
     public TestAuthHeaderProvider(JwtTokenProvider jwtTokenProvider) {
@@ -15,15 +17,15 @@ public class TestAuthHeaderProvider {
 
     public String createAuthHeader(Member member) {
         Long memberId = member.getId();
-        return generateToken(memberId);
+        return TOKEN_TYPE + generateToken(memberId);
     }
 
-    public String createAuthHeaderById(Long id) {
+    public String createResponseAccessTokenById(Long id) {
         return generateToken(id);
     }
 
     private String generateToken(Long memberId) {
-        return "Bearer " + jwtTokenProvider.createToken(String.valueOf(memberId));
+        return jwtTokenProvider.createToken(String.valueOf(memberId));
     }
 
 }
