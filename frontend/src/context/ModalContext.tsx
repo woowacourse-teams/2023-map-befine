@@ -1,9 +1,13 @@
 import { createContext, useState } from 'react';
 
+interface ModalOpensProps {
+  [key: string]: boolean;
+}
+
 interface ModalContextProps {
-  isModalOpen: boolean;
-  openModal: () => void;
-  closeModal: () => void;
+  modalOpens: ModalOpensProps;
+  openModal: (key: string) => void;
+  closeModal: (key: string) => void;
 }
 
 interface ModalProviderProps {
@@ -11,26 +15,32 @@ interface ModalProviderProps {
 }
 
 export const ModalContext = createContext<ModalContextProps>({
-  isModalOpen: false,
+  modalOpens: {},
   openModal: () => {},
   closeModal: () => {},
 });
 
 const ModalProvider = ({ children }: ModalProviderProps) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalOpens, setModalOpens] = useState<ModalOpensProps>({});
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  const openModal = (key: string) => {
+    setModalOpens((prevState) => ({
+      ...prevState,
+      [key]: true,
+    }));
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeModal = (key: string) => {
+    setModalOpens((prevState) => ({
+      ...prevState,
+      [key]: false,
+    }));
   };
 
   return (
     <ModalContext.Provider
       value={{
-        isModalOpen,
+        modalOpens,
         openModal,
         closeModal,
       }}

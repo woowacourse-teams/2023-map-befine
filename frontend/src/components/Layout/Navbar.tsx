@@ -39,7 +39,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   };
 
   const onClickAddMapOrPin = () => {
-    openModal();
+    openModal('addMapOrPin');
   };
 
   const goToFavorite = () => {
@@ -52,12 +52,12 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
 
   const goToNewTopic = () => {
     routePage('/new-topic');
-    closeModal();
+    closeModal('addMapOrPin');
   };
 
   const goToNewPin = () => {
     routePage('/new-pin', topicId);
-    closeModal();
+    closeModal('addMapOrPin');
   };
 
   return (
@@ -126,6 +126,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
       </IconWrapper>
 
       <Modal
+        modalKey="addMapOrPin"
         position="center"
         width="232px"
         height="44px"

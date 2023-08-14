@@ -169,7 +169,13 @@ const NewPin = () => {
               </Text>
             </Flex>
             <Space size={0} />
-            <Button type="button" variant="primary" onClick={openModal}>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => {
+                openModal('newPin');
+              }}
+            >
               {topic?.name ? topic?.name : '토픽 선택하기'}
             </Button>
           </section>
@@ -247,7 +253,9 @@ const NewPin = () => {
           </Flex>
         </Flex>
       </form>
+
       <Modal
+        modalKey="newPin"
         position="center"
         width="400px"
         height="340px"
