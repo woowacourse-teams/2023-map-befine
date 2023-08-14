@@ -7,7 +7,6 @@ import { LoginResponse } from '../types/Login';
 
 export const handleOAuthKakao = async (code: string) => {
   console.log('hi');
-  const { routePage } = useNavigator();
   console.log('bye');
   try {
     console.log('222');
@@ -19,13 +18,14 @@ export const handleOAuthKakao = async (code: string) => {
     localStorage.setItem('user', JSON.stringify(data.member));
 
     window.alert('login process');
-    routePage('/');
   } catch (error) {
     window.alert('로그인 실패');
   }
 };
 
 const KakaoRedirectPage = () => {
+  const { routePage } = useNavigator();
+
   const location = useLocation();
   console.log('location', location);
 
@@ -39,6 +39,7 @@ const KakaoRedirectPage = () => {
     if (code) {
       console.log('ifCode', code);
       ab(code);
+      routePage('/');
       console.log('ab');
     }
   }, [location]);
