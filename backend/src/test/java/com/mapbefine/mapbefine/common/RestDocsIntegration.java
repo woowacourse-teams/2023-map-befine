@@ -31,6 +31,9 @@ public abstract class RestDocsIntegration {
     @Autowired
     protected ObjectMapper objectMapper;
 
+    @Autowired
+    protected TestAuthHeaderProvider testAuthHeaderProvider;
+
     protected RestDocumentationResultHandler restDocs;
 
     protected MockMvc mockMvc;

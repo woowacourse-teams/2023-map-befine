@@ -20,7 +20,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +51,11 @@ public class BookmarkIntegrationTest extends IntegrationTest {
                 MemberFixture.create("otherUser", "otherUse@naver.com", Role.USER);
         memberRepository.save(otherUser);
 
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + otherUser.getMemberInfo().getEmail()).getBytes()
-        );
+        String otherUserAuthHeader = testAuthHeaderProvider.createAuthHeader(otherUser);
 
         //when
         ExtractableResponse<Response> response = given().log().all()
-                .header(AUTHORIZATION, authHeader)
+                .header(AUTHORIZATION, otherUserAuthHeader)
                 .param("topicId", topic.getId())
                 .when().post("/bookmarks")
                 .then().log().all()
@@ -92,13 +89,11 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         bookmarkRepository.save(bookmark1);
         bookmarkRepository.save(bookmark2);
 
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + otherUser.getMemberInfo().getEmail()).getBytes()
-        );
+        String otherUserAuthHeader = testAuthHeaderProvider.createAuthHeader(otherUser);
 
         //when
         List<TopicResponse> response = given().log().all()
-                .header(AUTHORIZATION, authHeader)
+                .header(AUTHORIZATION, otherUserAuthHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/bookmarks")
                 .then().log().all()
@@ -130,13 +125,11 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, creator);
         bookmarkRepository.save(bookmark);
 
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + creator.getMemberInfo().getEmail()).getBytes()
-        );
+        String creatorAuthHeader = testAuthHeaderProvider.createAuthHeader(creator);
 
         //when then
         given().log().all()
-                .header(AUTHORIZATION, authHeader)
+                .header(AUTHORIZATION, creatorAuthHeader)
                 .param("topicId", topic.getId())
                 .when().delete("/bookmarks")
                 .then().log().all()
