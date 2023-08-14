@@ -84,15 +84,13 @@ public class PermissionIntegrationTest extends IntegrationTest {
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
 
         // when
-        PermissionRequest request = new PermissionRequest(
-                topic.getId(),
-                user1.getId()
-        );
+        PermissionRequest request = new PermissionRequest(topic.getId(), user1.getId());
+
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/members/permissions")
+                .when().post("/permissions")
                 .then().log().all()
                 .extract();
 
@@ -113,7 +111,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
-                .when().delete("/members/permissions/" + savedId)
+                .when().delete("/permissions/" + savedId)
                 .then().log().all()
                 .extract();
 
@@ -137,16 +135,16 @@ public class PermissionIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
-                .when().get("/members/permissions/topics/" + topic.getId())
+                .when().get("/permissions/topics/" + topic.getId())
                 .then().log().all()
                 .extract();
 
         // then
-        List<PermissionResponse> permissionRespons = response.as(new TypeRef<>() {
+        List<PermissionResponse> permissionResponse = response.as(new TypeRef<>() {
         });
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(permissionRespons)
+        assertThat(permissionResponse)
                 .hasSize(2)
                 .extracting(PermissionResponse::memberResponse)
                 .usingRecursiveComparison()
@@ -165,7 +163,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
-                .when().get("/members/permissions/" + permission.getId())
+                .when().get("/permissions/" + permission.getId())
                 .then().log().all()
                 .extract();
 
