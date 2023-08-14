@@ -7,8 +7,8 @@ import com.mapbefine.mapbefine.auth.infrastructure.AuthorizationExtractor;
 import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.Objects;
-import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -48,30 +48,21 @@ public class AuthInterceptor implements HandlerInterceptor {
         request.setAttribute("memberId", memberId);
 
         if (isLoginRequired((HandlerMethod) handler)) {
-            // TODO: 2023/08/11 403 반환
-            return isMember(memberId);
+            // TODO: 2023/08/11 isMember false이면 403 반환
+            return authService.isMember(memberId);
         }
         return true;
     }
 
     private boolean isAuthMemberNotRequired(HandlerMethod handlerMethod) {
-        for (MethodParameter parameter : handlerMethod.getMethodParameters()) {
-            if (parameter.getParameterType().equals(AuthMember.class)) {
-                return false;
-            }
-        }
-        return true;
+        return Arrays.stream(handlerMethod.getMethodParameters())
+                .noneMatch(parameter -> parameter.getParameterType().equals(AuthMember.class));
     }
 
     private boolean isLoginRequired(HandlerMethod handlerMethod) {
         LoginRequired loginRequired = handlerMethod.getMethodAnnotation(LoginRequired.class);
 
         return !Objects.isNull(loginRequired);
-    }
-
-    private boolean isMember(Long memberId) {
-
-        return authService.isMember(memberId);
     }
 
     private Long extractMemberIdFromToken(HttpServletRequest request) {
