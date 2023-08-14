@@ -32,6 +32,7 @@ public class BookmarkCommandService {
     }
 
     public Long addTopicInBookmark(AuthMember authMember, Long topicId) {
+        validateBookmarkDuplication(authMember, topicId);
         Topic topic = getTopicById(topicId);
         validateBookmarkingPermission(authMember, topic);
         Member member = getMemberById(authMember);
@@ -45,6 +46,16 @@ public class BookmarkCommandService {
     private Topic getTopicById(Long topicId) {
         return topicRepository.findById(topicId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
+    }
+
+    private void validateBookmarkDuplication(AuthMember authMember, Long topicId) {
+        if (isExistBookmark(authMember, topicId)) {
+            throw new IllegalArgumentException("이미 즐겨찾기로 등록된 토픽입니다.");
+        }
+    }
+
+    private boolean isExistBookmark(AuthMember authMember, Long topicId) {
+        return bookmarkRepository.existsByMemberIdAndTopicId(authMember.getMemberId(), topicId);
     }
 
     private void validateBookmarkingPermission(AuthMember authMember, Topic topic) {
@@ -67,15 +78,11 @@ public class BookmarkCommandService {
     }
 
     private void validateBookmarkDeletingPermission(AuthMember authMember, Long topicId) {
-        if (canDeleteBookmark(authMember, topicId)) {
+        if (isExistBookmark(authMember, topicId)) {
             return;
         }
 
         throw new IllegalArgumentException("즐겨찾기 삭제에 대한 권한이 없습니다.");
-    }
-
-    private boolean canDeleteBookmark(AuthMember authMember, Long topicId) {
-        return bookmarkRepository.existsByMemberIdAndTopicId(authMember.getMemberId(), topicId);
     }
 
     public void deleteAllBookmarks(AuthMember authMember) {
