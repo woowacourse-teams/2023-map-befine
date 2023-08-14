@@ -8,8 +8,8 @@ import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
-import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import com.mapbefine.mapbefine.topic.domain.TopicWithBookmarkStatus;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -52,17 +52,21 @@ public class MemberQueryService {
 
     // TODO: 2023/08/14 해당 메서드는 TopicQueryService로 옮기기
     public List<TopicResponse> findTopicsByMember(AuthMember authMember) {
-        validateNonExistsMember(authMember.getMemberId());
-        List<Topic> topicsByCreator = topicRepository.findByCreatorId(authMember.getMemberId());
+        validateNonExistsMember(authMember);
+        List<TopicWithBookmarkStatus> topicsWithBookmarkStatus =
+                topicRepository.findAllWithBookmarkStatusByMemberId(authMember.getMemberId());
 
-        return topicsByCreator.stream()
-                .map(TopicResponse::from)
+        return topicsWithBookmarkStatus.stream()
+                .map(topicWithBookmarkStatus -> TopicResponse.from(
+                        topicWithBookmarkStatus.getTopic(),
+                        topicWithBookmarkStatus.getIsBookmarked()
+                ))
                 .toList();
     }
 
     // TODO: 2023/08/14 해당 메서드는 PinQueryService로 옮기기
     public List<PinResponse> findPinsByMember(AuthMember authMember) {
-        validateNonExistsMember(authMember.getMemberId());
+        validateNonExistsMember(authMember);
         List<Pin> pinsByCreator = pinRepository.findByCreatorId(authMember.getMemberId());
 
         return pinsByCreator.stream()
@@ -70,8 +74,8 @@ public class MemberQueryService {
                 .toList();
     }
 
-    private void validateNonExistsMember(Long memberId) {
-        if (Objects.isNull(memberId)) {
+    private void validateNonExistsMember(AuthMember authMember) {
+        if (Objects.isNull(authMember.getMemberId())) {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
     }

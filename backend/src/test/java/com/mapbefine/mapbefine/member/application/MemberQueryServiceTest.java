@@ -155,8 +155,11 @@ class MemberQueryServiceTest {
         List<TopicResponse> response = memberQueryService.findTopicsByMember(authCreator);
 
         // then
+        List<TopicResponse> expected = List.of(TopicResponse.from(topic1, Boolean.FALSE),
+                TopicResponse.from(topic2, Boolean.FALSE));
+
         assertThat(response).usingRecursiveComparison()
-                .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
+                .isEqualTo(expected);
     }
 
     @Test

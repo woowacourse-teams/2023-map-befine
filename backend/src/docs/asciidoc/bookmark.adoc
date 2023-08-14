@@ -1,0 +1,15 @@
+== 즐겨찾기
+
+=== 토픽을 유저의 즐겨찾기에 추가
+
+operation::bookmark-controller-test/add-topic-in-bookmark[snippets='http-request,http-response']
+
+=== 유저의 토픽 즐겨찾기 목록 조회
+
+operation::bookmark-controller-test/find-topics-in-bookmark[snippets='http-request,http-response']
+
+=== 유저의 토픽 즐겨찾기 단일 삭제
+operation::bookmark-controller-test/delete-topic-in-bookmark[snippets='http-request,http-response']
+
+=== 유저의 토픽 즐겨찾기 전체 삭제
+operation::bookmark-controller-test/delete-all-topics-in-bookmark[snippets='http-request,http-response']

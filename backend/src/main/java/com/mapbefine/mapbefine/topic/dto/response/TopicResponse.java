@@ -9,10 +9,12 @@ public record TopicResponse(
         String name,
         String image,
         Integer pinCount,
+        Integer bookmarkCount,
+        Boolean isBookmarked,
         LocalDateTime updatedAt
 ) {
-    public static TopicResponse from(Topic topic) {
 
+    public static TopicResponse from(Topic topic, Boolean isBookmarked) {
         TopicInfo topicInfo = topic.getTopicInfo();
 
         return new TopicResponse(
@@ -20,7 +22,10 @@ public record TopicResponse(
                 topicInfo.getName(),
                 topicInfo.getImageUrl(),
                 topic.countPins(),
+                topic.countBookmarks(),
+                isBookmarked,
                 topic.getUpdatedAt()
         );
     }
+
 }
