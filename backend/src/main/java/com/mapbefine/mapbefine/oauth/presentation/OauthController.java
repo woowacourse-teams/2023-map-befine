@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,7 @@ public class OauthController {
         String redirectUrl = oauthService.getAuthCodeRequestUrl(oauthServerType);
         response.sendRedirect(redirectUrl);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.FOUND).build();
     }
 
     @GetMapping("/login/{oauthServerType}")
