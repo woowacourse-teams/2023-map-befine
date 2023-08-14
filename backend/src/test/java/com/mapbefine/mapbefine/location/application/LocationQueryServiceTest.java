@@ -1,7 +1,10 @@
 package com.mapbefine.mapbefine.location.application;
 
+import static com.mapbefine.mapbefine.location.LocationFixture.ADDRESS;
+import static com.mapbefine.mapbefine.location.LocationFixture.BASE_COORDINATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -36,6 +39,8 @@ class LocationQueryServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private TopicRepository topicRepository;
+    @Autowired
+    private AtlasRepository atlasRepository;
 
     private LocationQueryService locationQueryService;
 
@@ -46,12 +51,12 @@ class LocationQueryServiceTest {
 
     @BeforeEach
     void setup() {
-        locationQueryService = new LocationQueryService(locationRepository);
+        locationQueryService = new LocationQueryService(locationRepository, atlasRepository);
 
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = new Admin(member.getId());
 
-        allPinsLocation = LocationFixture.LOCATION;
+        allPinsLocation = LocationFixture.create(ADDRESS, BASE_COORDINATE);
         locationRepository.save(allPinsLocation);
 
         topics = List.of(
@@ -74,7 +79,7 @@ class LocationQueryServiceTest {
     @DisplayName("주어진 좌표의 3KM 이내 Topic들을 Pin 개수의 내림차순으로 정렬하여 조회한다.")
     void findNearbyTopicsSortedByPinCount() {
         // given
-        Coordinate baseCoordinate = LocationFixture.BASE_COORDINATE;
+        Coordinate baseCoordinate = BASE_COORDINATE;
 
         // when
         List<TopicResponse> currentTopics = locationQueryService.findNearbyTopicsSortedByPinCount(
@@ -86,7 +91,7 @@ class LocationQueryServiceTest {
         // then
         List<TopicResponse> expected = topics.stream()
                 .sorted(Collections.reverseOrder(Comparator.comparingInt(Topic::countPins)))
-                .map(TopicResponse::from)
+                .map(topic -> TopicResponse.from(topic, false))
                 .collect(Collectors.toList());
 
         assertThat(currentTopics).isEqualTo(expected);

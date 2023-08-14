@@ -1,8 +1,9 @@
-package com.mapbefine.mapbefine.member.domain;
+package com.mapbefine.mapbefine.permission.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
+import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class MemberTopicPermission extends BaseTimeEntity {
+public class Permission extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,20 +31,20 @@ public class MemberTopicPermission extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    private MemberTopicPermission(Topic topic, Member member) {
+    private Permission(Topic topic, Member member) {
         this.topic = topic;
         this.member = member;
     }
 
-    public static MemberTopicPermission createPermissionAssociatedWithTopicAndMember(
+    public static Permission createPermissionAssociatedWithTopicAndMember(
             Topic topic,
             Member member
     ) {
-        MemberTopicPermission memberTopicPermission = new MemberTopicPermission(topic, member);
-        topic.addMemberTopicPermission(memberTopicPermission);
-        member.addMemberTopicPermission(memberTopicPermission);
+        Permission permission = new Permission(topic, member);
+        topic.addMemberTopicPermission(permission);
+        member.addMemberTopicPermission(permission);
 
-        return memberTopicPermission;
+        return permission;
     }
 
 }

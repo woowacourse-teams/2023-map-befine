@@ -10,4 +10,7 @@ toc::[]
 
 include::topic.adoc[]
 include::pin.adoc[]
+include::atlas.adoc[]
 include::member.adoc[]
+include::permission.adoc[]
+include::oauth.adoc[]

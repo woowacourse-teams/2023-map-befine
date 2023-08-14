@@ -8,7 +8,7 @@ import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
-import com.mapbefine.mapbefine.topic.domain.Permission;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
@@ -25,30 +25,34 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-class TopicControllerTest extends RestDocsIntegration {
+class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Image 칼람 추가됨으로 인해 수정 필요
 
-    public static final List<TopicResponse> RESPONSES = List.of(
+
+    private static final List<TopicResponse> RESPONSES = List.of(
             new TopicResponse(
                     1L,
                     "준팍의 또 토픽",
                     "https://map-befine-official.github.io/favicon.png",
                     3,
+                    false,
                     LocalDateTime.of(2023, Month.AUGUST, 11, 10, 10, 10)
             ), new TopicResponse(
                     2L,
                     "준팍의 두번째 토픽",
                     "https://map-befine-official.github.io/favicon.png",
                     5,
+                    false,
                     LocalDateTime.of(2023, Month.AUGUST, 10, 10, 10, 10)
             )
     );
+
     private static final String AUTH_HEADER = Base64.encodeBase64String("Basic member@naver.com".getBytes());
 
     @MockBean
     private TopicCommandService topicCommandService;
-
     @MockBean
     private TopicQueryService topicQueryService;
+
 
     @Test
     @DisplayName("토픽 새로 생성")
@@ -60,7 +64,7 @@ class TopicControllerTest extends RestDocsIntegration {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 List.of(1L, 2L, 3L)
         );
 
@@ -83,7 +87,7 @@ class TopicControllerTest extends RestDocsIntegration {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 List.of(1L, 2L, 3L)
         );
 
@@ -104,7 +108,7 @@ class TopicControllerTest extends RestDocsIntegration {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS
+                PermissionType.ALL_MEMBERS
         );
 
         mockMvc.perform(
@@ -145,6 +149,7 @@ class TopicControllerTest extends RestDocsIntegration {
                 "준팍이 막 만든 두번째 토픽",
                 "https://map-befine-official.github.io/favicon.png",
                 2,
+                false,
                 LocalDateTime.now(),
                 List.of(
                         new PinResponse(
@@ -182,4 +187,5 @@ class TopicControllerTest extends RestDocsIntegration {
                         .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }
+
 }

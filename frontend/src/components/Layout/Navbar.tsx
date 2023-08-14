@@ -4,10 +4,12 @@ import All from '../../assets/All.svg';
 import AddButton from '../../assets/addButton.svg';
 import Favorite from '../../assets/Favorite.svg';
 import Keep from '../../assets/Keep.svg';
+import My from '../../assets/My.svg';
 import useNavigator from '../../hooks/useNavigator';
 import { useState } from 'react';
 import Button from '../common/Button';
 import Space from '../common/Space';
+import Tooltip from '../common/Tooltip';
 
 const Navbar = () => {
   const { routePage } = useNavigator();
@@ -25,12 +27,9 @@ const Navbar = () => {
       bottom="0"
     >
       <Home onClick={() => routePage('/')} />
-      <All onClick={() => routePage('/all')} />
-      <AddButton
-        onClick={() => {
-          setShowButton((prev) => !prev);
-        }}
-      />
+      <All onClick={() => routePage('/moabogi', '/topics|모아보기')} />{' '}
+      {/* <Tooltip content="나만의 지도를 추가해보세요" position="top"> */}
+      <AddButton onClick={() => setShowButton((prev) => !prev)} />
       {showButton && (
         <Flex
           position="absolute"
@@ -55,8 +54,9 @@ const Navbar = () => {
           </Button>
         </Flex>
       )}
-      <Favorite onClick={() => routePage('/favorite')} />
-      <Keep onClick={() => routePage('/keep')} />
+      {/* </Tooltip> */}
+      <Favorite onClick={() => routePage('/zzlegyeo', '/topics|즐겨찾기')} />
+      <My onClick={() => routePage('/my')} />
     </Flex>
   );
 };

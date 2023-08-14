@@ -1,9 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { lazy, Suspense, useContext, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
-import PinPreview from '../components/PinPreview';
-import TopicInfo from '../components/TopicInfo';
 import { TopicInfoType } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
@@ -13,6 +11,9 @@ import { MergeOrSeeTogether } from '../components/MergeOrSeeTogether';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useNavigator from '../hooks/useNavigator';
 import { LayoutWidthContext } from '../context/LayoutWidthContext';
+import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
+
+const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
@@ -22,6 +23,7 @@ const SelectedTopic = () => {
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
   const [isOpen, setIsOpen] = useState(true);
+  const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
   const { setWidth } = useContext(LayoutWidthContext);
@@ -102,43 +104,22 @@ const SelectedTopic = () => {
             onClickClose={onTagCancel}
           />
         )}
-        {topicDetail.length !== 0 ? (
-          topicDetail.map((topic, idx) => {
-            return (
-              <ul key={topic.id}>
-                {idx !== 0 && <Space size={5} />}
-                <TopicInfo
-                  fullUrl={topicId}
-                  topicId={topicId?.split(',')[idx]}
-                  topicParticipant={1}
-                  pinNumber={topic.pinCount}
-                  topicTitle={topic.name}
-                  topicOwner={'토픽을 만든 사람'}
-                  topicDescription={topic.description}
-                />
-                {topic.pins.map((pin) => (
-                  <li key={pin.id}>
-                    <Space size={3} />
-                    <PinPreview
-                      pinTitle={pin.name}
-                      pinLocation={pin.address}
-                      pinInformation={pin.description}
-                      setSelectedPinId={setSelectedPinId}
-                      pinId={Number(pin.id)}
-                      topicId={topicId}
-                      tagPins={tagPins}
-                      setTagPins={setTagPins}
-                      taggedPinIds={taggedPinIds}
-                      setTaggedPinIds={setTaggedPinIds}
-                    />
-                  </li>
-                ))}
-              </ul>
-            );
-          })
-        ) : (
-          <></>
-        )}
+        <Suspense fallback={<PinsOfTopicSkeleton />}>
+          {topicDetail.length !== 0 ? (
+            <PinsOfTopic
+              topicId={topicId}
+              tagPins={tagPins}
+              topicDetail={topicDetail}
+              taggedPinIds={taggedPinIds}
+              setSelectedPinId={setSelectedPinId}
+              setTagPins={setTagPins}
+              setTaggedPinIds={setTaggedPinIds}
+              setIsEditPinDetail={setIsEditPinDetail}
+            />
+          ) : (
+            <></>
+          )}
+        </Suspense>
 
         {selectedPinId && (
           <>
@@ -159,7 +140,11 @@ const SelectedTopic = () => {
                 $borderLeft={`1px solid ${theme.color.gray}`}
                 $zIndex={1}
               >
-                <PinDetail pinId={selectedPinId} />
+                <PinDetail
+                  pinId={selectedPinId}
+                  isEditPinDetail={isEditPinDetail}
+                  setIsEditPinDetail={setIsEditPinDetail}
+                />
               </Flex>
             </PinDetailWrapper>
           </>

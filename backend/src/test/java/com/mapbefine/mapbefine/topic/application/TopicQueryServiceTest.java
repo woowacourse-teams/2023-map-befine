@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
+import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -25,30 +26,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataJpaTest
+@ServiceTest
 class TopicQueryServiceTest {
 
     @Autowired
     private TopicRepository topicRepository;
-
     @Autowired
     private PinRepository pinRepository;
-
     @Autowired
     private LocationRepository locationRepository;
-
     @Autowired
     private MemberRepository memberRepository;
-
+    @Autowired
     private TopicQueryService topicQueryService;
+
     private Member member;
 
     @BeforeEach
     void setup() {
-        topicQueryService = new TopicQueryService(pinRepository, topicRepository);
-
         member = MemberFixture.create("member", "member@naver.com", Role.USER);
         memberRepository.save(member);
     }

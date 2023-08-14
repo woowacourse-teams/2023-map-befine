@@ -38,6 +38,7 @@ public class Atlas {
 
     public static Atlas from(Topic topic, Member member) {
         validateNotNull(topic, member);
+
         return new Atlas(topic, member);
     }
 

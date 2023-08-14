@@ -14,7 +14,7 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
-import com.mapbefine.mapbefine.topic.domain.Permission;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -27,7 +27,6 @@ import io.restassured.*;
 import io.restassured.response.*;
 import java.util.Collections;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
-
     private Member member;
     private Topic topic;
     private Location location;
@@ -60,7 +58,7 @@ class TopicIntegrationTest extends IntegrationTest {
         member = memberRepository.save(MemberFixture.create("other", "other@othter.com", Role.ADMIN));
         topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
         location = locationRepository.save(LocationFixture.create());
-        authHeader = Base64.encodeBase64String(("Basic " + member.getMemberInfo().getEmail()).getBytes());
+        authHeader = testAuthHeaderProvider.createAuthHeader(member);
     }
 
 
@@ -72,7 +70,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
 
@@ -111,7 +109,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 pinIds
         );
 
@@ -132,7 +130,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
         TopicCreateRequest 준팍의_또안간집 = new TopicCreateRequest(
@@ -140,7 +138,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 안간집 ",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
         createNewTopic(준팍의_또간집, authHeader);
@@ -155,7 +153,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "맛집과 카페 토픽 합치기",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 topicIds);
 
         // when
@@ -182,7 +180,7 @@ class TopicIntegrationTest extends IntegrationTest {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍이 두번 간집",
                         Publicity.PUBLIC,
-                        Permission.ALL_MEMBERS,
+                        PermissionType.ALL_MEMBERS,
                         Collections.emptyList()
                 ),
                 authHeader
@@ -195,7 +193,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "수정한 토픽",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS
+                PermissionType.ALL_MEMBERS
         );
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -219,7 +217,7 @@ class TopicIntegrationTest extends IntegrationTest {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍이 두번 간집 ",
                         Publicity.PUBLIC,
-                        Permission.ALL_MEMBERS,
+                        PermissionType.ALL_MEMBERS,
                         Collections.emptyList()
                 ),
                 authHeader
@@ -264,7 +262,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "description",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
         ExtractableResponse<Response> createResponse = createNewTopic(request, authHeader);
@@ -293,7 +291,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "description",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
         ExtractableResponse<Response> createResponse1 = createNewTopic(request, authHeader);

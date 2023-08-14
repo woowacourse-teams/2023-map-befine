@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import com.mapbefine.mapbefine.atlas.domain.Atlas;
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -15,27 +17,46 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class TopicQueryService {
 
-    private final PinRepository pinRepository;
     private final TopicRepository topicRepository;
+    private final PinRepository pinRepository;
+    private final AtlasRepository atlasRepository;
 
-    public TopicQueryService(PinRepository pinRepository, TopicRepository topicRepository) {
-        this.pinRepository = pinRepository;
+    public TopicQueryService(
+            TopicRepository topicRepository,
+            PinRepository pinRepository,
+            AtlasRepository atlasRepository
+    ) {
         this.topicRepository = topicRepository;
+        this.pinRepository = pinRepository;
+        this.atlasRepository = atlasRepository;
     }
 
     public List<TopicResponse> findAllReadable(AuthMember member) {
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+
         return topicRepository.findAll().stream()
                 .filter(member::canRead)
-                .map(TopicResponse::from)
+                .map(topic -> TopicResponse.from(topic, isInAtlas(topicsInAtlas, topic)))
                 .toList();
+    }
+
+    private List<Topic> findTopicsInAtlas(AuthMember member) {
+        return atlasRepository.findAllByMemberId(member.getMemberId())
+                .stream()
+                .map(Atlas::getTopic)
+                .toList();
+    }
+
+    private boolean isInAtlas(List<Topic> topicsInAtlas, Topic topic) {
+        return topicsInAtlas.contains(topic);
     }
 
     public TopicDetailResponse findDetailById(AuthMember member, Long id) {
         Topic topic = findTopic(id);
-
         validateReadableTopic(member, topic);
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
-        return TopicDetailResponse.from(topic);
+        return TopicDetailResponse.from(topic, isInAtlas(topicsInAtlas, topic));
     }
 
     private Topic findTopic(Long id) {
@@ -57,9 +78,10 @@ public class TopicQueryService {
 
         validateTopicsCount(ids, topics);
         validateReadableTopics(member, topics);
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
         return topics.stream()
-                .map(TopicDetailResponse::from)
+                .map(topic -> TopicDetailResponse.from(topic, isInAtlas(topicsInAtlas, topic)))
                 .toList();
     }
 
@@ -80,12 +102,14 @@ public class TopicQueryService {
     }
 
     public List<TopicResponse> findAllByOrderByUpdatedAtDesc(AuthMember member) {
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+
         return pinRepository.findAllByOrderByUpdatedAtDesc()
                 .stream()
                 .map(Pin::getTopic)
                 .distinct()
                 .filter(member::canRead)
-                .map(TopicResponse::from)
+                .map(topic -> TopicResponse.from(topic, isInAtlas(topicsInAtlas, topic)))
                 .toList();
     }
 }

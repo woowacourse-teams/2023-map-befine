@@ -34,12 +34,14 @@ class LocationControllerTest extends RestDocsIntegration {
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         5,
+                        false,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         3,
+                        false,
                         LocalDateTime.now()
                 )
         );

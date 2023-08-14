@@ -12,10 +12,11 @@ public record TopicDetailResponse(
         String description,
         String image,
         Integer pinCount,
+        Boolean isInAtlas,
         LocalDateTime updatedAt,
         List<PinResponse> pins
 ) {
-    public static TopicDetailResponse from(Topic topic) {
+    public static TopicDetailResponse from(Topic topic, Boolean isInAtlas) {
         List<PinResponse> pinResponses = topic.getPins().stream()
                 .map(PinResponse::from)
                 .toList();
@@ -28,6 +29,7 @@ public record TopicDetailResponse(
                 topicInfo.getDescription(),
                 topicInfo.getImageUrl(),
                 topic.countPins(),
+                isInAtlas,
                 topic.getUpdatedAt(),
                 pinResponses
         );
