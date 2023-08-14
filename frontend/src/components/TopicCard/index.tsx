@@ -6,10 +6,13 @@ import Image from '../common/Image';
 import { SyntheticEvent } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
-import SeeTogetherButton from '../SeeTogetherButton';
+import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
+import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import AddSeeTogether from '../AddSeeTogether';
+import AddFavorite from '../AddFavorite';
 
 const FAVORITE_COUNT = 10;
 
@@ -85,7 +88,12 @@ const TopicCard = ({
           </Flex>
 
           <ButtonWrapper>
-            <SeeTogetherButton />
+            <AddFavorite id={topicId}>
+              <FavoriteSVG />
+            </AddFavorite>
+            <AddSeeTogether id={topicId}>
+              <SeeTogetherSVG />
+            </AddSeeTogether>
           </ButtonWrapper>
         </Box>
       </Flex>
@@ -102,9 +110,13 @@ const Wrapper = styled.li`
 `;
 
 const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
   position: absolute;
+  width: 72px;
+
   top: 100px;
-  left: 100px;
+  left: 60px;
 `;
 
 const TopicImage = styled(Image)`

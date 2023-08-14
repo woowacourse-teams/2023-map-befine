@@ -7,17 +7,18 @@ import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
-import ShareUrl from '../../assets/shareUrl.svg';
-import TopicFavorite from '../../assets/topicInfo_favorite.svg';
-import TopicSeeTogether from '../../assets/topicInfo_seeTogether.svg';
+import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
+import TopicFavoriteSVG from '../../assets/topicInfo_favorite.svg';
+import TopicSeeTogetherSVG from '../../assets/topicInfo_seeTogether.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import SeeTogetherButton from '../SeeTogetherButton';
+import AddSeeTogether from '../AddSeeTogether';
+import AddFavorite from '../AddFavorite';
 
 const FAVORITE_COUNT = 10;
 
 export interface TopicInfoProps {
   fullUrl?: string;
-  topicId?: string;
+  topicId: number;
   topicImage: string;
   topicParticipant: number;
   topicPinCount: number;
@@ -72,21 +73,7 @@ const TopicInfo = ({
         }}
       />
 
-      <Space size={3} />
-
-      <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
-        {topicTitle}
-      </Text>
       <Space size={1} />
-      <Text color="black" $fontSize="small" $fontWeight="normal">
-        {topicOwner}
-      </Text>
-      <Space size={1} />
-      <Text color="black" $fontSize="small" $fontWeight="normal">
-        {topicDescription}
-      </Text>
-
-      <Space size={3} />
 
       <Flex>
         <Flex $alignItems="center" width="76px">
@@ -110,14 +97,32 @@ const TopicInfo = ({
         </Flex>
       </Flex>
 
+      <Space size={1} />
+
+      <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+        {topicTitle}
+      </Text>
+      <Space size={1} />
+      <Text color="black" $fontSize="small" $fontWeight="normal">
+        {topicOwner}
+      </Text>
+      <Space size={1} />
+      <Text color="black" $fontSize="small" $fontWeight="normal">
+        {topicDescription}
+      </Text>
+
       <Space size={3} />
 
       <Flex $justifyContent="center">
-        <TopicSeeTogether cursor="pointer" />
+        <AddSeeTogether id={topicId}>
+          <TopicSeeTogetherSVG />
+        </AddSeeTogether>
         <Space size={5} />
-        <TopicFavorite cursor="pointer" />
+        <AddFavorite id={topicId}>
+          <TopicFavoriteSVG />
+        </AddFavorite>
         <Space size={5} />
-        <ShareUrl cursor="pointer" onClick={copyContent} />
+        <TopicShareUrlSVG cursor="pointer" onClick={copyContent} />
       </Flex>
 
       <Space size={3} />
