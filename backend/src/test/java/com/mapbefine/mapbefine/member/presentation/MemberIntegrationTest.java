@@ -400,10 +400,13 @@ class MemberIntegrationTest extends IntegrationTest {
         });
 
         // then
+        List<TopicResponse> expected = List.of(TopicResponse.from(topic1, Boolean.FALSE),
+                TopicResponse.from(topic2, Boolean.FALSE));
+
         assertThat(topicResponses).hasSize(2)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
-                .isEqualTo(List.of(TopicResponse.from(topic1), TopicResponse.from(topic2)));
+                .isEqualTo(expected);
     }
 
 }

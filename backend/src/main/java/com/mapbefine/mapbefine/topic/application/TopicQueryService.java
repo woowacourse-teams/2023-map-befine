@@ -33,7 +33,7 @@ public class TopicQueryService {
         return topicRepository.findAll()
                 .stream()
                 .filter(member::canRead)
-                .map(TopicResponse::from)
+                .map(topic -> TopicResponse.from(topic, Boolean.FALSE))
                 .toList();
     }
 
@@ -41,7 +41,10 @@ public class TopicQueryService {
         return topicRepository.findAllWithBookmarkStatusByMemberId(member.getMemberId())
                 .stream()
                 .filter(topicWithBookmark -> member.canRead(topicWithBookmark.getTopic()))
-                .map(TopicResponse::from)
+                .map(topicWithBookmark -> TopicResponse.from(
+                        topicWithBookmark.getTopic(),
+                        topicWithBookmark.getIsBookmarked()
+                ))
                 .toList();
     }
 
@@ -59,7 +62,7 @@ public class TopicQueryService {
 
         validateReadableTopic(member, topic);
 
-        return TopicDetailResponse.from(topic);
+        return TopicDetailResponse.from(topic, Boolean.FALSE);
     }
 
     private void validateReadableTopic(AuthMember member, Topic topic) {
@@ -77,7 +80,10 @@ public class TopicQueryService {
 
         validateReadableTopic(member, topicWithBookmarkStatus.getTopic());
 
-        return TopicDetailResponse.from(topicWithBookmarkStatus);
+        return TopicDetailResponse.from(
+                topicWithBookmarkStatus.getTopic(),
+                topicWithBookmarkStatus.getIsBookmarked()
+        );
     }
 
     public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> topicIds) {
@@ -96,7 +102,7 @@ public class TopicQueryService {
         validateReadableTopics(member, topics);
 
         return topics.stream()
-                .map(TopicDetailResponse::from)
+                .map(topic -> TopicDetailResponse.from(topic, Boolean.FALSE))
                 .toList();
     }
 
@@ -134,7 +140,10 @@ public class TopicQueryService {
         validateReadableTopics(member, topics);
 
         return topicsWithBookmarkStatus.stream()
-                .map(TopicDetailResponse::from)
+                .map(topicWithBookmarkStatus -> TopicDetailResponse.from(
+                        topicWithBookmarkStatus.getTopic(),
+                        topicWithBookmarkStatus.getIsBookmarked()
+                ))
                 .toList();
     }
 

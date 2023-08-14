@@ -43,15 +43,17 @@ class LocationControllerTest extends RestDocsIntegration {
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         5,
-                        LocalDateTime.now(),
-                        Boolean.FALSE
+                        0,
+                        Boolean.FALSE,
+                        LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         3,
-                        LocalDateTime.now(),
-                        Boolean.FALSE
+                        0,
+                        Boolean.FALSE,
+                        LocalDateTime.now()
                 )
         );
     }
@@ -64,7 +66,8 @@ class LocationControllerTest extends RestDocsIntegration {
         double longitude = 127;
 
         //when
-        given(locationQueryService.findNearbyTopicsSortedByPinCount(any(), anyDouble(), anyDouble()))
+        given(locationQueryService.findNearbyTopicsSortedByPinCount(any(), anyDouble(),
+                anyDouble()))
                 .willReturn(responses);
 
         //then

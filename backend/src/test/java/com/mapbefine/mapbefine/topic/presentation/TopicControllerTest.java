@@ -135,15 +135,17 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         3,
-                        LocalDateTime.now(),
-                        Boolean.FALSE
+                        0,
+                        Boolean.FALSE,
+                        LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         5,
-                        LocalDateTime.now(),
-                        Boolean.FALSE
+                        0,
+                        Boolean.FALSE,
+                        LocalDateTime.now()
                 ));
         given(topicQueryService.findAllReadable(any())).willReturn(responses);
 
@@ -183,7 +185,8 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                                 127
                         )
                 ),
-                Boolean.FALSE
+                Boolean.FALSE,
+                0
         );
         given(topicQueryService.findDetailById(any(), any())).willReturn(topicDetailResponse);
 

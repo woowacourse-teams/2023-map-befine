@@ -14,6 +14,7 @@ import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import com.mapbefine.mapbefine.topic.domain.TopicWithBookmarkStatus;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -58,10 +59,14 @@ public class MemberQueryService {
 
     public List<TopicResponse> findTopicsByMember(AuthMember authMember) {
         validateNonExistsMember(authMember);
-        List<Topic> topicsByCreator = topicRepository.findByCreatorId(authMember.getMemberId());
+        List<TopicWithBookmarkStatus> topicsWithBookmarkStatus =
+                topicRepository.findAllWithBookmarkStatusByMemberId(authMember.getMemberId());
 
-        return topicsByCreator.stream()
-                .map(TopicResponse::from)
+        return topicsWithBookmarkStatus.stream()
+                .map(topicWithBookmarkStatus -> TopicResponse.from(
+                        topicWithBookmarkStatus.getTopic(),
+                        topicWithBookmarkStatus.getIsBookmarked()
+                ))
                 .toList();
     }
 

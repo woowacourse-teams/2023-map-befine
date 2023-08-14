@@ -110,4 +110,8 @@ public class Topic extends BaseTimeEntity {
         memberTopicPermissions.add(memberTopicPermission);
     }
 
+    public int countBookmarks() {
+        return bookmarks.size();
+    }
+
 }
