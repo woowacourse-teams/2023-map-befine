@@ -6,8 +6,11 @@ import useNavigator from '../hooks/useNavigator';
 import { LoginResponse } from '../types/Login';
 
 export const handleOAuthKakao = async (code: string) => {
+  console.log('hi');
   const { routePage } = useNavigator();
+  console.log('bye');
   try {
+    console.log('222');
     const url = `https://mapbefine.kro.kr/oauth/login/kakao?code=${code}`;
     console.log('line12');
     const data = await getApi<LoginResponse>('login', url);
@@ -25,13 +28,18 @@ export const handleOAuthKakao = async (code: string) => {
 const KakaoRedirectPage = () => {
   const location = useLocation();
   console.log('location', location);
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const code = searchParams.get('code');
     console.log('code', code);
+    const ab = async (code: string) => {
+      await handleOAuthKakao(code);
+    };
     if (code) {
       console.log('ifCode', code);
-      handleOAuthKakao(code);
+      ab(code);
+      console.log('ab');
     }
   }, [location]);
 
