@@ -14,8 +14,8 @@ const TopicCardList = () => {
 
   const getAndSetDataFromServer = async () => {
     const topics = url
-      ? await getApi('default', url)
-      : await getApi('default', '/topics');
+      ? await getApi<TopicType[]>('default', url)
+      : await getApi<TopicType[]>('default', '/topics');
     setTopics(topics);
   };
 

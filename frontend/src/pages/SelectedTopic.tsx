@@ -29,7 +29,7 @@ const SelectedTopic = () => {
   const { setWidth } = useContext(LayoutWidthContext);
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi(
+    const data = await getApi<TopicInfoType[]>(
       'default',
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );

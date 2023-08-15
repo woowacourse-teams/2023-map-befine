@@ -45,11 +45,11 @@ const PinDetail = ({
 
   useEffect(() => {
     const getPinData = async () => {
-      const pinData = await getApi('default', `/pins/${pinId}`);
-      setPin(pinData);
+      const pinData = await getApi<ModifyPinFormProps>('default', `/pins/${pinId}`);
+      setPin(pinData as PinType);
       setFormValues({
         name: pinData.name,
-        images: pinData.image,
+        images: pinData.images,
         description: pinData.description,
       });
     };
