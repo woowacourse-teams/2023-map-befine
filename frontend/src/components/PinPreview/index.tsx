@@ -9,21 +9,19 @@ import Box from '../common/Box';
 import { TagProps } from '../../types/Tag';
 
 export interface PinPreviewProps {
-  fromWhere: 'severalTopics' | 'selectedTopic';
   idx: number;
   pinTitle: string;
   pinLocation: string;
   pinInformation: string;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   pinId: number;
-  topicId: number;
+  topicId: string;
   tags: TagProps[];
   setTags: React.Dispatch<React.SetStateAction<TagProps[]>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PinPreview = ({
-  fromWhere,
   idx,
   pinTitle,
   pinLocation,
@@ -68,9 +66,8 @@ const PinPreview = ({
   const onClickSetSelectedPinId = () => {
     setSelectedPinId(pinId);
     setIsEditPinDetail(false);
-    fromWhere === 'selectedTopic'
-      ? routePage(`/topics/${topicId}?pinDetail=${pinId}`)
-      : routePage(`/several-topics/${topicId}?pinDetail=${pinId}`);
+
+    routePage(`/topics/${topicId}?pinDetail=${pinId}`);
   };
 
   const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

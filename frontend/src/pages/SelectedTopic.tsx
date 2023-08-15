@@ -1,4 +1,11 @@
-import { lazy, Suspense, useContext, useEffect, useState } from 'react';
+import {
+  Fragment,
+  lazy,
+  Suspense,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { styled } from 'styled-components';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
@@ -22,7 +29,9 @@ const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 const SelectedTopic = () => {
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
-  const [topicDetail, setTopicDetail] = useState<TopicInfoType[] | null>(null);
+  const [topicDetails, setTopicDetails] = useState<TopicInfoType[] | null>(
+    null,
+  );
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
@@ -35,24 +44,40 @@ const SelectedTopic = () => {
   const getAndSetDataFromServer = async () => {
     const data = await getApi<TopicInfoType[]>(
       'default',
-      `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
+      `/topics/ids?ids=${topicId}`,
     );
 
-    setTopicDetail(data);
+    const topicHashmap = new Map([]);
+
+    setTopicDetails(data);
 
     // 각 topic의 pin들의 좌표를 가져옴
     const newCoordinates: any = [];
 
-    data[0].pins.forEach((pin: PinType) => {
-      newCoordinates.push({
-        id: pin.id,
-        topicId: topicId,
-        latitude: pin.latitude,
-        longitude: pin.longitude,
+    data.forEach((topic: TopicInfoType) => {
+      topic.pins.forEach((pin: PinType) => {
+        newCoordinates.push({
+          id: pin.id,
+          topicId: topic.id,
+          latitude: pin.latitude,
+          longitude: pin.longitude,
+        });
       });
     });
 
     setCoordinates(newCoordinates);
+
+    data.forEach((topicDetailFromData: TopicInfoType) =>
+      topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
+    );
+
+    const topicDetailFromData = topicId
+      ?.split(',')
+      .map((number) => topicHashmap.get(number)) as TopicInfoType[];
+
+    if (!topicDetailFromData) return;
+
+    setTopicDetails([...topicDetailFromData]);
   };
 
   const onClickConfirm = () => {
@@ -78,7 +103,8 @@ const SelectedTopic = () => {
     setIsOpen(!isOpen);
   };
 
-  if (!topicDetail) return <></>;
+  if (!topicDetails) return <></>;
+  if (!topicId) return <></>;
 
   return (
     <>
@@ -96,15 +122,19 @@ const SelectedTopic = () => {
           />
         )}
         <Suspense fallback={<PinsOfTopicSkeleton />}>
-          <PinsOfTopic
-            fromWhere="selectedTopic"
-            topicId={Number(topicId)}
-            tags={tags}
-            setTags={setTags}
-            topicDetail={topicDetail[0]}
-            setSelectedPinId={setSelectedPinId}
-            setIsEditPinDetail={setIsEditPinDetail}
-          />
+          {topicDetails.map((topicDetail, idx) => (
+            <Fragment key={topicDetail.id}>
+              <PinsOfTopic
+                topicId={topicId}
+                tags={tags}
+                setTags={setTags}
+                topicDetail={topicDetail}
+                setSelectedPinId={setSelectedPinId}
+                setIsEditPinDetail={setIsEditPinDetail}
+              />
+              {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
+            </Fragment>
+          ))}
         </Suspense>
 
         {selectedPinId && (

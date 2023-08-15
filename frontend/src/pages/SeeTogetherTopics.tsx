@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { SIDEBAR } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
@@ -11,22 +11,41 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import TopicCard from '../components/TopicCard';
 import Button from '../components/common/Button';
+import { TopicType } from '../types/Topic';
+import { getApi } from '../apis/getApi';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const SeeTogetherTopics = () => {
   const { routePage } = useNavigator();
   const { width } = useSetLayoutWidth(SIDEBAR);
+  const { navbarHighlights } = useSetNavbarHighlight('seeTogether');
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
 
+  const goToHome = () => {
+    routePage('/');
+  };
+
   const goToSeveralSelectedTopics = () => {
     routePage(
-      `/several-topics/${seeTogetherTopics.map((topic) => topic.id).join(',')}`,
+      `/topics/${seeTogetherTopics.map((topic) => topic.id).join(',')}`,
+      seeTogetherTopics.map((topic) => topic.id).join(','),
     );
   };
 
+  const getSeeTogetherTopics = async () => {
+    const topics = await getApi<TopicType[]>('default', '/members/atlas');
+
+    setSeeTogetherTopics(topics);
+  };
+
+  useEffect(() => {
+    // getSeeTogetherTopics();
+  }, []);
+
   if (seeTogetherTopics.length === 0) {
     return (
-      <WrapperWhenEmpty>
+      <WrapperWhenEmpty width={width}>
         <Flex $alignItems="center">
           <SeeTogetherSVG />
           <Space size={1} />
@@ -34,21 +53,17 @@ const SeeTogetherTopics = () => {
             버튼을 눌러 지도를 추가해보세요.
           </Text>
           <Space size={4} />
-          <Button
-            variant="primary"
-            onClick={() => {
-              routePage('/');
-            }}
-          >
-            메인페이지로 가기
-          </Button>
         </Flex>
+        <Space size={5} />
+        <Button variant="primary" onClick={goToHome}>
+          메인페이지로 가기
+        </Button>
       </WrapperWhenEmpty>
     );
   }
 
   return (
-    <Wrapper>
+    <Wrapper width={width}>
       {seeTogetherTopics.map((topic, idx) => (
         <ul key={topic.id}>
           <TopicCard
@@ -75,15 +90,15 @@ const SeeTogetherTopics = () => {
   );
 };
 
-const Wrapper = styled.section`
-  width: 100%;
+const Wrapper = styled.section<{ width: '372px' | '100vw' }>`
+  width: ${({ width }) => `calc(${width} - 40px)`};
   height: 100%;
   display: flex;
   flex-direction: column;
 `;
 
-const WrapperWhenEmpty = styled.section`
-  width: 100%;
+const WrapperWhenEmpty = styled.section<{ width: '372px' | '100vw' }>`
+  width: ${({ width }) => `calc(${width} - 40px)`};
   height: 100%;
   display: flex;
   flex-direction: column;

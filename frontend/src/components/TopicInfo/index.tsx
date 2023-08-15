@@ -18,7 +18,7 @@ const FAVORITE_COUNT = 10;
 
 export interface TopicInfoProps {
   fullUrl?: string;
-  topicId: number;
+  topicId: string;
   topicImage: string;
   topicParticipant: number;
   topicPinCount: number;

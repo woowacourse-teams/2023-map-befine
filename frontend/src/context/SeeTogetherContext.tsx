@@ -22,22 +22,7 @@ export const SeeTogetherContext = createContext<SeeTogetherContextProps>({
 });
 
 const SeeTogetherProvider = ({ children }: SeeTogetherProviderProps) => {
-  const [seeTogetherTopics, setSeeTogetherTopics] = useState<TopicType[]>([
-    {
-      id: 1,
-      name: '준팍의 또 토픽',
-      image: 'https://map-befine-official.github.io/favicon.png',
-      pinCount: 3,
-      updatedAt: '2023-08-14T13:15:52.081527138',
-    },
-    {
-      id: 2,
-      name: '준팍의 두번째 토픽',
-      image: 'https://map-befine-official.github.io/favicon.png',
-      pinCount: 5,
-      updatedAt: '2023-08-14T13:15:52.081536838',
-    },
-  ]);
+  const [seeTogetherTopics, setSeeTogetherTopics] = useState<TopicType[]>([]);
 
   return (
     <SeeTogetherContext.Provider
