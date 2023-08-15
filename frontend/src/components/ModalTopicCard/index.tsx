@@ -6,17 +6,13 @@ import Image from '../common/Image';
 import { SyntheticEvent } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
-import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
-import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import AddSeeTogether from '../AddSeeTogether';
-import AddFavorite from '../AddFavorite';
 
 const FAVORITE_COUNT = 10;
 
-export interface TopicCardProps {
+export interface ModalTopicCardProps {
   topicId: number;
   topicImage: string;
   topicTitle: string;
@@ -24,13 +20,13 @@ export interface TopicCardProps {
   topicPinCount: number;
 }
 
-const TopicCard = ({
+const ModalTopicCard = ({
   topicId,
   topicImage,
   topicTitle,
   topicUpdatedAt,
   topicPinCount,
-}: TopicCardProps) => {
+}: ModalTopicCardProps) => {
   const { routePage } = useNavigator();
 
   const goToSelectedTopic = () => {
@@ -86,15 +82,6 @@ const TopicCard = ({
               </Text>
             </Flex>
           </Flex>
-
-          <ButtonWrapper>
-            <AddSeeTogether id={topicId}>
-              <SeeTogetherSVG />
-            </AddSeeTogether>
-            <AddFavorite id={topicId}>
-              <FavoriteSVG />
-            </AddFavorite>
-          </ButtonWrapper>
         </Box>
       </Flex>
     </Wrapper>
@@ -125,4 +112,4 @@ const TopicImage = styled(Image)`
   border-radius: ${({ theme }) => theme.radius.small};
 `;
 
-export default TopicCard;
+export default ModalTopicCard;
