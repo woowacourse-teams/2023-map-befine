@@ -1,3 +1,8 @@
+interface Headers {
+  'Content-Type': string;
+  [key: string]: string;
+}
+
 export const getApi = async <T>(
   type: 'tMap' | 'default' | 'login',
   url: string,
@@ -7,12 +12,18 @@ export const getApi = async <T>(
       ? url
       : `${process.env.REACT_APP_API_DEFAULT + url}`;
 
+  const userToken = localStorage.getItem('userToken');
+  const headers: Headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (userToken) {
+    headers['Authorization'] = `Bearer ${userToken}`;
+  }
+
   const response = await fetch(apiUrl, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: localStorage.getItem('access_token') || '',
-    },
+    headers: headers,
   });
 
   const responseData: T = await response.json();
