@@ -90,7 +90,8 @@ public class TopicController {
             AuthMember authMember,
             @PathVariable Long memberId
     ) {
-        List<TopicResponse> responses = topicQueryService.findAllTopicsByMemberId(authMember, memberId);
+        List<TopicResponse> responses = topicQueryService.findAllTopicsByMemberId(authMember,
+                memberId);
 
         return ResponseEntity.ok(responses);
     }
@@ -113,6 +114,13 @@ public class TopicController {
         topicCommandService.delete(member, topicId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/bests")
+    public ResponseEntity<List<TopicResponse>> findAllBestTopics(AuthMember authMember) {
+        List<TopicResponse> responses = topicQueryService.findAllBestTopics(authMember);
+
+        return ResponseEntity.ok(responses);
     }
 
 }

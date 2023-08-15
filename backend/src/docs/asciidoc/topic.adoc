@@ -31,3 +31,7 @@ operation::topic-controller-test/update[snippets='http-request,http-response']
 === 토픽 삭제
 
 operation::topic-controller-test/delete[snippets='http-request,http-response']
+
+=== 인기 급상승 토픽 조회
+
+operation::topic-controller-test/find-all-best-topics[snippets='http-request,http-response']

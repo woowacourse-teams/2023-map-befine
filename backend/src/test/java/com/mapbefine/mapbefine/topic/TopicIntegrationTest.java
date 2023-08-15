@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.topic;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -23,8 +25,9 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +50,9 @@ class TopicIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
 
     private Member member;
     private Topic topic;
@@ -335,6 +341,40 @@ class TopicIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responses).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("인기 토픽 목록을 조회하면 200을 반환한다")
+    void findAllBestTopics_Success() {
+        //given
+        Topic bestOneTopic = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(bestOneTopic);
+
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(bestOneTopic, member);
+        bookmarkRepository.save(bookmark);
+
+        // when
+        List<TopicResponse> expect = List.of(
+                TopicResponse.from(bestOneTopic, Boolean.FALSE, Boolean.TRUE),
+                TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE)
+        );
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/topics/bests")
+                .then().log().all()
+                .extract();
+
+        List<TopicResponse> actual = response.jsonPath().getList(".", TopicResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(expect);
+        assertThat(actual).extractingResultOf("id")
+                .containsExactly(bestOneTopic.getId(), topic.getId());
     }
 
 }

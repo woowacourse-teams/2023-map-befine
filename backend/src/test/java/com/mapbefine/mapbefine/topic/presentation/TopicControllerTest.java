@@ -233,4 +233,39 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         ).andDo(restDocs.document());
     }
 
+    @Test
+    @DisplayName("인기 토픽을 조회할 수 있다.")
+    void findAllBestTopics() throws Exception {
+        String authHeader = Base64.encodeBase64String(
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        List<TopicResponse> responses = List.of(new TopicResponse(
+                1L,
+                "준팍의 또 토픽",
+                "https://map-befine-official.github.io/favicon.png",
+                3,
+                Boolean.FALSE,
+                5,
+                Boolean.FALSE,
+                LocalDateTime.now()
+        ), new TopicResponse(
+                2L,
+                "준팍의 두번째 토픽",
+                "https://map-befine-official.github.io/favicon.png",
+                5,
+                Boolean.FALSE,
+                3,
+                Boolean.FALSE,
+                LocalDateTime.now()
+        ));
+
+        given(topicQueryService.findAllBestTopics(any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/topics/bests")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
 }
