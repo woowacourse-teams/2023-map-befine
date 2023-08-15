@@ -32,7 +32,7 @@ const SelectedTopic = () => {
   const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi<any>(
+    const data = await getApi<TopicInfoType[]>(
       'default',
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );
