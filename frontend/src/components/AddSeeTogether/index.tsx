@@ -13,12 +13,18 @@ interface AddSeeTogetherProps {
 
 const AddSeeTogether = ({ id, children }: AddSeeTogetherProps) => {
   const { showToast } = useToast();
-  const { setSeeTogetherTopics } = useContext(SeeTogetherContext);
+  const { seeTogetherTopics, setSeeTogetherTopics } =
+    useContext(SeeTogetherContext);
 
   const addSeeTogetherList = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
     try {
+      if (seeTogetherTopics.length === 7) {
+        showToast('warning', '모아보기는 7개까지만 가능합니다.');
+        return;
+      }
+
       // await postApi('',{});
       // const topics = await getApi<TopicType[]>('default', '/members/atlas');
       // setSeeTogetherTopics(topics);
