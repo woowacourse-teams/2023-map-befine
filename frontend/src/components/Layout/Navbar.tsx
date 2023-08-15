@@ -19,6 +19,7 @@ import Modal from '../Modal';
 import { ModalContext } from '../../context/ModalContext';
 import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
 import { useParams } from 'react-router-dom';
+import SeeTogetherCounter from '../SeeTogetherCounter';
 
 interface NavBarProps {
   $layoutWidth: '100vw' | '372px';
@@ -84,6 +85,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         >
           모아보기
         </Text>
+        <SeeTogetherCounter />
       </IconWrapper>
 
       <IconSpace size={7} $layoutWidth={$layoutWidth} />
@@ -158,6 +160,7 @@ const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
 `;
 
 const IconWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
