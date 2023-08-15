@@ -14,6 +14,7 @@ import Navbar from './Navbar';
 import Back from '../../assets/Back.svg';
 import ModalProvider from '../../context/ModalContext';
 import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
+import TagProvider from '../../context/TagContext';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -51,30 +52,32 @@ const Layout = ({ children }: LayoutProps) => {
           <CoordinatesProvider>
             <MarkerProvider>
               <SeeTogetherProvider>
-                <Flex height="100vh" width="100vw" overflow="hidden">
-                  <LayoutFlex
-                    $flexDirection="column"
-                    $minWidth={width}
-                    height="100vh"
-                    $backgroundColor="white"
-                  >
-                    <Flex $flexDirection="column" padding="20px 20px 0 20px">
-                      <Logo />
-                      <Space size={4} />
-                    </Flex>
-                    <Flex
-                      height="calc(100vh - 40px)"
+                <TagProvider>
+                  <Flex height="100vh" width="100vw" overflow="hidden">
+                    <LayoutFlex
                       $flexDirection="column"
-                      overflow="auto"
-                      padding="0 20px 20px 20px"
+                      $minWidth={width}
+                      height="100vh"
+                      $backgroundColor="white"
                     >
-                      {children}
-                    </Flex>
-                    <Navbar $layoutWidth={width} />
-                    <Toast />
-                  </LayoutFlex>
-                  <Map ref={mapContainer} map={map} $minWidth={width} />
-                </Flex>
+                      <Flex $flexDirection="column" padding="20px 20px 0 20px">
+                        <Logo />
+                        <Space size={4} />
+                      </Flex>
+                      <Flex
+                        height="calc(100vh - 40px)"
+                        $flexDirection="column"
+                        overflow="auto"
+                        padding="0 20px 20px 20px"
+                      >
+                        {children}
+                      </Flex>
+                      <Navbar $layoutWidth={width} />
+                      <Toast />
+                    </LayoutFlex>
+                    <Map ref={mapContainer} map={map} $minWidth={width} />
+                  </Flex>
+                </TagProvider>
               </SeeTogetherProvider>
             </MarkerProvider>
           </CoordinatesProvider>

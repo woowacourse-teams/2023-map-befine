@@ -14,20 +14,20 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
+import { TagContext } from '../context/TagContext';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
-  const [tagPins, setTagPins] = useState<string[]>([]);
   const [searchParams, _] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
-  const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
+  const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
@@ -68,12 +68,11 @@ const SelectedTopic = () => {
   };
 
   const onClickConfirm = () => {
-    routePage('/new-topic', taggedPinIds.join(','));
+    routePage('/new-topic', tags.map((tag) => tag.id).join(','));
   };
 
   const onTagCancel = () => {
-    setTagPins([]);
-    setTaggedPinIds([]);
+    setTags([]);
   };
 
   useEffect(() => {
@@ -91,7 +90,6 @@ const SelectedTopic = () => {
   };
 
   if (!topicDetail) return <></>;
-  if (!tagPins) return <></>;
 
   return (
     <>
@@ -100,9 +98,9 @@ const SelectedTopic = () => {
         $flexDirection="column"
       >
         <Space size={2} />
-        {taggedPinIds.length > 0 && (
+        {tags.length > 0 && (
           <PullPin
-            tag={tagPins}
+            tags={tags}
             confirmButton="뽑아오기"
             onClickConfirm={onClickConfirm}
             onClickClose={onTagCancel}
@@ -111,13 +109,11 @@ const SelectedTopic = () => {
         <Suspense fallback={<PinsOfTopicSkeleton />}>
           {topicDetail.length !== 0 ? (
             <PinsOfTopic
-              topicId={topicId}
-              tagPins={tagPins}
+              topicId={Number(topicId)}
+              tags={tags}
+              setTags={setTags}
               topicDetail={topicDetail}
-              taggedPinIds={taggedPinIds}
               setSelectedPinId={setSelectedPinId}
-              setTagPins={setTagPins}
-              setTaggedPinIds={setTaggedPinIds}
               setIsEditPinDetail={setIsEditPinDetail}
             />
           ) : (

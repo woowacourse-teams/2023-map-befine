@@ -1,28 +1,25 @@
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import { TagProps } from '../../types/Tag';
 import { TopicInfoType } from '../../types/Topic';
 import Space from '../common/Space';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
-  topicId: string | undefined;
-  tagPins: string[];
+  topicId: number;
+  tags: TagProps[];
   topicDetail: TopicInfoType[];
-  taggedPinIds: number[];
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
-  setTagPins: React.Dispatch<React.SetStateAction<string[]>>;
-  setTaggedPinIds: React.Dispatch<React.SetStateAction<number[]>>;
+  setTags: React.Dispatch<React.SetStateAction<TagProps[]>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PinsOfTopic = ({
   topicId,
-  tagPins,
+  tags,
   topicDetail,
-  taggedPinIds,
   setSelectedPinId,
-  setTagPins,
-  setTaggedPinIds,
+  setTags,
   setIsEditPinDetail,
 }: PinsOfTopicProps) => {
   return (
@@ -32,8 +29,8 @@ const PinsOfTopic = ({
           <ul key={topic.id}>
             {idx !== 0 && <Space size={5} />}
             <TopicInfo
-              fullUrl={topicId}
-              topicId={Number(topicId?.split(',')[idx])}
+              fullUrl={String(topicId)}
+              topicId={Number(String(topicId).split(',')[idx])}
               topicImage={DEFAULT_TOPIC_IMAGE}
               topicParticipant={1}
               topicPinCount={topic.pinCount}
@@ -41,9 +38,8 @@ const PinsOfTopic = ({
               topicOwner={'토픽을 만든 사람'}
               topicDescription={topic.description}
             />
-            {topic.pins.map((pin) => (
+            {topic.pins.map((pin, idx) => (
               <li key={pin.id}>
-                <Space size={3} />
                 <PinPreview
                   idx={idx}
                   pinTitle={pin.name}
@@ -52,10 +48,8 @@ const PinsOfTopic = ({
                   setSelectedPinId={setSelectedPinId}
                   pinId={Number(pin.id)}
                   topicId={topicId}
-                  tagPins={tagPins}
-                  setTagPins={setTagPins}
-                  taggedPinIds={taggedPinIds}
-                  setTaggedPinIds={setTaggedPinIds}
+                  tags={tags}
+                  setTags={setTags}
                   setIsEditPinDetail={setIsEditPinDetail}
                 />
               </li>
