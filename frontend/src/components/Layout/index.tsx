@@ -11,7 +11,6 @@ import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 import SeeTogetherProvider from '../../context/SeeTogetherContext';
 import Space from '../common/Space';
 import Navbar from './Navbar';
-import Back from '../../assets/Back.svg';
 import ModalProvider from '../../context/ModalContext';
 import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
 import TagProvider from '../../context/TagContext';

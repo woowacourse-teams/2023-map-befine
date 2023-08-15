@@ -3,10 +3,11 @@ import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
-import { useEffect, useRef, useState, KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, KeyboardEvent, useContext } from 'react';
 import theme from '../../themes';
 import Box from '../common/Box';
 import { TagProps } from '../../types/Tag';
+import { TagContext } from '../../context/TagContext';
 
 export interface PinPreviewProps {
   idx: number;
@@ -16,8 +17,6 @@ export interface PinPreviewProps {
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   pinId: number;
   topicId: string;
-  tags: TagProps[];
-  setTags: React.Dispatch<React.SetStateAction<TagProps[]>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -29,14 +28,12 @@ const PinPreview = ({
   setSelectedPinId,
   pinId,
   topicId,
-  tags,
-  setTags,
+
   setIsEditPinDetail,
 }: PinPreviewProps) => {
   const { routePage } = useNavigator();
-
+  const { tags, setTags } = useContext(TagContext);
   const [announceText, setAnnounceText] = useState<string>('토픽 핀 선택');
-
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {

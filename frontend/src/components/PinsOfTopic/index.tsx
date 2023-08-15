@@ -8,18 +8,14 @@ import TopicInfo from '../TopicInfo';
 interface PinsOfTopicProps {
   topicId: string;
   topicDetail: TopicInfoType;
-  tags: TagProps[];
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
-  setTags: React.Dispatch<React.SetStateAction<TagProps[]>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PinsOfTopic = ({
   topicId,
   topicDetail,
-  tags,
   setSelectedPinId,
-  setTags,
   setIsEditPinDetail,
 }: PinsOfTopicProps) => {
   return (
@@ -45,8 +41,6 @@ const PinsOfTopic = ({
               setSelectedPinId={setSelectedPinId}
               pinId={Number(pin.id)}
               topicId={String(topicId)}
-              tags={tags}
-              setTags={setTags}
               setIsEditPinDetail={setIsEditPinDetail}
             />
           </li>

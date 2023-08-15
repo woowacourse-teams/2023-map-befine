@@ -126,8 +126,6 @@ const SelectedTopic = () => {
             <Fragment key={topicDetail.id}>
               <PinsOfTopic
                 topicId={topicId}
-                tags={tags}
-                setTags={setTags}
                 topicDetail={topicDetail}
                 setSelectedPinId={setSelectedPinId}
                 setIsEditPinDetail={setIsEditPinDetail}
