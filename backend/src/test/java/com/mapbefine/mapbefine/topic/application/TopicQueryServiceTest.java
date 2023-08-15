@@ -376,4 +376,71 @@ class TopicQueryServiceTest {
                 .isEqualTo(topicIds);
     }
 
+    @Test
+    @DisplayName("즐겨찾기가 많이 있는 토픽 순서대로 조회할 수 있다.")
+    public void findAllBestTopics_Success1() {
+        //given
+        Member otherMember = MemberFixture.create(
+                "otherMember",
+                "otherMember@email.com",
+                Role.USER
+        );
+        memberRepository.save(otherMember);
+
+        Topic topicWithNoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topicWithOneBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topicWithTwoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topicWithNoBookmark);
+        topicRepository.save(topicWithOneBookmark);
+        topicRepository.save(topicWithTwoBookmark);
+
+        saveBookmark(topicWithOneBookmark, member);
+        saveBookmark(topicWithTwoBookmark, member);
+        saveBookmark(topicWithTwoBookmark, otherMember);
+
+        //when
+        AuthMember user = MemberFixture.createUser(member);
+        List<TopicResponse> actual = topicQueryService.findAllBestTopics(user);
+
+        //then
+        assertThat(actual).extractingResultOf("id")
+                .containsExactly(
+                        topicWithTwoBookmark.getId(),
+                        topicWithOneBookmark.getId(),
+                        topicWithNoBookmark.getId()
+                );
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 순서대로 조회하더라도, private 토픽인 경우 조회할 수 없다.")
+    public void findAllBestTopics_Success2() {
+        //given
+        Member otherMember = MemberFixture.create(
+                "otherMember",
+                "otherMember@email.com",
+                Role.USER
+        );
+        memberRepository.save(otherMember);
+
+        Topic topicWithNoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic privateTopicWithOneBookmark = TopicFixture.createPrivateAndGroupOnlyTopic(member);
+        topicRepository.save(topicWithNoBookmark);
+        topicRepository.save(privateTopicWithOneBookmark);
+
+        saveBookmark(privateTopicWithOneBookmark, member);
+
+        //when
+        AuthMember otherUser = MemberFixture.createUser(otherMember);
+
+        List<TopicResponse> actual = topicQueryService.findAllBestTopics(otherUser);
+        List<TopicResponse> expect = topicQueryService.findAllReadable(otherUser);
+
+        //then
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(expect);
+    }
+
+    private Bookmark saveBookmark(Topic topic, Member member) {
+        return bookmarkRepository.save(Bookmark.createWithAssociatedTopicAndMember(topic, member));
+    }
 }

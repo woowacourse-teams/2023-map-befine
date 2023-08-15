@@ -9,6 +9,7 @@ import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -139,7 +140,8 @@ public class TopicQueryService {
                 .toList();
     }
 
-    private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember, List<Topic> topics) {
+    private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember,
+            List<Topic> topics) {
         Member member = findMemberById(authMember.getMemberId());
 
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
@@ -192,6 +194,23 @@ public class TopicQueryService {
                         topic,
                         isInAtlas(topicsInAtlas, topic),
                         isBookMarked(topicsInBookMark, topic))
+                ).toList();
+    }
+
+    public List<TopicResponse> findAllBestTopics(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return topicRepository.findAll()
+                .stream()
+                .filter(authMember::canRead)
+                .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked((topicsInBookMark), topic))
                 ).toList();
     }
 
