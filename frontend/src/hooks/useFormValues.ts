@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { validateCurse, validatePolitically } from '../validations';
 
-const initErrorMessages = <T extends Record<keyof T, string>>(
+const initErrorMessages = <T extends Record<keyof T, string | string[]>>(
   initValues: T,
 ) => {
   const initKeys = Object.keys(initValues) as (keyof T)[];
