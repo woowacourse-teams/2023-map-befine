@@ -1,8 +1,9 @@
+import { styled } from 'styled-components';
 import Box from '../common/Box';
 import Text from '../common/Text';
 
 interface TagProps {
-  children: string;
+  children: React.ReactNode;
   tabIndex?: number;
 }
 
@@ -15,11 +16,21 @@ const Tag = ({ children, tabIndex }: TagProps) => {
       $borderRadius="medium"
       tabIndex={tabIndex}
     >
-      <Text color="white" $fontSize="small" $fontWeight="normal">
+      <EllipsisText color="white" $fontSize="small" $fontWeight="normal">
         {children}
-      </Text>
+      </EllipsisText>
     </Box>
   );
 };
+
+const EllipsisText = styled(Text)`
+  width: 100%;
+  display: -webkit-box;
+  word-wrap: break-word;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
 
 export default Tag;

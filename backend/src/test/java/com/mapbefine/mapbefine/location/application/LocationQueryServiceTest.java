@@ -86,7 +86,7 @@ class LocationQueryServiceTest {
         // then
         List<TopicResponse> expected = topics.stream()
                 .sorted(Collections.reverseOrder(Comparator.comparingInt(Topic::countPins)))
-                .map(TopicResponse::from)
+                .map(topic -> TopicResponse.from(topic,Boolean.FALSE))
                 .collect(Collectors.toList());
 
         assertThat(currentTopics).isEqualTo(expected);

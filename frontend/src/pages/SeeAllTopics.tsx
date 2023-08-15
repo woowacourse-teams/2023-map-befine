@@ -1,5 +1,4 @@
 import { useLocation } from 'react-router-dom';
-// import SeeAllCardList from '../components/SeeAllCardList';
 import Text from '../components/common/Text';
 import { lazy, Suspense } from 'react';
 import SeeAllCardListSkeleton from '../components/SeeAllCardList/SeeAllCardListSkeleton';

@@ -3,7 +3,9 @@ package com.mapbefine.mapbefine.member.domain;
 import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
+import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.Embedded;
@@ -42,7 +44,10 @@ public class Member extends BaseTimeEntity {
     private List<Pin> createdPins = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<MemberTopicPermission> topicsWithPermissions = new ArrayList<>();
+    private List<Permission> topicsWithPermissions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     private Member(MemberInfo memberInfo, OauthId oauthId) {
         this.memberInfo = memberInfo;
@@ -105,8 +110,12 @@ public class Member extends BaseTimeEntity {
         createdPins.add(pin);
     }
 
-    public void addMemberTopicPermission(MemberTopicPermission memberTopicPermission) {
-        topicsWithPermissions.add(memberTopicPermission);
+    public void addMemberTopicPermission(Permission permission) {
+        topicsWithPermissions.add(permission);
+    }
+
+    public void addBookmark(Bookmark bookmark) {
+        bookmarks.add(bookmark);
     }
 
     public String getRoleKey() {
@@ -116,13 +125,14 @@ public class Member extends BaseTimeEntity {
     public boolean isAdmin() {
         return memberInfo.getRole() == Role.ADMIN;
     }
+
     public boolean isUser() {
         return memberInfo.getRole() == Role.USER;
     }
 
     public List<Topic> getTopicsWithPermissions() {
         return topicsWithPermissions.stream()
-                .map(MemberTopicPermission::getTopic)
+                .map(Permission::getTopic)
                 .toList();
     }
 

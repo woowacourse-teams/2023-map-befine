@@ -4,14 +4,17 @@ import NewPin from './pages/NewPin';
 import NewTopic from './pages/NewTopic';
 import RootPage from './pages/RootPage';
 import SelectedTopic from './pages/SelectedTopic';
-import SeeAllTopics from './pages/SeeAllTopics';
+import SeeAllPopularTopics from './pages/SeeAllPopularTopics';
+import SeeAllNearTopics from './pages/SeeAllNearTopics';
+import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
+import SeeTogetherTopics from './pages/SeeTogetherTopics';
+import Favorite from './pages/Favorite';
+import Profile from './pages/Profile';
 import KakaoRedirectPage from './pages/KaKaoRedirectPage';
 import ErrorPage from './pages/ErrorPage';
 import AskLoginPage from './pages/AskLoginPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
-import MoaBogi from './pages/MoaBogi';
-import Zzlegyeo from './pages/Zzlegyeo';
 import NotFound from './components/NotFound';
 
 interface routeElement {
@@ -27,7 +30,7 @@ const routes: routeElement[] = [
   {
     path: '/',
     element: <RootPage />,
-    errorElement:  <NotFound />,
+    errorElement: <NotFound />,
     withAuth: false,
 
     children: [
@@ -35,16 +38,6 @@ const routes: routeElement[] = [
         path: '',
         element: <Home />,
         withAuth: false,
-      },
-      {
-        path: 'moabogi',
-        element: <MoaBogi />,
-        withAuth: true,
-      },
-      {
-        path: 'zzlegyeo',
-        element: <Zzlegyeo />,
-        withAuth: true,
       },
       {
         path: 'topics/:topicId',
@@ -62,9 +55,34 @@ const routes: routeElement[] = [
         withAuth: true,
       },
       {
-        path: 'topics/see-all',
-        element: <SeeAllTopics />,
+        path: 'see-all/popularity',
+        element: <SeeAllPopularTopics />,
         withAuth: false,
+      },
+      {
+        path: 'see-all/near',
+        element: <SeeAllNearTopics />,
+        withAuth: false,
+      },
+      {
+        path: 'see-all/latest',
+        element: <SeeAllLatestTopics />,
+        withAuth: false,
+      },
+      {
+        path: 'see-together',
+        element: <SeeTogetherTopics />,
+        withAuth: true,
+      },
+      {
+        path: 'favorite',
+        element: <Favorite />,
+        withAuth: true,
+      },
+      {
+        path: 'my-page',
+        element: <Profile />,
+        withAuth: true,
       },
       {
         path: 'oauth/redirected/kakao',

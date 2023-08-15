@@ -43,12 +43,16 @@ class LocationControllerTest extends RestDocsIntegration {
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         5,
+                        0,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         3,
+                        0,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 )
         );
@@ -62,12 +66,13 @@ class LocationControllerTest extends RestDocsIntegration {
         double longitude = 127;
 
         //when
-        given(locationQueryService.findNearbyTopicsSortedByPinCount(any(), anyDouble(), anyDouble()))
+        given(locationQueryService.findNearbyTopicsSortedByPinCount(any(), anyDouble(),
+                anyDouble()))
                 .willReturn(responses);
 
         //then
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/locations")
+                MockMvcRequestBuilders.get("/locations/bests")
                         .header(AUTHORIZATION, authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("latitude", String.valueOf(latitude))

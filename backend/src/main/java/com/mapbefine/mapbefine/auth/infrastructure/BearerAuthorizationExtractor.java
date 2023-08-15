@@ -29,10 +29,7 @@ public class BearerAuthorizationExtractor implements AuthorizationExtractor<Auth
 
     private String extractAuthHeaderValue(String value) {
         String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
-        int commaIndex = authHeaderValue.indexOf(',');
-        if (commaIndex > 0) {
-            return authHeaderValue.substring(0, commaIndex);
-        }
+
         return authHeaderValue;
     }
 

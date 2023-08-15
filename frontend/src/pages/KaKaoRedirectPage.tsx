@@ -6,29 +6,31 @@ import useNavigator from '../hooks/useNavigator';
 import { LoginResponse } from '../types/Login';
 
 export const handleOAuthKakao = async (code: string) => {
-  const { routePage } = useNavigator();
   try {
-    const url = `http://localhost:8080/oauth/login/kakao?code=${code}`;
-    const data = await getApi<LoginResponse>('login', url);
+    const url = `https://mapbefine.kro.kr/api/oauth/login/kakao?code=${code}`;
+    const data = await getApi<any>('login', url);
 
-    // localStorage에 data.accessToken과 data.member 저장
     localStorage.setItem('userToken', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.member));
-
-    routePage('/');
   } catch (error) {
     window.alert('로그인 실패');
   }
 };
 
 const KakaoRedirectPage = () => {
+  const { routePage } = useNavigator();
+
   const location = useLocation();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const code = searchParams.get('code');
+    const ab = async (code: string) => {
+      await handleOAuthKakao(code);
+    };
     if (code) {
-      handleOAuthKakao(code);
+      ab(code);
+      routePage('/');
     }
   }, [location]);
 
