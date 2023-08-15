@@ -44,11 +44,7 @@ const MyInfo = () => {
       $justifyContent="center"
       $alignItems="center"
     >
-      {isThereImg ? (
-        <MyInfoImg src="https://images.unsplash.com/photo-1480429370139-e0132c086e2a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80" />
-      ) : (
-        <InfoDefalutImg />
-      )}
+      <MyInfoImg src="https://images.unsplash.com/photo-1480429370139-e0132c086e2a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80" />
       <Space size={7} />
       <Box>
         <Text color="black" $fontSize="default" $fontWeight="normal">
@@ -66,6 +62,7 @@ const MyInfo = () => {
 };
 
 const MyInfoContainer = styled(Flex)`
+  position: relative;
   border: 1px solid ${({ theme }) => theme.color.lightGray};
 `;
 

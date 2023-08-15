@@ -16,6 +16,8 @@ import AskLoginPage from './pages/AskLoginPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './components/NotFound';
+import MyInfoPage from './pages/MyInfoPage';
+import LoginError from './components/NotFound/LoginError';
 
 interface routeElement {
   path: string;
@@ -81,7 +83,7 @@ const routes: routeElement[] = [
       },
       {
         path: 'my-page',
-        element: <Profile />,
+        element: <MyInfoPage />,
         withAuth: true,
       },
       {
@@ -91,7 +93,7 @@ const routes: routeElement[] = [
       },
       {
         path: '/askLogin',
-        element: <AskLoginPage />,
+        element: <LoginError />,
         withAuth: false,
       },
     ],

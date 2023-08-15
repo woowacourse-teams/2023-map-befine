@@ -14,6 +14,7 @@ import Navbar from './Navbar';
 import Back from '../../assets/Back.svg';
 import ModalProvider from '../../context/ModalContext';
 import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
+import InfoDefalutImg from '../../assets/InfoDefalutImg.svg';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -30,6 +31,11 @@ const Layout = ({ children }: LayoutProps) => {
   const { Tmapv3 } = window;
   const mapContainer = useRef(null);
   const { width } = useContext(LayoutWidthContext);
+  const isLogined = localStorage.getItem('userToken');
+
+  const loginButtonClick = () => {
+    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
+  };
 
   const [map, setMap] = useState(null);
 
@@ -58,9 +64,16 @@ const Layout = ({ children }: LayoutProps) => {
                     height="100vh"
                     $backgroundColor="white"
                   >
-                    <Flex $flexDirection="column" padding="20px 20px 0 20px">
+                    <Flex
+                      $justifyContent="space-between"
+                      padding="20px 20px 0 20px"
+                    >
                       <Logo />
-                      <Space size={4} />
+                      {isLogined ? (
+                        <MyInfoImg src="https://images.unsplash.com/photo-1480429370139-e0132c086e2a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80" />
+                      ) : (
+                        <InfoDefalutImg onClick={loginButtonClick} />
+                      )}
                     </Flex>
                     <Flex
                       height="calc(100vh - 40px)"
@@ -86,6 +99,13 @@ const Layout = ({ children }: LayoutProps) => {
 
 const LayoutFlex = styled(Flex)`
   transition: all ease 0.3s;
+`;
+
+const MyInfoImg = styled.img`
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
 `;
 
 export default Layout;

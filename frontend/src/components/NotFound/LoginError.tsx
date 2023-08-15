@@ -6,12 +6,16 @@ import Space from '../common/Space';
 import Text from '../common/Text';
 
 const LoginError = () => {
+  const loginButtonClick = () => {
+    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
+  };
+
   return (
     <Flex
       $flexDirection="column"
       $justifyContent="center"
       $alignItems="center"
-      width="100vw"
+      width="100%"
       height="100vh"
     >
       <LoginErrorIcon />
@@ -25,7 +29,9 @@ const LoginError = () => {
           나만의 지도를 만들어 보세요.
         </Text>
         <Space size={5} />
-        <NotFoundButton variant="primary">카카오로 시작하기</NotFoundButton>
+        <NotFoundButton variant="primary" onClick={loginButtonClick}>
+          카카오로 시작하기
+        </NotFoundButton>
       </Flex>
     </Flex>
   );
