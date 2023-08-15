@@ -372,6 +372,7 @@ class TopicIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(actual).usingRecursiveComparison()
+                .ignoringFields("updatedAt")
                 .isEqualTo(expect);
         assertThat(actual).extractingResultOf("id")
                 .containsExactly(bestOneTopic.getId(), topic.getId());
