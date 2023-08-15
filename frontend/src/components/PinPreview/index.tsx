@@ -9,6 +9,7 @@ import Box from '../common/Box';
 import { TagProps } from '../../types/Tag';
 
 export interface PinPreviewProps {
+  fromWhere: 'severalTopics' | 'selectedTopic';
   idx: number;
   pinTitle: string;
   pinLocation: string;
@@ -22,6 +23,7 @@ export interface PinPreviewProps {
 }
 
 const PinPreview = ({
+  fromWhere,
   idx,
   pinTitle,
   pinLocation,
@@ -66,7 +68,9 @@ const PinPreview = ({
   const onClickSetSelectedPinId = () => {
     setSelectedPinId(pinId);
     setIsEditPinDetail(false);
-    routePage(`/topics/${topicId}?pinDetail=${pinId}`);
+    fromWhere === 'selectedTopic'
+      ? routePage(`/topics/${topicId}?pinDetail=${pinId}`)
+      : routePage(`/several-topics/${topicId}?pinDetail=${pinId}`);
   };
 
   const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

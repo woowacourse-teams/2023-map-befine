@@ -15,13 +15,14 @@ import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
 import { TagContext } from '../context/TagContext';
+import { PinType } from '../types/Pin';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
-  const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
+  const [topicDetail, setTopicDetail] = useState<TopicInfoType[] | null>(null);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
@@ -36,35 +37,22 @@ const SelectedTopic = () => {
       'default',
       `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
     );
-    const topicHashmap = new Map([]);
+
+    setTopicDetail(data);
 
     // 각 topic의 pin들의 좌표를 가져옴
     const newCoordinates: any = [];
 
-    data.forEach((topic: any) => {
-      topic.pins.forEach((pin: any) => {
-        newCoordinates.push({
-          id: pin.id,
-          topicId: topic.id,
-          latitude: pin.latitude,
-          longitude: pin.longitude,
-        });
+    data[0].pins.forEach((pin: PinType) => {
+      newCoordinates.push({
+        id: pin.id,
+        topicId: topicId,
+        latitude: pin.latitude,
+        longitude: pin.longitude,
       });
     });
 
     setCoordinates(newCoordinates);
-
-    data.forEach((topicDetailFromData: TopicInfoType) =>
-      topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
-    );
-
-    const topicDetailFromData = topicId
-      ?.split(',')
-      .map((number) => topicHashmap.get(number)) as TopicInfoType[];
-
-    if (!topicDetailFromData) return;
-
-    setTopicDetail([...topicDetailFromData]);
   };
 
   const onClickConfirm = () => {
@@ -82,6 +70,7 @@ const SelectedTopic = () => {
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
     }
+
     setIsOpen(true);
   }, [searchParams]);
 
@@ -107,18 +96,15 @@ const SelectedTopic = () => {
           />
         )}
         <Suspense fallback={<PinsOfTopicSkeleton />}>
-          {topicDetail.length !== 0 ? (
-            <PinsOfTopic
-              topicId={Number(topicId)}
-              tags={tags}
-              setTags={setTags}
-              topicDetail={topicDetail}
-              setSelectedPinId={setSelectedPinId}
-              setIsEditPinDetail={setIsEditPinDetail}
-            />
-          ) : (
-            <></>
-          )}
+          <PinsOfTopic
+            fromWhere="selectedTopic"
+            topicId={Number(topicId)}
+            tags={tags}
+            setTags={setTags}
+            topicDetail={topicDetail[0]}
+            setSelectedPinId={setSelectedPinId}
+            setIsEditPinDetail={setIsEditPinDetail}
+          />
         </Suspense>
 
         {selectedPinId && (
@@ -153,12 +139,6 @@ const SelectedTopic = () => {
     </>
   );
 };
-
-const MultiSelectButton = styled.input`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-`;
 
 const PinDetailWrapper = styled.div`
   &.collapsedPinDetail {

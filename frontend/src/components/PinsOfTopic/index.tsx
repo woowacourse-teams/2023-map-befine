@@ -6,57 +6,55 @@ import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
+  fromWhere: 'severalTopics' | 'selectedTopic';
   topicId: number;
+  topicDetail: TopicInfoType;
   tags: TagProps[];
-  topicDetail: TopicInfoType[];
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   setTags: React.Dispatch<React.SetStateAction<TagProps[]>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PinsOfTopic = ({
+  fromWhere,
   topicId,
-  tags,
   topicDetail,
+  tags,
   setSelectedPinId,
   setTags,
   setIsEditPinDetail,
 }: PinsOfTopicProps) => {
   return (
     <>
-      {topicDetail.map((topic, idx) => {
-        return (
-          <ul key={topic.id}>
-            {idx !== 0 && <Space size={5} />}
-            <TopicInfo
-              fullUrl={String(topicId)}
-              topicId={Number(String(topicId).split(',')[idx])}
-              topicImage={DEFAULT_TOPIC_IMAGE}
-              topicParticipant={1}
-              topicPinCount={topic.pinCount}
-              topicTitle={topic.name}
-              topicOwner={'토픽을 만든 사람'}
-              topicDescription={topic.description}
+      <ul>
+        <TopicInfo
+          fullUrl={String(topicId)}
+          topicId={topicId}
+          topicImage={DEFAULT_TOPIC_IMAGE}
+          topicParticipant={1}
+          topicPinCount={topicDetail.pinCount}
+          topicTitle={topicDetail.name}
+          topicOwner={'토픽을 만든 사람'}
+          topicDescription={topicDetail.description}
+        />
+        {topicDetail.pins.map((pin, idx) => (
+          <li key={pin.id}>
+            <PinPreview
+              fromWhere={fromWhere}
+              idx={idx}
+              pinTitle={pin.name}
+              pinLocation={pin.address}
+              pinInformation={pin.description}
+              setSelectedPinId={setSelectedPinId}
+              pinId={Number(pin.id)}
+              topicId={topicId}
+              tags={tags}
+              setTags={setTags}
+              setIsEditPinDetail={setIsEditPinDetail}
             />
-            {topic.pins.map((pin, idx) => (
-              <li key={pin.id}>
-                <PinPreview
-                  idx={idx}
-                  pinTitle={pin.name}
-                  pinLocation={pin.address}
-                  pinInformation={pin.description}
-                  setSelectedPinId={setSelectedPinId}
-                  pinId={Number(pin.id)}
-                  topicId={topicId}
-                  tags={tags}
-                  setTags={setTags}
-                  setIsEditPinDetail={setIsEditPinDetail}
-                />
-              </li>
-            ))}
-          </ul>
-        );
-      })}
+          </li>
+        ))}
+      </ul>
     </>
   );
 };

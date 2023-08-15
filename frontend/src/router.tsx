@@ -7,7 +7,7 @@ import SelectedTopic from './pages/SelectedTopic';
 import SeeAllPopularTopics from './pages/SeeAllPopularTopics';
 import SeeAllNearTopics from './pages/SeeAllNearTopics';
 import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
-import SeeTogetherTopics from './pages/SeeTogetherTopics';
+import SeveralSelectedTopics from './pages/SeveralSelectedTopics';
 import Favorite from './pages/Favorite';
 import Profile from './pages/Profile';
 import KakaoRedirectPage from './pages/KaKaoRedirectPage';
@@ -16,6 +16,7 @@ import AskLoginPage from './pages/AskLoginPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './components/NotFound';
+import SeeTogetherTopics from './pages/SeeTogetherTopics';
 
 interface routeElement {
   path: string;
@@ -72,6 +73,11 @@ const routes: routeElement[] = [
       {
         path: 'see-together',
         element: <SeeTogetherTopics />,
+        withAuth: true,
+      },
+      {
+        path: 'several-topics/:topicId',
+        element: <SeveralSelectedTopics />,
         withAuth: true,
       },
       {
