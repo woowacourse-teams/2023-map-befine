@@ -1,47 +1,34 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SIDEBAR } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { SeeTogetherContext } from '../context/SeeTogetherContext';
 import Text from '../components/common/Text';
 import SeeTogetherSVG from '../assets/seeTogetherBtn_filled.svg';
-
 import { styled } from 'styled-components';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import TopicCard from '../components/TopicCard';
 import Button from '../components/common/Button';
-import { TopicType } from '../types/Topic';
-import { getApi } from '../apis/getApi';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const SeeTogetherTopics = () => {
   const { routePage } = useNavigator();
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { navbarHighlights } = useSetNavbarHighlight('seeTogether');
-  const { seeTogetherTopics, setSeeTogetherTopics } =
-    useContext(SeeTogetherContext);
+  const { seeTogetherTopics } = useContext(SeeTogetherContext);
 
   const goToHome = () => {
     routePage('/');
   };
 
   const goToSeveralSelectedTopics = () => {
-    routePage(
-      `/topics/${seeTogetherTopics.map((topic) => topic.id).join(',')}`,
-      seeTogetherTopics.map((topic) => topic.id).join(','),
-    );
+    const seeTogetherTopicIds = seeTogetherTopics
+      .map((topic) => topic.id)
+      .join(',');
+
+    routePage(`/topics/${seeTogetherTopicIds}`, seeTogetherTopicIds);
   };
-
-  const getSeeTogetherTopics = async () => {
-    const topics = await getApi<TopicType[]>('default', '/members/atlas');
-
-    setSeeTogetherTopics(topics);
-  };
-
-  useEffect(() => {
-    // getSeeTogetherTopics();
-  }, []);
 
   if (seeTogetherTopics.length === 0) {
     return (

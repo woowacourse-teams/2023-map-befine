@@ -1,7 +1,10 @@
 import { styled } from 'styled-components';
 import { postApi } from '../../apis/postApi';
 import useToast from '../../hooks/useToast';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { getApi } from '../../apis/getApi';
+import { TopicType } from '../../types/Topic';
+import { SeeTogetherContext } from '../../context/SeeTogetherContext';
 
 interface AddSeeTogetherProps {
   id: number;
@@ -10,15 +13,23 @@ interface AddSeeTogetherProps {
 
 const AddSeeTogether = ({ id, children }: AddSeeTogetherProps) => {
   const { showToast } = useToast();
+  const { setSeeTogetherTopics } = useContext(SeeTogetherContext);
 
   const addSeeTogetherList = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    // TODO : post 후 전역 see together List 에 담기, toast 메세지 수정
-    // await postApi('',{});
-    // await getApi('');
+    try {
+      // await postApi('',{});
+      // const topics = await getApi<TopicType[]>('default', '/members/atlas');
+      // setSeeTogetherTopics(topics);
 
-    showToast('info', '준비중인 기능입니다.');
+      showToast('info', '모아보기에 추가했습니다.');
+    } catch {
+      showToast(
+        'error',
+        '모아보기 추가에 실패했습니다. 네트워크를 확인해주세요',
+      );
+    }
   };
 
   return <Wrapper onClick={addSeeTogetherList}>{children}</Wrapper>;
