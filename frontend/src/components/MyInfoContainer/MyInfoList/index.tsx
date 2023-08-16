@@ -109,6 +109,9 @@ const MyInfoList = ({ isTopic }: MyInfoListProps) => {
     // getMyInfoListFromServer();
   }, []);
 
+  if (!data) return <></>;
+  if (!data2) return <></>;
+
   if (!isTopic)
     return (
       <MyInfoListWrapper>
@@ -128,8 +131,6 @@ const MyInfoList = ({ isTopic }: MyInfoListProps) => {
         })}
       </MyInfoListWrapper>
     );
-
-  if (!data) return <></>;
 
   return (
     <MyInfoListWrapper>
