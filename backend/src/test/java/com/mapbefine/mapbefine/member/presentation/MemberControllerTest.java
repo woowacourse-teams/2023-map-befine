@@ -77,6 +77,7 @@ class MemberControllerTest extends RestDocsIntegration {
                         1L,
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         5,
                         true,
                         0,
@@ -86,6 +87,7 @@ class MemberControllerTest extends RestDocsIntegration {
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         3,
                         true,
                         0,
@@ -111,6 +113,7 @@ class MemberControllerTest extends RestDocsIntegration {
                         1L,
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         5,
                         false,
                         0,
@@ -120,6 +123,7 @@ class MemberControllerTest extends RestDocsIntegration {
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         3,
                         false,
                         0,
@@ -144,6 +148,7 @@ class MemberControllerTest extends RestDocsIntegration {
                         1L,
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         5,
                         false,
                         0,
@@ -153,6 +158,7 @@ class MemberControllerTest extends RestDocsIntegration {
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         3,
                         false,
                         0,
@@ -178,6 +184,7 @@ class MemberControllerTest extends RestDocsIntegration {
                         "준팍의 첫번째 핀",
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍의 첫번째 핀",
+                        "준팍",
                         LocationFixture.BASE_COORDINATE.getLatitude(),
                         LocationFixture.BASE_COORDINATE.getLongitude()
                 ), new PinResponse(
@@ -185,6 +192,7 @@ class MemberControllerTest extends RestDocsIntegration {
                         "준팍의 두번째 핀",
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍의 두번째 핀",
+                        "준팍",
                         LocationFixture.BASE_COORDINATE.getLatitude(),
                         LocationFixture.BASE_COORDINATE.getLongitude()
                 )

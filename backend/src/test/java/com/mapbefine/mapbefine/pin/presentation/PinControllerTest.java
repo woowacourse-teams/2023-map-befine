@@ -115,6 +115,7 @@ class PinControllerTest extends RestDocsIntegration {
                 "매튜의 산스장",
                 "지번 주소",
                 "매튜가 사랑하는 산스장",
+                "매튜",
                 37,
                 127,
                 LocalDateTime.now(),
@@ -147,6 +148,7 @@ class PinControllerTest extends RestDocsIntegration {
                         "매튜의 산스장",
                         "지번 주소",
                         "매튜가 사랑하는 산스장",
+                        "매튜",
                         37,
                         127
                 ), new PinResponse(
@@ -154,6 +156,7 @@ class PinControllerTest extends RestDocsIntegration {
                         "매튜의 안갈집",
                         "지번 주소",
                         "매튜가 두번은 안 갈 집",
+                        "매튜",
                         37,
                         127
                 )
@@ -221,6 +224,7 @@ class PinControllerTest extends RestDocsIntegration {
                         "매튜의 산스장",
                         "지번 주소",
                         "매튜가 사랑하는 산스장",
+                        "매튜",
                         37,
                         127
                 ), new PinResponse(
@@ -228,6 +232,7 @@ class PinControllerTest extends RestDocsIntegration {
                         "매튜의 안갈집",
                         "지번 주소",
                         "매튜가 두번은 안 갈 집",
+                        "매튜",
                         37,
                         127
                 )

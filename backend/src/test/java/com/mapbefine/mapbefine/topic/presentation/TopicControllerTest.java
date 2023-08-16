@@ -31,6 +31,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
             1L,
             "준팍의 또 토픽",
             "https://map-befine-official.github.io/favicon.png",
+            "준팍",
             3,
             false,
             0,
@@ -40,6 +41,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
             2L,
             "준팍의 두번째 토픽",
             "https://map-befine-official.github.io/favicon.png",
+            "준팍",
             5,
             false,
             0,
@@ -148,10 +150,12 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 "준팍의 두번째 토픽",
                 "준팍이 막 만든 두번째 토픽",
                 "https://map-befine-official.github.io/favicon.png",
+                "준팍",
                 2,
                 false,
                 0,
                 false,
+
                 LocalDateTime.now(),
                 List.of(
                         new PinResponse(
@@ -159,6 +163,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                                 "매튜의 산스장",
                                 "지번 주소",
                                 "매튜가 사랑하는 산스장",
+                                "매튜",
                                 37,
                                 127
                         ), new PinResponse(
@@ -166,6 +171,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                                 "매튜의 안갈집",
                                 "지번 주소",
                                 "매튜가 두번은 안 갈 집",
+                                "매튜",
                                 37,
                                 127
                         )
