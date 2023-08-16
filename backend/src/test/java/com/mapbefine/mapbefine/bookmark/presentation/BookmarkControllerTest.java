@@ -22,28 +22,24 @@ class BookmarkControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("토픽을 유저의 즐겨찾기에 추가")
     public void addTopicInBookmark() throws Exception {
-        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
         given(bookmarkCommandService.addTopicInBookmark(any(), any())).willReturn(1L);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/bookmarks")
-                        .header(AUTHORIZATION, authHeader)
-                        .param("topicId", String.valueOf(1L))
+                MockMvcRequestBuilders.post("/bookmarks/topics")
+                        .queryParam("id", String.valueOf(1))
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("유저의 토픽 즐겨찾기 목록 삭제")
     public void deleteTopicInBookmark() throws Exception {
-        String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
         doNothing().when(bookmarkCommandService).deleteTopicInBookmark(any(), any());
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/bookmarks")
-                        .param("topicId", String.valueOf(1L))
-                        .header(AUTHORIZATION, authHeader)
+                MockMvcRequestBuilders.delete("/bookmarks/topics")
+                        .queryParam("id", String.valueOf(1L))
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 

@@ -50,14 +50,14 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         //when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, otherUserAuthHeader)
-                .param("topicId", topic.getId())
-                .when().post("/bookmarks")
+                .param("id", topic.getId())
+                .when().post("/bookmarks/topics")
                 .then().log().all()
                 .extract();
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).startsWith("/bookmarks/")
+        assertThat(response.header("Location")).startsWith("/bookmarks/topics")
                 .isNotNull();
     }
 
@@ -79,8 +79,8 @@ public class BookmarkIntegrationTest extends IntegrationTest {
         //when then
         given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
-                .param("topicId", topic.getId())
-                .when().delete("/bookmarks")
+                .param("id", topic.getId())
+                .when().delete("/bookmarks/topics")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }

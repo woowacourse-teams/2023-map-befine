@@ -167,7 +167,7 @@ class MemberControllerTest extends RestDocsIntegration {
                 )
         );
 
-        given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(responses);
+        given(memberQueryService.findMyAllTopics(any())).willReturn(responses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/my/topics")
