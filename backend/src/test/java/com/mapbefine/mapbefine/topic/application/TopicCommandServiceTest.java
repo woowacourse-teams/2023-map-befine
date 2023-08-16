@@ -18,7 +18,7 @@ import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
-import com.mapbefine.mapbefine.topic.domain.Permission;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -314,7 +314,7 @@ class TopicCommandServiceTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "수정된 설명",
                 Publicity.PRIVATE,
-                Permission.GROUP_ONLY
+                PermissionType.GROUP_ONLY
         );
 
         topicCommandService.updateTopicInfo(user, topic.getId(), request);
@@ -346,7 +346,7 @@ class TopicCommandServiceTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "수정된 설명",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS
+                PermissionType.ALL_MEMBERS
         );
 
         assertThatThrownBy(() -> topicCommandService.updateTopicInfo(user, topic.getId(), request))

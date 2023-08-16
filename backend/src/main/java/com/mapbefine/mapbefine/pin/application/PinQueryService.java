@@ -47,4 +47,11 @@ public class PinQueryService {
         throw new IllegalArgumentException("조회 권한이 없습니다.");
     }
 
+    public List<PinResponse> findAllPinsByMemberId(AuthMember authMember, Long memberId) {
+        return pinRepository.findByCreatorId(memberId)
+                .stream()
+                .filter(pin -> authMember.canRead(pin.getTopic()))
+                .map(PinResponse::from)
+                .toList();
+    }
 }

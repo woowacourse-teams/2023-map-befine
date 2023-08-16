@@ -14,7 +14,7 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
-import com.mapbefine.mapbefine.topic.domain.Permission;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -27,7 +27,6 @@ import io.restassured.*;
 import io.restassured.response.*;
 import java.util.Collections;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
-
     private Member member;
     private Topic topic;
     private Location location;
@@ -60,7 +58,7 @@ class TopicIntegrationTest extends IntegrationTest {
         member = memberRepository.save(MemberFixture.create("other", "other@othter.com", Role.ADMIN));
         topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
         location = locationRepository.save(LocationFixture.create());
-        authHeader = Base64.encodeBase64String(("Basic " + member.getMemberInfo().getEmail()).getBytes());
+        authHeader = testAuthHeaderProvider.createAuthHeader(member);
     }
 
 
@@ -72,7 +70,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
 
@@ -111,7 +109,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 pinIds
         );
 
@@ -132,7 +130,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
         TopicCreateRequest 준팍의_또안간집 = new TopicCreateRequest(
@@ -140,7 +138,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 안간집 ",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
         createNewTopic(준팍의_또간집, authHeader);
@@ -155,7 +153,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "맛집과 카페 토픽 합치기",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 topicIds);
 
         // when
@@ -174,47 +172,6 @@ class TopicIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("기존 토픽에 핀을 복사하면 200을 반환한다")
-    void copyPin_Success() {
-        // given
-        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
-                "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
-                "준팍이 2번 이상 간집 ",
-                Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
-                Collections.emptyList()
-        );
-
-        ExtractableResponse<Response> newTopic = createNewTopic(준팍의_또간집, authHeader);
-        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
-
-        List<Pin> pins = List.of(
-                PinFixture.create(location, topic, member),
-                PinFixture.create(location, topic, member),
-                PinFixture.create(location, topic, member)
-        );
-
-        List<Long> pinIds = pinRepository.saveAll(pins).stream()
-                .map(Pin::getId)
-                .toList();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .header(AUTHORIZATION, authHeader)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .param("pinIds", pinIds)
-                .when().post("/topics/{topicId}/copy", topicId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-    }
-
-    @Test
     @DisplayName("Topic을 수정하면 200을 반환한다")
     void updateTopic_Success() {
         ExtractableResponse<Response> newTopic = createNewTopic(
@@ -223,7 +180,7 @@ class TopicIntegrationTest extends IntegrationTest {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍이 두번 간집",
                         Publicity.PUBLIC,
-                        Permission.ALL_MEMBERS,
+                        PermissionType.ALL_MEMBERS,
                         Collections.emptyList()
                 ),
                 authHeader
@@ -236,7 +193,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "수정한 토픽",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS
+                PermissionType.ALL_MEMBERS
         );
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -260,7 +217,7 @@ class TopicIntegrationTest extends IntegrationTest {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍이 두번 간집 ",
                         Publicity.PUBLIC,
-                        Permission.ALL_MEMBERS,
+                        PermissionType.ALL_MEMBERS,
                         Collections.emptyList()
                 ),
                 authHeader
@@ -305,7 +262,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "description",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
         ExtractableResponse<Response> createResponse = createNewTopic(request, authHeader);
@@ -334,7 +291,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 "https://map-befine-official.github.io/favicon.png",
                 "description",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
         ExtractableResponse<Response> createResponse1 = createNewTopic(request, authHeader);
@@ -358,6 +315,7 @@ class TopicIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responses).hasSize(2);
         assertThat(responses).hasSize(2);
     }
 
@@ -395,4 +353,26 @@ class TopicIntegrationTest extends IntegrationTest {
         assertThat(topicResponses.get(0).pinCount()).isEqualTo(3);
         assertThat(topicResponses.get(2).pinCount()).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("멤버별 Topic 목록을 조회하면 200을 반환한다")
+    void findAllTopicsByMemberId_Success() {
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("id", member.getId())
+                .when().get("/topics/members")
+
+                .then().log().all()
+                .extract();
+
+        List<TopicResponse> responses = response.jsonPath().getList(".", TopicResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responses).hasSize(1);
+    }
+
 }

@@ -1,10 +1,6 @@
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import Plus from '../assets/plus.svg';
-import Clipping from '../assets/clipping.svg';
-import ShowDetail from '../assets/showDetail.svg';
-import Share from '../assets/share.svg';
 import { useEffect, useState } from 'react';
 import { PinType } from '../types/Pin';
 import { getApi } from '../apis/getApi';
@@ -12,43 +8,47 @@ import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';
 import useFormValues from '../hooks/useFormValues';
-import { DefaultPinValuesType } from '../types/FormValues';
+import { ModifyPinFormProps } from '../types/FormValues';
 import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
 import { styled } from 'styled-components';
-import { ModalPortal, useModalContext } from '../context/ModalContext';
+import { ModalPortal, useModalContext } from '../context/AbsoluteModalContext';
 
-const PinDetail = ({ pinId }: { pinId: number }) => {
+interface PinDetailProps {
+  pinId: number;
+  isEditPinDetail: boolean;
+  setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const PinDetail = ({
+  pinId,
+  isEditPinDetail,
+  setIsEditPinDetail,
+}: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const { showToast } = useToast();
   const { isModalOpen, openModal, closeModal } = useModalContext();
-  const { formValues, setFormValues, onChangeInput } =
-    useFormValues<DefaultPinValuesType>({
-      id: 0,
-      name: '',
-      images: [],
-      description: '',
-      address: '',
-      latitude: '',
-      longitude: '',
-      updatedAt: '',
-    });
+  const {
+    formValues,
+    errorMessages,
+    setFormValues,
+    setErrorMessages,
+    onChangeInput,
+  } = useFormValues<ModifyPinFormProps>({
+    name: '',
+    images: [],
+    description: '',
+  });
 
   useEffect(() => {
     const getPinData = async () => {
-      const pinData = await getApi('default', `/pins/${pinId}`);
+      const pinData = await getApi<PinType>('default', `/pins/${pinId}`);
       setPin(pinData);
       setFormValues({
-        id: pinData.id,
         name: pinData.name,
         images: pinData.images,
         description: pinData.description,
-        address: pinData.address,
-        latitude: pinData.latitude,
-        longitude: pinData.longitude,
-        updatedAt: pinData.updatedAt,
       });
     };
 
@@ -60,7 +60,12 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   };
 
   const onClickEditPin = () => {
-    setIsEditing(true);
+    setIsEditPinDetail(true);
+    setErrorMessages({
+      name: '',
+      images: '',
+      description: '',
+    });
     updateQueryString('edit', 'true');
   };
 
@@ -75,14 +80,15 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
 
   if (!pin) return <></>;
 
-  if (isEditing)
+  if (isEditPinDetail)
     return (
       <UpdatedPinDetail
         searchParams={searchParams}
         setSearchParams={setSearchParams}
-        setIsEditing={setIsEditing}
+        setIsEditing={setIsEditPinDetail}
         pinId={pinId}
         formValues={formValues}
+        errorMessages={errorMessages}
         onChangeInput={onChangeInput}
       />
     );
@@ -90,35 +96,37 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   return (
     <>
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
-        <Text color="primary" $fontSize="extraLarge" $fontWeight="bold">
+        <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
         </Text>
-        <Box cursor="pointer">
-          <ModifyPinDetail variant="primary" onClick={onClickEditPin}>수정하기</ModifyPinDetail>
-        </Box>
       </Flex>
-      <Space size={0} />
 
-      <Flex $justifyContent="space-between" $alignItems="center" width="100%">
-        <Flex $flexDirection="column">
+      <Space size={1} />
+
+      <Flex $justifyContent="space-between" $alignItems="flex-end" width="100%">
+        <Text color="black" $fontSize="small" $fontWeight="normal">
+          핀 생성자
+        </Text>
+        <Flex $flexDirection="column" $alignItems="flex-end">
+          <Box cursor="pointer">
+            <Text
+              color="primary"
+              $fontSize="default"
+              $fontWeight="normal"
+              onClick={onClickEditPin}
+            >
+              수정하기
+            </Text>
+          </Box>
           <Text color="black" $fontSize="small" $fontWeight="normal">
-            생성자 : 빠뜨릭
+            {pin.updatedAt.split('T')[0].split('-').join('.')} 핀 수정자
           </Text>
         </Flex>
-
-        <UpdateContainer $backgroundColor="whiteGray" $borderRadius="small">
-          <Text
-            color="black"
-            $fontSize="extraSmall"
-            $fontWeight="normal"
-          >{`${pin.updatedAt
-            .split('T')[0]
-            .split('-')
-            .join('.')} 수정자 : 패트릭`}</Text>
-        </UpdateContainer>
       </Flex>
+
       <Space size={2} />
-      <PindetailImgContainer
+
+      <PinDetailImgContainer
         width="100%"
         height="180px"
         $backgroundColor="whiteGray"
@@ -128,24 +136,24 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
         padding={7}
         $borderRadius="small"
       >
-        <Plus />
-        <Space size={1} />
         <Text
           color="darkGray"
           $fontSize="default"
           $fontWeight="normal"
           $textAlign="center"
         >
-          사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
+          + 사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
         </Text>
-      </PindetailImgContainer>
+      </PinDetailImgContainer>
+
       <Space size={6} />
+
       <Flex $flexDirection="column">
         <Text color="black" $fontSize="large" $fontWeight="bold">
           어디에 있나요?
         </Text>
         <Space size={1} />
-        <Text color="gray" $fontSize="default" $fontWeight="normal">
+        <Text color="black" $fontSize="default" $fontWeight="normal">
           {pin.address}
         </Text>
       </Flex>
@@ -155,20 +163,29 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
           어떤 곳인가요?
         </Text>
         <Space size={1} />
-        <Text color="gray" $fontSize="default" $fontWeight="normal">
+        <Text color="black" $fontSize="default" $fontWeight="normal">
           {pin.description}
         </Text>
       </Flex>
-      <Space size={7} />
-      <Flex $justifyContent="center" position="fixed" bottom="24px">
-        <SaveToMyMapButton variant="secondary" onClick={openModal}>
+
+      <Flex
+        width="332px"
+        height="48px"
+        $justifyContent="center"
+        position="fixed"
+        bottom="24px"
+      >
+        <SaveToMyMapButton variant="primary" onClick={openModal}>
           내 지도에 저장하기
         </SaveToMyMapButton>
         <Space size={4} />
         <ShareButton variant="secondary" onClick={copyContent}>
-          <Share cursor="pointer" />
+          공유하기
         </ShareButton>
       </Flex>
+
+      <Space size={9} />
+
       {isModalOpen && (
         <ModalPortal closeModalHandler={closeModal}>
           <>
@@ -223,7 +240,7 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
               <Space size={4} />
             </Flex>
 
-            <Flex $justifyContent='center'>
+            <Flex $justifyContent="center">
               <SaveToMyMapButton variant="secondary" onClick={closeModal}>
                 Close Modal
               </SaveToMyMapButton>
@@ -235,41 +252,23 @@ const PinDetail = ({ pinId }: { pinId: number }) => {
   );
 };
 
-const PindetailImgContainer = styled(Flex)`
-  box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
-`;
-
-const ModifyPinDetail = styled(Button)`
-  height: 28px;
-
-  padding: 4px 28px;
-
-  box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
-`;
-
-const UpdateContainer = styled(Box)`
-  padding: 6px 8px;
-  align-items: center;
-
-  color: ${({ theme }) => theme.color.darkGray};
-  font-size: 12px;
-
+const PinDetailImgContainer = styled(Flex)`
   box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
 `;
 
 const SaveToMyMapButton = styled(Button)`
-  width: 280px;
-
+  font-size: ${({ theme }) => theme.fontSize.default};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
 
   box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
 `;
 
 const ShareButton = styled(Button)`
+  font-size: ${({ theme }) => theme.fontSize.default};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+
   box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
 `;
-
-// const
 
 const ModalMapItem = styled(Box)`
   width: 100%;

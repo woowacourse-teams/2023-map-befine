@@ -36,14 +36,18 @@ public class Atlas {
         this.member = member;
     }
 
-    public static Atlas from(Topic topic, Member member) {
+    public static Atlas createWithAssociatedMember(Topic topic, Member member) {
         validateNotNull(topic, member);
-        return new Atlas(topic, member);
+        Atlas atlas = new Atlas(topic, member);
+
+        member.addAtlas(atlas);
+
+        return atlas;
     }
 
     private static void validateNotNull(Topic topic, Member member) {
         if (Objects.isNull(topic) || Objects.isNull(member)) {
-            throw new IllegalArgumentException("토픽과 멤버는 Null이어선 안됩니다.");
+            throw new IllegalArgumentException("지도와 유저는 Null이어선 안됩니다.");
         }
     }
 

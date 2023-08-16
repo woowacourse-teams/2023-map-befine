@@ -1,7 +1,9 @@
 import { useLocation } from 'react-router-dom';
-import SeeAllCardList from '../components/SeeAllCardList';
 import Text from '../components/common/Text';
-import Space from '../components/common/Space';
+import { lazy, Suspense } from 'react';
+import SeeAllCardListSkeleton from '../components/SeeAllCardList/SeeAllCardListSkeleton';
+
+const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
 
 const SeeAllTopics = () => {
   const { state } = useLocation();
@@ -13,7 +15,9 @@ const SeeAllTopics = () => {
       <Text color="black" $fontSize="large" $fontWeight="bold">
         {title}
       </Text>
-      <SeeAllCardList url={url} />
+      <Suspense fallback={<SeeAllCardListSkeleton />}>
+        <SeeAllCardList url={url} />
+      </Suspense>
     </>
   );
 };

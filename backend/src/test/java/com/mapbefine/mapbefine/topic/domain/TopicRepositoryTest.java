@@ -38,7 +38,7 @@ class TopicRepositoryTest {
                 "토픽설명",
                 "https://example.com/image.jpg",
                 Publicity.PUBLIC,
-                Permission.ALL_MEMBERS,
+                PermissionType.ALL_MEMBERS,
                 member
         );
 

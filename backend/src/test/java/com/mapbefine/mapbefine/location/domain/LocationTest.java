@@ -45,7 +45,7 @@ class LocationTest {
         //given
         Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
         Topic topic = TopicFixture.createByName("쥬니의 오락실", member);
-        Location location = LocationFixture.LOCATION;
+        Location location = LocationFixture.create();
 
         Pin pin = PinFixture.create(location, topic, member);
 
@@ -62,7 +62,7 @@ class LocationTest {
     @DisplayName("같은 주소를 입력하면 참을 반환한다")
     void isSameAddress() {
         //given
-        Location location = LocationFixture.LOCATION;
+        Location location = LocationFixture.create();
 
         //when
         boolean sameParcelAddress = location.isSameAddress(LocationFixture.PARCEL_ADDRESS);

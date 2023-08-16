@@ -5,17 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
-import com.mapbefine.mapbefine.member.MemberFixture;
-import com.mapbefine.mapbefine.member.application.MemberCommandService;
+import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
-import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.member.dto.request.MemberCreateRequest;
-import com.mapbefine.mapbefine.member.dto.request.MemberTopicPermissionCreateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionDetailResponse;
-import com.mapbefine.mapbefine.member.dto.response.MemberTopicPermissionResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
@@ -24,132 +17,14 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class MemberControllerTest extends RestDocsIntegration {
 
-    @MockBean
-    private MemberCommandService memberCommandService;
+    private final static String AUTH_HEADER = Base64.encodeBase64String("Basic member@naver.com".getBytes());
 
     @MockBean
     private MemberQueryService memberQueryService;
-
-    @Test
-    @DisplayName("권한 추가")
-    void addMemberTopicPermission() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        MemberTopicPermissionCreateRequest request = new MemberTopicPermissionCreateRequest(
-                1L,
-                2L
-        );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
-        );
-
-        given(memberCommandService.saveMemberTopicPermission(any(), any())).willReturn(1L);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/members/permissions")
-                        .header(AUTHORIZATION, authHeader)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("권한 삭제")
-    void deleteMemberTopicPermission() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
-        );
-
-        given(memberCommandService.save(any())).willReturn(1L);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/members/permissions/1")
-                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("권한이 있는 자들 모두 조회")
-    void findMemberTopicPermissionAll() throws Exception {
-        List<MemberTopicPermissionResponse> memberTopicPermissionResponses = List.of(
-                new MemberTopicPermissionResponse(
-                        1L,
-                        new MemberResponse(
-                                1L,
-                                "member",
-                                "member@naver.com"
-                        )
-                ),
-                new MemberTopicPermissionResponse(
-                        1L,
-                        new MemberResponse(
-                                2L,
-                                "memberr",
-                                "memberr@naver.com"
-                        )
-                )
-        );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberTopicPermissionResponses.get(0).memberResponse().email()).getBytes()
-        );
-
-        given(memberQueryService.findAllWithPermission(any())).willReturn(memberTopicPermissionResponses);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/permissions/topics/1")
-                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("권한이 있는 자들 모두 조회")
-    void findMemberTopicPermissionById() throws Exception {
-        MemberTopicPermissionDetailResponse memberTopicPermissionDetailResponse = new MemberTopicPermissionDetailResponse(
-                1L,
-                LocalDateTime.now(),
-                new MemberDetailResponse(
-                    1L,
-                    "member",
-                    "member@naver.com",
-                    "https://map-befine-official.github.io/favicon.png",
-                    LocalDateTime.now()
-                )
-        );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberTopicPermissionDetailResponse.memberDetailResponse().email()).getBytes()
-        );
-
-        given(memberQueryService.findMemberTopicPermissionById(any())).willReturn(memberTopicPermissionDetailResponse);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/permissions/1")
-                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("유저 생성")
-    void add() throws Exception {
-        MemberCreateRequest request = new MemberCreateRequest(
-                "member",
-                "member@naver.com",
-                "https://map-befine-official.github.io/favicon.png",
-                Role.USER
-        );
-
-        given(memberCommandService.save(any())).willReturn(1L);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        ).andDo(restDocs.document());
-    }
 
     @Test
     @DisplayName("유저 목록 조회")
@@ -157,24 +32,21 @@ class MemberControllerTest extends RestDocsIntegration {
         List<MemberResponse> memberResponses = List.of(
                 new MemberResponse(
                         1L,
-                        "member",
-                        "member@naver.com"
+                        "member1",
+                        "member1@member.com"
                 ),
                 new MemberResponse(
                         2L,
-                        "memberr",
-                        "memberr@naver.com"
+                        "member2",
+                        "member2@member.com"
                 )
-        );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberResponses.get(0).email()).getBytes()
         );
 
         given(memberQueryService.findAll()).willReturn(memberResponses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }
 
@@ -188,78 +60,149 @@ class MemberControllerTest extends RestDocsIntegration {
                 "https://map-befine-official.github.io/favicon.png",
                 LocalDateTime.now()
         );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + memberDetailResponse.email()).getBytes()
-        );
 
         given(memberQueryService.findById(any())).willReturn(memberDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }
 
     @Test
-    @DisplayName("유저가 만든 핀 조회")
-    void findPinsByMember() throws Exception {
-        List<PinResponse> pinResponses = List.of(
-                new PinResponse(
-                        1L,
-                        "매튜의 산스장",
-                        "지번 주소",
-                        "매튜가 사랑하는 산스장",
-                        37,
-                        127
-                ), new PinResponse(
-                        2L,
-                        "매튜의 안갈집",
-                        "지번 주소",
-                        "매튜가 두번은 안 갈 집",
-                        37,
-                        127
-                )
-        );
-        String authHeader = Base64.encodeBase64String(
-                "Basic member@naver.com".getBytes()
-        );
-
-        given(memberQueryService.findPinsByMember(any())).willReturn(pinResponses);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/pins")
-                        .header(AUTHORIZATION, authHeader)
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("유저가 만든 토픽 조회")
-    void findTopicsByMember() throws Exception {
-        String authHeader = Base64.encodeBase64String(
-                "Basic member@naver.com".getBytes()
-        );
-        List<TopicResponse> topicResponses = List.of(
+    @DisplayName("유저의 모아보기 목록 조회")
+    void findAllTopicsInAtlas() throws Exception {
+        List<TopicResponse> responses = List.of(
                 new TopicResponse(
                         1L,
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
-                        3,
+                        "준팍",
+                        5,
+                        true,
+                        0,
+                        false,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
-                        5,
+                        "준팍",
+                        3,
+                        true,
+                        0,
+                        false,
                         LocalDateTime.now()
                 )
         );
 
-        given(memberQueryService.findTopicsByMember(any())).willReturn(topicResponses);
+        given(memberQueryService.findAllTopicsInAtlas(any())).willReturn(responses);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/topics")
-                        .header(AUTHORIZATION, authHeader)
+                MockMvcRequestBuilders.get("/members/my/atlas")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+
+    }
+
+    @Test
+    @DisplayName("유저의 즐겨찾기 목록 조회")
+    void findAllTopicsInBookmark() throws Exception {
+        List<TopicResponse> responses = List.of(
+                new TopicResponse(
+                        1L,
+                        "준팍의 또 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
+                        5,
+                        false,
+                        0,
+                        true,
+                        LocalDateTime.now()
+                ), new TopicResponse(
+                        2L,
+                        "준팍의 두번째 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
+                        3,
+                        false,
+                        0,
+                        true,
+                        LocalDateTime.now()
+                )
+        );
+
+        given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/my/bookmarks")
+                        .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }
 
+    @Test
+    @DisplayName("유저의 지도 목록 조회")
+    void findMyAllTopics() throws Exception {
+        List<TopicResponse> responses = List.of(
+                new TopicResponse(
+                        1L,
+                        "준팍의 또 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
+                        5,
+                        false,
+                        0,
+                        true,
+                        LocalDateTime.now()
+                ), new TopicResponse(
+                        2L,
+                        "준팍의 두번째 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
+                        3,
+                        false,
+                        0,
+                        true,
+                        LocalDateTime.now()
+                )
+        );
+
+        given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/my/topics")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("유저의 핀 목록 조회")
+    void findMyAllPins() throws Exception {
+        List<PinResponse> responses = List.of(
+                new PinResponse(
+                        1L,
+                        "준팍의 첫번째 핀",
+                        "https://map-befine-official.github.io/favicon.png",
+                        "준팍의 첫번째 핀",
+                        "준팍",
+                        LocationFixture.BASE_COORDINATE.getLatitude(),
+                        LocationFixture.BASE_COORDINATE.getLongitude()
+                ), new PinResponse(
+                        2L,
+                        "준팍의 두번째 핀",
+                        "https://map-befine-official.github.io/favicon.png",
+                        "준팍의 두번째 핀",
+                        "준팍",
+                        LocationFixture.BASE_COORDINATE.getLatitude(),
+                        LocationFixture.BASE_COORDINATE.getLongitude()
+                )
+        );
+
+        given(memberQueryService.findMyAllPins(any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/my/pins")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+    }
 }

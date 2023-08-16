@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.User;
+import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -22,9 +23,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-@DataJpaTest
+@ServiceTest
 class AtlasCommandServiceTest {
 
     @Autowired
@@ -36,13 +37,17 @@ class AtlasCommandServiceTest {
     @Autowired
     private AtlasRepository atlasRepository;
 
+    @Autowired
     private AtlasCommandService atlasCommandService;
+
+    @Autowired
+    private TestEntityManager testEntityManager;
+
     private AuthMember authMember;
     private Topic topic;
 
     @BeforeEach
     void setUp() {
-        atlasCommandService = new AtlasCommandService(topicRepository, memberRepository, atlasRepository);
         Member member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         topic = topicRepository.save(TopicFixture.createPrivateByName("topic", member));
 
@@ -69,11 +74,13 @@ class AtlasCommandServiceTest {
         void alreadyAdd_Fail() {
             //given
             atlasCommandService.addTopic(authMember, topic.getId());
-            List<Atlas> expected = atlasRepository.findAllByMemberId(authMember.getMemberId());
+            Member expectedMember = memberRepository.findById(authMember.getMemberId()).get();
+            List<Atlas> expected = expectedMember.getAtlantes();
 
             //when
             atlasCommandService.addTopic(authMember, topic.getId());
-            List<Atlas> actual = atlasRepository.findAllByMemberId(authMember.getMemberId());
+            Member actualMember = memberRepository.findById(authMember.getMemberId()).get();
+            List<Atlas> actual = actualMember.getAtlantes();
 
             //then
             assertThat(actual.size()).isEqualTo(expected.size());
@@ -98,18 +105,23 @@ class AtlasCommandServiceTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("멤버 ID와 TopicId가 있을 경우, atlas에서 해당 topic을 비운다.")
     void remove_Success() {
         Long topicId = topic.getId();
         Long memberId = authMember.getMemberId();
 
         //given
         atlasCommandService.addTopic(authMember, topicId);
-        List<Atlas> expected = atlasRepository.findAllByMemberId(memberId);
+        Member memberBefore = memberRepository.findById(memberId).get();
+        List<Atlas> expected = memberBefore.getAtlantes();
 
         //when
         atlasCommandService.removeTopic(authMember, topicId);
-        List<Atlas> actual = atlasRepository.findAllByMemberId(memberId);
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        Member memberAfter = memberRepository.findById(memberId).get();
+        List<Atlas> actual = memberAfter.getAtlantes();
 
         //then
         assertThat(actual.size()).isEqualTo(expected.size() - 1);

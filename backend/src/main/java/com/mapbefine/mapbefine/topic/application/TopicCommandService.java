@@ -56,7 +56,7 @@ public class TopicCommandService {
                 request.description(),
                 request.image(),
                 request.publicity(),
-                request.permission(),
+                request.permissionType(),
                 creator
         );
     }
@@ -126,7 +126,7 @@ public class TopicCommandService {
                 request.description(),
                 request.image(),
                 request.publicity(),
-                request.permission(),
+                request.permissionType(),
                 creator
         );
     }
@@ -195,7 +195,7 @@ public class TopicCommandService {
         validateUpdateAuth(member, topic);
 
         topic.updateTopicInfo(request.name(), request.description(), request.image());
-        topic.updateTopicStatus(request.publicity(), request.permission());
+        topic.updateTopicStatus(request.publicity(), request.permissionType());
     }
 
     private void validateUpdateAuth(AuthMember member, Topic topic) {
