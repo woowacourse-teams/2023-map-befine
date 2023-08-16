@@ -5,6 +5,9 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
+
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
@@ -20,10 +23,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class TopicQueryService {
 
     private final TopicRepository topicRepository;
+    private final PinRepository pinRepository;
     private final MemberRepository memberRepository;
 
-    public TopicQueryService(TopicRepository topicRepository, MemberRepository memberRepository) {
+    public TopicQueryService(
+            TopicRepository topicRepository,
+            PinRepository pinRepository,
+            MemberRepository memberRepository
+    ) {
         this.topicRepository = topicRepository;
+        this.pinRepository = pinRepository;
+
         this.memberRepository = memberRepository;
     }
 
@@ -106,6 +116,7 @@ public class TopicQueryService {
         );
     }
 
+
     private Topic findTopic(Long id) {
         return topicRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
@@ -125,6 +136,7 @@ public class TopicQueryService {
 
         validateTopicsCount(ids, topics);
         validateReadableTopics(authMember, topics);
+
 
         if (Objects.isNull(authMember.getMemberId())) {
             return getGuestTopicDetailResponses(topics);
@@ -191,8 +203,28 @@ public class TopicQueryService {
                 .map(topic -> TopicResponse.from(
                         topic,
                         isInAtlas(topicsInAtlas, topic),
-                        isBookMarked(topicsInBookMark, topic))
-                ).toList();
+                        isBookMarked(topicsInBookMark, topic)
+                )).
+                toList();
+
     }
 
+    public List<TopicResponse> findAllByOrderByUpdatedAtDesc(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return pinRepository.findAllByOrderByUpdatedAtDesc()
+                .stream()
+                .map(Pin::getTopic)
+                .distinct()
+                .filter(authMember::canRead)
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked(topicsInBookMark, topic)
+                )).
+                toList();
+    }
 }

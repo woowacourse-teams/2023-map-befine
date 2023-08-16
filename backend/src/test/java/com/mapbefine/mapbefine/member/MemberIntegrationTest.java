@@ -114,13 +114,46 @@ class MemberIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("로그인 유저가 내 지도 목록을 조회하면, 200을 반환한다.")
+    void findMyAllTopics_Success() {
+        //when
+        ExtractableResponse<Response> response = given().log().all()
+                .header(AUTHORIZATION, creatorAuthHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/my/topics")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+
+    @Test
+    @DisplayName("로그인 유저가 내 지도 목록을 조회하면, 200을 반환한다.")
+    void findMyAllPins_Success() {
+        //when
+        ExtractableResponse<Response> response = given().log().all()
+                .header(AUTHORIZATION, creatorAuthHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/my/pins")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+
     @DisplayName("유저의 즐겨찾기 토픽 목록을 조회하면, 200을 반환한다.")
     void findTopicsInBookmarks_Success() {
         //when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/bookmarks")
+                .when().get("/members/my/bookmarks")
+
                 .then().log().all()
                 .extract();
 
@@ -135,7 +168,8 @@ class MemberIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured.given()
                 .log().all()
                 .header(HttpHeaders.AUTHORIZATION, creatorAuthHeader)
-                .when().get("/members/atlas")
+                .when().get("/members/my/atlas")
+
                 .then().log().all()
                 .extract();
 

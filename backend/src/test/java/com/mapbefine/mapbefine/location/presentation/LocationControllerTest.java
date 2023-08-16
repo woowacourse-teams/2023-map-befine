@@ -22,18 +22,18 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @MockBean
     private LocationQueryService locationQueryService;
-    private String authHeader;
+    private final String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
+
     private List<TopicResponse> responses;
 
     @BeforeEach
     void setUp() {
-        authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
         responses = List.of(
                 new TopicResponse(
                         1L,
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         5,
                         false,
                         0,
@@ -43,6 +43,7 @@ class LocationControllerTest extends RestDocsIntegration {
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         3,
                         false,
                         0,

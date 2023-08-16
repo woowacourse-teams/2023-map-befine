@@ -78,19 +78,27 @@ public class TopicController {
     @GetMapping("/ids")
     public ResponseEntity<List<TopicDetailResponse>> findByIds(
             AuthMember member,
-            @RequestParam(value = "ids") List<Long> topicIds
+            @RequestParam("ids") List<Long> topicIds
     ) {
         List<TopicDetailResponse> responses = topicQueryService.findDetailsByIds(member, topicIds);
 
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/members/{memberId}")
+    @GetMapping("/members")
     public ResponseEntity<List<TopicResponse>> findAllTopicsByMemberId(
             AuthMember authMember,
-            @PathVariable Long memberId
+            @RequestParam("id") Long memberId
+
     ) {
         List<TopicResponse> responses = topicQueryService.findAllTopicsByMemberId(authMember, memberId);
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/newest")
+    public ResponseEntity<List<TopicResponse>> findAllByOrderByUpdatedAtDesc(AuthMember member) {
+        List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(member);
 
         return ResponseEntity.ok(responses);
     }

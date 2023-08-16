@@ -6,18 +6,26 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
+import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.location.LocationFixture;
+import com.mapbefine.mapbefine.location.domain.Location;
+import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,13 +36,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 class TopicQueryServiceTest {
 
     @Autowired
-    private TopicQueryService topicQueryService;
-
+    private TopicRepository topicRepository;
+    @Autowired
+    private PinRepository pinRepository;
+    @Autowired
+    private LocationRepository locationRepository;
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
-    private TopicRepository topicRepository;
+    private TopicQueryService topicQueryService;
 
     @Autowired
     private BookmarkRepository bookmarkRepository;
@@ -374,6 +384,37 @@ class TopicQueryServiceTest {
         assertThat(actual).hasSize(expected.size());
         assertThat(actual).extractingResultOf("id")
                 .isEqualTo(topicIds);
+    }
+
+    @Test
+    @DisplayName("핀 수정일 기준으로 토픽을 나열한다")
+    void findAllByOrderByUpdatedAtDesc_Success() {
+        // given
+        Location location = LocationFixture.create();
+        locationRepository.save(location);
+
+        List<Topic> topics = List.of(
+                TopicFixture.createByName("5등", member),
+                TopicFixture.createByName("4등", member),
+                TopicFixture.createByName("3등", member),
+                TopicFixture.createByName("2등", member),
+                TopicFixture.createByName("1등", member)
+
+        );
+        topicRepository.saveAll(topics);
+
+        List<Pin> pins = topics.stream()
+                .map(topic -> PinFixture.create(location, topic, member))
+                .toList();
+        pinRepository.saveAll(pins);
+
+        User user = new User(member.getId(), Collections.emptyList(), Collections.emptyList());
+
+        // when
+        List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(user);
+
+        // then
+        assertThat(responses).isNotEmpty();
     }
 
 }

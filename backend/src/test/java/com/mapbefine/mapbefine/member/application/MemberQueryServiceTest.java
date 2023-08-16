@@ -10,12 +10,19 @@ import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.location.LocationFixture;
+import com.mapbefine.mapbefine.location.domain.Location;
+import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -40,6 +47,11 @@ class MemberQueryServiceTest {
     private AtlasRepository atlasRepository;
     @Autowired
     private BookmarkRepository bookmarkRepository;
+    @Autowired
+    private PinRepository pinRepository;
+    @Autowired
+    private LocationRepository locationRepository;
+
 
     private AuthMember authMember;
     private Member member;
@@ -144,5 +156,47 @@ class MemberQueryServiceTest {
         assertThat(allTopicsInAtlas).hasSize(topics.size());
         assertThat(allTopicsInAtlas).extractingResultOf("id")
                 .isEqualTo(topicIds);
+    }
+
+    @Test
+    @DisplayName("")
+    void findMyAllTopics_Success() {
+        //when
+        List<TopicResponse> myAllTopics = memberQueryService.findMyAllTopics(authMember);
+
+        //then
+        List<Long> topicIds = topics.stream()
+                .map(Topic::getId)
+                .toList();
+
+        assertThat(myAllTopics).hasSize(topics.size());
+        assertThat(myAllTopics).extractingResultOf("id")
+                .isEqualTo(topicIds);
+    }
+
+    @Test
+    @DisplayName("로그인한 유저가 생성한 모든 핀을 가져올 수 있다.")
+    void findMyAllPins_Success() {
+        // given
+        Location location = locationRepository.save(LocationFixture.create());
+
+        List<Pin> expected = pinRepository.saveAll(List.of(
+                PinFixture.create(location, topics.get(0), member),
+                PinFixture.create(location, topics.get(1), member),
+                PinFixture.create(location, topics.get(2), member)
+        ));
+
+        // when
+        List<PinResponse> myAllPins = memberQueryService.findMyAllPins(authMember);
+
+        //then
+        List<Long> pinIds = expected.stream()
+                .map(Pin::getId)
+                .toList();
+
+        assertThat(myAllPins).hasSize(expected.size());
+        assertThat(myAllPins).extractingResultOf("id")
+                .isEqualTo(pinIds);
+
     }
 }

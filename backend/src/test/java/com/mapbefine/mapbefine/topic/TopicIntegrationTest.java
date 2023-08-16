@@ -326,7 +326,9 @@ class TopicIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/topics/members/{memberId}", member.getId())
+                .param("id", member.getId())
+                .when().get("/topics/members")
+
                 .then().log().all()
                 .extract();
 
