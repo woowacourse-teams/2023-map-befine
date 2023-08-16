@@ -16,7 +16,7 @@ import AskLoginPage from './pages/AskLoginPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './components/NotFound';
-import BookmarksPage from './pages/BookmarksPage';
+import Bookmark from './pages/Bookmark';
 
 interface routeElement {
   path: string;
@@ -77,7 +77,7 @@ const routes: routeElement[] = [
       },
       {
         path: 'favorite',
-        element: <BookmarksPage />,
+        element: <Bookmark />,
         withAuth: true,
       },
       {

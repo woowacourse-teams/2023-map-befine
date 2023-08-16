@@ -5,7 +5,7 @@ import { FULLSCREEN } from '../constants';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-const BookmarksPage = () => {
+const Bookmark = () => {
     const { width: _ } = useSetLayoutWidth(FULLSCREEN);
     const { navbarHighlights: __ } = useSetNavbarHighlight('favorite');
     
@@ -24,4 +24,4 @@ const BookMarksWrapper = styled(Box)`
   margin: 0 auto;
 `;
 
-export default BookmarksPage;
+export default Bookmark;
