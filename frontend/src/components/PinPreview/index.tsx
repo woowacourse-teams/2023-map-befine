@@ -6,7 +6,6 @@ import useNavigator from '../../hooks/useNavigator';
 import { useEffect, useRef, useState, KeyboardEvent, useContext } from 'react';
 import theme from '../../themes';
 import Box from '../common/Box';
-import { TagProps } from '../../types/Tag';
 import { TagContext } from '../../context/TagContext';
 
 export interface PinPreviewProps {
@@ -28,7 +27,6 @@ const PinPreview = ({
   setSelectedPinId,
   pinId,
   topicId,
-
   setIsEditPinDetail,
 }: PinPreviewProps) => {
   const { routePage } = useNavigator();
