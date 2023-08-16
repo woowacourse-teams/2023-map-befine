@@ -84,6 +84,7 @@ public class PinController {
     public ResponseEntity<List<PinResponse>> findAllPinsByMemberId(
             AuthMember authMember,
             @RequestParam("id") Long memberId
+
     ) {
         List<PinResponse> responses = pinQueryService.findAllPinsByMemberId(authMember, memberId);
 

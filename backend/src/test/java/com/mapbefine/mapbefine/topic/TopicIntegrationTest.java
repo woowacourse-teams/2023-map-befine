@@ -48,7 +48,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
-
     private Member member;
     private Topic topic;
     private Location location;
@@ -329,6 +328,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .param("id", member.getId())
                 .when().get("/topics/members")
+
                 .then().log().all()
                 .extract();
 

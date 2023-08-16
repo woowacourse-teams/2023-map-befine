@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { keyframes, styled } from 'styled-components';
 import { ToastContext } from '../../context/ToastContext';
 import Flex from '../common/Flex';
-import { toastShowTime } from '../../constants';
+import { TOAST_SHOWTIME } from '../../constants';
 
 const asynchronousDelayTime = 50;
 
@@ -45,7 +45,8 @@ const toastAnimation = keyframes`
 `;
 
 const Wrapper = styled(Flex)<{ type: string }>`
-  animation: ${toastAnimation} ${toastShowTime + asynchronousDelayTime}ms linear;
+  animation: ${toastAnimation} ${TOAST_SHOWTIME + asynchronousDelayTime}ms
+    linear;
   position: absolute;
   left: 50%;
   bottom: ${({ theme }) => theme.spacing[6]};

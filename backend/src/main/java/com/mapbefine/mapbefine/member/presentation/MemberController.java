@@ -5,7 +5,6 @@ import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +65,7 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/my/bookmarks")
+
     public ResponseEntity<List<TopicResponse>> findAllTopicsInBookmark(AuthMember authMember) {
         List<TopicResponse> responses = memberQueryService.findAllTopicsInBookmark(authMember);
 

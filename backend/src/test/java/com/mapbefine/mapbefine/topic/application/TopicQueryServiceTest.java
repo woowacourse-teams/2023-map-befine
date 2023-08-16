@@ -119,9 +119,9 @@ class TopicQueryServiceTest {
         topicRepository.save(topic);
 
         //when
-        AuthMember guest = new Guest();
+        AuthMember authMember = new Admin(member.getId());
 
-        TopicDetailResponse detail = topicQueryService.findDetailById(guest, topic.getId());
+        TopicDetailResponse detail = topicQueryService.findDetailById(authMember, topic.getId());
 
         //then
         assertThat(detail.id()).isEqualTo(topic.getId());
@@ -416,4 +416,5 @@ class TopicQueryServiceTest {
         // then
         assertThat(responses).isNotEmpty();
     }
+
 }

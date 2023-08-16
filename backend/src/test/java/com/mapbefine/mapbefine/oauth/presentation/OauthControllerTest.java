@@ -42,7 +42,7 @@ class OauthControllerTest extends RestDocsIntegration {
         // given
         String code = "auth_code";
         LoginInfoResponse response = new LoginInfoResponse(
-                testAuthHeaderProvider.createAuthHeaderById(Long.MAX_VALUE),
+                testAuthHeaderProvider.createResponseAccessTokenById(Long.MAX_VALUE),
                 new MemberDetailResponse(
                         Long.MAX_VALUE,
                         "모험가03fcb0d",

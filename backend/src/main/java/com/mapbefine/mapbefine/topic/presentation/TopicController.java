@@ -89,6 +89,7 @@ public class TopicController {
     public ResponseEntity<List<TopicResponse>> findAllTopicsByMemberId(
             AuthMember authMember,
             @RequestParam("id") Long memberId
+
     ) {
         List<TopicResponse> responses = topicQueryService.findAllTopicsByMemberId(authMember, memberId);
 
