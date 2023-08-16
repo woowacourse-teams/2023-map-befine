@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { SeeTogetherContext } from '../../context/SeeTogetherContext';
-import { styled } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
 const SeeTogetherCounter = () => {
   const { seeTogetherTopics } = useContext(SeeTogetherContext);
@@ -10,7 +10,22 @@ const SeeTogetherCounter = () => {
   return <Wrapper>{seeTogetherTopics.length}</Wrapper>;
 };
 
+const initAnimation = keyframes`
+  0% {
+    transform: translateY(0)
+  }
+
+  50% {
+    transform: translateY(-20px)
+  }
+
+  100% {
+    transform: translateY(0)
+  }
+`;
+
 const Wrapper = styled.div`
+  animation: ${initAnimation} ease 0.5s 1;
   display: flex;
   justify-content: center;
   align-items: center;
