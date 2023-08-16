@@ -114,11 +114,11 @@ const TopicInfo = ({
       <Space size={3} />
 
       <Flex $justifyContent="center">
-        <AddSeeTogether id={topicId}>
+        <AddSeeTogether id={Number(topicId)}>
           <TopicSeeTogetherSVG />
         </AddSeeTogether>
         <Space size={5} />
-        <AddFavorite id={topicId}>
+        <AddFavorite id={Number(topicId)}>
           <TopicFavoriteSVG />
         </AddFavorite>
         <Space size={5} />
