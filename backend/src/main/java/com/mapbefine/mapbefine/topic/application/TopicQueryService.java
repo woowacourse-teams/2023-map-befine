@@ -140,8 +140,7 @@ public class TopicQueryService {
                 .toList();
     }
 
-    private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember,
-            List<Topic> topics) {
+    private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember, List<Topic> topics) {
         Member member = findMemberById(authMember.getMemberId());
 
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);

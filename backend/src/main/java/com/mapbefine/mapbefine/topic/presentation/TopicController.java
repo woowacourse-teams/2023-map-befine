@@ -48,10 +48,7 @@ public class TopicController {
 
     @LoginRequired
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeAndCreate(
-            AuthMember member,
-            @RequestBody TopicMergeRequest request
-    ) {
+    public ResponseEntity<Void> mergeAndCreate(AuthMember member, @RequestBody TopicMergeRequest request) {
         Long topicId = topicCommandService.merge(member, request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
@@ -66,10 +63,7 @@ public class TopicController {
     }
 
     @GetMapping("/{topicId}")
-    public ResponseEntity<TopicDetailResponse> findById(
-            AuthMember member,
-            @PathVariable Long topicId
-    ) {
+    public ResponseEntity<TopicDetailResponse> findById(AuthMember member, @PathVariable Long topicId) {
         TopicDetailResponse response = topicQueryService.findDetailById(member, topicId);
 
         return ResponseEntity.ok(response);
@@ -90,8 +84,7 @@ public class TopicController {
             AuthMember authMember,
             @PathVariable Long memberId
     ) {
-        List<TopicResponse> responses = topicQueryService.findAllTopicsByMemberId(authMember,
-                memberId);
+        List<TopicResponse> responses = topicQueryService.findAllTopicsByMemberId(authMember, memberId);
 
         return ResponseEntity.ok(responses);
     }
