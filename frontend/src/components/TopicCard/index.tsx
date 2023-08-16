@@ -97,7 +97,11 @@ const TopicCard = ({
             >
               {isInAtlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
             </AddSeeTogether>
-            <AddFavorite id={id}>
+            <AddFavorite
+              isBookmarked={isBookmarked}
+              id={id}
+              setTopicFromServer={setTopicsFromServer}
+            >
               {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
             </AddFavorite>
           </ButtonWrapper>
