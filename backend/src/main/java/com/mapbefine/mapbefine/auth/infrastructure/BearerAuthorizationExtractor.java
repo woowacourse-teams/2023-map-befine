@@ -28,9 +28,8 @@ public class BearerAuthorizationExtractor implements AuthorizationExtractor<Auth
     }
 
     private String extractAuthHeaderValue(String value) {
-        String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
 
-        return authHeaderValue;
+        return value.substring(BEARER_TYPE.length()).trim();
     }
 
 }

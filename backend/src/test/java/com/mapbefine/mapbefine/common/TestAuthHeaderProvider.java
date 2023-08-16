@@ -9,7 +9,7 @@ public class TestAuthHeaderProvider {
 
     private static final String TOKEN_TYPE = "Bearer ";
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public TestAuthHeaderProvider(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;

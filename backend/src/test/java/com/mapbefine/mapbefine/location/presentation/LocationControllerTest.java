@@ -10,7 +10,6 @@ import com.mapbefine.mapbefine.location.application.LocationQueryService;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,7 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("현재 위치를 기준 토픽의 핀 개수로 나열한다.")
-    void findNearbyTopicsSortedByPinCount() throws Exception {
+    void findNearbyTopicsSortedByPinCount_Success() throws Exception {
         //given
         double latitude = 37;
         double longitude = 127;

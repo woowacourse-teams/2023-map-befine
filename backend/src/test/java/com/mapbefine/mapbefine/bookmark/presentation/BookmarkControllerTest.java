@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doNothing;
 
 import com.mapbefine.mapbefine.bookmark.application.BookmarkCommandService;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;

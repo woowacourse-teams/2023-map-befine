@@ -17,7 +17,6 @@ import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;

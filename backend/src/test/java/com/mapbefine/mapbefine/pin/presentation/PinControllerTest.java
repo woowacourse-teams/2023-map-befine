@@ -7,9 +7,6 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
-import com.mapbefine.mapbefine.member.MemberFixture;
-import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
@@ -20,7 +17,6 @@ import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,7 +37,6 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 추가")
     void add() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
         given(pinCommandService.save(any(), any())).willReturn(1L);
 
         PinCreateRequest pinCreateRequest = new PinCreateRequest(
@@ -65,8 +60,6 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 수정")
     void update() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-
         PinUpdateRequest pinUpdateRequest = new PinUpdateRequest(
                 "매튜의 안갈집",
                 "매튜가 다신 안 갈 집"
@@ -83,8 +76,6 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 삭제")
     void delete() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/pins/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
@@ -94,8 +85,6 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 상세 조회")
     void findById() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-
         PinDetailResponse pinDetailResponse = new PinDetailResponse(
                 1L,
                 "매튜의 산스장",
@@ -123,8 +112,6 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 목록 조회")
     void findAll() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-
         List<PinResponse> pinResponses = List.of(
                 new PinResponse(
                         1L,
@@ -159,8 +146,6 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 이미지 추가")
     void addImage() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-
         PinImageCreateRequest pinImageCreateRequest = new PinImageCreateRequest(
                 1L,
                 "https://map-befine-official.github.io/favicon.png"
@@ -177,8 +162,6 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 이미지 삭제")
     void removeImage() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/pins/images/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
@@ -190,8 +173,6 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("멤버 Id를 입력하면 해당 멤버가 만든 핀 목록을 조회할 수 있다.")
     void findAllPinsByMemberId() throws Exception {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-
         List<PinResponse> pinResponses = List.of(
                 new PinResponse(
                         1L,
@@ -220,6 +201,5 @@ class PinControllerTest extends RestDocsIntegration {
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
-
 
 }

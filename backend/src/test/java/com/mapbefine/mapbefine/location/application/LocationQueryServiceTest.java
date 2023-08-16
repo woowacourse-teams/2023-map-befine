@@ -38,6 +38,7 @@ class LocationQueryServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private TopicRepository topicRepository;
+
     @Autowired
     private LocationQueryService locationQueryService;
 

@@ -27,6 +27,9 @@ operation::topic-controller-test/create[snippets='http-request,http-response']
 
 operation::topic-controller-test/merge-and-create[snippets='http-request,http-response']
 
+== 토픽에 핀 추가
+operation::topic-controller-test/copy-pin[snippets='http-request,http-response']
+
 === 토픽 수정
 
 operation::topic-controller-test/update[snippets='http-request,http-response']

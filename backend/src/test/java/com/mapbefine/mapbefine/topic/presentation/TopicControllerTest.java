@@ -17,7 +17,6 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -96,6 +95,16 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(topicMergeRequest))
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀을 권한이 있는 토픽에 복사할 수 있다.")
+    void copyPin() throws Exception {
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/topics/1/copy?pinIds=1,2,3")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 

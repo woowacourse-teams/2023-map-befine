@@ -316,6 +316,42 @@ class TopicIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responses).hasSize(2);
+        assertThat(responses).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("핀이 추가/수정된 일자 기준 내림차순으로 토픽 목록을 조회할 경우, 200을 반환한다")
+    void findAllByOrderByUpdatedAtDesc_Success() {
+        // given
+        Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", member));
+        Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", member));
+        Topic topic3 = topicRepository.save(TopicFixture.createByName("topic3", member));
+
+        List<Pin> pins = List.of(
+                PinFixture.create(location, topic1, member),
+                PinFixture.create(location, topic2, member),
+                PinFixture.create(location, topic2, member),
+                PinFixture.create(location, topic3, member),
+                PinFixture.create(location, topic3, member),
+                PinFixture.create(location, topic3, member)
+        );
+
+        pinRepository.saveAll(pins);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/topics/newest")
+                .then().log().all()
+                .extract();
+
+        List<TopicResponse> topicResponses = response.jsonPath().getList(".", TopicResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(topicResponses).hasSize(3);
+        assertThat(topicResponses.get(0).pinCount()).isEqualTo(3);
+        assertThat(topicResponses.get(2).pinCount()).isEqualTo(1);
     }
 
     @Test
