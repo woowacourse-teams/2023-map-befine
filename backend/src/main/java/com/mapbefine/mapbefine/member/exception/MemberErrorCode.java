@@ -5,12 +5,11 @@ import lombok.Getter;
 @Getter
 public enum MemberErrorCode {
 
-    ILLEGAL_NICKNAME_NULL("05001", "닉네임은 필수로 입력해야합니다."),
-    ILLEGAL_NICKNAME_LENGTH("05002", "닉네임 길이는 최소 1 자에서 20자여야 합니다."),
-    ILLEGAL_EMAIL_NULL("05003", "이메일은 필수로 입력해야합니다."),
-    ILLEGAL_EMAIL_PATTERN("05004", "올바르지 않은 이메일 형식입니다."),
-    ILLEGAL_ROLE_NULL("05005", "역할은 필수로 입력해야합니다."),
-    MEMBER_NOT_FOUND("05401", "존재하지 않는 회원입니다. 회원 id를 확인하세요."),
+    ILLEGAL_NICKNAME_NULL("05000", "닉네임은 필수로 입력해야합니다."),
+    ILLEGAL_NICKNAME_LENGTH("05001", "닉네임 길이는 최소 1 자에서 20자여야 합니다."),
+    ILLEGAL_EMAIL_NULL("05002", "이메일은 필수로 입력해야합니다."),
+    ILLEGAL_EMAIL_PATTERN("05003", "올바르지 않은 이메일 형식입니다."),
+    MEMBER_NOT_FOUND("05400", "존재하지 않는 회원입니다."),
     ;
 
     private final String code;

@@ -94,7 +94,7 @@ public class MemberInfoTest {
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
                     null
-            )).isInstanceOf(MemberBadRequestException.class);
+            )).isInstanceOf(IllegalArgumentException.class);
         }
 
     }

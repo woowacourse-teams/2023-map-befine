@@ -1,8 +1,13 @@
 package com.mapbefine.mapbefine.topic.domain;
 
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_DESCRIPTION_LENGTH;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_DESCRIPTION_NULL;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_NAME_LENGTH;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_NAME_NULL;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.Image;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
@@ -55,19 +60,20 @@ public class TopicInfo {
 
     private static void validateName(String name) {
         if (Objects.isNull(name)) {
-            throw new IllegalArgumentException("이름은 null일 수 없습니다.");
+            throw new TopicBadRequestException(ILLEGAL_NAME_NULL);
         }
         if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("이름 길이 이상");
+            throw new TopicBadRequestException(ILLEGAL_NAME_LENGTH);
         }
     }
 
     private static void validateDescription(String description) {
         if (Objects.isNull(description)) {
-            throw new IllegalArgumentException("설명은 null일 수 없습니다.");
+            throw new TopicBadRequestException(ILLEGAL_DESCRIPTION_NULL);
         }
         if (description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
-            throw new IllegalArgumentException("description 길이 이상");
+            throw new TopicBadRequestException(ILLEGAL_DESCRIPTION_LENGTH);
+
         }
     }
 

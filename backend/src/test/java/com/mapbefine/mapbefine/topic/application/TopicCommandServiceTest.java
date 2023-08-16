@@ -17,6 +17,7 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
@@ -26,6 +27,8 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,8 +103,7 @@ class TopicCommandServiceTest {
 
         //when then
         assertThatThrownBy(() -> topicCommandService.saveTopic(guest, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Guest는 토픽을 생성할 수 없습니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 
     @Test
@@ -153,8 +155,7 @@ class TopicCommandServiceTest {
 
         //when then
         assertThatThrownBy(() -> topicCommandService.saveTopic(guest, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Guest는 토픽을 생성할 수 없습니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 
     @Test
@@ -181,8 +182,7 @@ class TopicCommandServiceTest {
                 );
         //when then
         assertThatThrownBy(() -> topicCommandService.saveTopic(user, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("복사할 수 없는 pin이 존재합니다.");
+                .isInstanceOf(PinBadRequestException.class);
     }
 
     @Test
@@ -236,8 +236,7 @@ class TopicCommandServiceTest {
 
         //when then
         assertThatThrownBy(() -> topicCommandService.merge(guest, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Guest는 토픽을 생성할 수 없습니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 
     @Test
@@ -261,8 +260,7 @@ class TopicCommandServiceTest {
 
         //when then
         assertThatThrownBy(() -> topicCommandService.merge(user, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("복사할 수 없는 토픽이 존재합니다.");
+                .isInstanceOf(TopicBadRequestException.class);
     }
 
     @Test
@@ -350,8 +348,7 @@ class TopicCommandServiceTest {
         );
 
         assertThatThrownBy(() -> topicCommandService.updateTopicInfo(user, topic.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("업데이트 권한이 없습니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 
     @Test
@@ -390,7 +387,6 @@ class TopicCommandServiceTest {
 
         //when then
         assertThatThrownBy(() -> topicCommandService.delete(user, topic.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("삭제 권한이 없습니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 }

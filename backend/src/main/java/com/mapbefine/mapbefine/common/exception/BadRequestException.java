@@ -16,7 +16,7 @@ public class BadRequestException extends RuntimeException {
 
     public static class ImageBadRequestException extends BadRequestException {
         public ImageBadRequestException() {
-            super(new ErrorCode<>("03001", "잘못된 형식의 URL입니다."));
+            super(new ErrorCode<>("03000", "잘못된 형식의 URL입니다."));
         }
     }
 

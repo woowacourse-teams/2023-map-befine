@@ -4,7 +4,6 @@ import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_E
 import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_EMAIL_PATTERN;
 import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_NICKNAME_LENGTH;
 import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_NICKNAME_NULL;
-import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_ROLE_NULL;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.Image;
@@ -90,7 +89,7 @@ public class MemberInfo {
 
     private static void validateRole(Role role) {
         if (Objects.isNull(role)) {
-            throw new MemberBadRequestException(ILLEGAL_ROLE_NULL);
+            throw new IllegalArgumentException("validateRole; member role is null;");
         }
     }
 
