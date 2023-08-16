@@ -16,6 +16,7 @@ const MyInfo = () => {
     name: 'Patrick',
     email: 'qkrtk9230@naver.com',
   });
+  const user = JSON.parse(localStorage.getItem('user') || '');
 
   //   useEffect(()=>{
   //     setMyInfoName()
@@ -44,7 +45,7 @@ const MyInfo = () => {
       $justifyContent="center"
       $alignItems="center"
     >
-      <MyInfoImg src="https://images.unsplash.com/photo-1480429370139-e0132c086e2a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80" />
+      <MyInfoImg src={user.imageUrl} />
       <Space size={7} />
       <Box>
         <Text color="black" $fontSize="default" $fontWeight="normal">
