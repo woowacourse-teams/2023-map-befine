@@ -16,3 +16,13 @@ export interface TopicInfoType {
   updatedAt: string;
   pins: PinType[];
 }
+
+export interface ModalMyTopicType {
+  id: number;
+  name: string;
+  image: string;
+  pinCount: number;
+  bookmarkCount: number;
+  isBookmarked: boolean;
+  updatedAt: string;
+}

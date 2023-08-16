@@ -77,6 +77,7 @@ const Wrapper = styled.div<ModalWrapperType>`
   ${({ position }) => getModalPosition(position)};
   top: ${({ top }) => top && top};
   left: ${({ left }) => left && left};
+  z-index: 2;
 `;
 
 const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
@@ -85,6 +86,7 @@ const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
   position: fixed;
   top: 0;
   background-color: ${({ $dimmedColor }) => $dimmedColor};
+  z-index: 2;
 `;
 
 const translateModalAnimation = keyframes`
