@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
@@ -108,9 +109,9 @@ class TopicQueryServiceTest {
         topicRepository.save(topic);
 
         //when
-        AuthMember guest = new Guest();
+        AuthMember authMember = new Admin(member.getId());
 
-        TopicDetailResponse detail = topicQueryService.findDetailById(guest, topic.getId());
+        TopicDetailResponse detail = topicQueryService.findDetailById(authMember, topic.getId());
 
         //then
         assertThat(detail.id()).isEqualTo(topic.getId());
@@ -254,7 +255,8 @@ class TopicQueryServiceTest {
         Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
         bookmarkRepository.save(bookmark);
 
-        //when //then
+        //when
+        //then
         AuthMember guest = new Guest();
         List<TopicResponse> topics = topicQueryService.findAllReadable(guest);
 
@@ -348,6 +350,30 @@ class TopicQueryServiceTest {
                 .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
         assertThat(topicDetails).extractingResultOf("isBookmarked")
                 .containsExactlyInAnyOrder(Boolean.FALSE, Boolean.FALSE);
+    }
+
+    @Test
+    @DisplayName("멤버 Id를 이용하여 그 멤버가 만든 모든 Topic을 확인할 수 있다.")
+    void findAllTopicsByMemberId_Success() {
+        //given
+        AuthMember authMember = new Admin(member.getId());
+
+        List<Topic> expected = topicRepository.saveAll(List.of(
+                TopicFixture.createPublicAndAllMembersTopic(member),
+                TopicFixture.createPublicAndAllMembersTopic(member),
+                TopicFixture.createPublicAndAllMembersTopic(member)
+        ));
+
+        //when
+        List<TopicResponse> actual = topicQueryService.findAllTopicsByMemberId(authMember, member.getId());
+
+        //then
+        List<Long> topicIds = expected.stream()
+                .map(Topic::getId)
+                .toList();
+        assertThat(actual).hasSize(expected.size());
+        assertThat(actual).extractingResultOf("id")
+                .isEqualTo(topicIds);
     }
 
 }

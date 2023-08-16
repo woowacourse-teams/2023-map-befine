@@ -1,38 +1,26 @@
-package com.mapbefine.mapbefine.member.presentation;
+package com.mapbefine.mapbefine.member;
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
-import com.mapbefine.mapbefine.location.LocationFixture;
-import com.mapbefine.mapbefine.location.domain.Location;
-import com.mapbefine.mapbefine.location.domain.LocationRepository;
-import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.pin.PinFixture;
-import com.mapbefine.mapbefine.pin.domain.Pin;
-import com.mapbefine.mapbefine.pin.domain.PinRepository;
-import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
-import com.mapbefine.mapbefine.topic.TopicFixture;
-import com.mapbefine.mapbefine.topic.domain.Topic;
-import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import java.time.LocalDateTime;
+import io.restassured.*;
+import io.restassured.common.mapper.*;
+import io.restassured.response.*;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -40,15 +28,6 @@ class MemberIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @Autowired
-    private TopicRepository topicRepository;
-
-    @Autowired
-    private PinRepository pinRepository;
-
-    @Autowired
-    private LocationRepository locationRepository;
 
     private Member creator;
     private Member user1;
@@ -135,55 +114,34 @@ class MemberIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("유저가 생성한 핀을 조회한다.")
-    void findPinsByMember() {
-        // given
-        Location location = locationRepository.save(LocationFixture.create());
-        Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-        Pin pin1 = pinRepository.save(PinFixture.create(location, topic, creator));
-        Pin pin2 = pinRepository.save(PinFixture.create(location, topic, creator));
-
-        // when
+    @DisplayName("유저의 즐겨찾기 토픽 목록을 조회하면, 200을 반환한다.")
+    void findTopicsInBookmarks_Success() {
+        //when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/pins")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/bookmarks")
                 .then().log().all()
                 .extract();
-        List<PinResponse> pinResponses = response.as(new TypeRef<>() {
-        });
 
-        // then
-        assertThat(pinResponses).hasSize(2)
-                .usingRecursiveComparison()
-                .isEqualTo(List.of(PinResponse.from(pin1), PinResponse.from(pin2)));
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
-    @DisplayName("유저가 생성한 토픽을 조회한다.")
-    void findTopicsByMember() {
-        // given
-        Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", creator));
-        Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", creator));
-
+    @DisplayName("모아보기의 지도 목록 조회 시 200을 반환한다")
+    void findTopicsFromAtlas_Success() {
         // when
-        ExtractableResponse<Response> response = given().log().all()
-                .header(AUTHORIZATION, creatorAuthHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/topics")
+        ExtractableResponse<Response> response = RestAssured.given()
+                .log().all()
+                .header(HttpHeaders.AUTHORIZATION, creatorAuthHeader)
+                .when().get("/members/atlas")
                 .then().log().all()
                 .extract();
-        List<TopicResponse> topicResponses = response.as(new TypeRef<>() {
-        });
 
         // then
-        List<TopicResponse> expected = List.of(TopicResponse.from(topic1, Boolean.FALSE),
-                TopicResponse.from(topic2, Boolean.FALSE));
-
-        assertThat(topicResponses).hasSize(2)
-                .usingRecursiveComparison()
-                .ignoringFieldsOfTypes(LocalDateTime.class)
-                .isEqualTo(expected);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
+
 
 }

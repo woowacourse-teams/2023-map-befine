@@ -85,6 +85,16 @@ public class TopicController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/members/{memberId}")
+    public ResponseEntity<List<TopicResponse>> findAllTopicsByMemberId(
+            AuthMember authMember,
+            @PathVariable Long memberId
+    ) {
+        List<TopicResponse> responses = topicQueryService.findAllTopicsByMemberId(authMember, memberId);
+
+        return ResponseEntity.ok(responses);
+    }
+
     @LoginRequired
     @PutMapping("/{topicId}")
     public ResponseEntity<Void> update(

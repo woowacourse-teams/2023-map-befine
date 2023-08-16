@@ -12,13 +12,13 @@ public record TopicDetailResponse(
         String description,
         String image,
         Integer pinCount,
-        LocalDateTime updatedAt,
-        List<PinResponse> pins,
+        Boolean isInAtlas,
+        Integer bookmarkCount,
         Boolean isBookmarked,
-        Integer bookmarkCount
+        LocalDateTime updatedAt,
+        List<PinResponse> pins
 ) {
-
-    public static TopicDetailResponse from(Topic topic, Boolean isBookmarked) {
+    public static TopicDetailResponse from(Topic topic, Boolean isInAtlas, Boolean isBookmarked) {
         List<PinResponse> pinResponses = topic.getPins().stream()
                 .map(PinResponse::from)
                 .toList();
@@ -31,11 +31,11 @@ public record TopicDetailResponse(
                 topicInfo.getDescription(),
                 topicInfo.getImageUrl(),
                 topic.countPins(),
-                topic.getUpdatedAt(),
-                pinResponses,
+                isInAtlas,
+                topic.countBookmarks(),
                 isBookmarked,
-                topic.countBookmarks()
+                topic.getUpdatedAt(),
+                pinResponses
         );
     }
-
 }

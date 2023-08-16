@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.member.domain;
 import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.permission.domain.Permission;
@@ -48,6 +49,9 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Bookmark> bookmarks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Atlas> atlantes = new ArrayList<>();
 
     private Member(MemberInfo memberInfo, OauthId oauthId) {
         this.memberInfo = memberInfo;
@@ -110,12 +114,16 @@ public class Member extends BaseTimeEntity {
         createdPins.add(pin);
     }
 
-    public void addMemberTopicPermission(Permission permission) {
+    public void addPermission(Permission permission) {
         topicsWithPermissions.add(permission);
     }
 
     public void addBookmark(Bookmark bookmark) {
         bookmarks.add(bookmark);
+    }
+
+    public void addAtlas(Atlas atlas) {
+        atlantes.add(atlas);
     }
 
     public String getRoleKey() {

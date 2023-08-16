@@ -79,6 +79,16 @@ public class PinController {
         return ResponseEntity.ok(allResponses);
     }
 
+    @GetMapping("/members/{memberId}")
+    public ResponseEntity<List<PinResponse>> findAllPinsByMemberId(
+            AuthMember authMember,
+            @PathVariable Long memberId
+    ) {
+        List<PinResponse> responses = pinQueryService.findAllPinsByMemberId(authMember, memberId);
+
+        return ResponseEntity.ok(responses);
+    }
+
     @LoginRequired
     @PostMapping("/images")
     public ResponseEntity<Void> addImage(AuthMember member, @RequestBody PinImageCreateRequest request) {

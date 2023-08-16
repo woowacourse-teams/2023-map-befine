@@ -205,4 +205,41 @@ class PinControllerTest extends RestDocsIntegration {
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(restDocs.document());
     }
+
+
+    @Test
+    @DisplayName("멤버 Id를 입력하면 해당 멤버가 만든 핀 목록을 조회할 수 있다.")
+    void findAllPinsByMemberId() throws Exception {
+        Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
+        String authHeader = Base64.encodeBase64String(
+                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
+        );
+
+        List<PinResponse> pinResponses = List.of(
+                new PinResponse(
+                        1L,
+                        "매튜의 산스장",
+                        "지번 주소",
+                        "매튜가 사랑하는 산스장",
+                        37,
+                        127
+                ), new PinResponse(
+                        2L,
+                        "매튜의 안갈집",
+                        "지번 주소",
+                        "매튜가 두번은 안 갈 집",
+                        37,
+                        127
+                )
+        );
+
+        given(pinQueryService.findAllPinsByMemberId(any(), any())).willReturn(pinResponses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/pins/members/1")
+                        .header(AUTHORIZATION, authHeader)
+        ).andDo(restDocs.document());
+    }
+
+
 }
