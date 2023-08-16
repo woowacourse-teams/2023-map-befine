@@ -1,15 +1,15 @@
 import { Fragment, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getApi } from '../../../apis/getApi';
-import { MyInfoPinType, MyInfoTopicType } from '../../../types/MyInfo';
 import PinCard from '../../PinCard';
 import TopicCard from '../../TopicCard';
+import { TopicType } from '../../../types/Topic';
 
 const MyInfoList = () => {
-  const [myInfoTopics, setMyInfoTopics] = useState<MyInfoTopicType[]>([]);
+  const [myInfoTopics, setMyInfoTopics] = useState<TopicType[]>([]);
 
   const getMyInfoListFromServer = async () => {
-    const serverMyInfoTopics = await getApi<MyInfoTopicType[]>(
+    const serverMyInfoTopics = await getApi<TopicType[]>(
       'default',
       '/members/my/topics',
     );
@@ -28,11 +28,16 @@ const MyInfoList = () => {
         return (
           <Fragment key={topic.id}>
             <TopicCard
-              topicId={topic.id}
-              topicImage={topic.image}
-              topicTitle={topic.name}
-              topicUpdatedAt={topic.updatedAt}
-              topicPinCount={topic.pinCount}
+              id={topic.id}
+              image={topic.image}
+              name={topic.name}
+              creator={topic.creator}
+              updatedAt={topic.updatedAt}
+              pinCount={topic.pinCount}
+              bookmarkCount={topic.bookmarkCount}
+              isInAtlas={topic.isInAtlas}
+              isBookmarked={topic.isBookmarked}
+              setTopicsFromServer={getMyInfoListFromServer}
             />
           </Fragment>
         );

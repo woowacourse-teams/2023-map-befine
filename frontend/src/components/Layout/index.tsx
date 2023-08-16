@@ -32,7 +32,6 @@ const Layout = ({ children }: LayoutProps) => {
   const mapContainer = useRef(null);
   const { width } = useContext(LayoutWidthContext);
   const isLogined = localStorage.getItem('userToken');
-  const user = JSON.parse(localStorage.getItem('user') || '');
 
   const loginButtonClick = () => {
     window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
@@ -60,25 +59,20 @@ const Layout = ({ children }: LayoutProps) => {
               <SeeTogetherProvider>
                 <TagProvider>
                   <Flex height="100vh" width="100vw" overflow="hidden">
-                    <LayoutFlex                      
+                    <LayoutFlex
                       $flexDirection="column"
                       $minWidth={width}
                       height="100vh"
                       $backgroundColor="white"
                     >
-                    <Flex
-                      $justifyContent="space-between"
-                      padding="20px 20px 0 20px"
-                    >
-                      <Logo />
-                      {isLogined ? (
-                        <MyInfoImg src={user.imageUrl} />
-                      ) : (
-                        <InfoDefalutImg onClick={loginButtonClick} />
-                      )}
-                    </Flex>
-                    <Flex
-                      height="calc(100vh - 40px)"
+                      <Flex
+                        $justifyContent="space-between"
+                        padding="20px 20px 0 20px"
+                      >
+                        <Logo />
+                      </Flex>
+                      <Flex
+                        height="calc(100vh - 40px)"
                         $flexDirection="column"
                         overflow="auto"
                         padding="0 20px 20px 20px"
