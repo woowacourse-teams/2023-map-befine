@@ -202,5 +202,4 @@ class PinControllerTest extends RestDocsIntegration {
         ).andDo(restDocs.document());
     }
 
-
 }
