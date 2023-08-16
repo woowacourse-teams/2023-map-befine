@@ -17,6 +17,10 @@ import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 import { TopicType } from '../../types/Topic';
 
+interface TopicCardProps extends TopicType {
+  setTopicsFromServer: () => void;
+}
+
 const TopicCard = ({
   id,
   image,
@@ -27,7 +31,8 @@ const TopicCard = ({
   bookmarkCount,
   isInAtlas,
   isBookmarked,
-}: TopicType) => {
+  setTopicsFromServer,
+}: TopicCardProps) => {
   const { routePage } = useNavigator();
 
   const goToSelectedTopic = () => {
@@ -85,7 +90,11 @@ const TopicCard = ({
           </Flex>
 
           <ButtonWrapper>
-            <AddSeeTogether isInAtlas={isInAtlas} id={id}>
+            <AddSeeTogether
+              isInAtlas={isInAtlas}
+              id={id}
+              setTopicsFromServer={setTopicsFromServer}
+            >
               {isInAtlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
             </AddSeeTogether>
             <AddFavorite id={id}>

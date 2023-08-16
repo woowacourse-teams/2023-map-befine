@@ -13,6 +13,8 @@ import Button from '../components/common/Button';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { deleteApi } from '../apis/deleteApi';
 import useToast from '../hooks/useToast';
+import { getApi } from '../apis/getApi';
+import { TopicType } from '../types/Topic';
 
 const SeeTogetherTopics = () => {
   const { routePage } = useNavigator();
@@ -24,6 +26,12 @@ const SeeTogetherTopics = () => {
 
   const goToHome = () => {
     routePage('/');
+  };
+
+  const setTopicsFromServer = async () => {
+    const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+
+    setSeeTogetherTopics(topics);
   };
 
   const goToSelectedTopic = () => {
@@ -39,7 +47,7 @@ const SeeTogetherTopics = () => {
 
     try {
       deleteTopics.forEach(async (topic) => {
-        await deleteApi(`/atlas/${topic.id}`);
+        await deleteApi(`/atlas/topics?id=${topic.id}`);
       });
 
       showToast('info', '모아보기를 비웠습니다.');
@@ -83,6 +91,7 @@ const SeeTogetherTopics = () => {
             updatedAt={topic.updatedAt}
             isInAtlas={topic.isInAtlas}
             isBookmarked={topic.isBookmarked}
+            setTopicsFromServer={setTopicsFromServer}
           />
           {idx !== seeTogetherTopics.length - 1 ? <Space size={4} /> : <></>}
         </ul>
