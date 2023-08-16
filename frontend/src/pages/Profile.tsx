@@ -25,13 +25,6 @@ const Profile = () => {
       <MyInfoContainer
         containerTitle="나의 지도"
         containerDescription="내가 만든 지도를 확인해보세요"
-        routeWhenSeeAll={goToPopularTopics}
-      />
-      <Space size={6} />
-      <MyInfoContainer
-        containerTitle="나의 핀"
-        containerDescription="내가 표시한 핀을 확인해보세요"
-        routeWhenSeeAll={goToPopularTopics}
       />
     </ProfileWrapper>
   );
