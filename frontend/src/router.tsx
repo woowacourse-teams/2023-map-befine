@@ -85,11 +85,6 @@ const routes: routeElement[] = [
         withAuth: true,
       },
       {
-        path: 'oauth/redirected/kakao',
-        element: <KakaoRedirectPage />,
-        withAuth: false,
-      },
-      {
         path: '/askLogin',
         element: <AskLoginPage />,
         withAuth: false,

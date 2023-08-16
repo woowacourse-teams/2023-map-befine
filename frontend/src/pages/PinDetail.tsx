@@ -15,12 +15,14 @@ import { styled } from 'styled-components';
 import { ModalPortal, useModalContext } from '../context/AbsoluteModalContext';
 
 interface PinDetailProps {
+  topicId: number;
   pinId: number;
   isEditPinDetail: boolean;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PinDetail = ({
+  topicId,
   pinId,
   isEditPinDetail,
   setIsEditPinDetail,
@@ -40,6 +42,18 @@ const PinDetail = ({
     images: [],
     description: '',
   });
+
+  useEffect(() => {
+    const checkTopicAuthority = async () => {
+      const topicAuthority = await getApi<any>(
+        'default',
+        `/permissions/topics/${topicId}`,
+      );
+      return topicAuthority.data;
+    };
+    const topicAuthorityList = checkTopicAuthority();
+    console.log(topicAuthorityList);
+  }, [topicId]);
 
   useEffect(() => {
     const getPinData = async () => {

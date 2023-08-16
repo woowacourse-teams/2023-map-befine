@@ -24,6 +24,14 @@ interface Props {
   children: JSX.Element | JSX.Element[];
 }
 
+const content = (title: string) => {
+  return `"<div style=' position: relative;background-color:red; border-bottom: 1px solid #dcdcdc; line-height: 18px;'>" +
+    "<div style='font-size: 12px; line-height: 15px;'>" +
+    "<span style='display: inline-block; width: 14px; height: 14px; background-color: red; vertical-align: middle; margin-right: 5px;'></span>" +
+    '</div>' +
+    '</div>'`;
+};
+
 const MarkerProvider = ({ children }: Props): JSX.Element => {
   const [markers, setMarkers] = useState<any>([]);
   const [clickedMarker, setClickedMarker] = useState<any>(null);
@@ -59,6 +67,18 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         markerType = (markerType + 1) % 7;
         currentTopicId = coordinate.topicId;
       }
+
+      const infoWindow = new window.Tmapv3.InfoWindow({
+        position: new window.Tmapv3.LatLng(
+          coordinate.latitude,
+          coordinate.longitude,
+        ),
+
+        content: content,
+        offset: new window.Tmapv3.Point(0, -40),
+        type: 2,
+        map: map,
+      });
 
       const marker = new window.Tmapv3.Marker({
         position: new window.Tmapv3.LatLng(

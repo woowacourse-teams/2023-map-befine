@@ -145,6 +145,7 @@ const SelectedTopic = () => {
                 $zIndex={1}
               >
                 <PinDetail
+                  topicId={Number(topicId)}
                   pinId={selectedPinId}
                   isEditPinDetail={isEditPinDetail}
                   setIsEditPinDetail={setIsEditPinDetail}
