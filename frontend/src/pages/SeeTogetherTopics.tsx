@@ -11,23 +11,43 @@ import Space from '../components/common/Space';
 import TopicCard from '../components/TopicCard';
 import Button from '../components/common/Button';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import { deleteApi } from '../apis/deleteApi';
+import useToast from '../hooks/useToast';
 
 const SeeTogetherTopics = () => {
   const { routePage } = useNavigator();
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { navbarHighlights } = useSetNavbarHighlight('seeTogether');
-  const { seeTogetherTopics } = useContext(SeeTogetherContext);
+  const { seeTogetherTopics, setSeeTogetherTopics } =
+    useContext(SeeTogetherContext);
+  const { showToast } = useToast();
 
   const goToHome = () => {
     routePage('/');
   };
 
-  const goToSeveralSelectedTopics = () => {
+  const goToSelectedTopic = () => {
     const seeTogetherTopicIds = seeTogetherTopics
       .map((topic) => topic.id)
       .join(',');
 
     routePage(`/topics/${seeTogetherTopicIds}`, seeTogetherTopicIds);
+  };
+
+  const onClickDeleteSeeTogetherTopics = () => {
+    const deleteTopics = seeTogetherTopics;
+
+    try {
+      deleteTopics.forEach(async (topic) => {
+        await deleteApi(`/atlas/${topic.id}`);
+      });
+
+      showToast('info', '모아보기를 비웠습니다.');
+
+      setSeeTogetherTopics([]);
+    } catch (e) {
+      showToast('info', '모아보기를 비우는데 실패했습니다.');
+    }
   };
 
   if (seeTogetherTopics.length === 0) {
@@ -67,9 +87,11 @@ const SeeTogetherTopics = () => {
       <Space size={6} />
 
       <Flex $justifyContent="center">
-        <Button variant="secondary">비우기</Button>
+        <Button variant="secondary" onClick={onClickDeleteSeeTogetherTopics}>
+          비우기
+        </Button>
         <Space size={3} />
-        <Button variant="primary" onClick={goToSeveralSelectedTopics}>
+        <Button variant="primary" onClick={goToSelectedTopic}>
           한 번에 보기
         </Button>
       </Flex>
