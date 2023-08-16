@@ -17,7 +17,6 @@ export const getApi = async <T>(
     'Content-Type': 'application/json',
   };
 
-  console.log(headers);
   if (userToken) {
     headers['Authorization'] = `Bearer ${userToken}`;
   }
