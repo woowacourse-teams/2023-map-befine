@@ -196,7 +196,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         given(topicQueryService.findAllTopicsByMemberId(any(), any())).willReturn(RESPONSES);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/topics/members/1")
+                MockMvcRequestBuilders.get("/topics/members?id=1")
                         .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }

@@ -5,9 +5,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
+import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -95,7 +97,7 @@ class MemberControllerTest extends RestDocsIntegration {
         given(memberQueryService.findAllTopicsInAtlas(any())).willReturn(responses);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/atlas")
+                MockMvcRequestBuilders.get("/members/my/atlas")
                         .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
 
@@ -129,8 +131,71 @@ class MemberControllerTest extends RestDocsIntegration {
         given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(responses);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/bookmarks")
+                MockMvcRequestBuilders.get("/members/my/bookmarks")
                         .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }
+
+    @Test
+    @DisplayName("유저의 지도 목록 조회")
+    void findMyAllTopics() throws Exception {
+        List<TopicResponse> responses = List.of(
+                new TopicResponse(
+                        1L,
+                        "준팍의 또 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        5,
+                        false,
+                        0,
+                        true,
+                        LocalDateTime.now()
+                ), new TopicResponse(
+                        2L,
+                        "준팍의 두번째 토픽",
+                        "https://map-befine-official.github.io/favicon.png",
+                        3,
+                        false,
+                        0,
+                        true,
+                        LocalDateTime.now()
+                )
+        );
+
+        given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/my/topics")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("유저의 핀 목록 조회")
+    void findMyAllPins() throws Exception {
+        List<PinResponse> responses = List.of(
+                new PinResponse(
+                        1L,
+                        "준팍의 첫번째 핀",
+                        "https://map-befine-official.github.io/favicon.png",
+                        "준팍의 첫번째 핀",
+                        LocationFixture.BASE_COORDINATE.getLatitude(),
+                        LocationFixture.BASE_COORDINATE.getLongitude()
+                ), new PinResponse(
+                        2L,
+                        "준팍의 두번째 핀",
+                        "https://map-befine-official.github.io/favicon.png",
+                        "준팍의 두번째 핀",
+                        LocationFixture.BASE_COORDINATE.getLatitude(),
+                        LocationFixture.BASE_COORDINATE.getLongitude()
+                )
+        );
+
+        given(memberQueryService.findMyAllPins(any())).willReturn(responses);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/members/my/pins")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+    }
+
 }

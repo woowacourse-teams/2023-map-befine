@@ -236,7 +236,7 @@ class PinControllerTest extends RestDocsIntegration {
         given(pinQueryService.findAllPinsByMemberId(any(), any())).willReturn(pinResponses);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/pins/members/1")
+                MockMvcRequestBuilders.get("/pins/members?id=1")
                         .header(AUTHORIZATION, authHeader)
         ).andDo(restDocs.document());
     }
