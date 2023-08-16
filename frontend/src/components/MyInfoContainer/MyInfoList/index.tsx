@@ -4,16 +4,23 @@ import { getApi } from '../../../apis/getApi';
 import PinCard from '../../PinCard';
 import TopicCard from '../../TopicCard';
 import { TopicType } from '../../../types/Topic';
+import useToast from '../../../hooks/useToast';
 
 const MyInfoList = () => {
   const [myInfoTopics, setMyInfoTopics] = useState<TopicType[]>([]);
+  const { showToast } = useToast();
 
   const getMyInfoListFromServer = async () => {
-    const serverMyInfoTopics = await getApi<TopicType[]>(
-      'default',
-      '/members/my/topics',
-    );
-    setMyInfoTopics(serverMyInfoTopics);
+    try {
+      const serverMyInfoTopics = await getApi<TopicType[]>(
+        'default',
+        '/members/my/topics',
+      );
+
+      setMyInfoTopics(serverMyInfoTopics);
+    } catch {
+      showToast('error', '로그인 후 이용해주세요.');
+    }
   };
 
   useEffect(() => {

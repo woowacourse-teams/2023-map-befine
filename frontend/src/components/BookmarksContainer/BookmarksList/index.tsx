@@ -1,18 +1,24 @@
 import { Fragment, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getApi } from '../../../apis/getApi';
-import { BookmarksType } from '../../../types/Bookmarks';
 import TopicCard from '../../TopicCard';
+import { TopicType } from '../../../types/Topic';
+import useToast from '../../../hooks/useToast';
 
 const BookmarksList = () => {
-  const [bookmarks, setBookmarks] = useState<BookmarksType[]>([]);
+  const [bookmarks, setBookmarks] = useState<TopicType[]>([]);
+  const { showToast } = useToast();
 
   const getBookmarksFromServer = async () => {
-    const serverBookmarks = await getApi<BookmarksType[]>(
-      'default',
-      '/members/my/bookmarks',
-    );
-    setBookmarks(serverBookmarks);
+    try {
+      const serverBookmarks = await getApi<TopicType[]>(
+        'default',
+        '/members/my/bookmarks',
+      );
+      setBookmarks(serverBookmarks);
+    } catch {
+      showToast('error', '로그인 후 이용해주세요.');
+    }
   };
 
   useEffect(() => {
@@ -26,11 +32,16 @@ const BookmarksList = () => {
       {bookmarks.map((topic) => (
         <Fragment key={topic.id}>
           <TopicCard
-            topicId={topic.id}
-            topicImage={topic.image}
-            topicTitle={topic.name}
-            topicUpdatedAt={topic.updatedAt}
-            topicPinCount={topic.pinCount}
+            id={topic.id}
+            image={topic.image}
+            name={topic.name}
+            creator={topic.creator}
+            updatedAt={topic.updatedAt}
+            pinCount={topic.pinCount}
+            bookmarkCount={topic.bookmarkCount}
+            isInAtlas={topic.isInAtlas}
+            isBookmarked={topic.isBookmarked}
+            setTopicsFromServer={getBookmarksFromServer}
           />
         </Fragment>
       ))}

@@ -16,7 +16,7 @@ import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './components/NotFound';
 import SeeTogetherTopics from './pages/SeeTogetherTopics';
 import Profile from './pages/Profile';
-import LoginError from './components/NotFound/LoginError';
+import LoginError from './pages/LoginError';
 import Bookmark from './pages/Bookmark';
 
 interface routeElement {

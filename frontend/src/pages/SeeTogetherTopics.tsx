@@ -29,9 +29,13 @@ const SeeTogetherTopics = () => {
   };
 
   const setTopicsFromServer = async () => {
-    const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+    try {
+      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
 
-    setSeeTogetherTopics(topics);
+      setSeeTogetherTopics(topics);
+    } catch {
+      showToast('error', '로그인 후 이용해주세요.');
+    }
   };
 
   const goToSelectedTopic = () => {

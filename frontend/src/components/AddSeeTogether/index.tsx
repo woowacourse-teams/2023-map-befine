@@ -54,16 +54,23 @@ const AddSeeTogether = ({
   const deleteSeeTogether = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    await deleteApi(`/atlas/topics?id=${id}`, 'x-www-form-urlencoded');
+    try {
+      await deleteApi(`/atlas/topics?id=${id}`, 'x-www-form-urlencoded');
 
-    const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
 
-    setSeeTogetherTopics(topics);
+      setSeeTogetherTopics(topics);
 
-    // TODO: 모아보기 페이지에서는 GET /members/my/atlas 두 번 됨
-    setTopicsFromServer();
+      // TODO: 모아보기 페이지에서는 GET /members/my/atlas 두 번 됨
+      setTopicsFromServer();
 
-    showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
+      showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
+    } catch {
+      showToast(
+        'error',
+        '모아보기 삭제에 실패했습니다. 로그인 후 사용해주세요.',
+      );
+    }
   };
 
   return (

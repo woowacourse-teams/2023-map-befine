@@ -6,9 +6,9 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const Bookmark = () => {
-    const { width: _ } = useSetLayoutWidth(FULLSCREEN);
-    const { navbarHighlights: __ } = useSetNavbarHighlight('favorite');
-    
+  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
+  const { navbarHighlights: __ } = useSetNavbarHighlight('favorite');
+
   return (
     <BookMarksWrapper>
       <BookmarksContainer

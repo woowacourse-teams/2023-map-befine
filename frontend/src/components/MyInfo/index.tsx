@@ -3,18 +3,19 @@ import Flex from '../common/Flex';
 import Box from '../common/Box';
 import Text from '../common/Text';
 import Space from '../common/Space';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MyInfoType } from '../../types/MyInfo';
 import UpdateMyInfo from './UpdateMyInfo';
 
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+
 const MyInfo = () => {
-  const [isThereImg, setisThereImg] = useState<boolean>(true);
+  const [isThereImg, setIsThereImg] = useState<boolean>(true);
   const [isModifyMyInfo, setIsModifyMyInfo] = useState<boolean>(false);
   const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<MyInfoType>({
     name: 'Patrick',
     email: 'qkrtk9230@naver.com',
   });
-  const user = JSON.parse(localStorage.getItem('user') || '');
 
   if (isModifyMyInfo) {
     return (

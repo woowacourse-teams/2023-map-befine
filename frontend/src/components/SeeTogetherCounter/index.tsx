@@ -9,9 +9,12 @@ const SeeTogetherCounter = () => {
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
   const { showToast } = useToast();
+  const userToken = localStorage.getItem('userToken');
 
   const getSeeTogetherTopics = async () => {
     try {
+      if (!userToken) return;
+
       const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
       setSeeTogetherTopics(topics);
     } catch {
