@@ -9,7 +9,7 @@ public class TestAuthHeaderProvider {
 
     private static final String TOKEN_TYPE = "Bearer ";
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public TestAuthHeaderProvider(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -17,6 +17,10 @@ public class TestAuthHeaderProvider {
 
     public String createAuthHeader(Member member) {
         Long memberId = member.getId();
+        return TOKEN_TYPE + generateToken(memberId);
+    }
+
+    public String createAuthHeaderById(Long memberId) {
         return TOKEN_TYPE + generateToken(memberId);
     }
 

@@ -8,6 +8,7 @@ public record PinResponse(
         String name,
         String address,
         String description,
+        String creator,
         double latitude,
         double longitude
 ) {
@@ -20,6 +21,7 @@ public record PinResponse(
                 pinInfo.getName(),
                 pin.getRoadBaseAddress(),
                 pinInfo.getDescription(),
+                pin.getCreator().getMemberInfo().getNickName(),
                 pin.getLatitude(),
                 pin.getLongitude()
         );

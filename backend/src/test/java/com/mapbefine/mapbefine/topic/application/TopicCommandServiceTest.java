@@ -16,6 +16,7 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
@@ -45,25 +46,32 @@ class TopicCommandServiceTest {
     private TopicRepository topicRepository;
 
     @Autowired
+    private PinRepository pinRepository;
+
+    @Autowired
     private TopicCommandService topicCommandService;
 
     @Autowired
     private TopicQueryService topicQueryService;
 
     private Member member;
+    private Location location;
+    private AuthMember user;
+    private AuthMember guest;
 
     @BeforeEach
     void setUp() {
-        member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
+        location = locationRepository.save(LocationFixture.create());
+
+        user = MemberFixture.createUser(member);
+        guest = new Guest();
     }
 
     @Test
     @DisplayName("비어있는 토픽을 생성할 수 있다.")
     public void saveEmptyTopic_Success() {
         //given
-        AuthMember user = MemberFixture.createUser(member);
-
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
                         Collections.emptyList()
@@ -85,7 +93,6 @@ class TopicCommandServiceTest {
     @DisplayName("Guest는 비어있는 토픽을 생성할 수 없다.")
     public void saveEmptyTopic_Fail() {
         //given
-        AuthMember guest = new Guest();
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
                         Collections.emptyList()
@@ -101,9 +108,6 @@ class TopicCommandServiceTest {
     @DisplayName("핀을 통해 새로운 토픽을 생성할 수 있다.")
     public void saveTopicWithPins_Success() {
         //given
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
 
         Pin pin1 = PinFixture.create(location, topic, member);
@@ -112,7 +116,6 @@ class TopicCommandServiceTest {
         topicRepository.save(topic);
 
         //when
-        AuthMember user = MemberFixture.createUser(member);
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
                         List.of(pin1.getId(), pin2.getId())
@@ -136,17 +139,13 @@ class TopicCommandServiceTest {
     @DisplayName("Guest는 핀을 통해 새로운 토픽을 생성할 수 없다.")
     public void saveTopicWithPins_Fail1() {
         //given
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
+        Topic publicAndAllMembersTopic = TopicFixture.createPublicAndAllMembersTopic(member);
 
-        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+        Pin pin1 = PinFixture.create(location, publicAndAllMembersTopic, member);
+        Pin pin2 = PinFixture.create(location, publicAndAllMembersTopic, member);
 
-        Pin pin1 = PinFixture.create(location, topic, member);
-        Pin pin2 = PinFixture.create(location, topic, member);
+        topicRepository.save(publicAndAllMembersTopic);
 
-        topicRepository.save(topic);
-
-        AuthMember guest = new Guest();
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
                         List.of(pin1.getId(), pin2.getId())
@@ -169,9 +168,6 @@ class TopicCommandServiceTest {
         );
         memberRepository.save(topicOwner);
 
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(topicOwner);
 
         Pin pin1 = PinFixture.create(location, topic, member);
@@ -179,7 +175,6 @@ class TopicCommandServiceTest {
 
         topicRepository.save(topic);
 
-        AuthMember user = MemberFixture.createUser(member);
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
                         List.of(pin1.getId(), pin2.getId())
@@ -197,9 +192,6 @@ class TopicCommandServiceTest {
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
 
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
         Pin pin1 = PinFixture.create(location, topic1, member);
         Pin pin2 = PinFixture.create(location, topic1, member);
         Pin pin3 = PinFixture.create(location, topic2, member);
@@ -209,7 +201,6 @@ class TopicCommandServiceTest {
         topicRepository.save(topic2);
 
         //when
-        AuthMember user = MemberFixture.createUser(member);
         TopicMergeRequest request =
                 TopicFixture.createPublicAndAllMembersMergeRequestWithTopics(
                         List.of(topic1.getId(), topic2.getId())
@@ -235,16 +226,12 @@ class TopicCommandServiceTest {
     @DisplayName("Guest는 기존의 토픽들을 통해 새로운 토픽을 생성할 수 없다.")
     public void merge_Fail1() {
         //given
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
+        Topic privateAndGroupOnlyTopic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
+        topicRepository.save(privateAndGroupOnlyTopic);
 
-        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
-        topicRepository.save(topic);
-
-        AuthMember guest = new Guest();
         TopicMergeRequest request =
                 TopicFixture.createPublicAndAllMembersMergeRequestWithTopics(
-                        List.of(topic.getId())
+                        List.of(privateAndGroupOnlyTopic.getId())
                 );
 
         //when then
@@ -264,13 +251,9 @@ class TopicCommandServiceTest {
         );
         memberRepository.save(topicOwner);
 
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(topicOwner);
         topicRepository.save(topic);
 
-        AuthMember user = MemberFixture.createUser(member);
         TopicMergeRequest request =
                 TopicFixture.createPublicAndAllMembersMergeRequestWithTopics(
                         List.of(topic.getId())
@@ -283,12 +266,41 @@ class TopicCommandServiceTest {
     }
 
     @Test
+    @DisplayName("핀을 권한이 있는 토픽에 복사할 수 있다.")
+    void copyPin_Success() {
+        // given
+        Topic source = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
+
+        List<Pin> sourcePins = List.of(
+                PinFixture.create(location, source, member),
+                PinFixture.create(location, source, member),
+                PinFixture.create(location, source, member)
+        );
+        pinRepository.saveAll(sourcePins);
+
+        List<Long> pinIds = sourcePins.stream()
+                .map(Pin::getId)
+                .toList();
+
+        Topic target = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
+
+        // when
+        topicCommandService.copyPin(user, target.getId(), pinIds);
+
+        // then
+        List<Pin> targetPins = target.getPins();
+        Pin targetPin = targetPins.get(0);
+        Pin sourcePin = sourcePins.get(0);
+
+        assertThat(targetPins).hasSize(sourcePins.size());
+        assertThat(targetPin.getId()).isNotEqualTo(sourcePin.getId());
+        assertThat(targetPin.getPinInfo().getName()).isEqualTo(sourcePin.getPinInfo().getName());
+    }
+
+    @Test
     @DisplayName("토픽의 정보를 수정할 수 있다.")
     public void updateTopicInfo_Success() {
         //given
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
         topicRepository.save(topic);
 
@@ -325,14 +337,10 @@ class TopicCommandServiceTest {
         );
         memberRepository.save(topicOwner);
 
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(topicOwner);
         topicRepository.save(topic);
 
         //when then
-        AuthMember user = MemberFixture.createUser(member);
         TopicUpdateRequest request = new TopicUpdateRequest(
                 "수정된 이름",
                 "https://map-befine-official.github.io/favicon.png",
@@ -357,9 +365,6 @@ class TopicCommandServiceTest {
         );
         memberRepository.save(admin);
 
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(admin);
         topicRepository.save(topic);
 
@@ -380,15 +385,10 @@ class TopicCommandServiceTest {
     @DisplayName("Admin이 아닌 경우, 토픽을 삭제할 수 없다.")
     public void delete_Fail() {
         //given
-        Location location = LocationFixture.create();
-        locationRepository.save(location);
-
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
 
         //when then
-        AuthMember user = MemberFixture.createUser(member);
-
         assertThatThrownBy(() -> topicCommandService.delete(user, topic.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("삭제 권한이 없습니다.");

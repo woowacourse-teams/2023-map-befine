@@ -17,6 +17,7 @@ import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './components/NotFound';
 import Profile from './pages/Profile';
 import LoginError from './components/NotFound/LoginError';
+import Bookmark from './pages/Bookmark';
 
 interface routeElement {
   path: string;
@@ -77,7 +78,7 @@ const routes: routeElement[] = [
       },
       {
         path: 'favorite',
-        element: <Favorite />,
+        element: <Bookmark />,
         withAuth: true,
       },
       {
