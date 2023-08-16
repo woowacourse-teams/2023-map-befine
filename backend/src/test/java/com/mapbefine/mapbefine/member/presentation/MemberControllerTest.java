@@ -14,14 +14,13 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class MemberControllerTest extends RestDocsIntegration {
-
-    private final static String AUTH_HEADER = Base64.encodeBase64String("Basic member@naver.com".getBytes());
 
     @MockBean
     private MemberQueryService memberQueryService;
@@ -46,7 +45,7 @@ class MemberControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -65,7 +64,7 @@ class MemberControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/1")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -100,7 +99,7 @@ class MemberControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/my/atlas")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
 
     }
@@ -136,7 +135,7 @@ class MemberControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/my/bookmarks")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -167,11 +166,11 @@ class MemberControllerTest extends RestDocsIntegration {
                 )
         );
 
-        given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(responses);
+        given(memberQueryService.findMyAllTopics(any())).willReturn(responses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/my/topics")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -202,7 +201,7 @@ class MemberControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/my/pins")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 }

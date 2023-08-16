@@ -20,6 +20,10 @@ public class TestAuthHeaderProvider {
         return TOKEN_TYPE + generateToken(memberId);
     }
 
+    public String createAuthHeaderById(Long memberId) {
+        return TOKEN_TYPE + generateToken(memberId);
+    }
+
     public String createResponseAccessTokenById(Long id) {
         return generateToken(id);
     }

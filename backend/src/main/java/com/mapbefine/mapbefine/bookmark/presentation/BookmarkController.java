@@ -22,23 +22,23 @@ public class BookmarkController {
     }
 
     @LoginRequired
-    @PostMapping
+    @PostMapping("/topics")
     public ResponseEntity<Void> addTopicInBookmark(
             AuthMember authMember,
-            @RequestParam Long topicId
+            @RequestParam Long id
     ) {
-        Long bookmarkId = bookmarkCommandService.addTopicInBookmark(authMember, topicId);
+        Long bookmarkId = bookmarkCommandService.addTopicInBookmark(authMember, id);
 
-        return ResponseEntity.created(URI.create("/bookmarks/" + bookmarkId)).build();
+        return ResponseEntity.created(URI.create("/bookmarks/topics" + bookmarkId)).build();
     }
 
     @LoginRequired
-    @DeleteMapping
+    @DeleteMapping("/topics")
     public ResponseEntity<Void> deleteTopicInBookmark(
             AuthMember authMember,
-            @RequestParam Long topicId
+            @RequestParam Long id
     ) {
-        bookmarkCommandService.deleteTopicInBookmark(authMember, topicId);
+        bookmarkCommandService.deleteTopicInBookmark(authMember, id);
 
         return ResponseEntity.noContent().build();
     }

@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
@@ -31,40 +32,41 @@ public class PermissionCommandService {
         this.permissionRepository = permissionRepository;
     }
 
-    public Long savePermission(AuthMember authMember, PermissionRequest request) {
-        validateUser(authMember);
-        validateSelfPermission(authMember, request);
-        validateDuplicatePermission(request);
-
+    public void savePermission(AuthMember authMember, PermissionRequest request) {
+        validateGuest(authMember);
         Topic topic = findTopic(request);
         validateMemberCanTopicUpdate(authMember, topic);
 
-        Member member = findMember(request);
-        Permission permission =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        List<Member> members = findTargetMembers(request);
+        List<Permission> permissions = createPermissions(authMember, topic, members);
 
-        return permissionRepository.save(permission).getId();
+        permissionRepository.saveAll(permissions);
     }
 
-    private void validateUser(AuthMember authMember) {
+    private void validateGuest(AuthMember authMember) {
         if (Objects.isNull(authMember.getMemberId())) {
             throw new IllegalArgumentException("Guest는 권한을 줄 수 없습니다.");
         }
     }
 
-    private void validateSelfPermission(AuthMember authMember, PermissionRequest request) {
-        Long sourceMemberId = authMember.getMemberId();
-        Long targetMemberId = request.memberId();
-
-        if (sourceMemberId.equals(targetMemberId)) {
-            throw new IllegalArgumentException("본인에게 권한을 줄 수 없습니다.");
-        }
+    private List<Permission> createPermissions(
+            AuthMember authMember,
+            Topic topic,
+            List<Member> members
+    ) {
+        return members.stream()
+                .filter(member -> isNotSelfMember(authMember, member))
+                .filter(member -> isNotWithPermission(topic.getId(), member))
+                .map(member -> Permission.createPermissionAssociatedWithTopicAndMember(topic, member))
+                .toList();
     }
 
-    private void validateDuplicatePermission(PermissionRequest request) {
-        if (permissionRepository.existsByTopicIdAndMemberId(request.topicId(), request.memberId())) {
-            throw new IllegalArgumentException("권한은 중복으로 줄 수 없습니다.");
-        }
+    private boolean isNotWithPermission(Long topicId, Member member) {
+        return !permissionRepository.existsByTopicIdAndMemberId(topicId, member.getId());
+    }
+
+    private boolean isNotSelfMember(AuthMember authMember, Member member) {
+        return !Objects.equals(authMember.getMemberId(), member.getId());
     }
 
     private Topic findTopic(PermissionRequest request) {
@@ -79,9 +81,8 @@ public class PermissionCommandService {
         throw new IllegalArgumentException("해당 지도에서 다른 유저에게 권한을 줄 수 없습니다.");
     }
 
-    private Member findMember(PermissionRequest request) {
-        return memberRepository.findById(request.memberId())
-                .orElseThrow(NoSuchElementException::new);
+    private List<Member> findTargetMembers(PermissionRequest request) {
+        return memberRepository.findAllById(request.memberIds());
     }
 
     public void deleteMemberTopicPermission(AuthMember authMember, Long permissionId) {
