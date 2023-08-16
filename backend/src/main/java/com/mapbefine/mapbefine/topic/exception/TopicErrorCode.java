@@ -19,7 +19,6 @@ public enum TopicErrorCode {
     FORBIDDEN_TOPIC_DELETE("09302", "지도 삭제 권한이 없습니다."),
     FORBIDDEN_TOPIC_READ("09302", "지도 조회 권한이 없습니다."),
     TOPIC_NOT_FOUND("09400", "지도가 존재하지 않습니다."),
-
     ;
 
     private final String code;

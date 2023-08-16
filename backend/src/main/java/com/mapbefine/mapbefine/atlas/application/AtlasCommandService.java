@@ -1,7 +1,13 @@
 package com.mapbefine.mapbefine.atlas.application;
 
+import static com.mapbefine.mapbefine.atlas.exception.AtlasErrorCode.FORBIDDEN_TOPIC_ADD;
+import static com.mapbefine.mapbefine.atlas.exception.AtlasErrorCode.FORBIDDEN_TOPIC_READ;
+import static com.mapbefine.mapbefine.atlas.exception.AtlasErrorCode.ILLEGAL_TOPIC_ID;
+
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
+import com.mapbefine.mapbefine.atlas.exception.AtlasException.AtlasBadRequestException;
+import com.mapbefine.mapbefine.atlas.exception.AtlasException.AtlasForbiddenException;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -33,9 +39,8 @@ public class AtlasCommandService {
     public void addTopic(AuthMember authMember, Long topicId) {
         Long memberId = authMember.getMemberId();
 
-        if (Objects.isNull(memberId) || Objects.isNull(topicId)) {
-            throw new IllegalArgumentException("잘못된 ID가 입력되었습니다.");
-        }
+        validateMember(memberId);
+        validateTopic(topicId);
 
         if (isTopicAlreadyAdded(topicId, memberId)) {
             return;
@@ -50,25 +55,37 @@ public class AtlasCommandService {
         atlasRepository.save(atlas);
     }
 
+    private void validateMember(Long memberId) {
+        if (Objects.isNull(memberId)) {
+            throw new AtlasForbiddenException(FORBIDDEN_TOPIC_ADD);
+        }
+    }
+
+    private void validateTopic(Long topicId) {
+        if (Objects.isNull(topicId)) {
+            throw new AtlasBadRequestException(ILLEGAL_TOPIC_ID);
+        }
+    }
+
     private boolean isTopicAlreadyAdded(Long topicId, Long memberId) {
         return atlasRepository.existsByMemberIdAndTopicId(memberId, topicId);
     }
 
     private Topic findTopicById(Long topicId) {
         return topicRepository.findById(topicId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new AtlasBadRequestException(ILLEGAL_TOPIC_ID));
     }
 
     private void validateReadPermission(AuthMember authMember, Topic topic) {
         if (authMember.canRead(topic)) {
             return;
         }
-        throw new IllegalArgumentException("해당 지도에 접근권한이 없습니다.");
+        throw new AtlasForbiddenException(FORBIDDEN_TOPIC_READ);
     }
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("findMemberById; memberId=" + memberId));
     }
 
     public void removeTopic(AuthMember authMember, Long topicId) {

@@ -1,7 +1,10 @@
 package com.mapbefine.mapbefine.atlas.domain;
 
+import static com.mapbefine.mapbefine.atlas.exception.AtlasErrorCode.ILLEGAL_MEMBER_ID;
+import static com.mapbefine.mapbefine.atlas.exception.AtlasErrorCode.ILLEGAL_TOPIC_ID;
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.atlas.exception.AtlasException.AtlasBadRequestException;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.Entity;
@@ -46,8 +49,11 @@ public class Atlas {
     }
 
     private static void validateNotNull(Topic topic, Member member) {
-        if (Objects.isNull(topic) || Objects.isNull(member)) {
-            throw new IllegalArgumentException("지도와 유저는 Null이어선 안됩니다.");
+        if (Objects.isNull(topic)) {
+            throw new AtlasBadRequestException(ILLEGAL_TOPIC_ID);
+        }
+        if (Objects.isNull(member)) {
+            throw new AtlasBadRequestException(ILLEGAL_MEMBER_ID);
         }
     }
 
