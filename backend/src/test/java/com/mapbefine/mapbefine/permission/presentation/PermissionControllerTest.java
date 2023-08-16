@@ -27,20 +27,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class PermissionControllerTest extends RestDocsIntegration {
 
     @MockBean
-    private PermissionCommandService permissionCommandService;
-    @MockBean
     private PermissionQueryService permissionQueryService;
+    @MockBean
+    private PermissionCommandService permissionCommandService;
 
     @Test
     @DisplayName("권한 추가")
     void addPermission() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        PermissionRequest request = new PermissionRequest(1L, 2L);
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
-        );
-
-        given(permissionCommandService.savePermission(any(), any())).willReturn(1L);
+        PermissionRequest request = new PermissionRequest(1L, List.of(1L, 2L, 3L));
+        String authHeader = testAuthHeaderProvider.createAuthHeader(member);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/permissions")

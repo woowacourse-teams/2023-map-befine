@@ -7,9 +7,6 @@ import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.location.application.LocationQueryService;
-import com.mapbefine.mapbefine.member.MemberFixture;
-import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,36 +20,34 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class LocationControllerTest extends RestDocsIntegration {
 
-    private static final String BASIC_FORMAT = "Basic %s";
-
     @MockBean
     private LocationQueryService locationQueryService;
-    private String authHeader;
+    private final String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
+
     private List<TopicResponse> responses;
 
     @BeforeEach
     void setUp() {
-        Member member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
-
         responses = List.of(
                 new TopicResponse(
                         1L,
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         5,
+                        false,
                         0,
-                        Boolean.FALSE,
+                        false,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         3,
+                        false,
                         0,
-                        Boolean.FALSE,
+                        false,
                         LocalDateTime.now()
                 )
         );
@@ -66,8 +61,7 @@ class LocationControllerTest extends RestDocsIntegration {
         double longitude = 127;
 
         //when
-        given(locationQueryService.findNearbyTopicsSortedByPinCount(any(), anyDouble(),
-                anyDouble()))
+        given(locationQueryService.findNearbyTopicsSortedByPinCount(any(), anyDouble(), anyDouble()))
                 .willReturn(responses);
 
         //then
@@ -79,4 +73,5 @@ class LocationControllerTest extends RestDocsIntegration {
                         .param("longitude", String.valueOf(longitude))
         ).andDo(restDocs.document());
     }
+
 }

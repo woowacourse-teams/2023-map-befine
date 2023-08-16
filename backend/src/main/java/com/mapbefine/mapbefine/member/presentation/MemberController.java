@@ -41,17 +41,34 @@ public class MemberController {
     }
 
     @LoginRequired
-    @GetMapping("/topics")
-    public ResponseEntity<List<TopicResponse>> findTopicsByMember(AuthMember authMember) {
-        List<TopicResponse> responses = memberQueryService.findTopicsByMember(authMember);
+    @GetMapping("/my/topics")
+    public ResponseEntity<List<TopicResponse>> findMyAllTopics(AuthMember authMember) {
+        List<TopicResponse> responses = memberQueryService.findMyAllTopics(authMember);
 
         return ResponseEntity.ok(responses);
     }
 
     @LoginRequired
-    @GetMapping("/pins")
-    public ResponseEntity<List<PinResponse>> findPinsByMember(AuthMember authMember) {
-        List<PinResponse> responses = memberQueryService.findPinsByMember(authMember);
+    @GetMapping("/my/pins")
+    public ResponseEntity<List<PinResponse>> findMyAllPins(AuthMember authMember) {
+        List<PinResponse> pinResponses = memberQueryService.findMyAllPins(authMember);
+
+        return ResponseEntity.ok(pinResponses);
+    }
+
+    @LoginRequired
+    @GetMapping("/my/atlas")
+    public ResponseEntity<List<TopicResponse>> findAllTopicsInAtlas(AuthMember authMember) {
+        List<TopicResponse> responses = memberQueryService.findAllTopicsInAtlas(authMember);
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @LoginRequired
+    @GetMapping("/my/bookmarks")
+
+    public ResponseEntity<List<TopicResponse>> findAllTopicsInBookmark(AuthMember authMember) {
+        List<TopicResponse> responses = memberQueryService.findAllTopicsInBookmark(authMember);
 
         return ResponseEntity.ok(responses);
     }

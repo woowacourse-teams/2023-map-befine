@@ -22,9 +22,9 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import io.restassured.*;
+import io.restassured.response.*;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,6 @@ class TopicIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
-
 
     private Member member;
     private Topic topic;
@@ -318,4 +317,26 @@ class TopicIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responses).hasSize(2);
     }
+
+    @Test
+    @DisplayName("멤버별 Topic 목록을 조회하면 200을 반환한다")
+    void findAllTopicsByMemberId_Success() {
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("id", member.getId())
+                .when().get("/topics/members")
+
+                .then().log().all()
+                .extract();
+
+        List<TopicResponse> responses = response.jsonPath().getList(".", TopicResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responses).hasSize(1);
+    }
+
 }
