@@ -73,18 +73,24 @@ const NewTopic = () => {
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }
+
+    if (isPrivate) {
+      const topicId = await postToServer();
+
+      const result = await addAuthority(topicId);
+      if (topicId) routePage(`/topics/${topicId}`);
+      return;
+    }
+
     if (!isAll && checkedMemberIds.length === 0) {
       showToast('error', '멤버를 선택해주세요.');
       return;
     }
 
     //생성하기 버튼 눌렀을 때 postToServer로 TopicId 받고, 받은 topicId로 권한 추가
-    console.log('T before');
     const topicId = await postToServer();
-    console.log('T', topicId);
 
     const result = await addAuthority(topicId);
-    console.log(result);
     if (topicId) routePage(`/topics/${topicId}`);
   };
 
@@ -108,7 +114,7 @@ const NewTopic = () => {
     if (isAll) return; // 모두 권한 준거면 return
     const response = await postApi(`/permissions`, {
       topicId: topicId,
-      memberId: checkedMemberIds,
+      memberIds: checkedMemberIds,
     });
     return response;
   };
@@ -134,7 +140,11 @@ const NewTopic = () => {
       description: formValues.description,
       pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
       publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-      permissionType: isAll ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+      permissionType: isPrivate
+        ? 'GROUP_ONLY'
+        : isAll
+        ? 'ALL_MEMBERS'
+        : 'GROUP_ONLY',
     });
     return response;
   };
@@ -219,6 +229,7 @@ const NewTopic = () => {
             <label htmlFor="private">혼자볼지도</label>
           </div>
         </Flex>
+
         <Space size={5} />
         <Text color="black" $fontSize="default" $fontWeight="normal">
           핀 생성 및 수정 권한
@@ -236,7 +247,11 @@ const NewTopic = () => {
                 setIsAll(true);
               }}
             />
-            <label htmlFor="ALL_MEMBERS">모두</label>
+            {isPrivate ? (
+              <label htmlFor="ALL_MEMBERS">혼자</label>
+            ) : (
+              <label htmlFor="ALL_MEMBERS">모두</label>
+            )}
           </div>
           <Space size={2} />
           <div>
@@ -255,6 +270,7 @@ const NewTopic = () => {
             <label htmlFor="GROUP_ONLY">지정 인원</label>
           </div>
         </Flex>
+
         <>
           <Modal
             modalKey="newTopic"

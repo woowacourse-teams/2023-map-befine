@@ -46,6 +46,7 @@ const SelectedTopic = () => {
         newCoordinates.push({
           id: pin.id,
           topicId: topic.id,
+          pinName: pin.name,
           latitude: pin.latitude,
           longitude: pin.longitude,
         });

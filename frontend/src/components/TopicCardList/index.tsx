@@ -8,7 +8,8 @@ import { useLocation } from 'react-router-dom';
 
 const TopicCardList = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
-  const { markers, removeMarkers } = useContext(MarkerContext);
+  const { markers, removeMarkers, removeInfowindows } =
+    useContext(MarkerContext);
   const { state: url } = useLocation();
 
   const getAndSetDataFromServer = async () => {
@@ -20,7 +21,10 @@ const TopicCardList = () => {
 
   useEffect(() => {
     getAndSetDataFromServer();
-    if (markers.length > 0) removeMarkers();
+    if (markers.length > 0) {
+      removeMarkers();
+      removeInfowindows();
+    }
   }, []);
 
   return (

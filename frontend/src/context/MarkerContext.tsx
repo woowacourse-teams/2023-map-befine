@@ -9,6 +9,8 @@ type MarkerContextType = {
   clickedMarker: any;
   createMarkers: (map: any) => void;
   removeMarkers: () => void;
+  removeInfowindows: () => void;
+  createInfowindows: (map: any) => void;
   displayClickedMarker: (map: any) => void;
 };
 
@@ -18,22 +20,17 @@ export const MarkerContext = createContext<MarkerContextType>({
   createMarkers: () => {},
   removeMarkers: () => {},
   displayClickedMarker: () => {},
+  removeInfowindows: () => {},
+  createInfowindows: () => {},
 });
 
 interface Props {
   children: JSX.Element | JSX.Element[];
 }
 
-const content = (title: string) => {
-  return `"<div style=' position: relative;background-color:red; border-bottom: 1px solid #dcdcdc; line-height: 18px;'>" +
-    "<div style='font-size: 12px; line-height: 15px;'>" +
-    "<span style='display: inline-block; width: 14px; height: 14px; background-color: red; vertical-align: middle; margin-right: 5px;'></span>" +
-    '</div>' +
-    '</div>'`;
-};
-
 const MarkerProvider = ({ children }: Props): JSX.Element => {
   const [markers, setMarkers] = useState<any>([]);
+  const [infoWindows, setInfoWindows] = useState<any>([]);
   const [clickedMarker, setClickedMarker] = useState<any>(null);
   const { coordinates, clickedCoordinate } = useContext(CoordinatesContext);
   const { topicId } = useParams<{ topicId: string }>();
@@ -68,18 +65,6 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         currentTopicId = coordinate.topicId;
       }
 
-      const infoWindow = new window.Tmapv3.InfoWindow({
-        position: new window.Tmapv3.LatLng(
-          coordinate.latitude,
-          coordinate.longitude,
-        ),
-
-        content: content,
-        offset: new window.Tmapv3.Point(0, -40),
-        type: 2,
-        map: map,
-      });
-
       const marker = new window.Tmapv3.Marker({
         position: new window.Tmapv3.LatLng(
           coordinate.latitude,
@@ -102,9 +87,33 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
     setMarkers(newMarkers);
   };
 
+  const createInfowindows = (map: any) => {
+    const newInfowindows = coordinates.map((coordinate: any) => {
+      const infoWindow = new window.Tmapv3.InfoWindow({
+        position: new window.Tmapv3.LatLng(
+          coordinate.latitude,
+          coordinate.longitude,
+        ),
+
+        content: coordinate.pinName,
+        offset: new window.Tmapv3.Point(0, -60),
+        type: 2,
+        map: map,
+      });
+      return infoWindow;
+    });
+
+    setInfoWindows(newInfowindows);
+  };
+
   const removeMarkers = () => {
     markers.forEach((marker: any) => marker.setMap(null));
     setMarkers([]);
+  };
+
+  const removeInfowindows = () => {
+    infoWindows.forEach((infowindow: any) => infowindow.setMap(null));
+    setInfoWindows([]);
   };
 
   return (
@@ -113,6 +122,8 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         clickedMarker,
         markers,
         removeMarkers,
+        removeInfowindows,
+        createInfowindows,
         createMarkers,
         displayClickedMarker,
       }}
