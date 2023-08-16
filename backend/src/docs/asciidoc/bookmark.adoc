@@ -4,9 +4,7 @@
 
 operation::bookmark-controller-test/add-topic-in-bookmark[snippets='http-request,http-response']
 
-=== 유저의 토픽 즐겨찾기 목록 조회
 
-operation::bookmark-controller-test/find-topics-in-bookmark[snippets='http-request,http-response']
+=== 유저의 토픽 즐겨찾기 삭제
 
-=== 유저의 토픽 즐겨찾기 단일 삭제
 operation::bookmark-controller-test/delete-topic-in-bookmark[snippets='http-request,http-response']

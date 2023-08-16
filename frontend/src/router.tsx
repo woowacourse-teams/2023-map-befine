@@ -8,7 +8,6 @@ import SeeAllPopularTopics from './pages/SeeAllPopularTopics';
 import SeeAllNearTopics from './pages/SeeAllNearTopics';
 import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
 import Favorite from './pages/Favorite';
-import Profile from './pages/Profile';
 import KakaoRedirectPage from './pages/KaKaoRedirectPage';
 import ErrorPage from './pages/ErrorPage';
 import AskLoginPage from './pages/AskLoginPage';
@@ -16,6 +15,9 @@ import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './components/NotFound';
 import SeeTogetherTopics from './pages/SeeTogetherTopics';
+import Profile from './pages/Profile';
+import LoginError from './components/NotFound/LoginError';
+import Bookmark from './pages/Bookmark';
 
 interface routeElement {
   path: string;
@@ -76,7 +78,7 @@ const routes: routeElement[] = [
       },
       {
         path: 'favorite',
-        element: <Favorite />,
+        element: <Bookmark />,
         withAuth: true,
       },
       {
@@ -91,7 +93,7 @@ const routes: routeElement[] = [
       },
       {
         path: '/askLogin',
-        element: <AskLoginPage />,
+        element: <LoginError />,
         withAuth: false,
       },
     ],

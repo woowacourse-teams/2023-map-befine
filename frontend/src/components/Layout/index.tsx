@@ -14,6 +14,7 @@ import Navbar from './Navbar';
 import ModalProvider from '../../context/ModalContext';
 import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
 import TagProvider from '../../context/TagContext';
+import InfoDefalutImg from '../../assets/InfoDefalutImg.svg';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -30,6 +31,12 @@ const Layout = ({ children }: LayoutProps) => {
   const { Tmapv3 } = window;
   const mapContainer = useRef(null);
   const { width } = useContext(LayoutWidthContext);
+  const isLogined = localStorage.getItem('userToken');
+  const user = JSON.parse(localStorage.getItem('user') || '');
+
+  const loginButtonClick = () => {
+    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
+  };
 
   const [map, setMap] = useState(null);
 
@@ -53,18 +60,25 @@ const Layout = ({ children }: LayoutProps) => {
               <SeeTogetherProvider>
                 <TagProvider>
                   <Flex height="100vh" width="100vw" overflow="hidden">
-                    <LayoutFlex
+                    <LayoutFlex                      
                       $flexDirection="column"
                       $minWidth={width}
                       height="100vh"
                       $backgroundColor="white"
                     >
-                      <Flex $flexDirection="column" padding="20px 20px 0 20px">
-                        <Logo />
-                        <Space size={4} />
-                      </Flex>
-                      <Flex
-                        height="calc(100vh - 40px)"
+                    <Flex
+                      $justifyContent="space-between"
+                      padding="20px 20px 0 20px"
+                    >
+                      <Logo />
+                      {isLogined ? (
+                        <MyInfoImg src={user.imageUrl} />
+                      ) : (
+                        <InfoDefalutImg onClick={loginButtonClick} />
+                      )}
+                    </Flex>
+                    <Flex
+                      height="calc(100vh - 40px)"
                         $flexDirection="column"
                         overflow="auto"
                         padding="0 20px 20px 20px"
@@ -88,6 +102,13 @@ const Layout = ({ children }: LayoutProps) => {
 
 const LayoutFlex = styled(Flex)`
   transition: all ease 0.3s;
+`;
+
+const MyInfoImg = styled.img`
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
 `;
 
 export default Layout;

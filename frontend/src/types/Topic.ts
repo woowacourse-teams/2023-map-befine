@@ -24,3 +24,13 @@ export interface TopicDetailType {
   isBookmarked: false;
   pins: PinType[];
 }
+
+export interface ModalMyTopicType {
+  id: number;
+  name: string;
+  image: string;
+  pinCount: number;
+  bookmarkCount: number;
+  isBookmarked: boolean;
+  updatedAt: string;
+}

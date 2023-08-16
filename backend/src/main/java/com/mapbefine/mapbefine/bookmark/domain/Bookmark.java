@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,14 +35,20 @@ public class Bookmark {
         this.member = member;
     }
 
-    // TODO: 2023/08/11 필요한 검증이 무엇이 있을까.. 현재로썬 외부에서 검증하는 방법 밖에 ?
     public static Bookmark createWithAssociatedTopicAndMember(Topic topic, Member member) {
+        validateNotNull(topic, member);
         Bookmark bookmark = new Bookmark(topic, member);
 
         topic.addBookmark(bookmark);
         member.addBookmark(bookmark);
 
         return bookmark;
+    }
+
+    private static void validateNotNull(Topic topic, Member member) {
+        if (Objects.isNull(topic) || Objects.isNull(member)) {
+            throw new IllegalArgumentException("지도와 유저는 Null이어선 안됩니다.");
+        }
     }
 
 }

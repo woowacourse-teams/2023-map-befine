@@ -17,7 +17,6 @@ import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,24 +26,19 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class PermissionControllerTest extends RestDocsIntegration {
 
     @MockBean
-    private PermissionCommandService permissionCommandService;
-    @MockBean
     private PermissionQueryService permissionQueryService;
+    @MockBean
+    private PermissionCommandService permissionCommandService;
 
     @Test
     @DisplayName("권한 추가")
     void addPermission() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        PermissionRequest request = new PermissionRequest(1L, 2L);
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
-        );
-
-        given(permissionCommandService.savePermission(any(), any())).willReturn(1L);
+        PermissionRequest request = new PermissionRequest(1L, List.of(1L, 2L, 3L));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/permissions")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
         ).andDo(restDocs.document());
@@ -54,13 +48,10 @@ class PermissionControllerTest extends RestDocsIntegration {
     @DisplayName("권한 삭제")
     void deletePermission() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + member.getMemberInfo().getEmail()).getBytes()
-        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/permissions/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -85,15 +76,12 @@ class PermissionControllerTest extends RestDocsIntegration {
                         )
                 )
         );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + permissionResponses.get(0).memberResponse().email()).getBytes()
-        );
 
         given(permissionQueryService.findAllTopicPermissions(any())).willReturn(permissionResponses);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/permissions/topics/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -111,15 +99,12 @@ class PermissionControllerTest extends RestDocsIntegration {
                         LocalDateTime.now()
                 )
         );
-        String authHeader = Base64.encodeBase64String(
-                ("Basic " + permissionDetailResponse.memberDetailResponse().email()).getBytes()
-        );
 
         given(permissionQueryService.findPermissionById(any())).willReturn(permissionDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/permissions/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 

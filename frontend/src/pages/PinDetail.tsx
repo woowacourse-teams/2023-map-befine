@@ -1,7 +1,7 @@
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { PinType } from '../types/Pin';
 import { getApi } from '../apis/getApi';
 import { useSearchParams } from 'react-router-dom';
@@ -11,8 +11,10 @@ import useFormValues from '../hooks/useFormValues';
 import { ModifyPinFormProps } from '../types/FormValues';
 import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
+import Modal from '../components/Modal';
 import { styled } from 'styled-components';
-import { ModalPortal, useModalContext } from '../context/AbsoluteModalContext';
+import { ModalContext } from '../context/ModalContext';
+import ModalMyTopicList from '../components/ModalMyTopicList';
 
 interface PinDetailProps {
   pinId: number;
@@ -28,7 +30,6 @@ const PinDetail = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
   const { showToast } = useToast();
-  const { isModalOpen, openModal, closeModal } = useModalContext();
   const {
     formValues,
     errorMessages,
@@ -40,6 +41,7 @@ const PinDetail = ({
     images: [],
     description: '',
   });
+  const { openModal } = useContext(ModalContext);
 
   useEffect(() => {
     const getPinData = async () => {
@@ -175,7 +177,12 @@ const PinDetail = ({
         position="fixed"
         bottom="24px"
       >
-        <SaveToMyMapButton variant="primary" onClick={openModal}>
+        <SaveToMyMapButton
+          variant="primary"
+          onClick={() => {
+            openModal('saveMyMap');
+          }}
+        >
           내 지도에 저장하기
         </SaveToMyMapButton>
         <Space size={4} />
@@ -184,70 +191,25 @@ const PinDetail = ({
         </ShareButton>
       </Flex>
 
-      <Space size={9} />
-
-      {isModalOpen && (
-        <ModalPortal closeModalHandler={closeModal}>
-          <>
-            <Text
-              color="black"
-              $fontSize="extraLarge"
-              $fontWeight="bold"
-              $textAlign="center"
-            >
-              내 지도 목록
-            </Text>
-            <Space size={5} />
-            <Flex $flexDirection="row">
-              <Text
-                color="black"
-                $fontSize="small"
-                $fontWeight="bold"
-                $textAlign="center"
-              >
-                최신순
-              </Text>
-              <Space size={3} />
-              <Text
-                color="black"
-                $fontSize="small"
-                $fontWeight="bold"
-                $textAlign="center"
-              >
-                글자순
-              </Text>
-              <Space size={3} />
-              <Text
-                color="black"
-                $fontSize="small"
-                $fontWeight="bold"
-                $textAlign="center"
-              >
-                인기순
-              </Text>
-            </Flex>
-            <Space size={2} />
-            <Flex $flexDirection="column">
-              <ModalMapItem>아이템</ModalMapItem>
-              <Space size={4} />
-              <ModalMapItem>아이템</ModalMapItem>
-              <Space size={4} />
-              <ModalMapItem>아이템</ModalMapItem>
-              <Space size={4} />
-              <ModalMapItem>아이템</ModalMapItem>
-              <Space size={4} />
-              <ModalMapItem>아이템</ModalMapItem>
-              <Space size={4} />
-            </Flex>
-
-            <Flex $justifyContent="center">
-              <SaveToMyMapButton variant="secondary" onClick={closeModal}>
-                Close Modal
-              </SaveToMyMapButton>
-            </Flex>
-          </>
-        </ModalPortal>
-      )}
+      <Modal
+        modalKey="saveMyMap"
+        position="center"
+        width="768px"
+        height="512px"
+        $dimmedColor="rgba(0,0,0,0.25)"
+      >
+        <ModalContentsWrapper>
+          <Space size={5} />
+          <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+            내 토픽 리스트
+          </Text>
+          <Text color="gray" $fontSize="small" $fontWeight="normal">
+            핀을 저장할 지도를 선택해주세요.
+          </Text>
+          <Space size={4} />
+          <ModalMyTopicList />
+        </ModalContentsWrapper>
+      </Modal>
     </>
   );
 };
@@ -270,13 +232,14 @@ const ShareButton = styled(Button)`
   box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
 `;
 
-const ModalMapItem = styled(Box)`
+const ModalContentsWrapper = styled.div`
   width: 100%;
-  height: 48px;
+  height: 100%;
+  background-color: white;
 
   text-align: center;
 
-  border: 1px solid black;
-  border-radius: 8px;
+  overflow: scroll;
 `;
+
 export default PinDetail;
