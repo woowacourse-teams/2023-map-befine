@@ -1,13 +1,13 @@
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import { TagProps } from '../../types/Tag';
-import { TopicInfoType } from '../../types/Topic';
+import { TopicDetailType } from '../../types/Topic';
 import Space from '../common/Space';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
   topicId: string;
-  topicDetail: TopicInfoType;
+  topicDetail: TopicDetailType;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -24,11 +24,14 @@ const PinsOfTopic = ({
         fullUrl={String(topicId)}
         topicId={topicId}
         topicImage={DEFAULT_TOPIC_IMAGE}
-        topicParticipant={1}
-        topicPinCount={topicDetail.pinCount}
         topicTitle={topicDetail.name}
-        topicOwner={'토픽을 만든 사람'}
+        topicCreator={topicDetail.creator}
+        topicUpdatedAt={topicDetail.updatedAt}
+        topicPinCount={topicDetail.pinCount}
+        topicBookmarkCount={topicDetail.bookmarkCount}
         topicDescription={topicDetail.description}
+        isInAtlas={topicDetail.isInAtlas}
+        isBookmarked={topicDetail.isBookmarked}
       />
       {topicDetail.pins.map((pin, idx) => (
         <li key={pin.id}>

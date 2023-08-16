@@ -32,11 +32,15 @@ const TopicCardList = () => {
               index < 6 && (
                 <Fragment key={topic.id}>
                   <TopicCard
-                    topicId={topic.id}
-                    topicImage={topic.image}
-                    topicTitle={topic.name}
-                    topicUpdatedAt={topic.updatedAt}
-                    topicPinCount={topic.pinCount}
+                    id={topic.id}
+                    image={topic.image}
+                    name={topic.name}
+                    creator={topic.creator}
+                    updatedAt={topic.updatedAt}
+                    pinCount={topic.pinCount}
+                    bookmarkCount={topic.bookmarkCount}
+                    isInAtlas={topic.isInAtlas}
+                    isBookmarked={topic.isBookmarked}
                   />
                 </Fragment>
               )

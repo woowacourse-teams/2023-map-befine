@@ -1,17 +1,19 @@
 import { styled } from 'styled-components';
 import { postApi } from '../../apis/postApi';
 import useToast from '../../hooks/useToast';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { getApi } from '../../apis/getApi';
 import { TopicType } from '../../types/Topic';
 import { SeeTogetherContext } from '../../context/SeeTogetherContext';
+import { deleteApi } from '../../apis/deleteApi';
 
 interface AddSeeTogetherProps {
+  isInAtlas: boolean;
   id: number;
   children: React.ReactNode;
 }
 
-const AddSeeTogether = ({ id, children }: AddSeeTogetherProps) => {
+const AddSeeTogether = ({ isInAtlas, id, children }: AddSeeTogetherProps) => {
   const { showToast } = useToast();
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
@@ -25,9 +27,11 @@ const AddSeeTogether = ({ id, children }: AddSeeTogetherProps) => {
         return;
       }
 
-      // await postApi('',{});
-      // const topics = await getApi<TopicType[]>('default', '/members/atlas');
-      // setSeeTogetherTopics(topics);
+      await postApi(`/atlas/topics?id=${id}`, {}, 'x-www-form-urlencoded');
+
+      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+
+      setSeeTogetherTopics(topics);
 
       showToast('info', '모아보기에 추가했습니다.');
     } catch {
@@ -38,7 +42,23 @@ const AddSeeTogether = ({ id, children }: AddSeeTogetherProps) => {
     }
   };
 
-  return <Wrapper onClick={addSeeTogetherList}>{children}</Wrapper>;
+  const deleteSeeTogether = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
+    await deleteApi(`/atlas/topics?id=${id}`, 'x-www-form-urlencoded');
+
+    const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+
+    setSeeTogetherTopics(topics);
+
+    showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
+  };
+
+  return (
+    <Wrapper onClick={isInAtlas ? deleteSeeTogether : addSeeTogetherList}>
+      {children}
+    </Wrapper>
+  );
 };
 
 const Wrapper = styled.div`

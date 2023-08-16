@@ -8,8 +8,10 @@ import useToast from '../../hooks/useToast';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
-import TopicFavoriteSVG from '../../assets/topicInfo_favorite.svg';
-import TopicSeeTogetherSVG from '../../assets/topicInfo_seeTogether.svg';
+import FavoriteNotFilledSVG from '../../assets/topicInfo_favoriteBtn_notFilled.svg';
+import FavoriteSVG from '../../assets/topicInfo_favoriteBtn_filled.svg';
+import SeeTogetherNotFilledSVG from '../../assets/topicInfo_seeTogetherBtn_notFilled.svg';
+import SeeTogetherSVG from '../../assets/topicInfo_seeTogetherBtn_filled.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
@@ -20,22 +22,28 @@ export interface TopicInfoProps {
   fullUrl?: string;
   topicId: string;
   topicImage: string;
-  topicParticipant: number;
-  topicPinCount: number;
   topicTitle: string;
-  topicOwner: string;
+  topicCreator: string;
+  topicUpdatedAt: string;
+  topicPinCount: number;
+  topicBookmarkCount: number;
   topicDescription: string;
+  isInAtlas: boolean;
+  isBookmarked: boolean;
 }
 
 const TopicInfo = ({
   fullUrl,
   topicId,
   topicImage,
-  topicParticipant,
-  topicPinCount,
   topicTitle,
-  topicOwner,
+  topicCreator,
+  topicUpdatedAt,
+  topicPinCount,
+  topicBookmarkCount,
   topicDescription,
+  isInAtlas,
+  isBookmarked,
 }: TopicInfoProps) => {
   const { routePage } = useNavigator();
   const { showToast } = useToast();
@@ -104,7 +112,7 @@ const TopicInfo = ({
       </Text>
       <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
-        {topicOwner}
+        {topicCreator}
       </Text>
       <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
@@ -114,12 +122,16 @@ const TopicInfo = ({
       <Space size={3} />
 
       <Flex $justifyContent="center">
-        <AddSeeTogether id={Number(topicId)}>
-          <TopicSeeTogetherSVG />
+        <AddSeeTogether isInAtlas={isInAtlas} id={Number(topicId)}>
+          {isInAtlas ? (
+            <SeeTogetherSVG width="40px" height="40px" />
+          ) : (
+            <SeeTogetherNotFilledSVG />
+          )}
         </AddSeeTogether>
         <Space size={5} />
         <AddFavorite id={Number(topicId)}>
-          <TopicFavoriteSVG />
+          <FavoriteNotFilledSVG />
         </AddFavorite>
         <Space size={5} />
         <TopicShareUrlSVG cursor="pointer" onClick={copyContent} />

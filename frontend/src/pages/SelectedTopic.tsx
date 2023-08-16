@@ -9,7 +9,7 @@ import {
 import { styled } from 'styled-components';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
-import { TopicInfoType } from '../types/Topic';
+import { TopicDetailType } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
@@ -29,7 +29,7 @@ const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 const SelectedTopic = () => {
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
-  const [topicDetails, setTopicDetails] = useState<TopicInfoType[] | null>(
+  const [topicDetails, setTopicDetails] = useState<TopicDetailType[] | null>(
     null,
   );
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
@@ -42,7 +42,7 @@ const SelectedTopic = () => {
   const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi<TopicInfoType[]>(
+    const data = await getApi<TopicDetailType[]>(
       'default',
       `/topics/ids?ids=${topicId}`,
     );
@@ -54,7 +54,7 @@ const SelectedTopic = () => {
     // 각 topic의 pin들의 좌표를 가져옴
     const newCoordinates: any = [];
 
-    data.forEach((topic: TopicInfoType) => {
+    data.forEach((topic: TopicDetailType) => {
       topic.pins.forEach((pin: PinType) => {
         newCoordinates.push({
           id: pin.id,
@@ -67,13 +67,13 @@ const SelectedTopic = () => {
 
     setCoordinates(newCoordinates);
 
-    data.forEach((topicDetailFromData: TopicInfoType) =>
+    data.forEach((topicDetailFromData: TopicDetailType) =>
       topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
     );
 
     const topicDetailFromData = topicId
       ?.split(',')
-      .map((number) => topicHashmap.get(number)) as TopicInfoType[];
+      .map((number) => topicHashmap.get(number)) as TopicDetailType[];
 
     if (!topicDetailFromData) return;
 

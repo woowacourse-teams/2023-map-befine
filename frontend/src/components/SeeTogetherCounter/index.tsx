@@ -1,9 +1,21 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { SeeTogetherContext } from '../../context/SeeTogetherContext';
 import { keyframes, styled } from 'styled-components';
+import { getApi } from '../../apis/getApi';
+import { TopicType } from '../../types/Topic';
 
 const SeeTogetherCounter = () => {
-  const { seeTogetherTopics } = useContext(SeeTogetherContext);
+  const { seeTogetherTopics, setSeeTogetherTopics } =
+    useContext(SeeTogetherContext);
+
+  const getSeeTogetherTopics = async () => {
+    const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+    setSeeTogetherTopics(topics);
+  };
+
+  useEffect(() => {
+    getSeeTogetherTopics();
+  }, []);
 
   if (seeTogetherTopics.length === 0) return <></>;
 
