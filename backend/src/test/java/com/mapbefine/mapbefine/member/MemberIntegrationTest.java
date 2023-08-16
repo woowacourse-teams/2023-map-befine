@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.member;
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,9 +12,10 @@ import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import io.restassured.*;
-import io.restassured.common.mapper.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

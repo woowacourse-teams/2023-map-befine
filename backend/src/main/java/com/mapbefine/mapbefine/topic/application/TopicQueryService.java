@@ -7,11 +7,11 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
-
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -33,7 +33,6 @@ public class TopicQueryService {
     ) {
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
-
         this.memberRepository = memberRepository;
     }
 
@@ -128,7 +127,6 @@ public class TopicQueryService {
         }
 
         throw new IllegalArgumentException("조회권한이 없는 Topic 입니다.");
-
     }
 
     public List<TopicDetailResponse> findDetailsByIds(AuthMember authMember, List<Long> ids) {
@@ -136,7 +134,6 @@ public class TopicQueryService {
 
         validateTopicsCount(ids, topics);
         validateReadableTopics(authMember, topics);
-
 
         if (Objects.isNull(authMember.getMemberId())) {
             return getGuestTopicDetailResponses(topics);
@@ -227,4 +224,22 @@ public class TopicQueryService {
                 )).
                 toList();
     }
+
+    public List<TopicResponse> findAllBestTopics(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return topicRepository.findAll()
+                .stream()
+                .filter(authMember::canRead)
+                .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked((topicsInBookMark), topic))
+                ).toList();
+    }
+
 }

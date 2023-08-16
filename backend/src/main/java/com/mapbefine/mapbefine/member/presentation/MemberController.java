@@ -66,7 +66,6 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/my/bookmarks")
-
     public ResponseEntity<List<TopicResponse>> findAllTopicsInBookmark(AuthMember authMember) {
         List<TopicResponse> responses = memberQueryService.findAllTopicsInBookmark(authMember);
 

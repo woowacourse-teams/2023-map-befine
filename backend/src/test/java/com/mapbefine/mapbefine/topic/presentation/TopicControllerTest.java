@@ -31,9 +31,9 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
             "https://map-befine-official.github.io/favicon.png",
             "준팍",
             3,
-            false,
-            0,
-            false,
+            Boolean.FALSE,
+            5,
+            Boolean.FALSE,
             LocalDateTime.now()
     ), new TopicResponse(
             2L,
@@ -41,9 +41,9 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
             "https://map-befine-official.github.io/favicon.png",
             "준팍",
             5,
-            false,
-            0,
-            false,
+            Boolean.FALSE,
+            3,
+            Boolean.FALSE,
             LocalDateTime.now()
     ));
 
@@ -111,7 +111,6 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 수정")
     void update() throws Exception {
-
         TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest(
                 "준팍의 안갈집",
                 "https://map-befine-official.github.io/favicon.png",
@@ -131,7 +130,6 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 삭제")
     void delete() throws Exception {
-
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/topics/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
@@ -141,9 +139,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 목록 조회")
     void findAll() throws Exception {
-
         given(topicQueryService.findAllReadable(any())).willReturn(RESPONSES);
-
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics")
@@ -161,9 +157,9 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 "https://map-befine-official.github.io/favicon.png",
                 "준팍",
                 2,
-                false,
+                Boolean.FALSE,
                 0,
-                false,
+                Boolean.FALSE,
                 LocalDateTime.now(),
                 List.of(
                         new PinResponse(
@@ -211,6 +207,17 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/members?id=1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("인기 토픽을 조회할 수 있다.")
+    void findAllBestTopics() throws Exception {
+        given(topicQueryService.findAllBestTopics(any())).willReturn(RESPONSES);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/topics/bests")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }

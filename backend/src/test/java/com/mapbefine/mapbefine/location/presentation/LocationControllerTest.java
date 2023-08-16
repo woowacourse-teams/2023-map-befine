@@ -33,9 +33,9 @@ class LocationControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍",
                         5,
-                        false,
+                        Boolean.FALSE,
                         0,
-                        false,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
@@ -43,9 +43,9 @@ class LocationControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍",
                         3,
-                        false,
+                        Boolean.FALSE,
                         0,
-                        false,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 )
         );

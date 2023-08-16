@@ -76,9 +76,9 @@ class MemberControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍",
                         5,
-                        true,
+                        Boolean.TRUE,
                         0,
-                        false,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
@@ -86,9 +86,9 @@ class MemberControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍",
                         3,
-                        true,
+                        Boolean.TRUE,
                         0,
-                        false,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 )
         );
@@ -99,7 +99,6 @@ class MemberControllerTest extends RestDocsIntegration {
                 MockMvcRequestBuilders.get("/members/my/atlas")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
-
     }
 
     @Test
@@ -112,9 +111,9 @@ class MemberControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍",
                         5,
-                        false,
+                        Boolean.FALSE,
                         0,
-                        true,
+                        Boolean.TRUE,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
@@ -122,9 +121,9 @@ class MemberControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍",
                         3,
-                        false,
+                        Boolean.FALSE,
                         0,
-                        true,
+                        Boolean.TRUE,
                         LocalDateTime.now()
                 )
         );
@@ -147,9 +146,9 @@ class MemberControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍",
                         5,
-                        false,
+                        Boolean.FALSE,
                         0,
-                        true,
+                        Boolean.TRUE,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
@@ -157,9 +156,9 @@ class MemberControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         "준팍",
                         3,
-                        false,
+                        Boolean.FALSE,
                         0,
-                        true,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 )
         );
@@ -202,4 +201,5 @@ class MemberControllerTest extends RestDocsIntegration {
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
+
 }
