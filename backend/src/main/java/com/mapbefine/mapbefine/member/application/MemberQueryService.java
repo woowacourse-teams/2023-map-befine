@@ -7,6 +7,7 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
@@ -84,14 +85,40 @@ public class MemberQueryService {
         return topicsInAtlas.stream()
                 .map(topic -> TopicResponse.from(
                         topic,
-                        isBookMarked(bookMarkedTopics, topic),
-                        true
+                        true,
+                        isBookMarked(bookMarkedTopics, topic)
                 ))
                 .toList();
     }
 
     private boolean isBookMarked(List<Topic> bookMarkedTopics, Topic topic) {
         return bookMarkedTopics.contains(topic);
+    }
+
+    public List<TopicResponse> findMyAllTopics(AuthMember authMember) {
+
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> bookMarkedTopics = findBookMarkedTopics(member);
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+
+        return member.getCreatedTopics()
+                .stream()
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked(bookMarkedTopics, topic)
+                ))
+                .toList();
+    }
+
+    public List<PinResponse> findMyAllPins(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        return member.getCreatedPins()
+                .stream()
+                .map(PinResponse::from)
+                .toList();
     }
 
 }

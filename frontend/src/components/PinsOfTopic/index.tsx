@@ -1,3 +1,4 @@
+import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import { TopicInfoType } from '../../types/Topic';
 import Space from '../common/Space';
 import PinPreview from '../PinPreview';
@@ -32,9 +33,10 @@ const PinsOfTopic = ({
             {idx !== 0 && <Space size={5} />}
             <TopicInfo
               fullUrl={topicId}
-              topicId={topicId?.split(',')[idx]}
+              topicId={Number(topicId?.split(',')[idx])}
+              topicImage={DEFAULT_TOPIC_IMAGE}
               topicParticipant={1}
-              pinNumber={topic.pinCount}
+              topicPinCount={topic.pinCount}
               topicTitle={topic.name}
               topicOwner={'토픽을 만든 사람'}
               topicDescription={topic.description}
@@ -43,6 +45,7 @@ const PinsOfTopic = ({
               <li key={pin.id}>
                 <Space size={3} />
                 <PinPreview
+                  idx={idx}
                   pinTitle={pin.name}
                   pinLocation={pin.address}
                   pinInformation={pin.description}

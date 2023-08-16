@@ -10,7 +10,6 @@ import com.mapbefine.mapbefine.location.application.LocationQueryService;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,31 +21,31 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @MockBean
     private LocationQueryService locationQueryService;
-    private String authHeader;
+
     private List<TopicResponse> responses;
 
     @BeforeEach
     void setUp() {
-        authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
         responses = List.of(
                 new TopicResponse(
                         1L,
                         "준팍의 또 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         5,
-                        false,
+                        Boolean.FALSE,
                         0,
-                        false,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
+                        "준팍",
                         3,
-                        false,
+                        Boolean.FALSE,
                         0,
-                        false,
+                        Boolean.FALSE,
                         LocalDateTime.now()
                 )
         );
@@ -54,7 +53,7 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("현재 위치를 기준 토픽의 핀 개수로 나열한다.")
-    void findNearbyTopicsSortedByPinCount() throws Exception {
+    void findNearbyTopicsSortedByPinCount_Success() throws Exception {
         //given
         double latitude = 37;
         double longitude = 127;
@@ -65,8 +64,8 @@ class LocationControllerTest extends RestDocsIntegration {
 
         //then
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/locations")
-                        .header(AUTHORIZATION, authHeader)
+                MockMvcRequestBuilders.get("/locations/bests")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("latitude", String.valueOf(latitude))
                         .param("longitude", String.valueOf(longitude))

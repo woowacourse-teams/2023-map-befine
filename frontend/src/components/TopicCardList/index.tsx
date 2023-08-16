@@ -2,7 +2,6 @@ import { Fragment, useContext, useEffect, useState } from 'react';
 import { getApi } from '../../apis/getApi';
 import { TopicType } from '../../types/Topic';
 import TopicCard from '../TopicCard';
-import Space from '../common/Space';
 import { MarkerContext } from '../../context/MarkerContext';
 import Flex from '../common/Flex';
 import { useLocation } from 'react-router-dom';
@@ -14,8 +13,8 @@ const TopicCardList = () => {
 
   const getAndSetDataFromServer = async () => {
     const topics = url
-      ? await getApi('default', url)
-      : await getApi('default', '/topics');
+      ? await getApi<TopicType[]>('default', url)
+      : await getApi<TopicType[]>('default', '/topics');
     setTopics(topics);
   };
 
@@ -26,21 +25,21 @@ const TopicCardList = () => {
 
   return (
     <ul>
-      <Flex width="360px" height="292px" overflow="auto">
+      <Flex height="300px" $flexWrap="wrap" $gap="20px" overflow="hidden">
         {topics &&
           topics.map((topic, index) => {
             return (
-              <Fragment key={index}>
-                <TopicCard
-                  topicShape="vertical"
-                  topicId={topic.id}
-                  topicImage={topic.image}
-                  topicTitle={topic.name}
-                  topicUpdatedAt={topic.updatedAt}
-                  topicPinCount={topic.pinCount}
-                />
-                {topics.length - 1 !== index ? <Space size={4} /> : <></>}
-              </Fragment>
+              index < 6 && (
+                <Fragment key={topic.id}>
+                  <TopicCard
+                    topicId={topic.id}
+                    topicImage={topic.image}
+                    topicTitle={topic.name}
+                    topicUpdatedAt={topic.updatedAt}
+                    topicPinCount={topic.pinCount}
+                  />
+                </Fragment>
+              )
             );
           })}
       </Flex>

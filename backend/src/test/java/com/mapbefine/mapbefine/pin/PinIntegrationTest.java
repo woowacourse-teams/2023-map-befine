@@ -18,8 +18,9 @@ import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -163,13 +164,12 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> findById(long pinId) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        return RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/pins/" + pinId)
                 .then().log().all()
                 .extract();
-        return response;
     }
 
     private long createPinAndGetId(PinCreateRequest request) {
@@ -192,14 +192,13 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> createPinImage(long pinId) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        return RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new PinImageCreateRequest(pinId, BASE_IMAGE))
                 .when().post("/pins/images")
                 .then().log().all()
                 .extract();
-        return response;
     }
 
     @Test
@@ -237,7 +236,8 @@ class PinIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/pins/members/{memberId}", member.getId())
+                .param("id", member.getId())
+                .when().get("/pins/members")
                 .then().log().all()
                 .extract();
 
