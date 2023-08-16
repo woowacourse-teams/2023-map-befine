@@ -90,7 +90,6 @@ const NewTopic = () => {
     //생성하기 버튼 눌렀을 때 postToServer로 TopicId 받고, 받은 topicId로 권한 추가
     const topicId = await postToServer();
 
-    const result = await addAuthority(topicId);
     if (topicId) routePage(`/topics/${topicId}`);
   };
 
@@ -100,11 +99,9 @@ const NewTopic = () => {
         ? await mergeTopics()
         : await createTopic();
     const location = response.headers.get('Location');
-    console.log('LOCATION', location, response.headers);
 
     if (location) {
       const topicIdFromLocation = location.split('/')[2];
-      console.log('topic', topicIdFromLocation);
       return topicIdFromLocation;
     }
   };

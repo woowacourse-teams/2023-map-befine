@@ -54,7 +54,6 @@ const PinDetail = ({
       return topicAuthority.data;
     };
     const topicAuthorityList = checkTopicAuthority();
-    console.log(topicAuthorityList);
   }, [topicId]);
 
   useEffect(() => {

@@ -1,13 +1,11 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
-import InfoDefalutImg from '../../assets/InfoDefalutImg.svg';
-import ModifyMyInfoIcon from '../../assets/ModifyMyInfoIcon.svg';
 import Box from '../common/Box';
 import Text from '../common/Text';
 import Space from '../common/Space';
-import { useEffect, useState } from 'react';
-import UpdateMyInfo from './updateMyInfo';
+import { useState } from 'react';
 import { MyInfoType } from '../../types/MyInfo';
+import UpdateMyInfo from './UpdateMyInfo';
 
 const MyInfo = () => {
   const [isThereImg, setisThereImg] = useState<boolean>(true);
@@ -17,14 +15,6 @@ const MyInfo = () => {
     email: 'qkrtk9230@naver.com',
   });
   const user = JSON.parse(localStorage.getItem('user') || '');
-
-  //   useEffect(()=>{
-  //     setMyInfoName()
-  //   }, [])
-
-  const onModifyInfo = () => {
-    setIsModifyMyInfo(true);
-  };
 
   if (isModifyMyInfo) {
     return (

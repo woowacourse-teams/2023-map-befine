@@ -19,7 +19,6 @@ const Checkbox = ({
 
   const updateCheckedMembers = () => {
     const updatedChecked = !isChecked;
-    console.log(updatedChecked);
     setIsChecked(updatedChecked);
     onChecked(updatedChecked, id);
   };
