@@ -14,4 +14,5 @@ public class UnauthorizedException extends RuntimeException {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
+
 }
