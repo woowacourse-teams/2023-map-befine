@@ -33,23 +33,18 @@ const toastAnimation = keyframes`
     opacity: 1;
   }
 
-  92%{
+  100% {
     transform: translate(-50%, 0);
     opacity: 1;
-  }
-
-  100% {
-    transform: translate(-50%, 20px);
-    opacity: 0;
   }
 `;
 
 const Wrapper = styled(Flex)<{ type: string }>`
   animation: ${toastAnimation} ${TOAST_SHOWTIME + asynchronousDelayTime}ms
-    linear;
+    linear 1;
   position: absolute;
   left: 50%;
-  bottom: ${({ theme }) => theme.spacing[6]};
+  bottom: 80px;
   transform: translateX(-50%);
 
   padding: 0 ${({ theme }) => theme.spacing[4]};

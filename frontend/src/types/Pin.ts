@@ -1,9 +1,10 @@
 export interface PinType {
-  id: string;
+  id: number;
   name: string;
   address: string;
   description: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
   updatedAt: string;
+  images: string[];
 }

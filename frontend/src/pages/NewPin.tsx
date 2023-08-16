@@ -22,6 +22,7 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { ModalContext } from '../context/ModalContext';
 import Modal from '../components/Modal';
 import { styled } from 'styled-components';
+import ModalMyTopicList from '../components/ModalMyTopicList';
 
 type NewPinFormValueType = Pick<
   NewPinFormProps,
@@ -115,7 +116,7 @@ const NewPin = () => {
         const addr = data.roadAddress; // 주소 변수
 
         //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getApi(
+        const { ConvertAdd } = await getApi<any>(
           'tMap',
           `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
         );
@@ -257,11 +258,21 @@ const NewPin = () => {
       <Modal
         modalKey="newPin"
         position="center"
-        width="400px"
-        height="340px"
+        width="768px"
+        height="512px"
         $dimmedColor="rgba(0,0,0,0.25)"
       >
-        <ModalContentsWrapper>내 토픽 리스트</ModalContentsWrapper>
+        <ModalContentsWrapper>
+          <Space size={5} />
+          <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+            내 토픽 리스트
+          </Text>
+          <Text color="gray" $fontSize="small" $fontWeight="normal">
+            핀을 저장할 지도를 선택해주세요.
+          </Text>
+          <Space size={4} />
+          <ModalMyTopicList />
+        </ModalContentsWrapper>
       </Modal>
     </>
   );
@@ -271,6 +282,10 @@ const ModalContentsWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: white;
+
+  text-align: center;
+
+  overflow: scroll;
 `;
 
 export default NewPin;

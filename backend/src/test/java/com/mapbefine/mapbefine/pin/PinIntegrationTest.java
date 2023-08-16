@@ -14,6 +14,7 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
+import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -163,13 +164,12 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> findById(long pinId) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        return RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/pins/" + pinId)
                 .then().log().all()
                 .extract();
-        return response;
     }
 
     private long createPinAndGetId(PinCreateRequest request) {
@@ -192,14 +192,13 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> createPinImage(long pinId) {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        return RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new PinImageCreateRequest(pinId, BASE_IMAGE))
                 .when().post("/pins/images")
                 .then().log().all()
                 .extract();
-        return response;
     }
 
     @Test
@@ -223,6 +222,30 @@ class PinIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+
+    @Test
+    @DisplayName("멤버별 Pin 목록을 조회하면 200을 반환한다")
+    void findAllPinsByMemberId_Success() {
+        //given
+        createPinAndGetId(createRequestDuplicateLocation);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("id", member.getId())
+                .when().get("/pins/members")
+                .then().log().all()
+                .extract();
+
+        List<PinResponse> pinResponses = response.jsonPath().getList(".", PinResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(pinResponses).hasSize(1);
     }
 
 }

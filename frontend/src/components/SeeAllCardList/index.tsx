@@ -12,7 +12,7 @@ const SeeAllCardList = ({ url }: SeeAllCardListProps) => {
   const [topics, setTopics] = useState<TopicType[]>([]);
 
   const getAndSetDataFromServer = async () => {
-    const topics = await getApi('default', url);
+    const topics = await getApi<TopicType[]>('default', url);
     setTopics(topics);
   };
 
@@ -27,11 +27,16 @@ const SeeAllCardList = ({ url }: SeeAllCardListProps) => {
           topics.map((topic) => (
             <Fragment key={topic.id}>
               <TopicCard
-                topicId={topic.id}
-                topicImage={topic.image}
-                topicTitle={topic.name}
-                topicPinCount={topic.pinCount}
-                topicUpdatedAt={topic.updatedAt}
+                id={topic.id}
+                image={topic.image}
+                name={topic.name}
+                creator={topic.creator}
+                pinCount={topic.pinCount}
+                bookmarkCount={topic.bookmarkCount}
+                updatedAt={topic.updatedAt}
+                isInAtlas={topic.isInAtlas}
+                isBookmarked={topic.isBookmarked}
+                setTopicsFromServer={getAndSetDataFromServer}
               />
             </Fragment>
           ))}

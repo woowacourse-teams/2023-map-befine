@@ -158,6 +158,33 @@ public class TopicCommandService {
                 .toList();
     }
 
+    public void copyPin(AuthMember member, Long topicId, List<Long> pinIds) {
+        Topic topic = findTopic(topicId);
+        validatePinCreateOrUpdateAuthInTopic(member, topic);
+
+        validateCopyPinSelected(pinIds);
+
+        copyPinsToTopic(member, topic, pinIds);
+    }
+
+    private Topic findTopic(Long topicId) {
+        return topicRepository.findById(topicId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
+    }
+
+    private void validatePinCreateOrUpdateAuthInTopic(AuthMember member, Topic topic) {
+        if (member.canPinCreateOrUpdate(topic)) {
+            return;
+        }
+        throw new IllegalArgumentException("핀을 추가할 권한이 없습니다.");
+    }
+
+    private void validateCopyPinSelected(List<Long> pinIds) {
+        if (pinIds.isEmpty()) {
+            throw new IllegalArgumentException("복사할 핀을 선택해주세요");
+        }
+    }
+
     public void updateTopicInfo(
             AuthMember member,
             Long topicId,
@@ -171,16 +198,10 @@ public class TopicCommandService {
         topic.updateTopicStatus(request.publicity(), request.permissionType());
     }
 
-    private Topic findTopic(Long topicId) {
-        return topicRepository.findById(topicId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
-    }
-
     private void validateUpdateAuth(AuthMember member, Topic topic) {
         if (member.canTopicUpdate(topic)) {
             return;
         }
-
         throw new IllegalArgumentException("업데이트 권한이 없습니다.");
     }
 
@@ -197,7 +218,6 @@ public class TopicCommandService {
         if (member.canDelete(topic)) {
             return;
         }
-
         throw new IllegalArgumentException("삭제 권한이 없습니다.");
     }
 

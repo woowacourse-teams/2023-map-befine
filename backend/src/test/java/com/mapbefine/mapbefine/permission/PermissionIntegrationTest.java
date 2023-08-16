@@ -85,7 +85,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
 
         // when
-        PermissionRequest request = new PermissionRequest(topic.getId(), user1.getId());
+        PermissionRequest request = new PermissionRequest(topic.getId(), List.of(user1.getId()));
 
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
@@ -96,7 +96,6 @@ public class PermissionIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response.header("Location")).isNotBlank();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 

@@ -3,10 +3,10 @@ interface Headers {
   [key: string]: string;
 }
 
-export const postApi = async (url: string, data: {}) => {
+export const postApi = async (url: string, data?: {}, contentType?: string) => {
   const userToken = localStorage.getItem('userToken');
   const headers: Headers = {
-    'Content-Type': 'application/json',
+   'Content-type': `${contentType || 'application/json'}`,
   };
 
   if (userToken) {

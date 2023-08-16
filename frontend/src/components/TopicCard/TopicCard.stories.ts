@@ -12,10 +12,14 @@ type Story = StoryObj<typeof TopicCard>;
 
 export const TopicCardComponent: Story = {
   args: {
-    topicId: 1,
-    topicImage: '🍣',
-    topicTitle: '선릉 직장인이 가는 맛집',
-    topicUpdatedAt: '2021-08-01',
-    topicPinCount: 10,
+    id: 1,
+    image: '🍣',
+    name: '선릉 직장인이 가는 맛집',
+    creator: '패트릭',
+    updatedAt: '2021-08-01',
+    pinCount: 10,
+    bookmarkCount: 5,
+    isInAtlas: false,
+    isBookmarked: false,
   },
 };

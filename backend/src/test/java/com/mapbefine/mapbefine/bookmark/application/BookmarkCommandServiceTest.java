@@ -17,6 +17,7 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @ServiceTest
 class BookmarkCommandServiceTest {
@@ -32,6 +33,9 @@ class BookmarkCommandServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private TestEntityManager testEntityManager;
 
     @Test
     @DisplayName("다른 유저의 토픽을 즐겨찾기에 추가할 수 있다.")
@@ -167,32 +171,35 @@ class BookmarkCommandServiceTest {
     @DisplayName("즐겨찾기 목록에 있는 모든 토픽을 삭제할 수 있다")
     public void deleteAllBookmarks_Success() {
         //given
-        Member creator = MemberFixture.create(
+        Member creatorBefore = memberRepository.save(MemberFixture.create(
                 "member",
                 "member@naver.com",
                 Role.USER
-        );
-        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
-        Topic topic2 = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
+        ));
+        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(creatorBefore);
+        Topic topic2 = TopicFixture.createPrivateAndGroupOnlyTopic(creatorBefore);
 
-        memberRepository.save(creator);
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
-        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
+        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creatorBefore);
+        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic1, creatorBefore);
 
         bookmarkRepository.save(bookmark1);
         bookmarkRepository.save(bookmark2);
 
         //when
-        assertThat(bookmarkRepository.findAllByMemberId(creator.getId())).hasSize(2);
+        assertThat(creatorBefore.getBookmarks()).hasSize(2);
 
-        AuthMember user = MemberFixture.createUser(creator);
+        AuthMember user = MemberFixture.createUser(creatorBefore);
         bookmarkCommandService.deleteAllBookmarks(user);
 
+        testEntityManager.flush();
+        testEntityManager.clear();
+
         //then
-        assertThat(bookmarkRepository.findAllByMemberId(creator.getId())).hasSize(0);
+        Member creatorAfter = memberRepository.findById(creatorBefore.getId()).get();
+        assertThat(creatorAfter.getBookmarks()).hasSize(0);
     }
 
 }
