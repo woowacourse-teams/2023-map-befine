@@ -53,21 +53,6 @@ public class AtlasIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("모아보기의 지도 목록 조회 시 200을 반환한다")
-    void findTopicsFromAtlas_Success() {
-        // when
-        ExtractableResponse<Response> response = RestAssured.given()
-                .log().all()
-                .header(AUTHORIZATION, authHeader)
-                .when().get("/atlas")
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
     @DisplayName("모아보기에 지도를 추가 시 201을 반환한다")
     void addTopicToAtlas_Success() {
         //given
@@ -91,7 +76,7 @@ public class AtlasIntegrationTest extends IntegrationTest {
     void removeTopicFromAtlas_Success() {
         //given
         Long topicId = topic.getId();
-        atlasRepository.save(Atlas.from(topic, member));
+        atlasRepository.save(Atlas.createWithAssociatedMember(topic, member));
 
         // when
         ExtractableResponse<Response> response = RestAssured.given()

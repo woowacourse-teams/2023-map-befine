@@ -4,9 +4,9 @@ import static com.mapbefine.mapbefine.location.LocationFixture.ADDRESS;
 import static com.mapbefine.mapbefine.location.LocationFixture.BASE_COORDINATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
+import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -28,9 +28,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataJpaTest
+@ServiceTest
 class LocationQueryServiceTest {
 
     @Autowired
@@ -40,8 +39,6 @@ class LocationQueryServiceTest {
     @Autowired
     private TopicRepository topicRepository;
     @Autowired
-    private AtlasRepository atlasRepository;
-
     private LocationQueryService locationQueryService;
 
     private Member member;
@@ -51,8 +48,6 @@ class LocationQueryServiceTest {
 
     @BeforeEach
     void setup() {
-        locationQueryService = new LocationQueryService(locationRepository, atlasRepository);
-
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.ADMIN));
         authMember = new Admin(member.getId());
 
@@ -91,7 +86,7 @@ class LocationQueryServiceTest {
         // then
         List<TopicResponse> expected = topics.stream()
                 .sorted(Collections.reverseOrder(Comparator.comparingInt(Topic::countPins)))
-                .map(topic -> TopicResponse.from(topic, false))
+                .map(topic -> TopicResponse.from(topic, false, false))
                 .collect(Collectors.toList());
 
         assertThat(currentTopics).isEqualTo(expected);

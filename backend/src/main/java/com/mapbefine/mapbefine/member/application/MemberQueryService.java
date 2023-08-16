@@ -1,21 +1,16 @@
 package com.mapbefine.mapbefine.member.application;
 
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
-import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.pin.domain.Pin;
-import com.mapbefine.mapbefine.pin.domain.PinRepository;
-import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,30 +19,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberQueryService {
 
     private final MemberRepository memberRepository;
-    private final TopicRepository topicRepository;
-    private final PinRepository pinRepository;
-    private final AtlasRepository atlasRepository;
 
-    public MemberQueryService(
-            MemberRepository memberRepository,
-            TopicRepository topicRepository,
-            PinRepository pinRepository,
-            AtlasRepository atlasRepository
-    ) {
+    public MemberQueryService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.topicRepository = topicRepository;
-        this.pinRepository = pinRepository;
-        this.atlasRepository = atlasRepository;
     }
 
     public MemberDetailResponse findById(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+        Member member = findMemberById(id);
 
         return MemberDetailResponse.from(member);
     }
 
-    // TODO: 2023/08/14 해당 메서드는 ADMIN만 접근 가능하게 리팩터링 하기
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
     public List<MemberResponse> findAll() {
         return memberRepository.findAll()
                 .stream()
@@ -55,22 +42,32 @@ public class MemberQueryService {
                 .toList();
     }
 
-    // TODO: 2023/08/14 해당 메서드는 TopicQueryService로 옮기기
-    public List<TopicResponse> findTopicsByMember(AuthMember authMember) {
-        validateNonExistsMember(authMember.getMemberId());
-        List<Topic> topicsByCreator = topicRepository.findByCreatorId(authMember.getMemberId());
+    public List<TopicResponse> findAllTopicsInBookmark(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
 
-        List<Topic> topicsInAtlas = getTopicsInAtlas(authMember);
+        List<Topic> bookMarkedTopics = findBookMarkedTopics(member);
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
-        return topicsByCreator.stream()
-                .map(topic -> TopicResponse.from(topic, isInAtlas(topicsInAtlas, topic)))
+        return bookMarkedTopics.stream()
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        true
+                ))
                 .toList();
     }
 
-    private List<Topic> getTopicsInAtlas(AuthMember authMember) {
-        return atlasRepository.findAllByMemberId(authMember.getMemberId())
+    private List<Topic> findTopicsInAtlas(Member member) {
+        return member.getAtlantes()
                 .stream()
                 .map(Atlas::getTopic)
+                .toList();
+    }
+
+    private List<Topic> findBookMarkedTopics(Member member) {
+        return member.getBookmarks()
+                .stream()
+                .map(Bookmark::getTopic)
                 .toList();
     }
 
@@ -78,20 +75,23 @@ public class MemberQueryService {
         return topicsInAtlas.contains(topic);
     }
 
-    // TODO: 2023/08/14 해당 메서드는 PinQueryService로 옮기기
-    public List<PinResponse> findPinsByMember(AuthMember authMember) {
-        validateNonExistsMember(authMember.getMemberId());
-        List<Pin> pinsByCreator = pinRepository.findByCreatorId(authMember.getMemberId());
+    public List<TopicResponse> findAllTopicsInAtlas(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
 
-        return pinsByCreator.stream()
-                .map(PinResponse::from)
+        List<Topic> bookMarkedTopics = findBookMarkedTopics(member);
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+
+        return topicsInAtlas.stream()
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isBookMarked(bookMarkedTopics, topic),
+                        true
+                ))
                 .toList();
     }
 
-    private void validateNonExistsMember(Long memberId) {
-        if (Objects.isNull(memberId)) {
-            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
-        }
+    private boolean isBookMarked(List<Topic> bookMarkedTopics, Topic topic) {
+        return bookMarkedTopics.contains(topic);
     }
 
 }

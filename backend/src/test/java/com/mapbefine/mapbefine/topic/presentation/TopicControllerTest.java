@@ -16,7 +16,6 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
@@ -27,26 +26,26 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Image 칼람 추가됨으로 인해 수정 필요
 
-
-    private static final List<TopicResponse> RESPONSES = List.of(
-            new TopicResponse(
-                    1L,
-                    "준팍의 또 토픽",
-                    "https://map-befine-official.github.io/favicon.png",
-                    3,
-                    false,
-                    LocalDateTime.of(2023, Month.AUGUST, 11, 10, 10, 10)
-            ), new TopicResponse(
-                    2L,
-                    "준팍의 두번째 토픽",
-                    "https://map-befine-official.github.io/favicon.png",
-                    5,
-                    false,
-                    LocalDateTime.of(2023, Month.AUGUST, 10, 10, 10, 10)
-            )
-    );
-
     private static final String AUTH_HEADER = Base64.encodeBase64String("Basic member@naver.com".getBytes());
+    private static final List<TopicResponse> RESPONSES = List.of(new TopicResponse(
+            1L,
+            "준팍의 또 토픽",
+            "https://map-befine-official.github.io/favicon.png",
+            3,
+            false,
+            0,
+            false,
+            LocalDateTime.now()
+    ), new TopicResponse(
+            2L,
+            "준팍의 두번째 토픽",
+            "https://map-befine-official.github.io/favicon.png",
+            5,
+            false,
+            0,
+            false,
+            LocalDateTime.now()
+    ));
 
     @MockBean
     private TopicCommandService topicCommandService;
@@ -132,6 +131,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     @Test
     @DisplayName("토픽 목록 조회")
     void findAll() throws Exception {
+
         given(topicQueryService.findAllReadable(any())).willReturn(RESPONSES);
 
         mockMvc.perform(
@@ -149,6 +149,8 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 "준팍이 막 만든 두번째 토픽",
                 "https://map-befine-official.github.io/favicon.png",
                 2,
+                false,
+                0,
                 false,
                 LocalDateTime.now(),
                 List.of(
@@ -184,6 +186,17 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/newest")
+                        .header(AUTHORIZATION, AUTH_HEADER)
+        ).andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("멤버 Id를 입력하면 해당 멤버가 만든 지도 목록을 조회할 수 있다.")
+    void findAllTopicsByMemberId() throws Exception {
+        given(topicQueryService.findAllTopicsByMemberId(any(), any())).willReturn(RESPONSES);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/topics/members/1")
                         .header(AUTHORIZATION, AUTH_HEADER)
         ).andDo(restDocs.document());
     }

@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
+import com.mapbefine.mapbefine.auth.domain.member.User;
+import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -21,6 +25,7 @@ import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +45,9 @@ class TopicQueryServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private TopicQueryService topicQueryService;
+
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
 
     private Member member;
 
@@ -223,6 +231,162 @@ class TopicQueryServiceTest {
     }
 
     @Test
+    @DisplayName("모든 토픽을 조회할 때, 즐겨찾기 여부를 함께 반환한다.")
+    public void findAllReadableWithBookmark_Success() {
+        //given
+        Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
+        bookmarkRepository.save(bookmark);
+
+        //when //then
+        AuthMember user = MemberFixture.createUser(member);
+        List<TopicResponse> topics = topicQueryService.findAllReadable(user);
+
+        assertThat(topics).hasSize(2);
+        assertThat(topics).extractingResultOf("id")
+                .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
+        assertThat(topics).extractingResultOf("isBookmarked")
+                .containsExactlyInAnyOrder(Boolean.FALSE, Boolean.TRUE);
+    }
+
+    @Test
+    @DisplayName("모든 토픽을 조회할 때, 로그인 유저가 아니면 즐겨찾기 여부가 항상 False다")
+    public void findAllReadableWithoutBookmark_Success() {
+        //given
+        Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
+        bookmarkRepository.save(bookmark);
+
+        //when
+        //then
+        AuthMember guest = new Guest();
+        List<TopicResponse> topics = topicQueryService.findAllReadable(guest);
+
+        assertThat(topics).hasSize(2);
+        assertThat(topics).extractingResultOf("id")
+                .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
+        assertThat(topics).extractingResultOf("isBookmarked")
+                .containsExactlyInAnyOrder(Boolean.FALSE, Boolean.FALSE);
+    }
+
+    @Test
+    @DisplayName("토픽 상세조회시, 즐겨찾기 여부를 함께 반환한다.")
+    public void findWithBookmarkStatus_Success() {
+        //given
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topic);
+
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
+        bookmarkRepository.save(bookmark);
+
+        //when then
+        AuthMember user = MemberFixture.createUser(member);
+        TopicDetailResponse topicDetail = topicQueryService.findDetailById(user, topic.getId());
+
+        assertThat(topicDetail.id()).isEqualTo(topic.getId());
+        assertThat(topicDetail.isBookmarked()).isEqualTo(Boolean.TRUE);
+
+    }
+
+    @Test
+    @DisplayName("토픽 상세조회시, 로그인 유저가 아니라면 즐겨찾기 여부가 항상 False다.")
+    public void findWithoutBookmarkStatus_Success() {
+        //given
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topic);
+
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
+        bookmarkRepository.save(bookmark);
+
+        //when then
+        AuthMember guest = new Guest();
+        TopicDetailResponse topicDetail = topicQueryService.findDetailById(guest, topic.getId());
+
+        assertThat(topicDetail.id()).isEqualTo(topic.getId());
+        assertThat(topicDetail.isBookmarked()).isEqualTo(Boolean.FALSE);
+    }
+
+    @Test
+    @DisplayName("여러 토픽 조회시, 즐겨 찾기 여부를 함께 반환한다.")
+    public void findDetailsWithBookmarkStatus_Success() {
+        //given
+        Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
+        bookmarkRepository.save(bookmark);
+
+        //when //then
+        AuthMember user = MemberFixture.createUser(member);
+        List<TopicDetailResponse> topicDetails =
+                topicQueryService.findDetailsByIds(user, List.of(topic1.getId(), topic2.getId()));
+
+        assertThat(topicDetails).hasSize(2);
+        assertThat(topicDetails).extractingResultOf("id")
+                .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
+        assertThat(topicDetails).extractingResultOf("isBookmarked")
+                .containsExactlyInAnyOrder(Boolean.FALSE, Boolean.TRUE);
+    }
+
+    @Test
+    @DisplayName("여러 토픽 조회시, 로그인 유저가 아니라면 즐겨 찾기 여부가 항상 False다.")
+    public void findDetailsWithoutBookmarkStatus_Success() {
+        //given
+        Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
+        bookmarkRepository.save(bookmark);
+
+        //when //then
+        AuthMember guest = new Guest();
+        List<TopicDetailResponse> topicDetails =
+                topicQueryService.findDetailsByIds(guest, List.of(topic1.getId(), topic2.getId()));
+
+        assertThat(topicDetails).hasSize(2);
+        assertThat(topicDetails).extractingResultOf("id")
+                .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
+        assertThat(topicDetails).extractingResultOf("isBookmarked")
+                .containsExactlyInAnyOrder(Boolean.FALSE, Boolean.FALSE);
+    }
+
+    @Test
+    @DisplayName("멤버 Id를 이용하여 그 멤버가 만든 모든 Topic을 확인할 수 있다.")
+    void findAllTopicsByMemberId_Success() {
+        //given
+        AuthMember authMember = new Admin(member.getId());
+
+        List<Topic> expected = topicRepository.saveAll(List.of(
+                TopicFixture.createPublicAndAllMembersTopic(member),
+                TopicFixture.createPublicAndAllMembersTopic(member),
+                TopicFixture.createPublicAndAllMembersTopic(member)
+        ));
+
+        //when
+        List<TopicResponse> actual = topicQueryService.findAllTopicsByMemberId(authMember, member.getId());
+
+        //then
+        List<Long> topicIds = expected.stream()
+                .map(Topic::getId)
+                .toList();
+        assertThat(actual).hasSize(expected.size());
+        assertThat(actual).extractingResultOf("id")
+                .isEqualTo(topicIds);
+    }
+
+    @Test
     @DisplayName("핀 수정일 기준으로 토픽을 나열한다")
     void findAllByOrderByUpdatedAtDesc_Success() {
         // given
@@ -244,8 +408,10 @@ class TopicQueryServiceTest {
                 .toList();
         pinRepository.saveAll(pins);
 
+        User user = new User(member.getId(), Collections.emptyList(), Collections.emptyList());
+
         // when
-        List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(new Guest());
+        List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(user);
 
         // then
         assertThat(responses).isNotEmpty();

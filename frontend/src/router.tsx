@@ -13,6 +13,7 @@ import AuthLayout from './components/Layout/AuthLayout';
 import MoaBogi from './pages/MoaBogi';
 import Zzlegyeo from './pages/Zzlegyeo';
 import NotFound from './components/NotFound';
+import My from './pages/My';
 
 interface routeElement {
   path: string;
@@ -27,7 +28,7 @@ const routes: routeElement[] = [
   {
     path: '/',
     element: <RootPage />,
-    errorElement:  <NotFound />,
+    errorElement: <NotFound />,
     withAuth: false,
 
     children: [
@@ -39,6 +40,11 @@ const routes: routeElement[] = [
       {
         path: 'moabogi',
         element: <MoaBogi />,
+        withAuth: true,
+      },
+      {
+        path: 'my',
+        element: <My />,
         withAuth: true,
       },
       {

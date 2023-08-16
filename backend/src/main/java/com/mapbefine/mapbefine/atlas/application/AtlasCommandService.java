@@ -46,7 +46,7 @@ public class AtlasCommandService {
 
         Member member = findMemberById(memberId);
 
-        Atlas atlas = Atlas.from(topic, member);
+        Atlas atlas = Atlas.createWithAssociatedMember(topic, member);
         atlasRepository.save(atlas);
     }
 

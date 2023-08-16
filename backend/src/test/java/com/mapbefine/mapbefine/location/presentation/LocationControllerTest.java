@@ -35,12 +35,16 @@ class LocationControllerTest extends RestDocsIntegration {
                         "https://map-befine-official.github.io/favicon.png",
                         5,
                         false,
+                        0,
+                        false,
                         LocalDateTime.now()
                 ), new TopicResponse(
                         2L,
                         "준팍의 두번째 토픽",
                         "https://map-befine-official.github.io/favicon.png",
                         3,
+                        false,
+                        0,
                         false,
                         LocalDateTime.now()
                 )
@@ -49,7 +53,7 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("현재 위치를 기준 토픽의 핀 개수로 나열한다.")
-    void findNearbyTopicsSortedByPinCount_Success() throws Exception {
+    void findNearbyTopicsSortedByPinCount() throws Exception {
         //given
         double latitude = 37;
         double longitude = 127;

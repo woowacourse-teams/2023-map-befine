@@ -1,9 +1,5 @@
 == 모아보기
 
-=== 모아보기 내 모든 지도 확인하기
-
-operation::atlas-controller-test/find-topics-from-atlas[snippets='http-request,http-response']
-
 === 모아보기에 지도 추가하기
 
 operation::atlas-controller-test/add-topic-to-atlas[snippets='http-request,http-response']

@@ -1,6 +1,4 @@
-package com.mapbefine.mapbefine.atlas.domain;
-
-import static lombok.AccessLevel.PROTECTED;
+package com.mapbefine.mapbefine.bookmark.domain;
 
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -11,13 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.util.Objects;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Atlas {
+public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,18 +30,19 @@ public class Atlas {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    private Atlas(Topic topic, Member member) {
+    private Bookmark(Topic topic, Member member) {
         this.topic = topic;
         this.member = member;
     }
 
-    public static Atlas createWithAssociatedMember(Topic topic, Member member) {
+    public static Bookmark createWithAssociatedTopicAndMember(Topic topic, Member member) {
         validateNotNull(topic, member);
-        Atlas atlas = new Atlas(topic, member);
+        Bookmark bookmark = new Bookmark(topic, member);
 
-        member.addAtlas(atlas);
+        topic.addBookmark(bookmark);
+        member.addBookmark(bookmark);
 
-        return atlas;
+        return bookmark;
     }
 
     private static void validateNotNull(Topic topic, Member member) {

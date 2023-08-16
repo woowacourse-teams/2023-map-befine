@@ -129,4 +129,26 @@ class PinQueryServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    @DisplayName("멤버 Id를 이용하여 그 멤버가 만든 모든 Pin을 확인할 수 있다.")
+    void findAllPinsByMemberId_success() {
+        // given
+        List<Pin> expected = pinRepository.saveAll(List.of(
+                PinFixture.create(location, publicUser1Topic, user1),
+                PinFixture.create(location, publicUser1Topic, user1),
+                PinFixture.create(location, publicUser1Topic, user1)
+        ));
+
+        // when
+        List<PinResponse> actual = pinQueryService.findAllPinsByMemberId(authMemberUser1, user1.getId());
+
+        // then
+        List<Long> pinIds = expected.stream()
+                .map(Pin::getId)
+                .toList();
+
+        assertThat(actual).hasSize(expected.size());
+        assertThat(actual).extractingResultOf("id")
+                .isEqualTo(pinIds);
+    }
 }
