@@ -45,10 +45,13 @@ const UpdatedPinDetail = ({
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }
-
-    await putApi(`/pins/${pinId}`, formValues);
-    setIsEditing(false);
-    removeQueryString('edit');
+    try {
+      await putApi(`/pins/${pinId}`, formValues);
+      setIsEditing(false);
+      removeQueryString('edit');
+    } catch (error) {
+      showToast('error', '해당 지도에 대해 수정 권한이 없습니다. ');
+    }
   };
 
   const onClickCancelPinUpdate = () => {

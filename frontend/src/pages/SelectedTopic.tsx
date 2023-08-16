@@ -59,6 +59,7 @@ const SelectedTopic = () => {
         newCoordinates.push({
           id: pin.id,
           topicId: topic.id,
+          pinName: pin.name,
           latitude: pin.latitude,
           longitude: pin.longitude,
         });
@@ -156,6 +157,7 @@ const SelectedTopic = () => {
                 $zIndex={1}
               >
                 <PinDetail
+                  topicId={Number(topicId)}
                   pinId={selectedPinId}
                   isEditPinDetail={isEditPinDetail}
                   setIsEditPinDetail={setIsEditPinDetail}

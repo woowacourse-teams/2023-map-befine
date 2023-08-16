@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { getApi } from '../apis/getApi';
 import { keyframes, styled } from 'styled-components';
 import useNavigator from '../hooks/useNavigator';
-import { LoginResponse } from '../types/Login';
 
 export const handleOAuthKakao = async (code: string) => {
   try {

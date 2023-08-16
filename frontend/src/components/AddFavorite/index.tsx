@@ -1,7 +1,6 @@
 import { styled } from 'styled-components';
 import { postApi } from '../../apis/postApi';
 import useToast from '../../hooks/useToast';
-import { useState } from 'react';
 
 interface AddFavoriteProps {
   id: number;
@@ -17,8 +16,9 @@ const AddFavorite = ({ id, children }: AddFavoriteProps) => {
     // TODO : post 후 전역 favorite List 에 담기, toast 메세지 수정
     // await postApi('',{});
     // await getApi('');
+    await postApi(`/bookmarks/topics?id=${id}`, {});
 
-    showToast('info', '준비중인 기능입니다.');
+    showToast('info', '즐겨찾기에 추가되었습니다.');
   };
 
   return <Wrapper onClick={addFavoriteList}>{children}</Wrapper>;

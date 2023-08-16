@@ -9,7 +9,8 @@ import useToast from '../../hooks/useToast';
 
 const TopicCardList = () => {
   const [topics, setTopics] = useState<TopicType[]>([]);
-  const { markers, removeMarkers } = useContext(MarkerContext);
+  const { markers, removeMarkers, removeInfowindows } =
+    useContext(MarkerContext);
   const { state: url } = useLocation();
   const { showToast } = useToast();
 
@@ -30,7 +31,10 @@ const TopicCardList = () => {
 
   useEffect(() => {
     getAndSetDataFromServer();
-    if (markers.length > 0) removeMarkers();
+    if (markers.length > 0) {
+      removeMarkers();
+      removeInfowindows();
+    }
   }, []);
 
   return (
