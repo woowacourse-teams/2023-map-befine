@@ -11,8 +11,7 @@ export default function RootErrorPage() {
   const { routePage } = useNavigator();
 
   const error: Error = useRouteError() as Error;
-  console.error(error);
-  console.log(error.statusText, 'ERROR 잡음');
+
   return (
     <ErrorContainer>
       <h1>Oops!</h1>

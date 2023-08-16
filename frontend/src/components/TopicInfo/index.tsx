@@ -1,41 +1,47 @@
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Image from '../common/Image';
-import Button from '../common/Button';
 import Space from '../common/Space';
 import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
-import TopicFavoriteSVG from '../../assets/topicInfo_favorite.svg';
-import TopicSeeTogetherSVG from '../../assets/topicInfo_seeTogether.svg';
+import FavoriteNotFilledSVG from '../../assets/topicInfo_favoriteBtn_notFilled.svg';
+import SeeTogetherNotFilledSVG from '../../assets/topicInfo_seeTogetherBtn_notFilled.svg';
+import SeeTogetherSVG from '../../assets/topicInfo_seeTogetherBtn_filled.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 
-const FAVORITE_COUNT = 10;
-
 export interface TopicInfoProps {
   fullUrl?: string;
-  topicId: number;
+  topicId: string;
   topicImage: string;
-  topicParticipant: number;
-  topicPinCount: number;
   topicTitle: string;
-  topicOwner: string;
+  topicCreator: string;
+  topicUpdatedAt: string;
+  topicPinCount: number;
+  topicBookmarkCount: number;
   topicDescription: string;
+  isInAtlas: boolean;
+  isBookmarked: boolean;
+  setTopicsFromServer: () => void;
 }
 
 const TopicInfo = ({
   fullUrl,
   topicId,
   topicImage,
-  topicParticipant,
-  topicPinCount,
   topicTitle,
-  topicOwner,
+  topicCreator,
+  topicUpdatedAt,
+  topicPinCount,
+  topicBookmarkCount,
   topicDescription,
+  isInAtlas,
+  isBookmarked,
+  setTopicsFromServer,
 }: TopicInfoProps) => {
   const { routePage } = useNavigator();
   const { showToast } = useToast();
@@ -76,11 +82,6 @@ const TopicInfo = ({
       <Space size={1} />
 
       <Flex>
-        <Flex $alignItems="center" width="76px">
-          <Text color="black" $fontSize="small" $fontWeight="normal">
-            👨‍💻 {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
-          </Text>
-        </Flex>
         <Flex $alignItems="center" width="72px">
           <SmallTopicPin />
           <Space size={0} />
@@ -92,7 +93,7 @@ const TopicInfo = ({
           <SmallTopicStar />
           <Space size={0} />
           <Text color="black" $fontSize="small" $fontWeight="normal">
-            {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
+            {topicBookmarkCount > 999 ? '+999' : topicBookmarkCount}명
           </Text>
         </Flex>
       </Flex>
@@ -104,22 +105,34 @@ const TopicInfo = ({
       </Text>
       <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
-        {topicOwner}
+        {topicCreator}
       </Text>
       <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicDescription}
       </Text>
+      <Space size={3} />
+      <Text color="gray" $fontSize="small" $fontWeight="normal">
+        {topicUpdatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
+      </Text>
 
       <Space size={3} />
 
       <Flex $justifyContent="center">
-        <AddSeeTogether id={topicId}>
-          <TopicSeeTogetherSVG />
+        <AddSeeTogether
+          isInAtlas={isInAtlas}
+          id={Number(topicId)}
+          setTopicsFromServer={setTopicsFromServer}
+        >
+          {isInAtlas ? (
+            <SeeTogetherSVG width="40px" height="40px" />
+          ) : (
+            <SeeTogetherNotFilledSVG />
+          )}
         </AddSeeTogether>
         <Space size={5} />
-        <AddFavorite id={topicId}>
-          <TopicFavoriteSVG />
+        <AddFavorite id={Number(topicId)}>
+          <FavoriteNotFilledSVG />
         </AddFavorite>
         <Space size={5} />
         <TopicShareUrlSVG cursor="pointer" onClick={copyContent} />

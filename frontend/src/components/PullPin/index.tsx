@@ -3,21 +3,22 @@ import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Tag from '../Tag';
+import { TagProps } from '../../types/Tag';
 
 export interface MergeOrSeeTogetherProps {
-  tag: string[];
+  tags: TagProps[];
   confirmButton: string;
   onClickConfirm: () => void;
   onClickClose: () => void;
 }
 
 const PullPin = ({
-  tag,
+  tags,
   confirmButton,
   onClickConfirm,
   onClickClose,
 }: MergeOrSeeTogetherProps) => {
-  if (tag.length === 0) return <></>;
+  if (tags.length === 0) return <></>;
 
   return (
     <Wrapper
@@ -36,24 +37,24 @@ const PullPin = ({
         $flexWrap="wrap"
         $gap="12px 12px"
       >
-        {tag.length > 2 ? (
+        {tags.length > 2 ? (
           <>
-            <Tag tabIndex={1}>{tag[0]}</Tag>
-            <Tag tabIndex={2}>{tag[1]}</Tag>
-            <Tag tabIndex={3}>외 {String(tag.length - 2)}개</Tag>
+            <Tag tabIndex={1}>{tags[0].title}</Tag>
+            <Tag tabIndex={2}>{tags[1].title}</Tag>
+            <Tag tabIndex={3}>외 {String(tags.length - 2)}개</Tag>
           </>
         ) : (
-          tag.map((title, index) => (
+          tags.map((tag, index) => (
             <Tag
-              key={`${index}-${title}`}
+              key={`${index}-${tag.title}`}
               tabIndex={1}
               aria-label={
                 confirmButton === '같이보기'
-                  ? `선택된 ${title} 토픽 태그`
-                  : `선택된 ${title} 핀 태그`
+                  ? `선택된 ${tag.title} 토픽 태그`
+                  : `선택된 ${tag.title} 핀 태그`
               }
             >
-              {title}
+              {tag.title}
             </Tag>
           ))
         )}
