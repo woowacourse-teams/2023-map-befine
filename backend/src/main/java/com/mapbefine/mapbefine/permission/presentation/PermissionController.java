@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,7 @@ public class PermissionController {
     public ResponseEntity<Void> addPermission(AuthMember authMember, @RequestBody PermissionRequest request) {
         permissionCommandService.savePermission(authMember, request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @LoginRequired
