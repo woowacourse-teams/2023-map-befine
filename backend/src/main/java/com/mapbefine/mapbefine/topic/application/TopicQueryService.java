@@ -1,11 +1,14 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND_EXCEPTION;
+
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.domain.TopicWithBookmarkStatus;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
@@ -58,7 +61,7 @@ public class TopicQueryService {
 
     private TopicDetailResponse findWithoutBookmarkStatus(AuthMember member, Long topicId) {
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+                .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND_EXCEPTION, topicId));
 
         validateReadableTopic(member, topic);
 
@@ -76,7 +79,7 @@ public class TopicQueryService {
     private TopicDetailResponse findWithBookmarkStatus(AuthMember member, Long topicId) {
         TopicWithBookmarkStatus topicWithBookmarkStatus =
                 topicRepository.findWithBookmarkStatusByIdAndMemberId(topicId, member.getMemberId())
-                        .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+                        .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND_EXCEPTION, topicId));
 
         validateReadableTopic(member, topicWithBookmarkStatus.getTopic());
 
