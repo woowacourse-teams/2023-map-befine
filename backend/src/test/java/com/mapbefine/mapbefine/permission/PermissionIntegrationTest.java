@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.permission;
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,9 +21,8 @@ import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.common.mapper.*;
+import io.restassured.response.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,7 +84,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
 
         // when
-        PermissionRequest request = new PermissionRequest(topic.getId(), user1.getId());
+        PermissionRequest request = new PermissionRequest(topic.getId(), List.of(user1.getId()));
 
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
@@ -96,8 +95,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test

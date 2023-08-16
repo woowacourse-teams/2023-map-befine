@@ -10,7 +10,6 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.permission.application.PermissionCommandService;
 import com.mapbefine.mapbefine.permission.application.PermissionQueryService;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
@@ -27,20 +26,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class PermissionControllerTest extends RestDocsIntegration {
 
     @MockBean
-    private PermissionCommandService permissionCommandService;
-    @MockBean
     private PermissionQueryService permissionQueryService;
 
     @Test
     @DisplayName("권한 추가")
     void addPermission() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        PermissionRequest request = new PermissionRequest(1L, 2L);
+        PermissionRequest request = new PermissionRequest(1L, List.of(1L, 2L, 3L));
         String authHeader = Base64.encodeBase64String(
                 ("Basic " + member.getMemberInfo().getEmail()).getBytes()
         );
-
-        given(permissionCommandService.savePermission(any(), any())).willReturn(1L);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/permissions")
