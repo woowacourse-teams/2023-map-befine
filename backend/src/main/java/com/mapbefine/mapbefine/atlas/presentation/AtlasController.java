@@ -6,9 +6,9 @@ import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,17 +22,17 @@ public class AtlasController {
     }
 
     @LoginRequired
-    @PostMapping("/{topicId}")
-    public ResponseEntity<Void> addTopicToAtlas(AuthMember authMember, @PathVariable Long topicId) {
-        atlasCommandService.addTopic(authMember, topicId);
+    @PostMapping("/topics")
+    public ResponseEntity<Void> addTopicToAtlas(AuthMember authMember, @RequestParam Long id) {
+        atlasCommandService.addTopic(authMember, id);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @LoginRequired
-    @DeleteMapping("/{topicId}")
-    public ResponseEntity<Void> removeTopicFromAtlas(AuthMember authMember, @PathVariable Long topicId) {
-        atlasCommandService.removeTopic(authMember, topicId);
+    @DeleteMapping("/topics")
+    public ResponseEntity<Void> removeTopicFromAtlas(AuthMember authMember, @RequestParam Long id) {
+        atlasCommandService.removeTopic(authMember, id);
 
         return ResponseEntity.noContent().build();
     }

@@ -15,8 +15,9 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,8 @@ public class AtlasIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured.given()
                 .log().all()
                 .header(AUTHORIZATION, authHeader)
-                .when().post("/atlas/{topicId}", topicId)
+                .param("id", topicId)
+                .when().post("/atlas/topics")
                 .then().log().all()
                 .extract();
 
@@ -82,7 +84,8 @@ public class AtlasIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured.given()
                 .log().all()
                 .header(AUTHORIZATION, authHeader)
-                .when().delete("/atlas/{topicId}", topicId)
+                .param("id", topicId)
+                .when().delete("/atlas/topics")
                 .then().log().all()
                 .extract();
 

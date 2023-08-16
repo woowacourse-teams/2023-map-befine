@@ -23,10 +23,7 @@ public class BookmarkController {
 
     @LoginRequired
     @PostMapping("/topics")
-    public ResponseEntity<Void> addTopicInBookmark(
-            AuthMember authMember,
-            @RequestParam Long id
-    ) {
+    public ResponseEntity<Void> addTopicInBookmark(AuthMember authMember, @RequestParam Long id) {
         Long bookmarkId = bookmarkCommandService.addTopicInBookmark(authMember, id);
 
         return ResponseEntity.created(URI.create("/bookmarks/topics" + bookmarkId)).build();
@@ -34,10 +31,7 @@ public class BookmarkController {
 
     @LoginRequired
     @DeleteMapping("/topics")
-    public ResponseEntity<Void> deleteTopicInBookmark(
-            AuthMember authMember,
-            @RequestParam Long id
-    ) {
+    public ResponseEntity<Void> deleteTopicInBookmark(AuthMember authMember, @RequestParam Long id) {
         bookmarkCommandService.deleteTopicInBookmark(authMember, id);
 
         return ResponseEntity.noContent().build();
