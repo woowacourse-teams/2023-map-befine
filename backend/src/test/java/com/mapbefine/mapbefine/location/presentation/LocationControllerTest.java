@@ -10,7 +10,6 @@ import com.mapbefine.mapbefine.location.application.LocationQueryService;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,6 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @MockBean
     private LocationQueryService locationQueryService;
-    private final String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
 
     private List<TopicResponse> responses;
 
@@ -67,7 +65,7 @@ class LocationControllerTest extends RestDocsIntegration {
         //then
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/locations/bests")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("latitude", String.valueOf(latitude))
                         .param("longitude", String.valueOf(longitude))

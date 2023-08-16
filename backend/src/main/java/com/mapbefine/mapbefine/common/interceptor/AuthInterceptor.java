@@ -49,9 +49,18 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         if (isLoginRequired((HandlerMethod) handler)) {
             // TODO: 2023/08/11 isMember false이면 403 반환
-            return authService.isMember(memberId);
+            validateMember(memberId);
         }
+
         return true;
+    }
+
+    private void validateMember(Long memberId) {
+        if (authService.isMember(memberId)) {
+            return;
+        }
+
+        throw new IllegalArgumentException("조회되지 않는 회원입니다.");
     }
 
     private boolean isAuthMemberNotRequired(HandlerMethod handlerMethod) {

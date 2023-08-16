@@ -17,7 +17,6 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Image 칼람 추가됨으로 인해 수정 필요
 
-    private static final String AUTH_HEADER = Base64.encodeBase64String("Basic member@naver.com".getBytes());
     private static final List<TopicResponse> RESPONSES = List.of(new TopicResponse(
             1L,
             "준팍의 또 토픽",
@@ -71,7 +69,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/topics/new")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(topicCreateRequest))
         ).andDo(restDocs.document());
@@ -94,7 +92,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/topics/merge")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(topicMergeRequest))
         ).andDo(restDocs.document());
@@ -106,7 +104,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/topics/1/copy?pinIds=1,2,3")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -124,7 +122,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/topics/1")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(topicUpdateRequest))
         ).andDo(restDocs.document());
@@ -136,7 +134,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/topics/1")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -149,7 +147,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -191,7 +189,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/1")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -202,7 +200,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/newest")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -213,7 +211,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/topics/members?id=1")
-                        .header(AUTHORIZATION, AUTH_HEADER)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
