@@ -129,6 +129,7 @@ const SelectedTopic = () => {
                 topicDetail={topicDetail}
                 setSelectedPinId={setSelectedPinId}
                 setIsEditPinDetail={setIsEditPinDetail}
+                setTopicsFromServer={getAndSetDataFromServer}
               />
               {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
             </Fragment>

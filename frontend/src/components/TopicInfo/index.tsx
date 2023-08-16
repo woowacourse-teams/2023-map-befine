@@ -1,7 +1,6 @@
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Image from '../common/Image';
-import Button from '../common/Button';
 import Space from '../common/Space';
 import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
@@ -9,7 +8,6 @@ import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
 import FavoriteNotFilledSVG from '../../assets/topicInfo_favoriteBtn_notFilled.svg';
-import FavoriteSVG from '../../assets/topicInfo_favoriteBtn_filled.svg';
 import SeeTogetherNotFilledSVG from '../../assets/topicInfo_seeTogetherBtn_notFilled.svg';
 import SeeTogetherSVG from '../../assets/topicInfo_seeTogetherBtn_filled.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
@@ -30,6 +28,7 @@ export interface TopicInfoProps {
   topicDescription: string;
   isInAtlas: boolean;
   isBookmarked: boolean;
+  setTopicsFromServer: () => void;
 }
 
 const TopicInfo = ({
@@ -44,6 +43,7 @@ const TopicInfo = ({
   topicDescription,
   isInAtlas,
   isBookmarked,
+  setTopicsFromServer,
 }: TopicInfoProps) => {
   const { routePage } = useNavigator();
   const { showToast } = useToast();
@@ -122,7 +122,11 @@ const TopicInfo = ({
       <Space size={3} />
 
       <Flex $justifyContent="center">
-        <AddSeeTogether isInAtlas={isInAtlas} id={Number(topicId)}>
+        <AddSeeTogether
+          isInAtlas={isInAtlas}
+          id={Number(topicId)}
+          setTopicsFromServer={setTopicsFromServer}
+        >
           {isInAtlas ? (
             <SeeTogetherSVG width="40px" height="40px" />
           ) : (

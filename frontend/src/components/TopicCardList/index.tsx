@@ -11,16 +11,11 @@ const TopicCardList = () => {
   const { markers, removeMarkers } = useContext(MarkerContext);
   const { state: url } = useLocation();
 
-  const setTopicsFromServer = async () => {
-    const topics = await getApi<TopicType[]>('default', '/topics');
-
-    setTopics(topics);
-  };
-
   const getAndSetDataFromServer = async () => {
     const topics = url
       ? await getApi<TopicType[]>('default', url)
       : await getApi<TopicType[]>('default', '/topics');
+
     setTopics(topics);
   };
 
@@ -47,7 +42,7 @@ const TopicCardList = () => {
                     bookmarkCount={topic.bookmarkCount}
                     isInAtlas={topic.isInAtlas}
                     isBookmarked={topic.isBookmarked}
-                    setTopicsFromServer={setTopicsFromServer}
+                    setTopicsFromServer={getAndSetDataFromServer}
                   />
                 </Fragment>
               )

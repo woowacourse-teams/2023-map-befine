@@ -3,7 +3,7 @@ import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
 import Image from '../common/Image';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
