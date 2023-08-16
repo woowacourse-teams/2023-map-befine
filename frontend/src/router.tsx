@@ -91,6 +91,11 @@ const routes: routeElement[] = [
         element: <LoginError />,
         withAuth: false,
       },
+      {
+        path: '/oauth/redirected/kakao',
+        element: <KakaoRedirectPage />,
+        withAuth: false,
+      },
     ],
   },
 ];
