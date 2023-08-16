@@ -16,6 +16,8 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
+import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionBadRequestException;
+import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -57,7 +59,7 @@ class PermissionCommandServiceTest {
                 topic.getId(),
                 List.of(permissionTargetMemberId)
         );
-        permissionCommandService.savePermission(authAdmin, request);
+        permissionCommandService.addPermission(authAdmin, request);
 
         // then
         Member memberWithPermission = memberRepository.findById(permissionTargetMemberId)
@@ -87,7 +89,7 @@ class PermissionCommandServiceTest {
                 topic.getId(),
                 List.of(permissionTargetMemberId)
         );
-        permissionCommandService.savePermission(authCreator, request);
+        permissionCommandService.addPermission(authCreator, request);
 
         // then
         Member memberWithPermission = memberRepository.findById(permissionTargetMemberId)
@@ -120,8 +122,8 @@ class PermissionCommandServiceTest {
         );
 
         // then
-        assertThatThrownBy(() -> permissionCommandService.savePermission(authNotCreator, request))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> permissionCommandService.addPermission(authNotCreator, request))
+                .isInstanceOf(PermissionForbiddenException.class);
     }
 
     @Test
@@ -143,8 +145,8 @@ class PermissionCommandServiceTest {
         );
 
         // then
-        assertThatThrownBy(() -> permissionCommandService.savePermission(guest, request))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> permissionCommandService.addPermission(guest, request))
+                .isInstanceOf(PermissionForbiddenException.class);
     }
 
     @Test
@@ -167,7 +169,7 @@ class PermissionCommandServiceTest {
                 getCreatedTopics(creator),
                 getTopicsWithPermission(creator)
         );
-        permissionCommandService.savePermission(authCreator, request);
+        permissionCommandService.addPermission(authCreator, request);
 
         // then
         assertThat(permissionRepository.existsByTopicIdAndMemberId(topicId, creatorId))
@@ -210,7 +212,7 @@ class PermissionCommandServiceTest {
         );
 
         // then
-        assertDoesNotThrow(() -> permissionCommandService.savePermission(authCreator, request));
+        assertDoesNotThrow(() -> permissionCommandService.addPermission(authCreator, request));
     }
 
     @Test
@@ -283,7 +285,7 @@ class PermissionCommandServiceTest {
 
         // then
         assertThatThrownBy(() -> permissionCommandService.deleteMemberTopicPermission(authNonCreator, savedId))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PermissionForbiddenException.class);
     }
 
     @Test
@@ -305,7 +307,7 @@ class PermissionCommandServiceTest {
 
         // when then
         assertThatThrownBy(() -> permissionCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(PermissionBadRequestException.class);
     }
 
     private List<Long> getTopicsWithPermission(Member member) {

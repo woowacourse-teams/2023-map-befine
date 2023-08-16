@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkForbiddenException;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -96,8 +97,7 @@ class BookmarkCommandServiceTest {
         assertThatThrownBy(() -> bookmarkCommandService.addTopicInBookmark(
                 MemberFixture.createUser(otherMember),
                 topic.getId()
-        )).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("토픽에 대한 권한이 없어서 즐겨찾기에 추가할 수 없습니다.");
+        )).isInstanceOf(BookmarkForbiddenException.class);
     }
 
     @Test
@@ -161,10 +161,8 @@ class BookmarkCommandServiceTest {
         //when then
         AuthMember otherUser = MemberFixture.createUser(otherMember);
 
-        assertThatThrownBy(
-                () -> bookmarkCommandService.deleteTopicInBookmark(otherUser, topic.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("즐겨찾기 삭제에 대한 권한이 없습니다.");
+        assertThatThrownBy(() -> bookmarkCommandService.deleteTopicInBookmark(otherUser, topic.getId()))
+                .isInstanceOf(BookmarkForbiddenException.class);
     }
 
     @Test
