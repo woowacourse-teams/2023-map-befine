@@ -22,7 +22,14 @@ const Map = (props: any, ref: any) => {
   useAnimateClickedPin(map, markers);
 
   return (
-    <MapFlex flex="1" id="map" ref={ref} height="100vh" $minWidth={width} />
+    <MapFlex
+      aria-hidden={true}
+      flex="1"
+      id="map"
+      ref={ref}
+      height="100vh"
+      $minWidth={width}
+    />
   );
 };
 

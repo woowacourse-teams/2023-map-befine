@@ -166,6 +166,7 @@ const NewTopic = () => {
           placeholder="이미지 URL을 입력해주세요."
           onChangeInput={onChangeInput}
           tabIndex={1}
+          autoFocus
           errorMessage={errorMessages.image}
           maxLength={2048}
         />
@@ -180,7 +181,6 @@ const NewTopic = () => {
           onChangeInput={onChangeInput}
           tabIndex={2}
           errorMessage={errorMessages.name}
-          autoFocus
           maxLength={20}
         />
         <Space size={1} />
@@ -210,6 +210,7 @@ const NewTopic = () => {
               value="public"
               checked={!isPrivate}
               onChange={() => setIsPrivate(false)}
+              tabIndex={4}
             />
             <label htmlFor="public">같이볼지도</label>
           </div>
@@ -222,6 +223,7 @@ const NewTopic = () => {
               value="private"
               checked={isPrivate}
               onChange={() => setIsPrivate(true)}
+              tabIndex={4}
             />
             <label htmlFor="private">혼자볼지도</label>
           </div>
@@ -243,6 +245,7 @@ const NewTopic = () => {
               onChange={() => {
                 setIsAll(true);
               }}
+              tabIndex={5}
             />
             {isPrivate ? (
               <label htmlFor="ALL_MEMBERS">혼자</label>
@@ -263,6 +266,7 @@ const NewTopic = () => {
                 openModal('newTopic');
                 setCheckedMemberIds([]);
               }}
+              tabIndex={5}
             />
             <label htmlFor="GROUP_ONLY">지정 인원</label>
           </div>
@@ -309,7 +313,7 @@ const NewTopic = () => {
               <Space size={1} />
               <Flex $justifyContent="end" padding={'12px'} bottom="0px">
                 <Button
-                  tabIndex={5}
+                  tabIndex={6}
                   type="button"
                   variant="secondary"
                   onClick={() => {
@@ -322,7 +326,7 @@ const NewTopic = () => {
                 </Button>
                 <Space size={3} />
                 <Button
-                  tabIndex={4}
+                  tabIndex={6}
                   variant="primary"
                   onClick={() => {
                     closeModal('newTopic');
@@ -338,15 +342,15 @@ const NewTopic = () => {
         <Space size={6} />
         <Flex $justifyContent="end">
           <Button
-            tabIndex={5}
+            tabIndex={7}
             type="button"
             variant="secondary"
             onClick={goToBack}
           >
             취소하기
           </Button>
-          <Space size={3} />
-          <Button tabIndex={4} variant="primary">
+          <Space size={7} />
+          <Button tabIndex={7} variant="primary">
             생성하기
           </Button>
         </Flex>

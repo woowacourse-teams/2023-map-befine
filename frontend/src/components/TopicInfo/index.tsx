@@ -131,7 +131,11 @@ const TopicInfo = ({
           )}
         </AddSeeTogether>
         <Space size={5} />
-        <AddFavorite id={Number(topicId)}>
+        <AddFavorite
+          isBookmarked={isBookmarked}
+          id={Number(topicId)}
+          setTopicFromServer={setTopicsFromServer}
+        >
           <FavoriteNotFilledSVG />
         </AddFavorite>
         <Space size={5} />
