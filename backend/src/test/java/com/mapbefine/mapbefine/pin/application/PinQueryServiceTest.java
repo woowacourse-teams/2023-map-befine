@@ -19,12 +19,13 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,7 +116,7 @@ class PinQueryServiceTest {
     void findDetailById_FailByNonExisting() {
         // given, when, then
         assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, 1L))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(PinNotFoundException.class);
     }
 
     @Test
@@ -126,7 +127,7 @@ class PinQueryServiceTest {
 
         // when, then
         assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, pin.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinForbiddenException.class);
     }
 
     @Test

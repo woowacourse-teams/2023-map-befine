@@ -1,11 +1,11 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
-import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE;
-import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_TOPIC_ID;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_CREATE;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_DELETE;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_UPDATE;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_TOPIC_ID;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -188,7 +188,7 @@ public class TopicCommandService {
         if (member.canPinCreateOrUpdate(topic)) {
             return;
         }
-        throw new PinForbiddenException(FORBIDDEN_PIN_CREATE);
+        throw new PinForbiddenException(FORBIDDEN_PIN_CREATE_OR_UPDATE);
     }
 
     private void validateCopyPinSelected(List<Long> pinIds) {

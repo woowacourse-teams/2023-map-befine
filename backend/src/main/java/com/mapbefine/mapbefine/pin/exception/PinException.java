@@ -19,4 +19,14 @@ public class PinException {
             super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
     }
+
+
+    public static class PinNotFoundException extends ForbiddenException {
+
+        public PinNotFoundException(PinErrorCode errorCode) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+        }
+    }
+
+
 }

@@ -1,7 +1,13 @@
 package com.mapbefine.mapbefine.pin.domain;
 
+
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_DESCRIPTION_LENGTH;
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_DESCRIPTION_NULL;
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_NAME_LENGTH;
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_NAME_NULL;
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Lob;
@@ -38,19 +44,19 @@ public class PinInfo {
 
     private static void validateName(String name) {
         if (Objects.isNull(name)) {
-            throw new IllegalArgumentException("핀 이름은 필수입니다.");
+            throw new PinBadRequestException(ILLEGAL_NAME_NULL);
         }
         if (name.isBlank() || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("핀 이름의 길이는 1자 이상 " + MAX_NAME_LENGTH + "자 이하여야 합니다.");
+            throw new PinBadRequestException(ILLEGAL_NAME_LENGTH);
         }
     }
 
     private static void validateDescription(String description) {
         if (Objects.isNull(description)) {
-            throw new IllegalArgumentException("핀 설명은 필수입니다.");
+            throw new PinBadRequestException(ILLEGAL_DESCRIPTION_NULL);
         }
         if (description.isBlank() || description.length() > MAX_DESCRIPTION_LENGTH) {
-            throw new IllegalArgumentException("핀 설명의 길이는 1자 이상 " + MAX_NAME_LENGTH + "자 이하여야 합니다.");
+            throw new PinBadRequestException(ILLEGAL_DESCRIPTION_LENGTH);
         }
     }
 }
