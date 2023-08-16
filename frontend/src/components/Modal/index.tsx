@@ -86,6 +86,7 @@ const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
   position: fixed;
   top: 0;
   background-color: ${({ $dimmedColor }) => $dimmedColor};
+  z-index: 2;
 `;
 
 const translateModalAnimation = keyframes`
