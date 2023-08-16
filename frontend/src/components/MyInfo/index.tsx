@@ -55,9 +55,6 @@ const MyInfo = () => {
           {myInfoNameAndEmail.email}
         </Text>
       </Box>
-      <MyInfoModifyIcon>
-        <ModifyMyInfoIcon onClick={onModifyInfo} />
-      </MyInfoModifyIcon>
     </MyInfoContainer>
   );
 };
@@ -72,12 +69,6 @@ const MyInfoImg = styled.img`
   height: 80px;
 
   border-radius: 50%;
-`;
-
-const MyInfoModifyIcon = styled(Box)`
-  position: absolute;
-  right: 32px;
-  top: 32px;
 `;
 
 export default MyInfo;
