@@ -14,8 +14,6 @@ import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 
-const FAVORITE_COUNT = 10;
-
 export interface TopicInfoProps {
   fullUrl?: string;
   topicId: string;
@@ -84,11 +82,6 @@ const TopicInfo = ({
       <Space size={1} />
 
       <Flex>
-        <Flex $alignItems="center" width="76px">
-          <Text color="black" $fontSize="small" $fontWeight="normal">
-            👨‍💻 {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
-          </Text>
-        </Flex>
         <Flex $alignItems="center" width="72px">
           <SmallTopicPin />
           <Space size={0} />
@@ -100,7 +93,7 @@ const TopicInfo = ({
           <SmallTopicStar />
           <Space size={0} />
           <Text color="black" $fontSize="small" $fontWeight="normal">
-            {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
+            {topicBookmarkCount > 999 ? '+999' : topicBookmarkCount}명
           </Text>
         </Flex>
       </Flex>
@@ -117,6 +110,10 @@ const TopicInfo = ({
       <Space size={1} />
       <Text color="black" $fontSize="small" $fontWeight="normal">
         {topicDescription}
+      </Text>
+      <Space size={3} />
+      <Text color="gray" $fontSize="small" $fontWeight="normal">
+        {topicUpdatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
       </Text>
 
       <Space size={3} />

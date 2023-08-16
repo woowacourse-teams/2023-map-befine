@@ -4,7 +4,7 @@ import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { SeeTogetherContext } from '../context/SeeTogetherContext';
 import Text from '../components/common/Text';
-import SeeTogetherSVG from '../assets/seeTogetherBtn_filled.svg';
+import SeeTogetherNotFilledSVG from '../assets/seeTogetherBtn_notFilled.svg';
 import { styled } from 'styled-components';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
@@ -62,7 +62,7 @@ const SeeTogetherTopics = () => {
     return (
       <WrapperWhenEmpty width={width}>
         <Flex $alignItems="center">
-          <SeeTogetherSVG />
+          <SeeTogetherNotFilledSVG />
           <Space size={1} />
           <Text color="black" $fontSize="default" $fontWeight="normal">
             버튼을 눌러 지도를 추가해보세요.

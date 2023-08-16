@@ -3,14 +3,23 @@ import { SeeTogetherContext } from '../../context/SeeTogetherContext';
 import { keyframes, styled } from 'styled-components';
 import { getApi } from '../../apis/getApi';
 import { TopicType } from '../../types/Topic';
+import useToast from '../../hooks/useToast';
 
 const SeeTogetherCounter = () => {
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
+  const { showToast } = useToast();
 
   const getSeeTogetherTopics = async () => {
-    const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
-    setSeeTogetherTopics(topics);
+    try {
+      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+      setSeeTogetherTopics(topics);
+    } catch {
+      showToast(
+        'error',
+        '로그인 정보가 만료되었습니다. 로그아웃 후 다시 로그인 해주세요.',
+      );
+    }
   };
 
   useEffect(() => {

@@ -46,7 +46,7 @@ const AddSeeTogether = ({
     } catch {
       showToast(
         'error',
-        '모아보기 추가에 실패했습니다. 네트워크를 확인해주세요',
+        '모아보기 추가에 실패했습니다. 로그인 후 사용해주세요.',
       );
     }
   };
