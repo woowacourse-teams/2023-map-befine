@@ -30,8 +30,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class PinControllerTest extends RestDocsIntegration {
 
-    private static final String BASIC_FORMAT = "Basic %s";
-
     private static final List<String> BASE_IMAGES = List.of("https://map-befine-official.github.io/favicon.png");
 
     @MockBean
@@ -44,9 +42,6 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 추가")
     void add() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
         given(pinCommandService.save(any(), any())).willReturn(1L);
 
         PinCreateRequest pinCreateRequest = new PinCreateRequest(
@@ -61,7 +56,7 @@ class PinControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/pins")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pinCreateRequest))
         ).andDo(restDocs.document());
@@ -71,9 +66,6 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 수정")
     void update() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
 
         PinUpdateRequest pinUpdateRequest = new PinUpdateRequest(
                 "매튜의 안갈집",
@@ -82,7 +74,7 @@ class PinControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/pins/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pinUpdateRequest))
         ).andDo(restDocs.document());
@@ -92,13 +84,10 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 삭제")
     void delete() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/pins/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -106,9 +95,6 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 상세 조회")
     void findById() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
 
         PinDetailResponse pinDetailResponse = new PinDetailResponse(
                 1L,
@@ -126,7 +112,7 @@ class PinControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document(
                 requestHeaders(
                         headerWithName(AUTHORIZATION).optional().description("Optional")
@@ -138,9 +124,6 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 목록 조회")
     void findAll() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
 
         List<PinResponse> pinResponses = List.of(
                 new PinResponse(
@@ -166,7 +149,7 @@ class PinControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document(
                 requestHeaders(
                         headerWithName(AUTHORIZATION).optional().description("Optional")
@@ -177,9 +160,6 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 이미지 추가")
     void addImage() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
 
         PinImageCreateRequest pinImageCreateRequest = new PinImageCreateRequest(
                 1L,
@@ -188,7 +168,7 @@ class PinControllerTest extends RestDocsIntegration {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/pins/images")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pinImageCreateRequest))
         ).andDo(restDocs.document());
@@ -198,13 +178,10 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 이미지 삭제")
     void removeImage() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/pins/images/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andDo(restDocs.document());
     }
@@ -214,9 +191,6 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("멤버 Id를 입력하면 해당 멤버가 만든 핀 목록을 조회할 수 있다.")
     void findAllPinsByMemberId() throws Exception {
         Member member = MemberFixture.create("member", "member@naver.com", Role.ADMIN);
-        String authHeader = Base64.encodeBase64String(
-                String.format(BASIC_FORMAT, member.getMemberInfo().getEmail()).getBytes()
-        );
 
         List<PinResponse> pinResponses = List.of(
                 new PinResponse(
@@ -243,7 +217,7 @@ class PinControllerTest extends RestDocsIntegration {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/pins/members?id=1")
 
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 

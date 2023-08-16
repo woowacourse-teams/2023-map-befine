@@ -4,7 +4,9 @@ import static org.apache.http.HttpHeaders.AUTHORIZATION;
 
 import com.mapbefine.mapbefine.atlas.application.AtlasCommandService;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
+import com.mapbefine.mapbefine.common.TestAuthHeaderProvider;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,15 +17,13 @@ class AtlasControllerTest extends RestDocsIntegration {
     @MockBean
     private AtlasCommandService atlasCommandService;
 
-    private final String authHeader = Base64.encodeBase64String("Basic member@naver.com".getBytes());
-
     @Test
     @DisplayName("모아보기에 지도를 추가한다")
     void addTopicToAtlas() throws Exception {
         // then
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/atlas/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
@@ -33,7 +33,7 @@ class AtlasControllerTest extends RestDocsIntegration {
         // then
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/atlas/1")
-                        .header(AUTHORIZATION, authHeader)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
 
