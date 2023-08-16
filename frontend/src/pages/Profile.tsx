@@ -7,9 +7,12 @@ import MyInfo from '../components/MyInfo';
 import MyInfoContainer from '../components/MyInfoContainer';
 import useNavigator from '../hooks/useNavigator';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { FULLSCREEN } from '../constants';
 
 const Profile = () => {
   const { routePage } = useNavigator();
+  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
   const { navbarHighlights: __ } = useSetNavbarHighlight('profile');
 
   const goToPopularTopics = () => {
