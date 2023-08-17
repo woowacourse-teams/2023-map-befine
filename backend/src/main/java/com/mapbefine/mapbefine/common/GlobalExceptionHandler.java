@@ -23,7 +23,6 @@ public class GlobalExceptionHandler {
         this.objectMapper = objectMapper;
     }
 
-
     @ExceptionHandler(GlobalException.class)
     public ResponseEntity<ErrorResponse> handle(
             GlobalException exception,
