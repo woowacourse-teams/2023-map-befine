@@ -32,7 +32,6 @@ const PinDetail = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<any>(null); //토픽이 없을 때 사용하는 변수
-  console.log(selectedTopic);
   const { showToast } = useToast();
   const {
     formValues,

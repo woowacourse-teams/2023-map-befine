@@ -23,7 +23,7 @@ const AddToMyTopicList = ({ pin }: any) => {
   useEffect(() => {
     getMyTopicFromServer();
   }, []);
-  console.log(pin, 'PIN');
+
   const addPinToTopic = async (topicId: any) => {
     try {
       await postApi(`/pins`, {
@@ -38,8 +38,7 @@ const AddToMyTopicList = ({ pin }: any) => {
       closeModal('addToMyTopicList');
       showToast('info', '내 지도에 핀이 추가되었습니다.');
     } catch (error) {
-      console.log(error);
-      //showToast('error', '내 지도에 핀 추가를 실패했습니다.');
+      showToast('error', '내 지도에 핀 추가를 실패했습니다.');
     }
   };
   if (!myTopics) return <></>;
@@ -63,9 +62,11 @@ const AddToMyTopicList = ({ pin }: any) => {
 };
 
 const ModalMyTopicListWrapper = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  grid-row-gap: ${({ theme }) => theme.spacing[5]};
+  width: 684px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 `;
 
 export default AddToMyTopicList;

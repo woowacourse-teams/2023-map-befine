@@ -100,6 +100,10 @@ const SelectedTopic = () => {
     setIsOpen(true);
   }, [searchParams]);
 
+  useEffect(() => {
+    setTags([]);
+  }, []);
+
   const togglePinDetail = () => {
     setIsOpen(!isOpen);
   };
@@ -113,7 +117,7 @@ const SelectedTopic = () => {
         width={`calc(${width} - ${LAYOUT_PADDING})`}
         $flexDirection="column"
       >
-        <Space size={2} />
+        <Space size={3} />
         {tags.length > 0 && (
           <PullPin
             tags={tags}

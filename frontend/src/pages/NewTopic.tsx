@@ -12,7 +12,7 @@ import useToast from '../hooks/useToast';
 import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { DEFAULT_TOPIC_IMAGE, LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import Modal from '../components/Modal';
 import { styled } from 'styled-components';
@@ -20,11 +20,9 @@ import { ModalContext } from '../context/ModalContext';
 import { getApi } from '../apis/getApi';
 import { Member } from '../types/Login';
 import Checkbox from '../components/common/CheckBox';
+import { TagContext } from '../context/TagContext';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
-
-const DEFAULT_IMAGE =
-  'https://velog.velcdn.com/images/semnil5202/post/37dae18f-9860-4483-bad5-1158a210e5a8/image.svg';
 
 const NewTopic = () => {
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
@@ -41,6 +39,7 @@ const NewTopic = () => {
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
+  const { setTags } = useContext(TagContext);
 
   const [members, setMembers] = useState<Member[]>([]);
 
@@ -123,9 +122,7 @@ const NewTopic = () => {
 
   //header의 location으로 받아온 topicId에 권한 추가 기능
   const addAuthority = async (topicId: any) => {
-    console.log('ADDAUTHORITY1');
     if (isAll && !isPrivate) return; // 모두 권한 준거면 return
-    console.log('ADDAUTHORITY2');
 
     const response = await postApi(`/permissions`, {
       topicId: topicId,
@@ -138,7 +135,7 @@ const NewTopic = () => {
     showToast('info', `${formValues.name} 토픽을 병합하였습니다.`);
 
     return await postApi('/topics/merge', {
-      image: formValues.image || DEFAULT_IMAGE,
+      image: formValues.image || DEFAULT_TOPIC_IMAGE,
       name: formValues.name,
       description: formValues.description,
       topics: taggedIds,
@@ -150,7 +147,7 @@ const NewTopic = () => {
   const createTopic = async () => {
     showToast('info', `${formValues.name} 토픽을 생성하였습니다.`);
     const response = await postApi('/topics/new', {
-      image: formValues.image || DEFAULT_IMAGE,
+      image: formValues.image || DEFAULT_TOPIC_IMAGE,
       name: formValues.name,
       description: formValues.description,
       pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
@@ -342,7 +339,9 @@ const NewTopic = () => {
                 >
                   취소하기
                 </Button>
+
                 <Space size={3} />
+
                 <Button
                   tabIndex={6}
                   variant="primary"
@@ -367,8 +366,14 @@ const NewTopic = () => {
           >
             취소하기
           </Button>
-          <Space size={7} />
-          <Button tabIndex={7} variant="primary">
+          <Space size={3} />
+          <Button
+            tabIndex={7}
+            variant="primary"
+            onClick={() => {
+              setTags([]);
+            }}
+          >
             생성하기
           </Button>
         </Flex>

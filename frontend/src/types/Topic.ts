@@ -14,6 +14,7 @@ export interface TopicType {
 
 export interface TopicDetailType {
   id: number;
+  image: string;
   name: string;
   creator: string;
   description: string;

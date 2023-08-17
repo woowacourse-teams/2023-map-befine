@@ -32,7 +32,7 @@ type NewPinFormValueType = Pick<
 const NewPin = () => {
   const { state: topicId } = useLocation();
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
-  const [topic, setTopic] = useState<TopicType | null>(null);
+  const [topic, setTopic] = useState<any>(null);
   const [selectedTopic, setSelectedTopic] = useState<any>(null);
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
@@ -61,6 +61,10 @@ const NewPin = () => {
       postTopicId = selectedTopic?.topicId;
     }
 
+    if (topic?.length > 1) {
+      postTopicId = selectedTopic.topicId;
+    }
+
     await postApi('/pins', {
       topicId: postTopicId,
       name: postName,
@@ -86,34 +90,42 @@ const NewPin = () => {
       return;
     }
 
-    await postToServer();
+    try {
+      await postToServer();
 
-    showToast('info', `${formValues.name} 핀을 추가하였습니다.`);
+      showToast('info', `${formValues.name} 핀을 추가하였습니다.`);
 
-    // 선택된 마커가 있으면 마커를 지도에서 제거
-    if (clickedMarker) {
-      clickedMarker.setMap(null);
+      // 선택된 마커가 있으면 마커를 지도에서 제거
+      if (clickedMarker) {
+        clickedMarker.setMap(null);
+      }
+
+      setClickedCoordinate({
+        latitude: '',
+        longitude: '',
+        address: '',
+      });
+
+      if (topicId && topicId.length > 1) {
+        routePage(`/topics/${topicId}`, [topic!.id]);
+        return;
+      }
+      let postTopicId = topic?.id;
+      let postName = formValues.name;
+
+      if (!topic) {
+        //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
+        postTopicId = selectedTopic?.topicId;
+        postName = selectedTopic?.topicTitle;
+      }
+
+      if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
+    } catch {
+      showToast(
+        'error',
+        '핀 추가에 실패하였습니다. 입력하신 항목을 확인해주세요.',
+      );
     }
-
-    setClickedCoordinate({
-      latitude: '',
-      longitude: '',
-      address: '',
-    });
-
-    if (topicId && topicId.length > 1) {
-      routePage(`/topics/${topicId}`, [topic!.id]);
-      return;
-    }
-    let postTopicId = topic?.id;
-    let postName = formValues.name;
-
-    if (!topic) {
-      //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
-      postTopicId = selectedTopic?.topicId;
-      postName = selectedTopic?.topicTitle;
-    }
-    routePage(`/topics/${postTopicId}`, [postTopicId]);
   };
 
   const onClickAddressInput = (
@@ -152,9 +164,19 @@ const NewPin = () => {
 
   useEffect(() => {
     const getTopicId = async () => {
-      if (topicId) {
-        const data = await getApi('default', `/topics/${topicId}`);
+      if (topicId && topicId.split(',').length === 1) {
+        const data = await getApi<TopicType>('default', `/topics/${topicId}`);
+
         setTopic(data);
+      }
+
+      if (topicId && topicId.split(',').length > 1) {
+        const topics = await getApi<any>(
+          'default',
+          `/topics/ids?ids=${topicId}`,
+        );
+
+        setTopic(topics);
       }
     };
 
@@ -291,7 +313,7 @@ const NewPin = () => {
             핀을 저장할 지도를 선택해주세요.
           </Text>
           <Space size={4} />
-          <ModalMyTopicList topicClick={setSelectedTopic} />
+          <ModalMyTopicList topicId={topicId} topicClick={setSelectedTopic} />
         </ModalContentsWrapper>
       </Modal>
     </>

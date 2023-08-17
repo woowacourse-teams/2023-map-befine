@@ -44,7 +44,9 @@ const Bookmark = () => {
     getBookmarksFromServer();
   }, []);
 
-  if ((bookmarks && bookmarks.length === 0) || !bookmarks) {
+  if (!bookmarks) return <></>;
+
+  if (bookmarks.length === 0) {
     return (
       <WrapperWhenEmpty width={width}>
         <Flex $alignItems="center">
@@ -125,7 +127,7 @@ const PointerText = styled(Text)`
 `;
 
 const BookMarksWrapper = styled(Box)`
-  width: 70vw;
+  width: 1036px;
   margin: 0 auto;
 `;
 

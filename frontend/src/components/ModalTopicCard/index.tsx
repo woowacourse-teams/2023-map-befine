@@ -60,7 +60,12 @@ const ModalTopicCard = ({
           }}
         />
 
-        <Box width="192px" padding={1}>
+        <Flex
+          $alignItems="flex-start"
+          $flexDirection="column"
+          width="192px"
+          padding={1}
+        >
           <Box height="52px">
             <Text color="black" $fontSize="default" $fontWeight="bold">
               {topicTitle}
@@ -95,7 +100,7 @@ const ModalTopicCard = ({
               </Text>
             </Flex>
           </Flex>
-        </Box>
+        </Flex>
       </Flex>
     </Wrapper>
   );
@@ -107,16 +112,6 @@ const Wrapper = styled.li`
   cursor: pointer;
   border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  width: 72px;
-
-  top: 100px;
-  left: 60px;
 `;
 
 const TopicImage = styled(Image)`
