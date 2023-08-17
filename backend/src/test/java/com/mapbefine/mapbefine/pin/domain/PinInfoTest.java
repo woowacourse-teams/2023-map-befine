@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ class PinInfoTest {
 
         // when, then
         assertThatThrownBy(() -> PinInfo.of(input, validDescription))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinBadRequestException.class);
     }
 
     @Test
@@ -58,7 +59,7 @@ class PinInfoTest {
 
         // when, then
         assertThatThrownBy(() -> PinInfo.of(invalidName, validDescription))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinBadRequestException.class);
     }
 
     @ParameterizedTest
@@ -71,7 +72,7 @@ class PinInfoTest {
 
         // when, then
         assertThatThrownBy(() -> PinInfo.of(validName, input))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinBadRequestException.class);
     }
 
     @Test
@@ -83,7 +84,7 @@ class PinInfoTest {
 
         //when, then
         assertThatThrownBy(() -> PinInfo.of(validName, invalidDescription))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinBadRequestException.class);
     }
 
 }

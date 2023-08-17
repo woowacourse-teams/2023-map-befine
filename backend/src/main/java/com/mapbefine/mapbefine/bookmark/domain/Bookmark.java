@@ -1,5 +1,9 @@
 package com.mapbefine.mapbefine.bookmark.domain;
 
+import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.ILLEGAL_MEMBER_ID;
+import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.ILLEGAL_TOPIC_ID;
+
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkBadRequestException;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.Entity;
@@ -46,8 +50,11 @@ public class Bookmark {
     }
 
     private static void validateNotNull(Topic topic, Member member) {
-        if (Objects.isNull(topic) || Objects.isNull(member)) {
-            throw new IllegalArgumentException("지도와 유저는 Null이어선 안됩니다.");
+        if (Objects.isNull(topic)) {
+            throw new BookmarkBadRequestException(ILLEGAL_TOPIC_ID);
+        }
+        if (Objects.isNull(member)) {
+            throw new BookmarkBadRequestException(ILLEGAL_MEMBER_ID);
         }
     }
 

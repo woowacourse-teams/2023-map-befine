@@ -6,14 +6,14 @@ import { deleteApi } from '../../apis/deleteApi';
 interface AddFavoriteProps {
   id: number;
   isBookmarked: boolean;
-  setTopicFromServer: () => void;
+  setTopicsFromServer: () => void;
   children: React.ReactNode;
 }
 
 const AddFavorite = ({
   id,
   isBookmarked,
-  setTopicFromServer,
+  setTopicsFromServer,
   children,
 }: AddFavoriteProps) => {
   const { showToast } = useToast();
@@ -24,14 +24,11 @@ const AddFavorite = ({
     try {
       await postApi(`/bookmarks/topics?id=${id}`, {}, 'x-www-form-urlencoded');
 
-      setTopicFromServer();
+      setTopicsFromServer();
 
       showToast('info', '즐겨찾기에 추가되었습니다.');
     } catch {
-      showToast(
-        'error',
-        '즐겨찾기 추가에 실패했습니다. 로그인 후 사용해주세요.',
-      );
+      showToast('error', '로그인 후 사용해주세요.');
     }
   };
 
@@ -41,19 +38,16 @@ const AddFavorite = ({
     try {
       await deleteApi(`/bookmarks/topics?id=${id}`, 'x-www-form-urlencoded');
 
-      setTopicFromServer();
+      setTopicsFromServer();
 
       showToast('info', '해당 지도를 즐겨찾기에서 제외했습니다.');
     } catch {
-      showToast(
-        'error',
-        '즐겨찾기 추가에 실패했습니다. 로그인 후 사용해주세요.',
-      );
+      showToast('error', '로그인 후 사용해주세요.');
     }
 
     await deleteApi(`/bookmarks/topics?id=${id}`, 'x-www-form-urlencoded');
 
-    setTopicFromServer();
+    setTopicsFromServer();
 
     showToast('info', '해당 지도를 즐겨찾기에서 제외했습니다.');
   };

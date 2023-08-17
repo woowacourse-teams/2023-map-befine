@@ -11,6 +11,7 @@ export const handleOAuthKakao = async (code: string) => {
 
     localStorage.setItem('userToken', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.member));
+    location.reload();
   } catch (error) {
     window.alert('로그인 실패');
   }
@@ -19,25 +20,24 @@ export const handleOAuthKakao = async (code: string) => {
 const KakaoRedirectPage = () => {
   const { routePage } = useNavigator();
 
-  const location = useLocation();
+  const routerLocation = useLocation();
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
+    const searchParams = new URLSearchParams(routerLocation.search);
     const code = searchParams.get('code');
-    const ab = async (code: string) => {
+    const getCode = async (code: string) => {
       await handleOAuthKakao(code);
     };
+
     if (code) {
-      ab(code);
+      getCode(code);
       routePage('/');
     }
-  }, [location]);
+  }, [routerLocation]);
 
   return (
     <KakaoRedirectPageWrapper>
-      <div>매튜도이매튜도이매튜도이</div>
       <Loader />
-      <div>매튜도이매튜도이매튜도이</div>
     </KakaoRedirectPageWrapper>
   );
 };

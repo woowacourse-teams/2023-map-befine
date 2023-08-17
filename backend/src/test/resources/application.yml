@@ -23,6 +23,8 @@ logging:
     org.hibernate.orm.jdbc.bind: trace
     org.hibernate.type: trace
     org.hibernate.stat: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %msg %n"
 
 oauth:
   kakao:

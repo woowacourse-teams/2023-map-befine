@@ -3,7 +3,7 @@ import Flex from '../common/Flex';
 import Box from '../common/Box';
 import Text from '../common/Text';
 import Space from '../common/Space';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MyInfoType } from '../../types/MyInfo';
 import UpdateMyInfo from './UpdateMyInfo';
 
@@ -13,8 +13,8 @@ const MyInfo = () => {
   const [isThereImg, setIsThereImg] = useState<boolean>(true);
   const [isModifyMyInfo, setIsModifyMyInfo] = useState<boolean>(false);
   const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<MyInfoType>({
-    name: 'Patrick',
-    email: 'qkrtk9230@naver.com',
+    name: user.nickName,
+    email: user.email,
   });
 
   if (isModifyMyInfo) {
@@ -40,10 +40,10 @@ const MyInfo = () => {
       <Space size={7} />
       <Box>
         <Text color="black" $fontSize="default" $fontWeight="normal">
-          {myInfoNameAndEmail.name}
+          {user.nickName}
         </Text>
         <Text color="black" $fontSize="small" $fontWeight="normal">
-          {myInfoNameAndEmail.email}
+          {user.email}
         </Text>
       </Box>
     </MyInfoContainer>

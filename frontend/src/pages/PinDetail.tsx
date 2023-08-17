@@ -14,10 +14,10 @@ import Button from '../components/common/Button';
 import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import { ModalContext } from '../context/ModalContext';
-import ModalMyTopicList from '../components/ModalMyTopicList';
+import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 
 interface PinDetailProps {
-  topicId: number;
+  topicId: string;
   pinId: number;
   isEditPinDetail: boolean;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,6 +31,7 @@ const PinDetail = ({
 }: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<any>(null); //토픽이 없을 때 사용하는 변수
   const { showToast } = useToast();
   const {
     formValues,
@@ -44,17 +45,6 @@ const PinDetail = ({
     description: '',
   });
   const { openModal } = useContext(ModalContext);
-
-  useEffect(() => {
-    const checkTopicAuthority = async () => {
-      const topicAuthority = await getApi<any>(
-        'default',
-        `/permissions/topics/${topicId}`,
-      );
-      return topicAuthority.data;
-    };
-    const topicAuthorityList = checkTopicAuthority();
-  }, [topicId]);
 
   useEffect(() => {
     const getPinData = async () => {
@@ -183,17 +173,11 @@ const PinDetail = ({
         </Text>
       </Flex>
 
-      <Flex
-        width="332px"
-        height="48px"
-        $justifyContent="center"
-        position="fixed"
-        bottom="24px"
-      >
+      <ButtonsWrapper>
         <SaveToMyMapButton
           variant="primary"
           onClick={() => {
-            openModal('saveMyMap');
+            openModal('addToMyTopicList');
           }}
         >
           내 지도에 저장하기
@@ -202,10 +186,10 @@ const PinDetail = ({
         <ShareButton variant="secondary" onClick={copyContent}>
           공유하기
         </ShareButton>
-      </Flex>
+      </ButtonsWrapper>
 
       <Modal
-        modalKey="saveMyMap"
+        modalKey="addToMyTopicList"
         position="center"
         width="768px"
         height="512px"
@@ -220,7 +204,7 @@ const PinDetail = ({
             핀을 저장할 지도를 선택해주세요.
           </Text>
           <Space size={4} />
-          <ModalMyTopicList />
+          <AddToMyTopicList pin={pin} />
         </ModalContentsWrapper>
       </Modal>
     </>
@@ -253,6 +237,16 @@ const ModalContentsWrapper = styled.div`
   text-align: center;
 
   overflow: scroll;
+`;
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 332px;
+  height: 48px;
+  position: fixed;
+  bottom: 24px;
 `;
 
 export default PinDetail;

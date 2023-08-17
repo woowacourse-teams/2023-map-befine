@@ -1,4 +1,3 @@
-import SeeAllCardList from '../components/SeeAllCardList';
 import Text from '../components/common/Text';
 import Space from '../components/common/Space';
 import { styled } from 'styled-components';
@@ -6,8 +5,12 @@ import Box from '../components/common/Box';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import { Suspense, lazy } from 'react';
+import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
 
-const url = '/topics';
+const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
+
+const url = '/topics/bests';
 
 const SeeAllTopics = () => {
   const { width: _ } = useSetLayoutWidth(FULLSCREEN);
@@ -15,13 +18,16 @@ const SeeAllTopics = () => {
 
   return (
     <Wrapper>
+      <Space size={5} />
       <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
         인기 급상승할 지도?
       </Text>
 
-      <Space size={4} />
+      <Space size={5} />
 
-      <SeeAllCardList url={url} />
+      <Suspense fallback={<TopicCardListSkeleton />}>
+        <SeeAllCardList url={url} />
+      </Suspense>
     </Wrapper>
   );
 };

@@ -8,8 +8,8 @@ import {
 import { TopicType } from '../types/Topic';
 
 interface SeeTogetherContextProps {
-  seeTogetherTopics: TopicType[];
-  setSeeTogetherTopics: Dispatch<SetStateAction<TopicType[]>>;
+  seeTogetherTopics: TopicType[] | null;
+  setSeeTogetherTopics: Dispatch<SetStateAction<TopicType[] | null>>;
 }
 
 interface SeeTogetherProviderProps {
@@ -22,7 +22,9 @@ export const SeeTogetherContext = createContext<SeeTogetherContextProps>({
 });
 
 const SeeTogetherProvider = ({ children }: SeeTogetherProviderProps) => {
-  const [seeTogetherTopics, setSeeTogetherTopics] = useState<TopicType[]>([]);
+  const [seeTogetherTopics, setSeeTogetherTopics] = useState<
+    TopicType[] | null
+  >(null);
 
   return (
     <SeeTogetherContext.Provider

@@ -1,15 +1,21 @@
 package com.mapbefine.mapbefine.permission.application;
 
+import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.FORBIDDEN_ADD_PERMISSION;
+import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.FORBIDDEN_ADD_PERMISSION_GUEST;
+import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.ILLEGAL_PERMISSION_ID;
+import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.ILLEGAL_TOPIC_ID;
+
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
+import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionBadRequestException;
+import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +38,7 @@ public class PermissionCommandService {
         this.permissionRepository = permissionRepository;
     }
 
-    public void savePermission(AuthMember authMember, PermissionRequest request) {
+    public void addPermission(AuthMember authMember, PermissionRequest request) {
         validateGuest(authMember);
         Topic topic = findTopic(request);
         validateMemberCanTopicUpdate(authMember, topic);
@@ -45,7 +51,7 @@ public class PermissionCommandService {
 
     private void validateGuest(AuthMember authMember) {
         if (Objects.isNull(authMember.getMemberId())) {
-            throw new IllegalArgumentException("Guest는 권한을 줄 수 없습니다.");
+            throw new PermissionForbiddenException(FORBIDDEN_ADD_PERMISSION_GUEST);
         }
     }
 
@@ -70,15 +76,16 @@ public class PermissionCommandService {
     }
 
     private Topic findTopic(PermissionRequest request) {
-        return topicRepository.findById(request.topicId())
-                .orElseThrow(NoSuchElementException::new);
+        Long topicId = request.topicId();
+        return topicRepository.findById(topicId)
+                .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_TOPIC_ID, topicId));
     }
 
     private void validateMemberCanTopicUpdate(AuthMember authMember, Topic topic) {
         if (authMember.canTopicUpdate(topic)) {
             return;
         }
-        throw new IllegalArgumentException("해당 지도에서 다른 유저에게 권한을 줄 수 없습니다.");
+        throw new PermissionForbiddenException(FORBIDDEN_ADD_PERMISSION);
     }
 
     private List<Member> findTargetMembers(PermissionRequest request) {
@@ -87,7 +94,7 @@ public class PermissionCommandService {
 
     public void deleteMemberTopicPermission(AuthMember authMember, Long permissionId) {
         Permission permission = permissionRepository.findById(permissionId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_PERMISSION_ID, permissionId));
 
         validateMemberCanTopicUpdate(authMember, permission.getTopic());
 

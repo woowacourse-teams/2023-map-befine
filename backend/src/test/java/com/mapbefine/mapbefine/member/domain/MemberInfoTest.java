@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.member.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.common.exception.BadRequestException.ImageBadRequestException;
+import com.mapbefine.mapbefine.member.exception.MemberException.MemberBadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,7 +53,7 @@ public class MemberInfoTest {
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
                     VALID_ROLE
-            )).isInstanceOf(IllegalArgumentException.class);
+            )).isInstanceOf(MemberBadRequestException.class);
         }
 
         @ParameterizedTest
@@ -66,7 +68,7 @@ public class MemberInfoTest {
                     invalidEmail,
                     VALID_IMAGE_URL,
                     VALID_ROLE
-            )).isInstanceOf(IllegalArgumentException.class);
+            )).isInstanceOf(MemberBadRequestException.class);
         }
 
         @Test
@@ -80,7 +82,7 @@ public class MemberInfoTest {
                     VALID_EMAIL,
                     invalidImageUrl,
                     VALID_ROLE
-            )).isInstanceOf(IllegalArgumentException.class);
+            )).isInstanceOf(ImageBadRequestException.class);
         }
 
         @Test

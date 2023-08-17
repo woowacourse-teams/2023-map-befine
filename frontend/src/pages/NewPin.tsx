@@ -32,7 +32,8 @@ type NewPinFormValueType = Pick<
 const NewPin = () => {
   const { state: topicId } = useLocation();
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
-  const [topic, setTopic] = useState<TopicType | null>(null);
+  const [topic, setTopic] = useState<any>(null);
+  const [selectedTopic, setSelectedTopic] = useState<any>(null);
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
@@ -45,16 +46,28 @@ const NewPin = () => {
   const { routePage } = useNavigator();
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { openModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const goToBack = () => {
     routePage(-1);
   };
 
   const postToServer = async () => {
+    let postTopicId = topic?.id;
+    let postName = formValues.name;
+
+    if (!topic) {
+      //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
+      postTopicId = selectedTopic?.topicId;
+    }
+
+    if (topic?.length > 1) {
+      postTopicId = selectedTopic.topicId;
+    }
+
     await postApi('/pins', {
-      topicId: topic?.id,
-      name: formValues.name,
+      topicId: postTopicId,
+      name: postName,
       address: clickedCoordinate.address,
       description: formValues.description,
       latitude: clickedCoordinate.latitude,
@@ -77,27 +90,39 @@ const NewPin = () => {
       return;
     }
 
-    await postToServer();
+    try {
+      await postToServer();
 
-    showToast('info', `${formValues.name} 핀을 추가하였습니다.`);
+      showToast('info', `${formValues.name} 핀을 추가하였습니다.`);
 
-    // 선택된 마커가 있으면 마커를 지도에서 제거
-    if (clickedMarker) {
-      clickedMarker.setMap(null);
+      // 선택된 마커가 있으면 마커를 지도에서 제거
+      if (clickedMarker) {
+        clickedMarker.setMap(null);
+      }
+
+      setClickedCoordinate({
+        latitude: '',
+        longitude: '',
+        address: '',
+      });
+
+      if (topicId && topicId.length > 1) {
+        routePage(`/topics/${topicId}`, [topic!.id]);
+        return;
+      }
+      let postTopicId = topic?.id;
+      let postName = formValues.name;
+
+      if (!topic) {
+        //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
+        postTopicId = selectedTopic?.topicId;
+        postName = selectedTopic?.topicTitle;
+      }
+
+      if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
+    } catch {
+      showToast('error', '해당 지도에 핀을 추가할 수 있는 권한이 없습니다.');
     }
-
-    setClickedCoordinate({
-      latitude: '',
-      longitude: '',
-      address: '',
-    });
-
-    if (topicId && topicId.length > 1) {
-      routePage(`/topics/${topicId}`, [topic!.id]);
-      return;
-    }
-
-    routePage(`/topics/${topic?.id}`, [topic!.id]);
   };
 
   const onClickAddressInput = (
@@ -136,9 +161,19 @@ const NewPin = () => {
 
   useEffect(() => {
     const getTopicId = async () => {
-      if (topicId) {
-        const data = await getApi('default', `/topics/${topicId}`);
+      if (topicId && topicId.split(',').length === 1) {
+        const data = await getApi<TopicType>('default', `/topics/${topicId}`);
+
         setTopic(data);
+      }
+
+      if (topicId && topicId.split(',').length > 1) {
+        const topics = await getApi<any>(
+          'default',
+          `/topics/ids?ids=${topicId}`,
+        );
+
+        setTopic(topics);
       }
     };
 
@@ -177,7 +212,11 @@ const NewPin = () => {
                 openModal('newPin');
               }}
             >
-              {topic?.name ? topic?.name : '토픽 선택하기'}
+              {topic?.name
+                ? topic?.name
+                : selectedTopic?.topicTitle
+                ? selectedTopic?.topicTitle
+                : '토픽을 선택해주세요.'}
             </Button>
           </section>
 
@@ -271,7 +310,7 @@ const NewPin = () => {
             핀을 저장할 지도를 선택해주세요.
           </Text>
           <Space size={4} />
-          <ModalMyTopicList />
+          <ModalMyTopicList topicId={topicId} topicClick={setSelectedTopic} />
         </ModalContentsWrapper>
       </Modal>
     </>

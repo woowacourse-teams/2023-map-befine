@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.topic.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ class TopicStatusTest {
     class Validate {
 
         @Test
-        @DisplayName("공개 범위가  혼자 볼 지도일 때, 권한 설정이 전체 회원이면 예외가 발생한다.")
+        @DisplayName("공개 범위가 혼자 볼 지도일 때, 권한 설정이 전체 회원이면 예외가 발생한다.")
         void fail() {
             //given
             Publicity publicity = Publicity.PRIVATE;
@@ -22,8 +23,7 @@ class TopicStatusTest {
             //when
             //then
             assertThatThrownBy(() -> TopicStatus.of(publicity, permissionType))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("공개 범위가 혼자 볼 지도인 경우, 권한 설정이 소속 회원이어야합니다.");
+                    .isInstanceOf(TopicBadRequestException.class);
         }
 
         @Test
@@ -83,8 +83,7 @@ class TopicStatusTest {
 
             //when //then
             assertThatThrownBy(() -> TopicStatus.of(publicity, permissionType))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("공개 범위는 null일 수 없습니다.");
+                    .isInstanceOf(TopicBadRequestException.class);
         }
 
         @Test
@@ -96,8 +95,7 @@ class TopicStatusTest {
 
             //when //then
             assertThatThrownBy(() -> TopicStatus.of(publicity, permissionType))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("권한 설정은 null일 수 없습니다.");
+                    .isInstanceOf(TopicBadRequestException.class);
         }
 
     }
@@ -114,8 +112,7 @@ class TopicStatusTest {
             //when
             //then
             assertThatThrownBy(() -> topicStatus.update(Publicity.PRIVATE, PermissionType.ALL_MEMBERS))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("권한 범위가 모든 멤버인 경우, 공개 범위를 혼자 볼 지도로 설정할 수 없습니다.");
+                    .isInstanceOf(TopicBadRequestException.class);
         }
 
         @Test
@@ -126,8 +123,7 @@ class TopicStatusTest {
             //when
             //then
             assertThatThrownBy(() -> topicStatus.update(Publicity.PUBLIC, PermissionType.GROUP_ONLY))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("권한 범위는 줄어들 수 없습니다.");
+                    .isInstanceOf(TopicBadRequestException.class);
         }
 
         @Test

@@ -3,12 +3,13 @@ import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
 import Image from '../common/Image';
-import { SyntheticEvent } from 'react';
+import { SyntheticEvent, useContext } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import { ModalContext } from '../../context/ModalContext';
 
 const FAVORITE_COUNT = 10;
 
@@ -18,6 +19,7 @@ export interface ModalTopicCardProps {
   topicTitle: string;
   topicUpdatedAt: string;
   topicPinCount: number;
+  topicClick: any;
 }
 
 const ModalTopicCard = ({
@@ -26,15 +28,26 @@ const ModalTopicCard = ({
   topicTitle,
   topicUpdatedAt,
   topicPinCount,
+  topicClick,
 }: ModalTopicCardProps) => {
   const { routePage } = useNavigator();
-
-  const goToSelectedTopic = () => {
-    routePage(`/topics/${topicId}`, [topicId]);
+  const { closeModal } = useContext(ModalContext);
+  const goToSelectedTopic = (topic: any, type: 'newPin' | 'addToTopic') => {
+    if (type === 'newPin') {
+      topicClick(topic);
+      closeModal('newPin');
+    }
+    if (type === 'addToTopic') {
+      topicClick(topic);
+    }
   };
 
   return (
-    <Wrapper onClick={goToSelectedTopic}>
+    <Wrapper
+      onClick={() => {
+        goToSelectedTopic({ topicId, topicTitle }, 'newPin');
+      }}
+    >
       <Flex position="relative">
         <TopicImage
           height="138px"
@@ -47,7 +60,12 @@ const ModalTopicCard = ({
           }}
         />
 
-        <Box width="192px" padding={1}>
+        <Flex
+          $alignItems="flex-start"
+          $flexDirection="column"
+          width="192px"
+          padding={1}
+        >
           <Box height="52px">
             <Text color="black" $fontSize="default" $fontWeight="bold">
               {topicTitle}
@@ -82,7 +100,7 @@ const ModalTopicCard = ({
               </Text>
             </Flex>
           </Flex>
-        </Box>
+        </Flex>
       </Flex>
     </Wrapper>
   );
@@ -94,18 +112,6 @@ const Wrapper = styled.li`
   cursor: pointer;
   border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
-
-  margin: 0 auto;
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  position: absolute;
-  width: 72px;
-
-  top: 100px;
-  left: 60px;
 `;
 
 const TopicImage = styled(Image)`

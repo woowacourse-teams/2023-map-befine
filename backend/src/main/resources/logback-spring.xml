@@ -1,0 +1,51 @@
+<configuration>
+    <springProperty name="LOG_PATH" source="logging.file.path"/>
+    <springProperty name="LOG_PATTERN" source="logging.pattern.file"/>
+
+    <timestamp key="DateFormat" datePattern="yyyy-MM-dd"/>
+
+    <!-- 콘솔 로그 설정 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>
+                    ${LOG_PATTERN}
+                </Pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!-- WARN 레벨 파일 로그 설정 -->
+    <appender name="FILE_WARN" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_PATH}/warn.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ERROR 레벨 파일 로그 설정 -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.FileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <file>${LOG_PATH}/error.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 레벨 별 Appender 적용 -->
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE_WARN"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </root>
+</configuration>

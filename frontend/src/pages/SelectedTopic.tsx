@@ -100,6 +100,10 @@ const SelectedTopic = () => {
     setIsOpen(true);
   }, [searchParams]);
 
+  useEffect(() => {
+    setTags([]);
+  }, []);
+
   const togglePinDetail = () => {
     setIsOpen(!isOpen);
   };
@@ -113,7 +117,7 @@ const SelectedTopic = () => {
         width={`calc(${width} - ${LAYOUT_PADDING})`}
         $flexDirection="column"
       >
-        <Space size={2} />
+        <Space size={3} />
         {tags.length > 0 && (
           <PullPin
             tags={tags}
@@ -126,7 +130,8 @@ const SelectedTopic = () => {
           {topicDetails.map((topicDetail, idx) => (
             <Fragment key={topicDetail.id}>
               <PinsOfTopic
-                topicId={topicId.split(',')[idx]}
+                topicId={topicId}
+                idx={idx}
                 topicDetail={topicDetail}
                 setSelectedPinId={setSelectedPinId}
                 setIsEditPinDetail={setIsEditPinDetail}
@@ -157,7 +162,7 @@ const SelectedTopic = () => {
                 $zIndex={1}
               >
                 <PinDetail
-                  topicId={Number(topicId)}
+                  topicId={topicId}
                   pinId={selectedPinId}
                   isEditPinDetail={isEditPinDetail}
                   setIsEditPinDetail={setIsEditPinDetail}

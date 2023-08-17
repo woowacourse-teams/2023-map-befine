@@ -20,12 +20,11 @@ public class LocationController {
         this.locationQueryService = locationQueryService;
     }
 
-    @GetMapping("/bests")
+    @GetMapping("/bests") // 여기서도 Guest 와 User 사이의 분기 처리가 필요함
     public ResponseEntity<List<TopicResponse>> findNearbyTopicsSortedByPinCount(
             AuthMember member,
             @RequestParam("latitude") double latitude,
             @RequestParam("longitude") double longitude
-
     ) {
         List<TopicResponse> responses = locationQueryService.findNearbyTopicsSortedByPinCount(
                 member,

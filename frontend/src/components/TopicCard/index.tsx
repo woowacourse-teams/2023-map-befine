@@ -16,6 +16,7 @@ import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 import { TopicType } from '../../types/Topic';
+import useKeyDown from '../../hooks/useKeyDown';
 
 interface TopicCardProps extends TopicType {
   setTopicsFromServer: () => void;
@@ -34,14 +35,20 @@ const TopicCard = ({
   setTopicsFromServer,
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
+  const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
 
   const goToSelectedTopic = () => {
     routePage(`/topics/${id}`, [id]);
   };
 
   return (
-    <Wrapper onClick={goToSelectedTopic} data-cy="topic-card">
-      <Flex position="relative">
+    <Wrapper
+      data-cy="topic-card"
+      onClick={goToSelectedTopic}
+      ref={elementRef}
+      onKeyDown={onElementKeyDown}
+    >
+      <Flex position="relative" tabIndex={0} role="button">
         <TopicImage
           height="138px"
           width="138px"
@@ -55,12 +62,22 @@ const TopicCard = ({
 
         <Box width="192px" padding={1}>
           <Box height="52px">
-            <Text color="black" $fontSize="default" $fontWeight="bold">
+            <Text
+              color="black"
+              $fontSize="default"
+              $fontWeight="bold"
+              aria-label={`토픽 이름 ${name}`}
+            >
               {name}
             </Text>
           </Box>
 
-          <Text color="black" $fontSize="small" $fontWeight="normal">
+          <Text
+            color="black"
+            $fontSize="small"
+            $fontWeight="normal"
+            aria-label={`작성자 ${creator}`}
+          >
             {creator}
           </Text>
 
@@ -76,14 +93,24 @@ const TopicCard = ({
             <Flex $alignItems="center" width="64px">
               <SmallTopicPin />
               <Space size={0} />
-              <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
+              <Text
+                color="black"
+                $fontSize="extraSmall"
+                $fontWeight="normal"
+                aria-label={`핀 갯수 ${pinCount}개`}
+              >
                 {pinCount > 999 ? '+999' : pinCount}개
               </Text>
             </Flex>
             <Flex $alignItems="center" width="64px">
               <SmallTopicStar />
               <Space size={0} />
-              <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
+              <Text
+                color="black"
+                $fontSize="extraSmall"
+                $fontWeight="normal"
+                aria-label={`즐겨찾기 ${bookmarkCount}명`}
+              >
                 {bookmarkCount > 999 ? '+999' : bookmarkCount}명
               </Text>
             </Flex>
@@ -100,7 +127,7 @@ const TopicCard = ({
             <AddFavorite
               isBookmarked={isBookmarked}
               id={id}
-              setTopicFromServer={setTopicsFromServer}
+              setTopicsFromServer={setTopicsFromServer}
             >
               {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
             </AddFavorite>
@@ -117,8 +144,6 @@ const Wrapper = styled.li`
   cursor: pointer;
   border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
-
-  margin: 0 auto;
 `;
 
 const ButtonWrapper = styled.div`

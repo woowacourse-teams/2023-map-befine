@@ -14,11 +14,11 @@ import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
+import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionNotFoundException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +105,7 @@ class PermissionQueryServiceTest {
     void findMemberTopicPermissionById_whenNoneExistsPermission_thenFail() {
         // given when then
         assertThatThrownBy(() -> permissionQueryService.findPermissionById(Long.MAX_VALUE))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(PermissionNotFoundException.class);
     }
 
 

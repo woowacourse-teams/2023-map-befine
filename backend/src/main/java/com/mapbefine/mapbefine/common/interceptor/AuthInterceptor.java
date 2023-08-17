@@ -5,6 +5,8 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.dto.AuthInfo;
 import com.mapbefine.mapbefine.auth.infrastructure.AuthorizationExtractor;
 import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
+import com.mapbefine.mapbefine.common.exception.ErrorCode;
+import com.mapbefine.mapbefine.common.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
@@ -15,6 +17,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
+
+    private static final String UNAUTHORIZED_ERROR_MESSAGE = "로그인에 실패하였습니다.";
+    private static final ErrorCode ILLEGAL_MEMBER_ID = new ErrorCode("03100", UNAUTHORIZED_ERROR_MESSAGE);
+    private static final ErrorCode ILLEGAL_TOKEN = new ErrorCode("03101", UNAUTHORIZED_ERROR_MESSAGE);
 
     private final AuthorizationExtractor<AuthInfo> authorizationExtractor;
     private final AuthService authService;
@@ -39,18 +45,17 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
             return true;
         }
-
         if (isAuthMemberNotRequired(handlerMethod)) {
             return true;
         }
 
         Long memberId = extractMemberIdFromToken(request);
-        request.setAttribute("memberId", memberId);
 
         if (isLoginRequired((HandlerMethod) handler)) {
-            // TODO: 2023/08/11 isMember false이면 403 반환
             validateMember(memberId);
         }
+
+        request.setAttribute("memberId", memberId);
 
         return true;
     }
@@ -60,7 +65,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return;
         }
 
-        throw new IllegalArgumentException("조회되지 않는 회원입니다.");
+        throw new UnauthorizedException(ILLEGAL_MEMBER_ID);
     }
 
     private boolean isAuthMemberNotRequired(HandlerMethod handlerMethod) {
@@ -81,7 +86,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         String accessToken = authInfo.accessToken();
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            throw new UnauthorizedException(ILLEGAL_TOKEN);
         }
         return Long.parseLong(jwtTokenProvider.getPayload(accessToken));
     }

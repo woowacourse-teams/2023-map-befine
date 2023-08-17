@@ -49,6 +49,8 @@ const UpdatedPinDetail = ({
       await putApi(`/pins/${pinId}`, formValues);
       setIsEditing(false);
       removeQueryString('edit');
+
+      showToast('info', '핀 수정을 완료하였습니다.');
     } catch (error) {
       showToast('error', '해당 지도에 대해 수정 권한이 없습니다. ');
     }
