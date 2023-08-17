@@ -235,6 +235,7 @@ const NewTopic = () => {
         </Flex>
 
         <Space size={5} />
+        <Space size={0} />
         <Text color="black" $fontSize="default" $fontWeight="normal">
           핀 생성 및 수정 권한
         </Text>
@@ -280,7 +281,7 @@ const NewTopic = () => {
             modalKey="newTopic"
             position="center"
             width="400px"
-            height="400px"
+            height="520px"
             overflow="scroll"
             $dimmedColor="rgba(0, 0, 0, 0.5)"
           >
@@ -289,14 +290,13 @@ const NewTopic = () => {
                 padding={'12px'}
                 position="sticky"
                 top="0"
-                $backgroundColor="primary"
                 $justifyContent="space-between"
                 $alignItems="center"
               >
-                <Text $fontSize="large" $fontWeight="bold" color="white">
+                <Text $fontSize="large" $fontWeight="bold" color="black">
                   멤버 선택
                 </Text>
-                <Text $fontSize="small" $fontWeight="normal" color="lightGray">
+                <Text $fontSize="small" $fontWeight="normal" color="black">
                   {checkedMemberIds.length}명 선택됨
                 </Text>
               </Flex>
