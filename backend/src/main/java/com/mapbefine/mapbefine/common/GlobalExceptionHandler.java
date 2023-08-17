@@ -21,7 +21,8 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = exception.getErrorCode();
 
         log.warn(
-                "source = {} , {} = {} code = {} message = {}", exceptionSource,
+                "source = {} \n {} = {} \n code = {} \n message = {}",
+                exceptionSource,
                 request.getMethod(), request.getRequestURI(),
                 errorCode.getCode(), errorCode.getMessage()
         );
