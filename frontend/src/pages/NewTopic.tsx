@@ -272,7 +272,7 @@ const NewTopic = () => {
                 setCheckedMemberIds([]);
               }}
             />
-            <label htmlFor="GROUP_ONLY">지정 인원</label>
+            <label htmlFor="GROUP_ONLY">특정 인원 지정</label>
           </div>
         </Flex>
 
