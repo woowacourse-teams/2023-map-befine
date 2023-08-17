@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class NotFoundException extends GlobalException {
 
-    public NotFoundException(ErrorCode errorCode) {
+    public NotFoundException(ErrorCode<?> errorCode) {
         super(errorCode, HttpStatus.NOT_FOUND);
     }
 

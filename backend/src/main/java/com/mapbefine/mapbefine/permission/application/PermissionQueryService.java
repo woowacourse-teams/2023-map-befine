@@ -30,7 +30,7 @@ public class PermissionQueryService {
 
     public PermissionDetailResponse findPermissionById(Long permissionId) {
         Permission permission = permissionRepository.findById(permissionId)
-                .orElseThrow(() -> new PermissionNotFoundException(PERMISSION_NOT_FOUND));
+                .orElseThrow(() -> new PermissionNotFoundException(PERMISSION_NOT_FOUND, permissionId));
 
         return PermissionDetailResponse.from(permission);
     }

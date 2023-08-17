@@ -7,21 +7,21 @@ import com.mapbefine.mapbefine.common.exception.NotFoundException;
 
 public class PermissionException {
 
-    public static class PermissionForbiddenException extends ForbiddenException {
-        public PermissionForbiddenException(PermissionErrorCode errorCode) {
-            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
+    public static class PermissionBadRequestException extends BadRequestException {
+        public PermissionBadRequestException(PermissionErrorCode errorCode, Long id) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), id));
         }
     }
 
-    public static class PermissionBadRequestException extends BadRequestException {
-        public PermissionBadRequestException(PermissionErrorCode errorCode) {
-            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
+    public static class PermissionForbiddenException extends ForbiddenException {
+        public PermissionForbiddenException(PermissionErrorCode errorCode) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
     public static class PermissionNotFoundException extends NotFoundException {
-        public PermissionNotFoundException(PermissionErrorCode errorCode) {
-            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
+        public PermissionNotFoundException(PermissionErrorCode errorCode, Long id) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), id));
         }
     }
 
