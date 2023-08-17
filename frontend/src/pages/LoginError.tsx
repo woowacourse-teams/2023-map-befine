@@ -19,8 +19,9 @@ const LoginError = () => {
       $flexDirection="column"
       $justifyContent="center"
       $alignItems="center"
-      width={width}
+      width={`calc(${width}-40px)`}
       height="100vh"
+      overflow="hidden"
     >
       <LoginErrorIcon />
       <Space size={6} />
