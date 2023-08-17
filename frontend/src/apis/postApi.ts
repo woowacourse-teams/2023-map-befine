@@ -1,3 +1,8 @@
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_API_DEFAULT_PROD
+    : process.env.REACT_APP_API_DEFAULT_DEV;
+
 interface Headers {
   'Content-Type': string;
   [key: string]: string;
@@ -13,7 +18,7 @@ export const postApi = async (url: string, data?: {}, contentType?: string) => {
     headers['Authorization'] = `Bearer ${userToken}`;
   }
 
-  const response = await fetch(`${process.env.REACT_APP_API_DEFAULT + url}`, {
+  const response = await fetch(`${API_URL + url}`, {
     method: 'POST',
     headers: headers,
     body: JSON.stringify(data),

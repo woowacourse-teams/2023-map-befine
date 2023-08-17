@@ -1,3 +1,8 @@
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_API_DEFAULT_PROD
+    : process.env.REACT_APP_API_DEFAULT_DEV;
+
 interface Headers {
   'Content-Type': string;
   [key: string]: string;
@@ -7,10 +12,7 @@ export const getApi = async <T>(
   type: 'tMap' | 'default' | 'login',
   url: string,
 ): Promise<T> => {
-  const apiUrl =
-    type === 'tMap' || type === 'login'
-      ? url
-      : `${process.env.REACT_APP_API_DEFAULT + url}`;
+  const apiUrl = type === 'tMap' || type === 'login' ? url : `${API_URL + url}`;
 
   const userToken = localStorage.getItem('userToken');
   const headers: Headers = {
