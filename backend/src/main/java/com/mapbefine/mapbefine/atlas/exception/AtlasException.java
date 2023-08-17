@@ -6,15 +6,15 @@ import com.mapbefine.mapbefine.common.exception.ForbiddenException;
 
 public class AtlasException {
 
-    public static class AtlasForbiddenException extends ForbiddenException {
-        public AtlasForbiddenException(AtlasErrorCode errorCode) {
-            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
+    public static class AtlasBadRequestException extends BadRequestException {
+        public AtlasBadRequestException(AtlasErrorCode errorCode) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
-    public static class AtlasBadRequestException extends BadRequestException {
-        public AtlasBadRequestException(AtlasErrorCode errorCode) {
-            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
+    public static class AtlasForbiddenException extends ForbiddenException {
+        public AtlasForbiddenException(AtlasErrorCode errorCode) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 

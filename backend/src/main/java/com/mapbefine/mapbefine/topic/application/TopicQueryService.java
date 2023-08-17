@@ -122,7 +122,7 @@ public class TopicQueryService {
 
     private Topic findTopic(Long id) {
         return topicRepository.findById(id)
-                .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND, List.of(id)));
     }
 
     private void validateReadableTopic(AuthMember member, Topic topic) {
@@ -168,9 +168,14 @@ public class TopicQueryService {
     }
 
     private void validateTopicsCount(List<Long> topicIds, List<Topic> topics) {
-        if (topicIds.size() != topics.size()) {
-            throw new TopicNotFoundException(TOPIC_NOT_FOUND);
+        List<Long> nonMatchingIds = topicIds.stream()
+                .filter(id -> topics.stream().noneMatch(topic -> topic.getId().equals(id)))
+                .toList();
+
+        if (nonMatchingIds.isEmpty()) {
+            return;
         }
+        throw new TopicNotFoundException(TOPIC_NOT_FOUND, nonMatchingIds);
     }
 
     private void validateReadableTopics(AuthMember member, List<Topic> topics) {

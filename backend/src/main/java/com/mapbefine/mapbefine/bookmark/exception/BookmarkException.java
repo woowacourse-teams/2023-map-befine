@@ -7,22 +7,21 @@ import com.mapbefine.mapbefine.common.exception.ForbiddenException;
 
 public class BookmarkException {
 
-    public static class BookmarkForbiddenException extends ForbiddenException {
-        public BookmarkForbiddenException(BookmarkErrorCode errorCode) {
-            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
+    public static class BookmarkBadRequestException extends BadRequestException {
+        public BookmarkBadRequestException(BookmarkErrorCode errorCode) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
-    public static class BookmarkBadRequestException extends BadRequestException {
-        public BookmarkBadRequestException(BookmarkErrorCode errorCode) {
-            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
+    public static class BookmarkForbiddenException extends ForbiddenException {
+        public BookmarkForbiddenException(BookmarkErrorCode errorCode) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
     public static class BookmarkConflictException extends ConflictException {
-
-        public BookmarkConflictException(BookmarkErrorCode errorCode) {
-            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
+        public BookmarkConflictException(BookmarkErrorCode errorCode, Long id) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), id));
         }
     }
 

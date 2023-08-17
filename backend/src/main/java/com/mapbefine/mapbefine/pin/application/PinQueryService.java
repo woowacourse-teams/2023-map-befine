@@ -37,7 +37,7 @@ public class PinQueryService {
     // TODO: 2023/08/08 isDeleted 제외하고 조회하기
     public PinDetailResponse findDetailById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
-                .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND));
+                .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
         validateReadAuth(member, pin.getTopic());
 
         return PinDetailResponse.from(pin);

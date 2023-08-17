@@ -2,8 +2,11 @@ package com.mapbefine.mapbefine.common;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mapbefine.mapbefine.common.exception.ErrorCode;
 import com.mapbefine.mapbefine.common.exception.GlobalException;
+import com.mapbefine.mapbefine.common.exception.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,19 +17,29 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final ObjectMapper objectMapper;
+
+    public GlobalExceptionHandler(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @ExceptionHandler(GlobalException.class)
-    public ResponseEntity<ErrorCode> handle(GlobalException exception, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handle(
+            GlobalException exception,
+            HttpServletRequest request
+    ) throws JsonProcessingException {
         String exceptionSource = extractExceptionSource(exception);
-        ErrorCode errorCode = exception.getErrorCode();
+        ErrorCode<?> errorCode = exception.getErrorCode();
 
         log.warn(
-                "source = {} \n {} = {} \n code = {} \n message = {}",
+                "source = {} \n {} = {} \n code = {} \n message = {} \n info = {}",
                 exceptionSource,
                 request.getMethod(), request.getRequestURI(),
-                errorCode.code(), errorCode.message()
+                errorCode.getCode(), errorCode.getMessage(),
+                objectMapper.writeValueAsString(errorCode.getInfo())
         );
 
-        return ResponseEntity.status(exception.getStatus()).body(errorCode);
+        return ResponseEntity.status(exception.getStatus()).body(ErrorResponse.from(errorCode));
     }
 
     private String extractExceptionSource(Exception exception) {

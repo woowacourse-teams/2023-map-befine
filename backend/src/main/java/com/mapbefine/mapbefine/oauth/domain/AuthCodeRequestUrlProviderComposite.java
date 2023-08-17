@@ -29,7 +29,7 @@ public class AuthCodeRequestUrlProviderComposite {
 
     public AuthCodeRequestUrlProvider getProvider(OauthServerType oauthServerType) {
         return Optional.ofNullable(mapping.get(oauthServerType))
-                .orElseThrow(() -> new OauthNotFoundException(OAUTH_SERVER_TYPE_NOT_FOUND));
+                .orElseThrow(() -> new OauthNotFoundException(OAUTH_SERVER_TYPE_NOT_FOUND, oauthServerType));
     }
 
 }

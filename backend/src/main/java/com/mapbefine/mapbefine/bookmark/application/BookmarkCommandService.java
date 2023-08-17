@@ -58,7 +58,7 @@ public class BookmarkCommandService {
 
     private void validateBookmarkDuplication(AuthMember authMember, Long topicId) {
         if (isExistBookmark(authMember, topicId)) {
-            throw new BookmarkConflictException(CONFLICT_TOPIC_ALREADY_ADD);
+            throw new BookmarkConflictException(CONFLICT_TOPIC_ALREADY_ADD, topicId);
         }
     }
 

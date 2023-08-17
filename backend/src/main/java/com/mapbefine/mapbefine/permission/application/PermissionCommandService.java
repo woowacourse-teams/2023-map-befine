@@ -76,8 +76,9 @@ public class PermissionCommandService {
     }
 
     private Topic findTopic(PermissionRequest request) {
-        return topicRepository.findById(request.topicId())
-                .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_TOPIC_ID));
+        Long topicId = request.topicId();
+        return topicRepository.findById(topicId)
+                .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_TOPIC_ID, topicId));
     }
 
     private void validateMemberCanTopicUpdate(AuthMember authMember, Topic topic) {
@@ -93,7 +94,7 @@ public class PermissionCommandService {
 
     public void deleteMemberTopicPermission(AuthMember authMember, Long permissionId) {
         Permission permission = permissionRepository.findById(permissionId)
-                .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_PERMISSION_ID));
+                .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_PERMISSION_ID, permissionId));
 
         validateMemberCanTopicUpdate(authMember, permission.getTopic());
 
