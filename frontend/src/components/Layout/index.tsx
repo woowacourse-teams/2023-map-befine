@@ -15,6 +15,7 @@ import ModalProvider from '../../context/ModalContext';
 import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
 import TagProvider from '../../context/TagContext';
 import InfoDefalutImg from '../../assets/InfoDefalutImg.svg';
+import Box from '../common/Box';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -69,10 +70,13 @@ const Layout = ({ children }: LayoutProps) => {
                         $justifyContent="space-between"
                         padding="20px 20px 0 20px"
                       >
-                        <Logo />
+                        <Box>
+                          <Logo />
+                          <Space size={3} />
+                        </Box>
                       </Flex>
                       <Flex
-                        height="calc(100vh - 40px)"
+                        height="calc(100vh - 52px)"
                         $flexDirection="column"
                         overflow="auto"
                         padding="0 20px 20px 20px"

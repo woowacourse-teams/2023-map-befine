@@ -127,7 +127,7 @@ const PointerText = styled(Text)`
 `;
 
 const BookMarksWrapper = styled(Box)`
-  width: 70vw;
+  width: 1036px;
   margin: 0 auto;
 `;
 

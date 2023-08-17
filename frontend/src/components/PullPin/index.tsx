@@ -31,17 +31,21 @@ const PullPin = ({
       $borderRadius="small"
       $zIndex={1}
     >
+      <Space size={6} />
       <Flex
         $flexDirection="row"
         $justifyContent="left"
         $flexWrap="wrap"
         $gap="12px 12px"
       >
-        {tags.length > 2 ? (
+        {tags.length > 5 ? (
           <>
             <Tag tabIndex={1}>{tags[0].title}</Tag>
             <Tag tabIndex={2}>{tags[1].title}</Tag>
-            <Tag tabIndex={3}>외 {String(tags.length - 2)}개</Tag>
+            <Tag tabIndex={3}>{tags[2].title}</Tag>
+            <Tag tabIndex={4}>{tags[3].title}</Tag>
+            <Tag tabIndex={5}>{tags[4].title}</Tag>
+            <Tag tabIndex={6}>외 {String(tags.length - 5)}개</Tag>
           </>
         ) : (
           tags.map((tag, index) => (
@@ -60,7 +64,7 @@ const PullPin = ({
         )}
       </Flex>
 
-      <Space size={4} />
+      <Space size={6} />
 
       <Flex $flexDirection="row" $alignItems="center" $justifyContent="center">
         <Button

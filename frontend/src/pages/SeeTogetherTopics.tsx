@@ -119,6 +119,7 @@ const SeeTogetherTopics = () => {
           한 번에 보기
         </Button>
       </Flex>
+      <Space size={5} />
     </Wrapper>
   );
 };

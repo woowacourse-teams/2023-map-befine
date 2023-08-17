@@ -20,6 +20,7 @@ import { ModalContext } from '../context/ModalContext';
 import { getApi } from '../apis/getApi';
 import { Member } from '../types/Login';
 import Checkbox from '../components/common/CheckBox';
+import { TagContext } from '../context/TagContext';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
@@ -38,6 +39,7 @@ const NewTopic = () => {
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
+  const { setTags } = useContext(TagContext);
 
   const [members, setMembers] = useState<Member[]>([]);
 
@@ -367,7 +369,13 @@ const NewTopic = () => {
             취소하기
           </Button>
           <Space size={3} />
-          <Button tabIndex={7} variant="primary">
+          <Button
+            tabIndex={7}
+            variant="primary"
+            onClick={() => {
+              setTags([]);
+            }}
+          >
             생성하기
           </Button>
         </Flex>
