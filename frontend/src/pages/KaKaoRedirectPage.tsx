@@ -4,9 +4,14 @@ import { getApi } from '../apis/getApi';
 import { keyframes, styled } from 'styled-components';
 import useNavigator from '../hooks/useNavigator';
 
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_API_DEFAULT_PROD
+    : process.env.REACT_APP_API_DEFAULT_DEV;
+
 export const handleOAuthKakao = async (code: string) => {
   try {
-    const url = `https://mapbefine.kro.kr/api/oauth/login/kakao?code=${code}`;
+    const url = `${API_URL}/oauth/login/kakao?code=${code}`;
     const data = await getApi<any>('login', url);
 
     localStorage.setItem('userToken', data.accessToken);
