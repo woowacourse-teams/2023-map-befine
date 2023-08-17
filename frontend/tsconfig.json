@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["cypress"],
+    "types": ["cypress"]
   },
   "exclude": ["node_modules"],
   "include": ["./src/**/*.tsx", "./src/**/*.ts", "cypress/**/*"]

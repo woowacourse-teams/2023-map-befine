@@ -40,7 +40,7 @@ const TopicCard = ({
   };
 
   return (
-    <Wrapper onClick={goToSelectedTopic}>
+    <Wrapper onClick={goToSelectedTopic} data-cy="topic-card">
       <Flex position="relative">
         <TopicImage
           height="138px"
