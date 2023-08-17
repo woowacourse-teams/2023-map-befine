@@ -7,7 +7,7 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-const url = '/topics';
+const url = '/topics/bests';
 
 const SeeAllTopics = () => {
   const { width: _ } = useSetLayoutWidth(FULLSCREEN);
@@ -20,7 +20,7 @@ const SeeAllTopics = () => {
         인기 급상승할 지도?
       </Text>
 
-      <Space size={4} />
+      <Space size={5} />
 
       <SeeAllCardList url={url} />
     </Wrapper>
