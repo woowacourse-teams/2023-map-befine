@@ -3,12 +3,13 @@ import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
 import Image from '../common/Image';
-import { SyntheticEvent } from 'react';
+import { SyntheticEvent, useContext } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import { ModalContext } from '../../context/ModalContext';
 
 const FAVORITE_COUNT = 10;
 
@@ -18,6 +19,7 @@ export interface ModalTopicCardProps {
   topicTitle: string;
   topicUpdatedAt: string;
   topicPinCount: number;
+  topicClick: any;
 }
 
 const ModalTopicCard = ({
@@ -26,15 +28,21 @@ const ModalTopicCard = ({
   topicTitle,
   topicUpdatedAt,
   topicPinCount,
+  topicClick,
 }: ModalTopicCardProps) => {
   const { routePage } = useNavigator();
-
-  const goToSelectedTopic = () => {
-    routePage(`/topics/${topicId}`, [topicId]);
+  const { closeModal } = useContext(ModalContext);
+  const goToSelectedTopic = (topic: any) => {
+    topicClick(topic);
+    closeModal('newPin');
   };
 
   return (
-    <Wrapper onClick={goToSelectedTopic}>
+    <Wrapper
+      onClick={() => {
+        goToSelectedTopic({ topicId, topicTitle });
+      }}
+    >
       <Flex position="relative">
         <TopicImage
           height="138px"

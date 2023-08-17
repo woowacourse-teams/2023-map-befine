@@ -4,9 +4,8 @@ import { getApi } from '../../apis/getApi';
 import { ModalMyTopicType } from '../../types/Topic';
 import ModalTopicCard from '../ModalTopicCard';
 
-const ModalMyTopicList = () => {
+const ModalMyTopicList = ({ topicClick }: any) => {
   const [myTopics, setMyTopics] = useState<ModalMyTopicType[]>([]);
-
   const getMyTopicFromServer = async () => {
     const serverMyTopic = await getApi<ModalMyTopicType[]>(
       'default',
@@ -15,9 +14,11 @@ const ModalMyTopicList = () => {
     setMyTopics(serverMyTopic);
   };
 
-    useEffect(() => {
-      getMyTopicFromServer();
-    }, []);
+  useEffect(() => {
+    getMyTopicFromServer();
+  }, []);
+  {
+  }
 
   if (!myTopics) return <></>;
 
@@ -31,6 +32,7 @@ const ModalMyTopicList = () => {
             topicTitle={topic.name}
             topicUpdatedAt={topic.updatedAt}
             topicPinCount={topic.pinCount}
+            topicClick={topicClick}
           />
         </Fragment>
       ))}

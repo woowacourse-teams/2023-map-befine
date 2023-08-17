@@ -33,6 +33,7 @@ const NewPin = () => {
   const { state: topicId } = useLocation();
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
   const [topic, setTopic] = useState<TopicType | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<any>(null);
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
@@ -45,16 +46,25 @@ const NewPin = () => {
   const { routePage } = useNavigator();
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { openModal } = useContext(ModalContext);
+  const { openModal, closeModal } = useContext(ModalContext);
 
   const goToBack = () => {
     routePage(-1);
   };
 
   const postToServer = async () => {
+    let postTopicId = topic?.id;
+    let postName = formValues.name;
+
+    if (!topic) {
+      //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
+      postTopicId = selectedTopic?.topicId;
+      postName = selectedTopic?.topicTitle;
+    }
+
     await postApi('/pins', {
-      topicId: topic?.id,
-      name: formValues.name,
+      topicId: postTopicId,
+      name: postName,
       address: clickedCoordinate.address,
       description: formValues.description,
       latitude: clickedCoordinate.latitude,
@@ -96,8 +106,15 @@ const NewPin = () => {
       routePage(`/topics/${topicId}`, [topic!.id]);
       return;
     }
+    let postTopicId = topic?.id;
+    let postName = formValues.name;
 
-    routePage(`/topics/${topic?.id}`, [topic!.id]);
+    if (!topic) {
+      //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
+      postTopicId = selectedTopic?.topicId;
+      postName = selectedTopic?.topicTitle;
+    }
+    routePage(`/topics/${postTopicId}`, [postTopicId]);
   };
 
   const onClickAddressInput = (
@@ -177,7 +194,11 @@ const NewPin = () => {
                 openModal('newPin');
               }}
             >
-              {topic?.name ? topic?.name : '토픽 선택하기'}
+              {topic?.name
+                ? topic?.name
+                : selectedTopic?.topicTitle
+                ? selectedTopic?.topicTitle
+                : '토픽을 선택해주세요.'}
             </Button>
           </section>
 
@@ -271,7 +292,7 @@ const NewPin = () => {
             핀을 저장할 지도를 선택해주세요.
           </Text>
           <Space size={4} />
-          <ModalMyTopicList />
+          <ModalMyTopicList topicClick={setSelectedTopic} />
         </ModalContentsWrapper>
       </Modal>
     </>
