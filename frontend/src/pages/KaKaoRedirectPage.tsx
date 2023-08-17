@@ -11,6 +11,7 @@ export const handleOAuthKakao = async (code: string) => {
 
     localStorage.setItem('userToken', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.member));
+    location.reload();
   } catch (error) {
     window.alert('로그인 실패');
   }
@@ -31,7 +32,6 @@ const KakaoRedirectPage = () => {
     if (code) {
       getCode(code);
       routePage('/');
-      location.reload();
     }
   }, [routerLocation]);
 
