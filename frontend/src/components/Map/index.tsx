@@ -23,7 +23,7 @@ const Map = (props: any, ref: any) => {
 
   return (
     <MapFlex
-      aria-hidden={true}
+      aria-label="괜찮을지도 지도 이미지"
       flex="1"
       id="map"
       ref={ref}
