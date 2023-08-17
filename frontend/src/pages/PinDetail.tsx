@@ -176,7 +176,7 @@ const PinDetail = ({
       <Flex
         width="332px"
         height="48px"
-        $justifyContent="space-around"
+        $justifyContent="center"
         position="fixed"
         bottom="24px"
       >
