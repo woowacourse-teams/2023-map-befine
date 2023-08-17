@@ -51,7 +51,7 @@ public class User extends AuthMember {
     }
 
     private boolean hasPermission(Long topicId) {
-        return topicsWithPermission.contains(topicId);
+        return createdTopic.contains(topicId) || topicsWithPermission.contains(topicId);
     }
 
 }
