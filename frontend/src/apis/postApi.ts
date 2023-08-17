@@ -19,9 +19,8 @@ export const postApi = async (url: string, data?: {}, contentType?: string) => {
     body: JSON.stringify(data),
   });
 
-  if (response.status !== 201) {
+  if (response.status >= 400) {
     //todo: status 상태별로 로그인 토큰 유효 검증
-    console.error(response);
     throw new Error('API 요청에 실패했습니다.');
   }
 

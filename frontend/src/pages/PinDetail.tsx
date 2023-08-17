@@ -17,7 +17,7 @@ import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 
 interface PinDetailProps {
-  topicId: number;
+  topicId: string;
   pinId: number;
   isEditPinDetail: boolean;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;

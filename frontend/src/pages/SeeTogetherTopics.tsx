@@ -83,6 +83,7 @@ const SeeTogetherTopics = () => {
 
   return (
     <Wrapper width={width}>
+      <Space size={5} />
       {seeTogetherTopics.map((topic, idx) => (
         <ul key={topic.id}>
           <TopicCard

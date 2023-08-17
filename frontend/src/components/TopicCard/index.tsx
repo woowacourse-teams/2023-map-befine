@@ -126,7 +126,7 @@ const TopicCard = ({
             <AddFavorite
               isBookmarked={isBookmarked}
               id={id}
-              setTopicFromServer={setTopicsFromServer}
+              setTopicsFromServer={setTopicsFromServer}
             >
               {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
             </AddFavorite>
@@ -143,8 +143,6 @@ const Wrapper = styled.li`
   cursor: pointer;
   border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
-
-  margin: 0 auto;
 `;
 
 const ButtonWrapper = styled.div`

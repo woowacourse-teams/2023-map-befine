@@ -1,17 +1,17 @@
 import Flex from '../common/Flex';
 import Space from '../common/Space';
-import TopicSkeleton from '../common/TopicSkeleton';
+import TopicCardSkeleton from '../TopicCardSkeleton';
 
 const SeeAllCardListSkeleton = () => {
   return (
     <Flex $flexDirection="column">
-      <TopicSkeleton />
+      <TopicCardSkeleton />
       <Space size={3} />
-      <TopicSkeleton />
+      <TopicCardSkeleton />
       <Space size={3} />
-      <TopicSkeleton />
+      <TopicCardSkeleton />
       <Space size={3} />
-      <TopicSkeleton />
+      <TopicCardSkeleton />
     </Flex>
   );
 };

@@ -96,9 +96,16 @@ const NewTopic = () => {
     }
 
     //생성하기 버튼 눌렀을 때 postToServer로 TopicId 받고, 받은 topicId로 권한 추가
-    const topicId = await postToServer();
+    try {
+      const topicId = await postToServer();
 
-    if (topicId) routePage(`/topics/${topicId}`);
+      if (topicId) routePage(`/topics/${topicId}`);
+    } catch {
+      showToast(
+        'error',
+        '지도 생성을 실패하였습니다. 잠시 후 다시 시도해주세요.',
+      );
+    }
   };
 
   const postToServer = async () => {
@@ -165,7 +172,7 @@ const NewTopic = () => {
         $flexDirection="column"
       >
         <Text color="black" $fontSize="large" $fontWeight="bold">
-          토픽 생성
+          지도 생성
         </Text>
         <Space size={5} />
         <InputContainer
@@ -223,7 +230,7 @@ const NewTopic = () => {
               onChange={() => setIsPrivate(false)}
               tabIndex={4}
             />
-            <label htmlFor="public">같이볼지도</label>
+            <label htmlFor="public">공개 지도</label>
           </div>
           <Space size={2} />
           <div>
@@ -236,11 +243,12 @@ const NewTopic = () => {
               onChange={() => setIsPrivate(true)}
               tabIndex={4}
             />
-            <label htmlFor="private">혼자볼지도</label>
+            <label htmlFor="private">비공개 지도</label>
           </div>
         </Flex>
 
         <Space size={5} />
+        <Space size={0} />
         <Text color="black" $fontSize="default" $fontWeight="normal">
           핀 생성 및 수정 권한
         </Text>
@@ -279,7 +287,7 @@ const NewTopic = () => {
               }}
               tabIndex={5}
             />
-            <label htmlFor="GROUP_ONLY">지정 인원</label>
+            <label htmlFor="GROUP_ONLY">특정 인원 지정</label>
           </div>
         </Flex>
 
@@ -288,7 +296,7 @@ const NewTopic = () => {
             modalKey="newTopic"
             position="center"
             width="400px"
-            height="400px"
+            height="520px"
             overflow="scroll"
             $dimmedColor="rgba(0, 0, 0, 0.5)"
           >
@@ -297,14 +305,13 @@ const NewTopic = () => {
                 padding={'12px'}
                 position="sticky"
                 top="0"
-                $backgroundColor="primary"
                 $justifyContent="space-between"
                 $alignItems="center"
               >
-                <Text $fontSize="large" $fontWeight="bold" color="white">
+                <Text $fontSize="large" $fontWeight="bold" color="black">
                   멤버 선택
                 </Text>
-                <Text $fontSize="small" $fontWeight="normal" color="lightGray">
+                <Text $fontSize="small" $fontWeight="normal" color="black">
                   {checkedMemberIds.length}명 선택됨
                 </Text>
               </Flex>

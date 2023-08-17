@@ -4,7 +4,8 @@ import Text from '../common/Text';
 import Box from '../common/Box';
 import Space from '../common/Space';
 import { lazy, Suspense } from 'react';
-import TopicCardListSeleton from '../TopicCardList/TopicCardListSeleton';
+import TopicCardListSkeleton from '../TopicCardList/TopicCardListSkeleton';
+import { TopicType } from '../../types/Topic';
 import useKeyDown from '../../hooks/useKeyDown';
 
 const TopicCardList = lazy(() => import('../TopicCardList'));
@@ -13,12 +14,16 @@ interface TopicListContainerProps {
   containerTitle: string;
   containerDescription: string;
   routeWhenSeeAll: () => void;
+  topics: TopicType[];
+  setTopicsFromServer: () => void;
 }
 
 const TopicListContainer = ({
   containerTitle,
   containerDescription,
   routeWhenSeeAll,
+  topics,
+  setTopicsFromServer,
 }: TopicListContainerProps) => {
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLSpanElement>();
 
@@ -51,7 +56,7 @@ const TopicListContainer = ({
           $fontWeight="normal"
           tabIndex={0}
           onClick={routeWhenSeeAll}
-          aria-label="인기 급상승할 지도 전체보기 버튼"
+          aria-label={`${containerTitle} 전체보기 버튼`}
           ref={elementRef}
           onKeyDown={onElementKeyDown}
         >
@@ -61,12 +66,14 @@ const TopicListContainer = ({
 
       <Space size={4} />
 
-      <Suspense fallback={<TopicCardListSeleton />}>
-        <TopicCardList />
-      </Suspense>
-    </section>
-  );
-};
+    <Suspense fallback={<TopicCardListSkeleton />}>
+      <TopicCardList
+        topics={topics}
+        setTopicsFromServer={setTopicsFromServer}
+      />
+    </Suspense>
+  </section>
+);
 
 const PointerText = styled(Text)`
   cursor: pointer;

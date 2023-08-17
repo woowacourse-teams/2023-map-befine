@@ -2,7 +2,7 @@ interface PinImageMap {
   [key: number]: string;
 }
 
-const pinImageMap: PinImageMap = {
+export const pinImageMap: PinImageMap = {
   1: 'https://velog.velcdn.com/images/afds4567/post/077287bd-6abb-49b5-843a-0a12d9a197a9/image.svg',
   2: 'https://velog.velcdn.com/images/afds4567/post/5c849a0c-021b-4cfe-80f9-8fd552fa3987/image.svg',
   3: 'https://velog.velcdn.com/images/afds4567/post/1281de8f-380e-4ef5-a725-0f8feb1ecd08/image.svg',
@@ -12,4 +12,12 @@ const pinImageMap: PinImageMap = {
   7: 'https://velog.velcdn.com/images/afds4567/post/65b642cb-222b-4936-88ce-80dc5ce3fb3f/image.svg',
 };
 
-export default pinImageMap;
+export const pinColors: PinImageMap = {
+  1: '#E1325C',
+  2: '#F9CB55',
+  3: '#4B5CFA',
+  4: '#57B148',
+  5: '#2AC1BC',
+  6: '#FD842D',
+  7: '#C340B6',
+};
