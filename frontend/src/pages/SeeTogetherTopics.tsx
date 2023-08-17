@@ -110,7 +110,7 @@ const SeeTogetherTopics = () => {
 
       <Space size={6} />
 
-      <Flex $justifyContent="center">
+      <ButtonsWrapper>
         <Button variant="secondary" onClick={onClickDeleteSeeTogetherTopics}>
           비우기
         </Button>
@@ -118,7 +118,7 @@ const SeeTogetherTopics = () => {
         <Button variant="primary" onClick={goToSelectedTopic}>
           한 번에 보기
         </Button>
-      </Flex>
+      </ButtonsWrapper>
       <Space size={5} />
     </Wrapper>
   );
@@ -136,6 +136,12 @@ const WrapperWhenEmpty = styled.section<{ width: '372px' | '100vw' }>`
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ButtonsWrapper = styled.div`
+  display: flex;
   justify-content: center;
   align-items: center;
 `;
