@@ -82,6 +82,14 @@ const NewTopic = () => {
       return;
     }
 
+    if (!isPrivate && !isAll) {
+      const topicId = await postToServer();
+
+      const result = await addAuthority(topicId);
+      if (topicId) routePage(`/topics/${topicId}`);
+      return;
+    }
+
     if (!isAll && checkedMemberIds.length === 0) {
       showToast('error', '멤버를 선택해주세요.');
       return;
@@ -108,7 +116,10 @@ const NewTopic = () => {
 
   //header의 location으로 받아온 topicId에 권한 추가 기능
   const addAuthority = async (topicId: any) => {
-    if (isAll) return; // 모두 권한 준거면 return
+    console.log('ADDAUTHORITY1');
+    if (isAll && !isPrivate) return; // 모두 권한 준거면 return
+    console.log('ADDAUTHORITY2');
+
     const response = await postApi(`/permissions`, {
       topicId: topicId,
       memberIds: checkedMemberIds,

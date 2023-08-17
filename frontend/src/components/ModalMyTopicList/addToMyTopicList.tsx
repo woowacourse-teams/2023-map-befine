@@ -5,10 +5,13 @@ import { styled } from 'styled-components';
 import ModalTopicCard from '../ModalTopicCard';
 import { ModalContext } from '../../context/ModalContext';
 import { postApi } from '../../apis/postApi';
+import useToast from '../../hooks/useToast';
 
 const AddToMyTopicList = ({ pin }: any) => {
   const [myTopics, setMyTopics] = useState<ModalMyTopicType[]>([]);
   const { closeModal } = useContext(ModalContext);
+  const { showToast } = useToast();
+
   const getMyTopicFromServer = async () => {
     const serverMyTopic = await getApi<ModalMyTopicType[]>(
       'default',
@@ -22,16 +25,22 @@ const AddToMyTopicList = ({ pin }: any) => {
   }, []);
   console.log(pin, 'PIN');
   const addPinToTopic = async (topicId: any) => {
-    await postApi(`/pins`, {
-      topicId: topicId.topicId,
-      name: pin.name,
-      description: pin.description,
-      address: pin.address,
-      latitude: pin.latitude,
-      longitude: pin.longitude,
-      legalDongCode: '',
-    });
-    closeModal('addToMyTopicList');
+    try {
+      await postApi(`/pins`, {
+        topicId: topicId.topicId,
+        name: pin.name,
+        description: pin.description,
+        address: pin.address,
+        latitude: pin.latitude,
+        longitude: pin.longitude,
+        legalDongCode: '',
+      });
+      closeModal('addToMyTopicList');
+      showToast('info', '내 지도에 핀이 추가되었습니다.');
+    } catch (error) {
+      console.log(error);
+      //showToast('error', '내 지도에 핀 추가를 실패했습니다.');
+    }
   };
   if (!myTopics) return <></>;
 
