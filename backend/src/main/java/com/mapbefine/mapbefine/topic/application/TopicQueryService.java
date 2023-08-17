@@ -211,6 +211,13 @@ public class TopicQueryService {
     }
 
     public List<TopicResponse> findAllByOrderByUpdatedAtDesc(AuthMember authMember) {
+        if (Objects.isNull(authMember.getMemberId())) {
+            return getGuestNewestTopicResponse(authMember);
+        }
+        return getUserNewestTopicResponse(authMember);
+    }
+
+    private List<TopicResponse> getUserNewestTopicResponse(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
@@ -229,7 +236,39 @@ public class TopicQueryService {
                 toList();
     }
 
+    private List<TopicResponse> getGuestNewestTopicResponse(AuthMember authMember) {
+        return pinRepository.findAllByOrderByUpdatedAtDesc()
+                .stream()
+                .map(Pin::getTopic)
+                .distinct()
+                .filter(authMember::canRead)
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        Boolean.FALSE,
+                        Boolean.FALSE
+                )).toList();
+    }
+
     public List<TopicResponse> findAllBestTopics(AuthMember authMember) {
+        if (Objects.isNull(authMember.getMemberId())) {
+            return getGuestBestTopicResponse(authMember);
+        }
+        return getUserBestTopicResponse(authMember);
+    }
+
+    private List<TopicResponse> getGuestBestTopicResponse(AuthMember authMember) {
+        return topicRepository.findAll()
+                .stream()
+                .filter(authMember::canRead)
+                .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        Boolean.FALSE,
+                        Boolean.FALSE
+                )).toList();
+    }
+
+    private List<TopicResponse> getUserBestTopicResponse(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
