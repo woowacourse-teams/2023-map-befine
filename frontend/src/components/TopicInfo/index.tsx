@@ -124,7 +124,7 @@ const TopicInfo = ({
       <Flex $justifyContent="center">
         <AddSeeTogether
           isInAtlas={isInAtlas}
-          id={Number(topicId)}
+          id={Number(topicId.split(',')[idx])}
           setTopicsFromServer={setTopicsFromServer}
         >
           {isInAtlas ? (
