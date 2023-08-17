@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ProvidePlugin, EnvironmentPlugin } = require('webpack');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: {
@@ -19,9 +20,7 @@ module.exports = {
       React: 'react',
       process: 'process/browser.js',
     }),
-    new EnvironmentPlugin({
-      REACT_APP_API_DEFAULT: 'https://mapbefine.kro.kr/api',
-    }),
+    new Dotenv(),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
