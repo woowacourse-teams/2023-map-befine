@@ -100,7 +100,7 @@ const TopicCard = ({
             <AddFavorite
               isBookmarked={isBookmarked}
               id={id}
-              setTopicFromServer={setTopicsFromServer}
+              setTopicsFromServer={setTopicsFromServer}
             >
               {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
             </AddFavorite>
