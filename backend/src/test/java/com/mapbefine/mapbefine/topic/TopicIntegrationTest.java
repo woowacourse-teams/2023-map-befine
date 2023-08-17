@@ -25,9 +25,8 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.*;
+import io.restassured.response.*;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -415,6 +414,21 @@ class TopicIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responses).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("게스트일 때도 모든 토픽을 조회할 수 있다.")
+    void findAllTopicsWhenGuest() {
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/topics")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
 }

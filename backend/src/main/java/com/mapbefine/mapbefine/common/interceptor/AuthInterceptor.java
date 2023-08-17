@@ -50,12 +50,11 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         Long memberId = extractMemberIdFromToken(request);
+
         if (isLoginRequired((HandlerMethod) handler)) {
             validateMember(memberId);
         }
-        if (!(isLoginRequired((HandlerMethod) handler)) && Objects.nonNull(memberId)) {
-            validateMember(memberId);
-        }
+
         request.setAttribute("memberId", memberId);
 
         return true;
