@@ -100,6 +100,10 @@ const SelectedTopic = () => {
     setIsOpen(true);
   }, [searchParams]);
 
+  useEffect(() => {
+    setTags([]);
+  }, []);
+
   const togglePinDetail = () => {
     setIsOpen(!isOpen);
   };
