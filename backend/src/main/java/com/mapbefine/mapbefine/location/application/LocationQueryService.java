@@ -84,7 +84,7 @@ public class LocationQueryService {
 
     private Member findMemberById(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("findMemberById; memberId= " + id));
     }
 
     private List<Topic> findTopicsInAtlas(Member member) {

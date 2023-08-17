@@ -19,6 +19,7 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -28,7 +29,6 @@ import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -121,7 +121,7 @@ class MemberQueryServiceTest {
     void findMemberById_whenNoneExists_thenFail() {
         // given when then
         assertThatThrownBy(() -> memberQueryService.findById(Long.MAX_VALUE))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(MemberNotFoundException.class);
     }
 
 

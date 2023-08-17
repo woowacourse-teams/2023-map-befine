@@ -1,8 +1,10 @@
 package com.mapbefine.mapbefine.oauth.domain;
 
+import static com.mapbefine.mapbefine.oauth.exception.OauthErrorCode.OAUTH_SERVER_TYPE_NOT_FOUND;
 import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toMap;
 
+import com.mapbefine.mapbefine.oauth.exception.OathException.OauthNotFoundException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -27,7 +29,7 @@ public class AuthCodeRequestUrlProviderComposite {
 
     public AuthCodeRequestUrlProvider getProvider(OauthServerType oauthServerType) {
         return Optional.ofNullable(mapping.get(oauthServerType))
-                .orElseThrow(() -> new RuntimeException("지원하지 않는 소셜 로그인 타입입니다."));
+                .orElseThrow(() -> new OauthNotFoundException(OAUTH_SERVER_TYPE_NOT_FOUND));
     }
 
 }

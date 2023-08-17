@@ -41,7 +41,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     private void validateRequest(HttpServletRequest request) {
         if (Objects.isNull(request)) {
-            throw new IllegalArgumentException("정상적인 요청이 아닙니다.");
+            throw new IllegalStateException("HttpServletRequest이 Null입니다.");
         }
     }
 

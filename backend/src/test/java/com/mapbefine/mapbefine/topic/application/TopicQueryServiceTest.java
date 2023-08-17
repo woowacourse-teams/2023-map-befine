@@ -25,6 +25,8 @@ import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -144,8 +146,7 @@ class TopicQueryServiceTest {
         AuthMember guest = new Guest();
 
         assertThatThrownBy(() -> topicQueryService.findDetailById(guest, topic.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("조회권한이 없는 Topic 입니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 
     @Test
@@ -211,8 +212,7 @@ class TopicQueryServiceTest {
         List<Long> topicIds = List.of(topic1.getId(), topic2.getId());
 
         assertThatThrownBy(() -> topicQueryService.findDetailsByIds(guest, topicIds))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("읽을 수 없는 토픽이 존재합니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 
     @Test
@@ -230,8 +230,7 @@ class TopicQueryServiceTest {
         List<Long> topicIds = List.of(topic1.getId(), topic2.getId(), Long.MAX_VALUE);
 
         assertThatThrownBy(() -> topicQueryService.findDetailsByIds(user, topicIds))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 토픽이 존재합니다");
+                .isInstanceOf(TopicNotFoundException.class);
     }
 
     @Test
@@ -246,7 +245,7 @@ class TopicQueryServiceTest {
         Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
         bookmarkRepository.save(bookmark);
 
-        //when //then
+        //when then
         AuthMember user = MemberFixture.createUser(member);
         List<TopicResponse> topics = topicQueryService.findAllReadable(user);
 

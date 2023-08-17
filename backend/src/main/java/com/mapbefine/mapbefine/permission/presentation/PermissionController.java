@@ -36,7 +36,7 @@ public class PermissionController {
     @LoginRequired
     @PostMapping
     public ResponseEntity<Void> addPermission(AuthMember authMember, @RequestBody PermissionRequest request) {
-        permissionCommandService.savePermission(authMember, request);
+        permissionCommandService.addPermission(authMember, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

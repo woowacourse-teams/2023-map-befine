@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
+import com.mapbefine.mapbefine.atlas.exception.AtlasException.AtlasForbiddenException;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.User;
@@ -98,8 +99,7 @@ class AtlasCommandServiceTest {
             //when
             //then
             assertThatThrownBy(() -> atlasCommandService.addTopic(otherAuthMember, topic.getId()))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("해당 지도에 접근권한이 없습니다.");
+                    .isInstanceOf(AtlasForbiddenException.class);
         }
 
     }

@@ -14,7 +14,7 @@ const Toast = () => {
 
   return ReactDOM.createPortal(
     toast.show && (
-      <Wrapper $justifyContent="center" $alignItems="center" type={toast.type}>
+      <Wrapper $justifyContent="center" $alignItems="center" type={toast.type} role="alert">
         {toast.message}
       </Wrapper>
     ),

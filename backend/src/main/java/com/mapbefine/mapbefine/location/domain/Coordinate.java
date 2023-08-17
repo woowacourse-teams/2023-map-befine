@@ -1,11 +1,13 @@
 package com.mapbefine.mapbefine.location.domain;
 
+import static com.mapbefine.mapbefine.location.exception.LocationErrorCode.ILLEGAL_COORDINATE_RANGE;
 import static java.lang.Math.acos;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.location.exception.LocationException.LocationBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
@@ -40,7 +42,7 @@ public class Coordinate {
 
     private static void validateRange(double latitude, double longitude) {
         if (isNotInRange(latitude, longitude)) {
-            throw new IllegalArgumentException("한국 내의 좌표만 입력해주세요.");
+            throw new LocationBadRequestException(ILLEGAL_COORDINATE_RANGE);
         }
     }
 

@@ -14,7 +14,7 @@ import Button from '../components/common/Button';
 import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import { ModalContext } from '../context/ModalContext';
-import ModalMyTopicList from '../components/ModalMyTopicList';
+import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 
 interface PinDetailProps {
   topicId: string;
@@ -31,6 +31,8 @@ const PinDetail = ({
 }: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinType | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<any>(null); //토픽이 없을 때 사용하는 변수
+  console.log(selectedTopic);
   const { showToast } = useToast();
   const {
     formValues,
@@ -182,7 +184,7 @@ const PinDetail = ({
         <SaveToMyMapButton
           variant="primary"
           onClick={() => {
-            openModal('saveMyMap');
+            openModal('addToMyTopicList');
           }}
         >
           내 지도에 저장하기
@@ -194,7 +196,7 @@ const PinDetail = ({
       </Flex>
 
       <Modal
-        modalKey="saveMyMap"
+        modalKey="addToMyTopicList"
         position="center"
         width="768px"
         height="512px"
@@ -209,7 +211,7 @@ const PinDetail = ({
             핀을 저장할 지도를 선택해주세요.
           </Text>
           <Space size={4} />
-          <ModalMyTopicList />
+          <AddToMyTopicList pin={pin} />
         </ModalContentsWrapper>
       </Modal>
     </>

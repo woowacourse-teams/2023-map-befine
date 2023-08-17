@@ -5,9 +5,8 @@ import { ModalMyTopicType } from '../../types/Topic';
 import ModalTopicCard from '../ModalTopicCard';
 import Space from '../common/Space';
 
-const ModalMyTopicList = () => {
+const ModalMyTopicList = ({ topicClick }: any) => {
   const [myTopics, setMyTopics] = useState<ModalMyTopicType[]>([]);
-
   const getMyTopicFromServer = async () => {
     const serverMyTopic = await getApi<ModalMyTopicType[]>(
       'default',
