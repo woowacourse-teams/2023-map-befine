@@ -66,14 +66,15 @@ const TopicListContainer = ({
 
       <Space size={4} />
 
-    <Suspense fallback={<TopicCardListSkeleton />}>
-      <TopicCardList
-        topics={topics}
-        setTopicsFromServer={setTopicsFromServer}
-      />
-    </Suspense>
-  </section>
-);
+      <Suspense fallback={<TopicCardListSkeleton />}>
+        <TopicCardList
+          topics={topics}
+          setTopicsFromServer={setTopicsFromServer}
+        />
+      </Suspense>
+    </section>
+  );
+};
 
 const PointerText = styled(Text)`
   cursor: pointer;
