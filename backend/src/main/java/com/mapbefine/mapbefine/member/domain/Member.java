@@ -25,7 +25,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Member extends BaseTimeEntity {
 
+    private static final String DEFAULT_NICKNAME_PREFIX = "모험가";
     private static final int DEFAULT_NICKNAME_SUFFIX_LENGTH = 7;
+    private static final int NICKNAME_MAX_LENGTH = 20;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,9 +83,16 @@ public class Member extends BaseTimeEntity {
             Role role,
             OauthId oauthId
     ) {
-        String nickName = nickname + createNicknameSuffix();
+        String nickName = createNickname(nickname);
 
         return Member.of(nickName, email, imageUrl, role, oauthId);
+    }
+
+    private static String createNickname(String nickname) {
+        if (nickname.length() >= NICKNAME_MAX_LENGTH) {
+            return DEFAULT_NICKNAME_PREFIX + createNicknameSuffix();
+        }
+        return nickname + createNicknameSuffix();
     }
 
     private static String createNicknameSuffix() {
