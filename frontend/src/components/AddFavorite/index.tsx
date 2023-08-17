@@ -28,10 +28,7 @@ const AddFavorite = ({
 
       showToast('info', '즐겨찾기에 추가되었습니다.');
     } catch {
-      showToast(
-        'error',
-        '즐겨찾기 추가에 실패했습니다. 로그인 후 사용해주세요.',
-      );
+      showToast('error', '로그인 후 사용해주세요.');
     }
   };
 
@@ -45,10 +42,7 @@ const AddFavorite = ({
 
       showToast('info', '해당 지도를 즐겨찾기에서 제외했습니다.');
     } catch {
-      showToast(
-        'error',
-        '즐겨찾기 추가에 실패했습니다. 로그인 후 사용해주세요.',
-      );
+      showToast('error', '로그인 후 사용해주세요.');
     }
 
     await deleteApi(`/bookmarks/topics?id=${id}`, 'x-www-form-urlencoded');

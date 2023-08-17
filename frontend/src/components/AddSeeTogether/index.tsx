@@ -27,10 +27,8 @@ const AddSeeTogether = ({
   const addSeeTogetherList = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    if (!seeTogetherTopics) return;
-
     try {
-      if (seeTogetherTopics.length === 7) {
+      if (seeTogetherTopics && seeTogetherTopics.length === 7) {
         showToast('warning', '모아보기는 7개까지만 가능합니다.');
         return;
       }
@@ -46,10 +44,7 @@ const AddSeeTogether = ({
 
       showToast('info', '모아보기에 추가했습니다.');
     } catch {
-      showToast(
-        'error',
-        '모아보기 추가에 실패했습니다. 로그인 후 사용해주세요.',
-      );
+      showToast('error', '로그인 후 사용해주세요.');
     }
   };
 
@@ -68,10 +63,7 @@ const AddSeeTogether = ({
 
       showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
     } catch {
-      showToast(
-        'error',
-        '모아보기 삭제에 실패했습니다. 로그인 후 사용해주세요.',
-      );
+      showToast('error', '로그인 후 사용해주세요.');
     }
   };
 
