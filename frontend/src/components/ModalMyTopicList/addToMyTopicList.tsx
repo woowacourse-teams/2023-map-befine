@@ -54,6 +54,7 @@ const AddToMyTopicList = ({ pin }: any) => {
             topicUpdatedAt={topic.updatedAt}
             topicPinCount={topic.pinCount}
             topicClick={addPinToTopic}
+            topicBookmarkCount={topic.bookmarkCount}
           />
         </Fragment>
       ))}

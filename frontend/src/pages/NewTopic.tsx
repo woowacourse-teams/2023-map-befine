@@ -134,8 +134,6 @@ const NewTopic = () => {
   };
 
   const mergeTopics = async () => {
-    showToast('info', `${formValues.name} 토픽을 병합하였습니다.`);
-
     try {
       return await postApi('/topics/merge', {
         image: formValues.image || DEFAULT_TOPIC_IMAGE,
@@ -150,6 +148,7 @@ const NewTopic = () => {
         'error',
         '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
       );
+      throw new Error('지도 생성 실패');
     }
   };
 
@@ -172,6 +171,7 @@ const NewTopic = () => {
         'error',
         '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
       );
+      throw new Error('지도 생성 실패');
     }
   };
 

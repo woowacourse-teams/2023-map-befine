@@ -48,6 +48,7 @@ const ModalMyTopicList = ({ topicId, topicClick }: ModalMyTopicList) => {
               topicUpdatedAt={topic.updatedAt}
               topicPinCount={topic.pinCount}
               topicClick={topicClick}
+              topicBookmarkCount={topic.bookmarkCount}
             />
           </Fragment>
         ))}
