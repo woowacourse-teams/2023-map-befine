@@ -71,6 +71,7 @@ const TopicInfo = ({
       $backgroundColor="white"
       tabIndex={0}
       role="button"
+      data-cy="topic-info"
     >
       <Image
         height="168px"

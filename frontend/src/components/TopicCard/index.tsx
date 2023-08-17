@@ -43,6 +43,7 @@ const TopicCard = ({
 
   return (
     <Wrapper
+      data-cy="topic-card"
       onClick={goToSelectedTopic}
       ref={elementRef}
       onKeyDown={onElementKeyDown}

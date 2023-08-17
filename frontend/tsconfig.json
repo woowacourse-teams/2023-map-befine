@@ -7,11 +7,12 @@
     "moduleResolution": "Node",
     "strict": true,
     "module": "esnext",
-    "isolatedModules": true,
+    "isolatedModules": false,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["cypress"]
   },
   "exclude": ["node_modules"],
-  "include": ["./src/**/*.tsx", "./src/**/*.ts"]
+  "include": ["./src/**/*.tsx", "./src/**/*.ts", "cypress/**/*"]
 }
