@@ -89,7 +89,7 @@ public class Member extends BaseTimeEntity {
     }
 
     private static String createNickname(String nickname) {
-        if (nickname.length() >= NICKNAME_MAX_LENGTH) {
+        if (nickname.length() > NICKNAME_MAX_LENGTH - DEFAULT_NICKNAME_SUFFIX_LENGTH) {
             return DEFAULT_NICKNAME_PREFIX + createNicknameSuffix();
         }
         return nickname + createNicknameSuffix();
