@@ -8,13 +8,19 @@ interface UseUpdateCoordinatesProps {
 
 export default function useUpdateCoordinates(map: UseUpdateCoordinatesProps) {
   const { coordinates } = useContext(CoordinatesContext);
-  const { markers, createMarkers, removeMarkers, createInfowindows } =
-    useContext(MarkerContext);
+  const {
+    markers,
+    createMarkers,
+    removeMarkers,
+    createInfowindows,
+    removeInfowindows,
+  } = useContext(MarkerContext);
 
   useEffect(() => {
     if (!map) return;
     if (markers.length > 0) {
       removeMarkers();
+      removeInfowindows();
     }
     if (coordinates.length > 0) {
       createMarkers(map);
