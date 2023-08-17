@@ -10,7 +10,7 @@ public class GlobalException extends RuntimeException {
     private final HttpStatus status;
 
     public GlobalException(ErrorCode errorCode, HttpStatus status) {
-        super(errorCode.getMessage());
+        super(errorCode.message());
         this.errorCode = errorCode;
         this.status = status;
     }

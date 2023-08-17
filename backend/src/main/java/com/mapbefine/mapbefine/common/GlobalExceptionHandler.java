@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.common;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-import com.mapbefine.mapbefine.common.dto.ErrorResponse;
 import com.mapbefine.mapbefine.common.exception.ErrorCode;
 import com.mapbefine.mapbefine.common.exception.GlobalException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(GlobalException.class)
-    public ResponseEntity<ErrorResponse> handle(GlobalException exception, HttpServletRequest request) {
+    public ResponseEntity<ErrorCode> handle(GlobalException exception, HttpServletRequest request) {
         String exceptionSource = extractExceptionSource(exception);
         ErrorCode errorCode = exception.getErrorCode();
 
@@ -24,10 +23,10 @@ public class GlobalExceptionHandler {
                 "source = {} \n {} = {} \n code = {} \n message = {}",
                 exceptionSource,
                 request.getMethod(), request.getRequestURI(),
-                errorCode.getCode(), errorCode.getMessage()
+                errorCode.code(), errorCode.message()
         );
 
-        return ResponseEntity.status(exception.getStatus()).body(ErrorResponse.from(errorCode));
+        return ResponseEntity.status(exception.getStatus()).body(errorCode);
     }
 
     private String extractExceptionSource(Exception exception) {
