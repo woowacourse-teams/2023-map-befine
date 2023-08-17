@@ -27,6 +27,7 @@ const Home = () => {
   return (
     <>
       <Wrapper position="relative">
+        <Space size={5} />
         <TopicListContainer
           containerTitle="인기 급상승할 지도?"
           containerDescription="즐겨찾기가 많이 된 지도를 확인해보세요."

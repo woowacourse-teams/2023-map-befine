@@ -15,6 +15,7 @@ const SeeAllTopics = () => {
 
   return (
     <Wrapper>
+      <Space size={5} />
       <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
         인기 급상승할 지도?
       </Text>
