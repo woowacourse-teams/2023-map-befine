@@ -38,8 +38,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> handleServerException(Exception exception) {
-        log.error("", exception);
+    public ResponseEntity<Void> handleServerException(Exception exception, HttpServletRequest request) {
+        String exceptionSource = extractExceptionSource(exception);
+
+        log.error(
+                "source = {} \n {} = {}",
+                exceptionSource,
+                request.getMethod(), request.getRequestURI(),
+                exception
+        );
 
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
     }

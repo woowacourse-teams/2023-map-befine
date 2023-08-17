@@ -21,6 +21,12 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+  file:
+    # jar 파일 실행 시, jar 파일과 동일한 디렉토리 내 log 디렉토리에 생성됨
+    path: ./log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %msg %n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %msg %n"
 
 oauth:
   kakao:
