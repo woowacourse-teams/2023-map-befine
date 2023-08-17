@@ -1,13 +1,17 @@
 package com.mapbefine.mapbefine.pin.application;
 
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_READ;
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.PIN_NOT_FOUND;
+
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +37,7 @@ public class PinQueryService {
     // TODO: 2023/08/08 isDeleted 제외하고 조회하기
     public PinDetailResponse findDetailById(AuthMember member, Long pinId) {
         Pin pin = pinRepository.findById(pinId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+                .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND));
         validateReadAuth(member, pin.getTopic());
 
         return PinDetailResponse.from(pin);
@@ -44,7 +48,7 @@ public class PinQueryService {
             return;
         }
 
-        throw new IllegalArgumentException("조회 권한이 없습니다.");
+        throw new PinForbiddenException(FORBIDDEN_PIN_READ);
     }
 
     public List<PinResponse> findAllPinsByMemberId(AuthMember authMember, Long memberId) {

@@ -126,10 +126,6 @@ public class Member extends BaseTimeEntity {
         atlantes.add(atlas);
     }
 
-    public String getRoleKey() {
-        return memberInfo.getRole().getKey();
-    }
-
     public boolean isAdmin() {
         return memberInfo.getRole() == Role.ADMIN;
     }

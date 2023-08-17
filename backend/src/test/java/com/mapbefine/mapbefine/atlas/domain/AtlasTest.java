@@ -4,18 +4,15 @@ package com.mapbefine.mapbefine.atlas.domain;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.atlas.exception.AtlasException.AtlasBadRequestException;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 class AtlasTest {
 
@@ -37,22 +34,20 @@ class AtlasTest {
             assertThat(atlas.getMember()).isEqualTo(MEMBER);
         }
 
-        @ParameterizedTest
-        @MethodSource(value = "memberTopicProvider")
-        @DisplayName("입력값이 null이면 예외가 발생된다.")
-        void validation_fail(Topic topic, Member member) {
-            assertThatThrownBy(() -> Atlas.createWithAssociatedMember(topic, member))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("지도와 유저는 Null이어선 안됩니다.");
+        @Test
+        @DisplayName("Topic Id가 null이면 예외가 발생된다.")
+        void validationTopic_fail() {
+            assertThatThrownBy(() -> Atlas.createWithAssociatedMember(null, MEMBER))
+                    .isInstanceOf(AtlasBadRequestException.class);
         }
 
-        static Stream<Arguments> memberTopicProvider() {
-            return Stream.of(
-                    Arguments.of(null, MEMBER),
-                    Arguments.of(TOPIC, null),
-                    Arguments.of(null, null)
-            );
+        @Test
+        @DisplayName("Member Id가 null이면 예외가 발생된다.")
+        void validationMember_fail() {
+            assertThatThrownBy(() -> Atlas.createWithAssociatedMember(TOPIC, null))
+                    .isInstanceOf(AtlasBadRequestException.class);
         }
+
     }
 
 }

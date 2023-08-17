@@ -1,9 +1,14 @@
 package com.mapbefine.mapbefine.member.domain;
 
+import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_EMAIL_NULL;
+import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_EMAIL_PATTERN;
+import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_NICKNAME_LENGTH;
+import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_NICKNAME_NULL;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.Image;
 import com.mapbefine.mapbefine.common.util.RegexUtil;
+import com.mapbefine.mapbefine.member.exception.MemberException.MemberBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -17,8 +22,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MemberInfo {
 
-    private static final int MAX_NICK_NAME_LENGTH = 20;
     private static final String VALID_EMAIL_URL_REGEX = "^[a-zA-Z0-9]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$";
+    private static final int NICKNAME_LEGTH = 20;
 
     @Column(nullable = false, length = 20, unique = true)
     private String nickName;
@@ -65,26 +70,26 @@ public class MemberInfo {
 
     private static void validateNickName(String nickName) {
         if (Objects.isNull(nickName)) {
-            throw new IllegalArgumentException("닉네임은 필수로 입력해야합니다.");
+            throw new MemberBadRequestException(ILLEGAL_NICKNAME_NULL);
         }
-        if (nickName.isBlank() || nickName.length() > MAX_NICK_NAME_LENGTH) {
-            throw new IllegalArgumentException("닉네임 길이는 최소 1 자에서 " + MAX_NICK_NAME_LENGTH + " 자여야 합니다.");
+        if (nickName.isBlank() || nickName.length() > NICKNAME_LEGTH) {
+            throw new MemberBadRequestException(ILLEGAL_NICKNAME_LENGTH);
         }
     }
 
     private static void validateEmail(String email) {
         if (Objects.isNull(email)) {
-            throw new IllegalArgumentException("이메일은 필수로 입력해야합니다.");
+            throw new MemberBadRequestException(ILLEGAL_EMAIL_NULL);
         }
 
         if (!RegexUtil.matches(VALID_EMAIL_URL_REGEX, email)) {
-            throw new IllegalArgumentException("올바르지 않은 이메일 형식입니다.");
+            throw new MemberBadRequestException(ILLEGAL_EMAIL_PATTERN);
         }
     }
 
     private static void validateRole(Role role) {
         if (Objects.isNull(role)) {
-            throw new IllegalArgumentException("역할은 필수로 입력해야합니다.");
+            throw new IllegalArgumentException("validateRole; member role is null;");
         }
     }
 

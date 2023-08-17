@@ -1,5 +1,8 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_READ;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
+
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
@@ -11,6 +14,8 @@ import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -69,7 +74,7 @@ public class TopicQueryService {
 
     private Member findMemberById(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + id));
     }
 
     private List<Topic> findTopicsInAtlas(Member member) {
@@ -115,10 +120,9 @@ public class TopicQueryService {
         );
     }
 
-
     private Topic findTopic(Long id) {
         return topicRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+                .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND));
     }
 
     private void validateReadableTopic(AuthMember member, Topic topic) {
@@ -126,7 +130,7 @@ public class TopicQueryService {
             return;
         }
 
-        throw new IllegalArgumentException("조회권한이 없는 Topic 입니다.");
+        throw new TopicForbiddenException(FORBIDDEN_TOPIC_READ);
     }
 
     public List<TopicDetailResponse> findDetailsByIds(AuthMember authMember, List<Long> ids) {
@@ -165,7 +169,7 @@ public class TopicQueryService {
 
     private void validateTopicsCount(List<Long> topicIds, List<Topic> topics) {
         if (topicIds.size() != topics.size()) {
-            throw new IllegalArgumentException("존재하지 않는 토픽이 존재합니다");
+            throw new TopicNotFoundException(TOPIC_NOT_FOUND);
         }
     }
 
@@ -175,7 +179,7 @@ public class TopicQueryService {
                 .count();
 
         if (topics.size() != readableCount) {
-            throw new IllegalArgumentException("읽을 수 없는 토픽이 존재합니다.");
+            throw new TopicForbiddenException(FORBIDDEN_TOPIC_READ);
         }
     }
 

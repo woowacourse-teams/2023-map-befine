@@ -1,5 +1,10 @@
 package com.mapbefine.mapbefine.pin.application;
 
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_IMAGE_ID;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_TOPIC_ID;
+
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.location.domain.Address;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
@@ -14,8 +19,11 @@ import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
@@ -67,18 +75,18 @@ public class PinCommandService {
 
     private Topic findTopic(Long topicId) {
         if (Objects.isNull(topicId)) {
-            throw new NoSuchElementException("토픽을 찾을 수 없습니다.");
+            throw new TopicBadRequestException(ILLEGAL_TOPIC_ID);
         }
         return topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException("토픽을 찾을 수 없습니다."));
+                .orElseThrow(() -> new TopicBadRequestException(ILLEGAL_TOPIC_ID));
     }
 
     private Member findMember(Long memberId) {
         if (Objects.isNull(memberId)) {
-            throw new NoSuchElementException("회원 정보를 찾을 수 없습니다.");
+            throw new PinForbiddenException(FORBIDDEN_PIN_CREATE_OR_UPDATE);
         }
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("findMember; memberId= " + memberId));
     }
 
     private Location findDuplicateOrCreatePinLocation(PinCreateRequest request) {
@@ -116,7 +124,7 @@ public class PinCommandService {
 
     private Pin findPin(Long pinId) {
         return pinRepository.findById(pinId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀입니다."));
+                .orElseThrow(() -> new PinBadRequestException(ILLEGAL_PIN_ID));
     }
 
     public void removeById(AuthMember authMember, Long pinId) {
@@ -145,7 +153,7 @@ public class PinCommandService {
 
     private PinImage findPinImage(Long pinImageId) {
         return pinImageRepository.findById(pinImageId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 핀 이미지입니다."));
+                .orElseThrow(() -> new PinBadRequestException(ILLEGAL_PIN_IMAGE_ID));
     }
 
     private void validatePinCreateOrUpdate(AuthMember authMember, Topic topic) {
@@ -153,6 +161,6 @@ public class PinCommandService {
             return;
         }
 
-        throw new IllegalArgumentException("핀 생성 및 수정 권한이 없습니다.");
+        throw new PinForbiddenException(FORBIDDEN_PIN_CREATE_OR_UPDATE);
     }
 }
