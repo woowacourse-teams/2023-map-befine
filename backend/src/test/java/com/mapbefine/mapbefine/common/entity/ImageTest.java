@@ -31,7 +31,7 @@ class ImageTest {
         @DisplayName("정확한 URL을 입력하면 객체가 정상적으로 생성된다.")
         void success() {
             //given
-            String invalidImageUrl = "https://example.com/notimage";
+            String invalidImageUrl = "h://example.com/notimage";
 
             //when
             //then
