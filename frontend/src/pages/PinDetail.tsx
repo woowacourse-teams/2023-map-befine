@@ -23,6 +23,8 @@ interface PinDetailProps {
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const userToken = localStorage.getItem('userToken');
+
 const PinDetail = ({
   topicId,
   pinId,
@@ -45,6 +47,15 @@ const PinDetail = ({
     description: '',
   });
   const { openModal } = useContext(ModalContext);
+
+  const openModalWithToken = () => {
+    if (userToken) {
+      openModal('addToMyTopicList');
+      return;
+    }
+
+    showToast('error', '로그인 후 사용해주세요.');
+  };
 
   useEffect(() => {
     const getPinData = async () => {
@@ -174,12 +185,7 @@ const PinDetail = ({
       </Flex>
 
       <ButtonsWrapper>
-        <SaveToMyMapButton
-          variant="primary"
-          onClick={() => {
-            openModal('addToMyTopicList');
-          }}
-        >
+        <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
           내 지도에 저장하기
         </SaveToMyMapButton>
         <Space size={4} />

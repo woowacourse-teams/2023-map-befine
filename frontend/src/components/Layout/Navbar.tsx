@@ -166,8 +166,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
       <Modal
         modalKey="addMapOrPin"
         position="center"
-        width="236px"
-        height="48px"
+        width="252px"
+        height="64px"
         $dimmedColor="rgba(0,0,0,0)"
         top="calc(100vh - 100px)"
         left={$layoutWidth === '100vw' ? '' : `${372 / 2}px`}

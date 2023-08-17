@@ -121,7 +121,7 @@ const NewPin = () => {
 
       if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
     } catch {
-      showToast('error', '해당 지도에 핀을 추가할 수 있는 권한이 없습니다.');
+      showToast('error', '핀을 추가할 수 있는 권한이 없거나 지도를 선택하지 않았습니다.');
     }
   };
 
@@ -189,7 +189,7 @@ const NewPin = () => {
           $flexDirection="column"
         >
           <Text color="black" $fontSize="large" $fontWeight="bold">
-            핀 추가
+            핀 생성
           </Text>
 
           <Space size={5} />
@@ -197,7 +197,7 @@ const NewPin = () => {
           <section>
             <Flex>
               <Text color="black" $fontSize="default" $fontWeight="normal">
-                토픽 선택
+                지도 선택
               </Text>
               <Space size={0} />
               <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
@@ -216,7 +216,7 @@ const NewPin = () => {
                 ? topic?.name
                 : selectedTopic?.topicTitle
                 ? selectedTopic?.topicTitle
-                : '토픽을 선택해주세요.'}
+                : '지도를 선택해주세요.'}
             </Button>
           </section>
 

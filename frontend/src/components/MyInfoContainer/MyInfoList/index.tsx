@@ -54,9 +54,9 @@ const MyInfoList = () => {
 };
 
 const MyInfoListWrapper = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  grid-row-gap: ${({ theme }) => theme.spacing[5]};
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 `;
 
 export default MyInfoList;
