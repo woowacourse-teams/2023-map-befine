@@ -8,13 +8,13 @@ public class MemberException {
 
     public static class MemberBadRequestException extends BadRequestException {
         public MemberBadRequestException(MemberErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
     public static class MemberNotFoundException extends NotFoundException {
-        public MemberNotFoundException(MemberErrorCode errorCode, Long memberId) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), memberId));
+        public MemberNotFoundException(MemberErrorCode errorCode) {
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 

@@ -18,9 +18,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private static String UNAUTHORIZED_ERROR_MESSAGE = "로그인에 실패하였습니다.";
-    private static ErrorCode<Long> ILLEGAL_MEMBER_ID = new ErrorCode<>("03100", UNAUTHORIZED_ERROR_MESSAGE);
-    private static ErrorCode<Long> ILLEGAL_TOKEN = new ErrorCode<>("03101", UNAUTHORIZED_ERROR_MESSAGE);
+    private static final String UNAUTHORIZED_ERROR_MESSAGE = "로그인에 실패하였습니다.";
+    private static final ErrorCode ILLEGAL_MEMBER_ID = new ErrorCode("03100", UNAUTHORIZED_ERROR_MESSAGE);
+    private static final ErrorCode ILLEGAL_TOKEN = new ErrorCode("03101", UNAUTHORIZED_ERROR_MESSAGE);
 
     private final AuthorizationExtractor<AuthInfo> authorizationExtractor;
     private final AuthService authService;

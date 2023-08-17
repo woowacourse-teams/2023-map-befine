@@ -8,7 +8,7 @@ public class LocationException {
     public static class LocationBadRequestException extends BadRequestException {
 
         public LocationBadRequestException(LocationErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 

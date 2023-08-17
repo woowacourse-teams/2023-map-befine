@@ -1,14 +1,15 @@
 package com.mapbefine.mapbefine.bookmark.application;
 
+import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.CONFLICT_TOPIC_ALREADY_ADD;
 import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.FORBIDDEN_TOPIC_ADD;
 import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.FORBIDDEN_TOPIC_DELETE;
-import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.ILLEGAL_TOPIC_ALREADY_ADD;
 import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.ILLEGAL_TOPIC_ID;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkBadRequestException;
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkConflictException;
 import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkForbiddenException;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -57,7 +58,7 @@ public class BookmarkCommandService {
 
     private void validateBookmarkDuplication(AuthMember authMember, Long topicId) {
         if (isExistBookmark(authMember, topicId)) {
-            throw new BookmarkBadRequestException(ILLEGAL_TOPIC_ALREADY_ADD);
+            throw new BookmarkConflictException(CONFLICT_TOPIC_ALREADY_ADD);
         }
     }
 

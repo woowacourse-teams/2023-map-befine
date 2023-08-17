@@ -6,23 +6,11 @@ import lombok.Getter;
 
 @JsonInclude(Include.NON_NULL)
 @Getter
-public class ErrorCode<T> {
+public class ErrorCode {
 
     private final String code;
 
     private final String message;
-
-    private T info;
-
-    public ErrorCode(
-            String code,
-            String message,
-            T info
-    ) {
-        this.code = code;
-        this.message = message;
-        this.info = info;
-    }
 
     public ErrorCode(
             String code,

@@ -1,18 +1,38 @@
 package com.mapbefine.mapbefine.common;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.mapbefine.mapbefine.common.dto.ErrorResponse;
+import com.mapbefine.mapbefine.common.exception.ErrorCode;
+import com.mapbefine.mapbefine.common.exception.GlobalException;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private final ObjectMapper objectMapper;
+    @ExceptionHandler(GlobalException.class)
+    public ResponseEntity<ErrorResponse> handle(GlobalException exception, HttpServletRequest request) {
+        String exceptionSource = extractExceptionSource(exception);
+        ErrorCode errorCode = exception.getErrorCode();
 
-    public GlobalExceptionHandler(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+        log.warn(
+                "source = {} , {} = {} code = {} message = {}", exceptionSource,
+                request.getMethod(), request.getRequestURI(),
+                errorCode.getCode(), errorCode.getMessage()
+        );
+
+        return ResponseEntity.status(exception.getStatus()).body(ErrorResponse.from(errorCode));
+    }
+
+    private String extractExceptionSource(Exception exception) {
+        StackTraceElement[] stackTrace = exception.getStackTrace();
+        if (stackTrace.length > 0) {
+            return stackTrace[0].toString();
+        }
+        return "Unknown Source";
     }
 
 }

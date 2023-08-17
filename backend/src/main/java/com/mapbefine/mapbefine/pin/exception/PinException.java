@@ -9,14 +9,14 @@ public class PinException {
     public static class PinBadRequestException extends BadRequestException {
 
         public PinBadRequestException(PinErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
     public static class PinForbiddenException extends ForbiddenException {
 
         public PinForbiddenException(PinErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
@@ -24,7 +24,7 @@ public class PinException {
     public static class PinNotFoundException extends ForbiddenException {
 
         public PinNotFoundException(PinErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 

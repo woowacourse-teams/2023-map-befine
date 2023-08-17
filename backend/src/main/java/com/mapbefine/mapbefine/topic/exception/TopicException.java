@@ -10,21 +10,21 @@ public class TopicException {
     public static class TopicForbiddenException extends ForbiddenException {
 
         public TopicForbiddenException(TopicErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
     public static class TopicBadRequestException extends BadRequestException {
 
         public TopicBadRequestException(TopicErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
     public static class TopicNotFoundException extends NotFoundException {
 
         public TopicNotFoundException(TopicErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 

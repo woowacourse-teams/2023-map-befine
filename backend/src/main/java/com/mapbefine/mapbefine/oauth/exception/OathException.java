@@ -7,7 +7,7 @@ public class OathException {
 
     public static class OauthNotFoundException extends NotFoundException {
         public OauthNotFoundException(OauthErrorCode errorCode) {
-            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+            super(new ErrorCode(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
