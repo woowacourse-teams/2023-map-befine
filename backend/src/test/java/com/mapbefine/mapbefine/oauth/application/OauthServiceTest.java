@@ -28,6 +28,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 class OauthServiceTest {
 
     private static final OauthMember oauthMember = OauthMember.of(
+            "닉네임",
             "yshert@naver.com",
             "https://map-befine-official.github.io/favicon.png",
             Long.MAX_VALUE,

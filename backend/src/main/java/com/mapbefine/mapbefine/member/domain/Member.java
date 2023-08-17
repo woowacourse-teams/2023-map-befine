@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Member extends BaseTimeEntity {
 
-    private static final String DEFAULT_NICKNAME_PREFIX = "모험가";
     private static final int DEFAULT_NICKNAME_SUFFIX_LENGTH = 7;
 
     @Id
@@ -76,12 +75,13 @@ public class Member extends BaseTimeEntity {
     }
 
     public static Member ofRandomNickname(
+            String nickname,
             String email,
             String imageUrl,
             Role role,
             OauthId oauthId
     ) {
-        String nickName = DEFAULT_NICKNAME_PREFIX + createNicknameSuffix();
+        String nickName = nickname + createNicknameSuffix();
 
         return Member.of(nickName, email, imageUrl, role, oauthId);
     }

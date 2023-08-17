@@ -17,6 +17,7 @@ public record KakaoMemberResponse(
 
     public OauthMember extract() {
         return OauthMember.of(
+                kakaoAccount().profile.nickname,
                 kakaoAccount().email,
                 kakaoAccount().profile.profileImageUrl,
                 id,
