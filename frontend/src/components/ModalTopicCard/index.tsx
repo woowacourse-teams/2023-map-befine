@@ -20,6 +20,7 @@ export interface ModalTopicCardProps {
   topicUpdatedAt: string;
   topicPinCount: number;
   topicClick: any;
+  topicBookmarkCount: number;
 }
 
 const ModalTopicCard = ({
@@ -29,6 +30,7 @@ const ModalTopicCard = ({
   topicUpdatedAt,
   topicPinCount,
   topicClick,
+  topicBookmarkCount,
 }: ModalTopicCardProps) => {
   const { routePage } = useNavigator();
   const { closeModal } = useContext(ModalContext);
@@ -96,7 +98,7 @@ const ModalTopicCard = ({
               <SmallTopicStar />
               <Space size={0} />
               <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
-                {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
+                {topicBookmarkCount > 999 ? '+999' : topicBookmarkCount}명
               </Text>
             </Flex>
           </Flex>
