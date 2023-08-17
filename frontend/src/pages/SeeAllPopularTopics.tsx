@@ -1,4 +1,3 @@
-import SeeAllCardList from '../components/SeeAllCardList';
 import Text from '../components/common/Text';
 import Space from '../components/common/Space';
 import { styled } from 'styled-components';
@@ -6,6 +5,10 @@ import Box from '../components/common/Box';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import { Suspense, lazy } from 'react';
+import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
+
+const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
 
 const url = '/topics/bests';
 
@@ -22,7 +25,9 @@ const SeeAllTopics = () => {
 
       <Space size={5} />
 
-      <SeeAllCardList url={url} />
+      <Suspense fallback={<TopicCardListSkeleton />}>
+        <SeeAllCardList url={url} />
+      </Suspense>
     </Wrapper>
   );
 };

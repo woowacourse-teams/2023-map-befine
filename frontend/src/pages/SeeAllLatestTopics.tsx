@@ -1,11 +1,14 @@
 import { styled } from 'styled-components';
-import SeeAllCardList from '../components/SeeAllCardList';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import { FULLSCREEN } from '../constants';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import Box from '../components/common/Box';
+import { Suspense, lazy } from 'react';
+import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
+
+const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
 
 const url = '/topics/newest';
 
@@ -17,12 +20,14 @@ const SeeAllLatestTopics = () => {
     <Wrapper>
       <Space size={5} />
       <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
-        내 주변일 지도?
+        새로울 지도?
       </Text>
 
       <Space size={5} />
 
-      <SeeAllCardList url={url} />
+      <Suspense fallback={<TopicCardListSkeleton />}>
+        <SeeAllCardList url={url} />
+      </Suspense>
     </Wrapper>
   );
 };

@@ -5,7 +5,10 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import Box from '../components/common/Box';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import SeeAllCardList from '../components/SeeAllCardList';
+import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
+import { Suspense, lazy } from 'react';
+
+const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
 
 const url = '/topics';
 
@@ -22,7 +25,9 @@ const SeeAllNearTopics = () => {
 
       <Space size={5} />
 
-      <SeeAllCardList url={url} />
+      <Suspense fallback={<TopicCardListSkeleton />}>
+        <SeeAllCardList url={url} />
+      </Suspense>
     </Wrapper>
   );
 };
