@@ -63,9 +63,11 @@ const AddToMyTopicList = ({ pin }: any) => {
 };
 
 const ModalMyTopicListWrapper = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  grid-row-gap: ${({ theme }) => theme.spacing[5]};
+  width: 684px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 `;
 
 export default AddToMyTopicList;

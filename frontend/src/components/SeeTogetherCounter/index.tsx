@@ -29,6 +29,7 @@ const SeeTogetherCounter = () => {
     getSeeTogetherTopics();
   }, []);
 
+  if (!seeTogetherTopics) return <></>;
   if (seeTogetherTopics.length === 0) return <></>;
 
   return <Wrapper>{seeTogetherTopics.length}</Wrapper>;

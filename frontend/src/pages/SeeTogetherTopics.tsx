@@ -39,6 +39,8 @@ const SeeTogetherTopics = () => {
   };
 
   const goToSelectedTopic = () => {
+    if (!seeTogetherTopics) return;
+
     const seeTogetherTopicIds = seeTogetherTopics
       .map((topic) => topic.id)
       .join(',');
@@ -47,6 +49,8 @@ const SeeTogetherTopics = () => {
   };
 
   const onClickDeleteSeeTogetherTopics = () => {
+    if (!seeTogetherTopics) return;
+
     const deleteTopics = seeTogetherTopics;
 
     try {
@@ -61,6 +65,8 @@ const SeeTogetherTopics = () => {
       showToast('info', '모아보기를 비우는데 실패했습니다.');
     }
   };
+
+  if (!seeTogetherTopics) return <></>;
 
   if (seeTogetherTopics.length === 0) {
     return (
@@ -88,7 +94,7 @@ const SeeTogetherTopics = () => {
         <ul key={topic.id}>
           <TopicCard
             id={topic.id}
-            image={''}
+            image={topic.image}
             name={topic.name}
             creator={topic.creator}
             pinCount={topic.pinCount}

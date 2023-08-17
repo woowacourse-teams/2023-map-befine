@@ -35,9 +35,7 @@ const KakaoRedirectPage = () => {
 
   return (
     <KakaoRedirectPageWrapper>
-      <div>매튜도이매튜도이매튜도이</div>
       <Loader />
-      <div>매튜도이매튜도이매튜도이</div>
     </KakaoRedirectPageWrapper>
   );
 };

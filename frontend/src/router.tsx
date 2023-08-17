@@ -7,10 +7,7 @@ import SelectedTopic from './pages/SelectedTopic';
 import SeeAllPopularTopics from './pages/SeeAllPopularTopics';
 import SeeAllNearTopics from './pages/SeeAllNearTopics';
 import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
-import Favorite from './pages/Favorite';
 import KakaoRedirectPage from './pages/KaKaoRedirectPage';
-import ErrorPage from './pages/ErrorPage';
-import AskLoginPage from './pages/AskLoginPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './components/NotFound';
@@ -111,14 +108,14 @@ const router = createBrowserRouter(
               {childRoute.element}
             </AuthLayout>
           ),
-          errorElement: <ErrorPage />,
+          errorElement: <NotFound />,
         };
       }
 
       return {
         path: childRoute.path,
         element: childRoute.element,
-        errorElement: <ErrorPage />,
+        errorElement: <NotFound />,
       };
     });
 
