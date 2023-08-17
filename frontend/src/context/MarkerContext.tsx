@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import { CoordinatesContext } from './CoordinatesContext';
 import { useParams } from 'react-router-dom';
 import useNavigator from '../hooks/useNavigator';
-import pinImageMap from '../constants/pinImage';
+import { pinColors, pinImageMap } from '../constants/pinImage';
 
 type MarkerContextType = {
   markers: any[];
@@ -88,14 +88,24 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
   };
 
   const createInfowindows = (map: any) => {
+    let markerType = -1;
+    let currentTopicId = '-1';
+
     const newInfowindows = coordinates.map((coordinate: any) => {
+      if (currentTopicId !== coordinate.topicId) {
+        markerType = (markerType + 1) % 7;
+        currentTopicId = coordinate.topicId;
+      }
+
       const infoWindow = new window.Tmapv3.InfoWindow({
         position: new window.Tmapv3.LatLng(
           coordinate.latitude,
           coordinate.longitude,
         ),
 
-        content: coordinate.pinName,
+        content: `<div style="padding: 4px 12px; display:flex; justify-contents: center; align-items: center; height:32px; font-size:14px; color:#ffffff; background-color: ${
+          pinColors[markerType + 1]
+        };" >${coordinate.pinName}</div>`,
         offset: new window.Tmapv3.Point(0, -60),
         type: 2,
         map: map,

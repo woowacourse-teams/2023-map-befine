@@ -7,6 +7,7 @@ import useToast from '../../hooks/useToast';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
+import FavoriteSVG from '../../assets/topicInfo_favoriteBtn_filled.svg';
 import FavoriteNotFilledSVG from '../../assets/topicInfo_favoriteBtn_notFilled.svg';
 import SeeTogetherNotFilledSVG from '../../assets/topicInfo_seeTogetherBtn_notFilled.svg';
 import SeeTogetherSVG from '../../assets/topicInfo_seeTogetherBtn_filled.svg';
@@ -17,6 +18,7 @@ import AddFavorite from '../AddFavorite';
 export interface TopicInfoProps {
   fullUrl?: string;
   topicId: string;
+  idx: number;
   topicImage: string;
   topicTitle: string;
   topicCreator: string;
@@ -32,6 +34,7 @@ export interface TopicInfoProps {
 const TopicInfo = ({
   fullUrl,
   topicId,
+  idx,
   topicImage,
   topicTitle,
   topicCreator,
@@ -121,7 +124,7 @@ const TopicInfo = ({
       <Flex $justifyContent="center">
         <AddSeeTogether
           isInAtlas={isInAtlas}
-          id={Number(topicId)}
+          id={Number(topicId.split(',')[idx])}
           setTopicsFromServer={setTopicsFromServer}
         >
           {isInAtlas ? (
@@ -131,8 +134,12 @@ const TopicInfo = ({
           )}
         </AddSeeTogether>
         <Space size={5} />
-        <AddFavorite id={Number(topicId)}>
-          <FavoriteNotFilledSVG />
+        <AddFavorite
+          isBookmarked={isBookmarked}
+          id={Number(topicId.split(',')[idx])}
+          setTopicsFromServer={setTopicsFromServer}
+        >
+          {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
         </AddFavorite>
         <Space size={5} />
         <TopicShareUrlSVG cursor="pointer" onClick={copyContent} />

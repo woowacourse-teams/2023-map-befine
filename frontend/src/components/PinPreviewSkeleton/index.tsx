@@ -1,14 +1,14 @@
 import { keyframes, styled } from 'styled-components';
-import Flex from '../Flex';
-import Space from '../Space';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
 
-const PinSkeleton = () => {
+const PinPreviewSkeleton = () => {
   return (
     <Flex $flexDirection="column">
       <SkeletonTitle />
-      <Space size={2} />
+      <Space size={1} />
       <SkeletonAddress />
-      <Space size={4} />
+      <Space size={3} />
       <SkeletonDescription />
     </Flex>
   );
@@ -25,7 +25,7 @@ const skeletonAnimation = keyframes`
 
 const SkeletonTitle = styled.div`
   width: 320px;
-  height: 30px;
+  height: 28px;
 
   border-radius: 8px;
 
@@ -35,12 +35,12 @@ const SkeletonTitle = styled.div`
 
 const SkeletonAddress = styled(SkeletonTitle)`
   width: 320px;
-  height: 15px;
+  height: 20px;
 `;
 
 const SkeletonDescription = styled(SkeletonTitle)`
   width: 320px;
-  height: 70px;
+  height: 62px;
 `;
 
-export default PinSkeleton;
+export default PinPreviewSkeleton;

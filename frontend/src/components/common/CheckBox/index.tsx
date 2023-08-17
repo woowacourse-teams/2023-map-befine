@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import useKeyDown from '../../../hooks/useKeyDown';
 import Flex from '../Flex';
 
 interface CheckboxProps {
@@ -16,6 +17,7 @@ const Checkbox = ({
   onChecked,
 }: CheckboxProps) => {
   const [isChecked, setIsChecked] = useState(isAlreadyChecked);
+  const { elementRef, onElementKeyDown } = useKeyDown<HTMLInputElement>();
 
   const updateCheckedMembers = () => {
     const updatedChecked = !isChecked;
@@ -33,6 +35,9 @@ const Checkbox = ({
             id={label}
             checked={isChecked}
             onChange={updateCheckedMembers}
+            tabIndex={6}
+            ref={elementRef}
+            onKeyDown={onElementKeyDown}
           />
         </Flex>
       </Label>

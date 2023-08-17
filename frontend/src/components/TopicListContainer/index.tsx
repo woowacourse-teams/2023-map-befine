@@ -4,7 +4,9 @@ import Text from '../common/Text';
 import Box from '../common/Box';
 import Space from '../common/Space';
 import { lazy, Suspense } from 'react';
-import TopicCardListSeleton from '../TopicCardList/TopicCardListSeleton';
+import TopicCardListSkeleton from '../TopicCardList/TopicCardListSkeleton';
+import { TopicType } from '../../types/Topic';
+import useKeyDown from '../../hooks/useKeyDown';
 
 const TopicCardList = lazy(() => import('../TopicCardList'));
 
@@ -12,53 +14,67 @@ interface TopicListContainerProps {
   containerTitle: string;
   containerDescription: string;
   routeWhenSeeAll: () => void;
+  topics: TopicType[];
+  setTopicsFromServer: () => void;
 }
 
 const TopicListContainer = ({
   containerTitle,
   containerDescription,
   routeWhenSeeAll,
-}: TopicListContainerProps) => (
-  <section>
-    <Flex $justifyContent="space-between" $alignItems="flex-end">
-      <Box>
-        <Text
-          color="black"
-          $fontSize="extraLarge"
-          $fontWeight="bold"
-          tabIndex={0}
-        >
-          {containerTitle}
-        </Text>
-        <Space size={0} />
-        <Text
-          color="gray"
-          $fontSize="default"
+  topics,
+  setTopicsFromServer,
+}: TopicListContainerProps) => {
+  const { elementRef, onElementKeyDown } = useKeyDown<HTMLSpanElement>();
+
+  return (
+    <section>
+      <Flex $justifyContent="space-between" $alignItems="flex-end">
+        <Box>
+          <Text
+            color="black"
+            $fontSize="extraLarge"
+            $fontWeight="bold"
+            tabIndex={0}
+          >
+            {containerTitle}
+          </Text>
+          <Space size={0} />
+          <Text
+            color="gray"
+            $fontSize="default"
+            $fontWeight="normal"
+            tabIndex={0}
+          >
+            {containerDescription}
+          </Text>
+        </Box>
+
+        <PointerText
+          color="primary"
+          $fontSize="small"
           $fontWeight="normal"
-          tabIndex={1}
+          tabIndex={0}
+          onClick={routeWhenSeeAll}
+          aria-label={`${containerTitle} 전체보기 버튼`}
+          ref={elementRef}
+          onKeyDown={onElementKeyDown}
         >
-          {containerDescription}
-        </Text>
-      </Box>
+          전체 보기
+        </PointerText>
+      </Flex>
 
-      <PointerText
-        color="primary"
-        $fontSize="small"
-        $fontWeight="normal"
-        tabIndex={2}
-        onClick={routeWhenSeeAll}
-      >
-        전체 보기
-      </PointerText>
-    </Flex>
+      <Space size={4} />
 
-    <Space size={4} />
-
-    <Suspense fallback={<TopicCardListSeleton />}>
-      <TopicCardList />
-    </Suspense>
-  </section>
-);
+      <Suspense fallback={<TopicCardListSkeleton />}>
+        <TopicCardList
+          topics={topics}
+          setTopicsFromServer={setTopicsFromServer}
+        />
+      </Suspense>
+    </section>
+  );
+};
 
 const PointerText = styled(Text)`
   cursor: pointer;
