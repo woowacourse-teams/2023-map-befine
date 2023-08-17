@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +64,14 @@ public class LocationQueryService {
             Map<Topic, Long> topicCounts,
             AuthMember authMember
     ) {
+        if (Objects.isNull(authMember.getMemberId())) {
+            getUserTopicResponses(topicCounts, authMember);
+        }
+
+        return getGuestTopicResponse(topicCounts, authMember);
+    }
+
+    private List<TopicResponse> getUserTopicResponses(final Map<Topic, Long> topicCounts, final AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
         List<Topic> bookmarkedTopics = findBookMarkedTopics(member);
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
@@ -77,6 +86,22 @@ public class LocationQueryService {
                             topic,
                             isInAtlas(topicsInAtlas, topic),
                             isInBookmark(bookmarkedTopics, topic)
+                    );
+                })
+                .toList();
+    }
+
+    private List<TopicResponse> getGuestTopicResponse(Map<Topic, Long> topicCounts, AuthMember authMember) {
+        return topicCounts.entrySet().stream()
+                .filter(entry -> authMember.canRead(entry.getKey()))
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .map(entry -> {
+                    Topic topic = entry.getKey();
+
+                    return TopicResponse.from(
+                            topic,
+                            Boolean.FALSE,
+                            Boolean.FALSE
                     );
                 })
                 .toList();
