@@ -79,7 +79,13 @@ const Home = () => {
     topicsFetchingFromServer();
   }, []);
 
-  if (!(popularTopics && nearTopics && newestTopics))
+  if (!(popularTopics && nearTopics && newestTopics)) return <></>;
+
+  if (
+    popularTopics.length === 0 &&
+    nearTopics.length === 0 &&
+    newestTopics.length === 0
+  ) {
     return (
       <EmptyWrapper>
         <Text color="primary" $fontSize="extraLarge" $fontWeight="bold">
@@ -91,6 +97,7 @@ const Home = () => {
         </Text>
       </EmptyWrapper>
     );
+  }
 
   return (
     <>
