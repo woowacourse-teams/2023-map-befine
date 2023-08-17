@@ -1,19 +1,19 @@
 import Flex from '../common/Flex';
-import PinSkeleton from '../common/PinSkeleton';
+import PinPreviewSkeleton from '../PinPreviewSkeleton';
 import Space from '../common/Space';
-import TopicSkeleton from '../common/TopicSkeleton';
+import TopicInfoSkeleton from '../TopicInfoSkeleton';
 
 const PinsOfTopicSkeleton = () => {
   return (
     <Flex $flexDirection="column">
+      <Space size={0} />
+      <TopicInfoSkeleton />
       <Space size={7} />
-      <TopicSkeleton />
-      <Space size={7} />
-      <PinSkeleton />
+      <PinPreviewSkeleton />
       <Space size={6} />
-      <PinSkeleton />
+      <PinPreviewSkeleton />
       <Space size={6} />
-      <PinSkeleton />
+      <PinPreviewSkeleton />
     </Flex>
   );
 };

@@ -4,7 +4,7 @@ import Text from '../common/Text';
 import Box from '../common/Box';
 import Space from '../common/Space';
 import { lazy, Suspense } from 'react';
-import TopicCardListSeleton from '../TopicCardList/TopicCardListSeleton';
+import TopicCardListSkeleton from '../TopicCardList/TopicCardListSkeleton';
 import Button from '../common/Button';
 import MyInfoList from './MyInfoList';
 
@@ -42,7 +42,7 @@ const MyInfoContainer = ({
 
     <Space size={4} />
 
-    <Suspense fallback={<TopicCardListSeleton />}>
+    <Suspense fallback={<TopicCardListSkeleton />}>
       <MyInfoList />
     </Suspense>
   </section>

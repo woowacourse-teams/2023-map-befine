@@ -8,7 +8,7 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import { Suspense, lazy, useEffect, useState } from 'react';
 import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
-import TopicCardListSeleton from '../components/TopicCardList/TopicCardListSeleton';
+import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
 import useToast from '../hooks/useToast';
 import { TopicType } from '../types/Topic';
 import { getApi } from '../apis/getApi';
@@ -68,6 +68,7 @@ const Bookmark = () => {
   return (
     <BookMarksWrapper>
       <section>
+        <Space size={5} />
         <Flex $justifyContent="space-between" $alignItems="flex-end">
           <Box>
             <Text
@@ -101,7 +102,7 @@ const Bookmark = () => {
 
         <Space size={6} />
 
-        <Suspense fallback={<TopicCardListSeleton />}>
+        <Suspense fallback={<TopicCardListSkeleton />}>
           <BookmarksList
             bookmarks={bookmarks}
             setTopicsFromServer={getBookmarksFromServer}

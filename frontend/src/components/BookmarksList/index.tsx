@@ -15,7 +15,7 @@ const BookmarksList = ({
   setTopicsFromServer,
 }: BookmarksListProps) => {
   return (
-    <BookMarksListWrapper>
+    <Wrapper>
       {bookmarks.map((topic) => (
         <Fragment key={topic.id}>
           <TopicCard
@@ -32,14 +32,14 @@ const BookmarksList = ({
           />
         </Fragment>
       ))}
-    </BookMarksListWrapper>
+    </Wrapper>
   );
 };
 
-const BookMarksListWrapper = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  grid-row-gap: ${({ theme }) => theme.spacing[5]};
+const Wrapper = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 `;
 
 export default BookmarksList;

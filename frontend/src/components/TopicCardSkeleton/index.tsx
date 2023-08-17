@@ -1,20 +1,18 @@
 import { keyframes, styled } from 'styled-components';
-import Flex from '../Flex';
-import Space from '../Space';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
 
-const TopicSkeleton = () => {
+const TopicCardSkeleton = () => {
   return (
-    <>
-      <Flex $flexDirection="row">
-        <SkeletonImg />
-        <Space size={2} />
-        <Flex $flexDirection="column">
-          <SkeletonTitle />
-          <Space size={5} />
-          <SkeletonDescription />
-        </Flex>
+    <Flex $flexDirection="row">
+      <SkeletonImg />
+      <Space size={2} />
+      <Flex $flexDirection="column">
+        <SkeletonTitle />
+        <Space size={5} />
+        <SkeletonDescription />
       </Flex>
-    </>
+    </Flex>
   );
 };
 
@@ -28,8 +26,8 @@ const skeletonAnimation = keyframes`
 `;
 
 const SkeletonImg = styled.div`
-  width: 172px;
-  height: 172px;
+  width: 138px;
+  height: 138px;
 
   border-radius: 8px;
 
@@ -39,7 +37,7 @@ const SkeletonImg = styled.div`
 
 const SkeletonTitle = styled.div`
   width: 172px;
-  height: 30px;
+  height: 32px;
 
   border-radius: 8px;
 
@@ -48,7 +46,7 @@ const SkeletonTitle = styled.div`
 `;
 
 const SkeletonDescription = styled(SkeletonTitle)`
-  height: 50px;
+  height: 80px;
 `;
 
-export default TopicSkeleton;
+export default TopicCardSkeleton;
