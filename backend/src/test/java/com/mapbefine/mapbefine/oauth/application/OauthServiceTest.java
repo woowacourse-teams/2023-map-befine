@@ -28,6 +28,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 class OauthServiceTest {
 
     private static final OauthMember oauthMember = OauthMember.of(
+            "12345678901234567890",
             "yshert@naver.com",
             "https://map-befine-official.github.io/favicon.png",
             Long.MAX_VALUE,
@@ -82,6 +83,7 @@ class OauthServiceTest {
     void getAuthCodeRequestUrl_success() {
         // when
         String url = oauthService.getAuthCodeRequestUrl(OauthServerType.KAKAO);
+        System.out.println(oauthMember.toRegisterMember().getMemberInfo().getNickName());
 
         // then
         assertThat(url).isEqualTo("https://kauth.kakao.com/oauth/authorize?"
