@@ -173,13 +173,7 @@ const PinDetail = ({
         </Text>
       </Flex>
 
-      <Flex
-        width="332px"
-        height="48px"
-        $justifyContent="center"
-        position="fixed"
-        bottom="24px"
-      >
+      <ButtonsWrapper>
         <SaveToMyMapButton
           variant="primary"
           onClick={() => {
@@ -192,7 +186,7 @@ const PinDetail = ({
         <ShareButton variant="secondary" onClick={copyContent}>
           공유하기
         </ShareButton>
-      </Flex>
+      </ButtonsWrapper>
 
       <Modal
         modalKey="addToMyTopicList"
@@ -243,6 +237,16 @@ const ModalContentsWrapper = styled.div`
   text-align: center;
 
   overflow: scroll;
+`;
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 332px;
+  height: 48px;
+  position: fixed;
+  bottom: 24px;
 `;
 
 export default PinDetail;
