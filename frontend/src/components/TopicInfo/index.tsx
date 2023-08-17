@@ -121,7 +121,7 @@ const TopicInfo = ({
 
       <Space size={3} />
 
-      <Flex $justifyContent="center">
+      <Flex $justifyContent="space-around">
         <AddSeeTogether
           isInAtlas={isInAtlas}
           id={Number(topicId.split(',')[idx])}
