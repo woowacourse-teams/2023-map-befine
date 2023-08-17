@@ -17,7 +17,7 @@ import { ModalContext } from '../context/ModalContext';
 import ModalMyTopicList from '../components/ModalMyTopicList';
 
 interface PinDetailProps {
-  topicId: number;
+  topicId: string;
   pinId: number;
   isEditPinDetail: boolean;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
@@ -44,17 +44,6 @@ const PinDetail = ({
     description: '',
   });
   const { openModal } = useContext(ModalContext);
-
-  useEffect(() => {
-    const checkTopicAuthority = async () => {
-      const topicAuthority = await getApi<any>(
-        'default',
-        `/permissions/topics/${topicId}`,
-      );
-      return topicAuthority.data;
-    };
-    const topicAuthorityList = checkTopicAuthority();
-  }, [topicId]);
 
   useEffect(() => {
     const getPinData = async () => {
