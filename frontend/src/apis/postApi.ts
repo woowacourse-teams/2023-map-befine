@@ -3,6 +3,11 @@ interface Headers {
   [key: string]: string;
 }
 
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_API_DEFAULT_PROD
+    : process.env.REACT_APP_API_DEFAULT_DEV;
+
 export const postApi = async (url: string, data?: {}, contentType?: string) => {
   const userToken = localStorage.getItem('userToken');
   const headers: Headers = {
@@ -13,7 +18,7 @@ export const postApi = async (url: string, data?: {}, contentType?: string) => {
     headers['Authorization'] = `Bearer ${userToken}`;
   }
 
-  const response = await fetch(`${process.env.REACT_APP_API_DEFAULT + url}`, {
+  const response = await fetch(`${API_URL + url}`, {
     method: 'POST',
     headers: headers,
     body: JSON.stringify(data),

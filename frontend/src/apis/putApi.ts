@@ -3,6 +3,11 @@ interface Headers {
   [key: string]: string;
 }
 
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_API_DEFAULT_PROD
+    : process.env.REACT_APP_API_DEFAULT_DEV;
+
 export const putApi = async (
   url: string,
   data: { name: string; images: string[]; description: string },
@@ -16,7 +21,7 @@ export const putApi = async (
     headers['Authorization'] = `Bearer ${userToken}`;
   }
 
-  const response = await fetch(`${process.env.REACT_APP_API_DEFAULT + url}`, {
+  const response = await fetch(`${API_URL + url}`, {
     method: 'PUT',
     headers: headers,
     body: JSON.stringify(data),
