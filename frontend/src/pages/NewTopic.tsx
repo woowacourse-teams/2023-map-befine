@@ -366,7 +366,7 @@ const NewTopic = () => {
           >
             취소하기
           </Button>
-          <Space size={7} />
+          <Space size={3} />
           <Button tabIndex={7} variant="primary">
             생성하기
           </Button>
