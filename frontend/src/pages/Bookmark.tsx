@@ -44,9 +44,7 @@ const Bookmark = () => {
     getBookmarksFromServer();
   }, []);
 
-  if (!bookmarks) return <></>;
-
-  if (bookmarks.length === 0) {
+  if ((bookmarks && bookmarks.length === 0) || !bookmarks) {
     return (
       <WrapperWhenEmpty width={width}>
         <Flex $alignItems="center">

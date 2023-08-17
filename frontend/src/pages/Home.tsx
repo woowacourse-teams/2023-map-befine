@@ -10,6 +10,7 @@ import useToast from '../hooks/useToast';
 import { TopicType } from '../types/Topic';
 import { getApi } from '../apis/getApi';
 import { useEffect, useState } from 'react';
+import Text from '../components/common/Text';
 
 const Home = () => {
   const [popularTopics, setPopularTopics] = useState<TopicType[] | null>(null);
@@ -88,7 +89,18 @@ const Home = () => {
     topicsFetchingFromServer();
   }, []);
 
-  if (!(popularTopics && nearTopics && newestTopics)) return <></>;
+  if (!(popularTopics && nearTopics && newestTopics))
+    return (
+      <EmptyWrapper>
+        <Text color="primary" $fontSize="extraLarge" $fontWeight="bold">
+          추가하기 버튼을 눌러 토픽을 추가해보세요!
+        </Text>
+        <Space size={1} />
+        <Text color="black" $fontSize="default" $fontWeight="normal">
+          토픽이 없습니다.
+        </Text>
+      </EmptyWrapper>
+    );
 
   return (
     <>
@@ -121,6 +133,16 @@ const Home = () => {
     </>
   );
 };
+
+const EmptyWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 1036px;
+  height: 100vh;
+  margin: 0 auto;
+`;
 
 const Wrapper = styled(Box)`
   width: 1036px;
