@@ -1,12 +1,24 @@
+interface Headers {
+  'Content-Type': string;
+  [key: string]: string;
+}
+
 export const putApi = async (
   url: string,
   data: { name: string; images: string[]; description: string },
 ) => {
+  const userToken = localStorage.getItem('userToken');
+  const headers: Headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (userToken) {
+    headers['Authorization'] = `Bearer ${userToken}`;
+  }
+
   const response = await fetch(`${process.env.REACT_APP_API_DEFAULT + url}`, {
     method: 'PUT',
-    headers: {
-      'Content-type': 'application/json',
-    },
+    headers: headers,
     body: JSON.stringify(data),
   });
 
