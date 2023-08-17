@@ -35,17 +35,7 @@ const Home = () => {
 
   const getNearTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>(
-        'default',
-        `/locations/bests?latitude=37.0&longitude=127.0`,
-      );
-
-      if (topics.length === 0) {
-        const topics = await getApi<TopicType[]>('default', `/topics`);
-        setNearTopics(topics);
-        return;
-      }
-
+      const topics = await getApi<TopicType[]>('default', `/topics`);
       setNearTopics(topics);
     } catch {
       showToast(
