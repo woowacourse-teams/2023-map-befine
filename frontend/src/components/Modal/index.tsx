@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { css, keyframes, styled } from 'styled-components';
 import { ModalContext } from '../../context/ModalContext';
+import Box from '../common/Box';
 type ModalWrapperType = Omit<
   ModalProps,
   'modalKey' | 'children' | '$dimmedColor'
@@ -54,7 +55,7 @@ const Modal = ({
 
   return ReactDOM.createPortal(
     modalOpens[modalKey] && (
-      <>
+      <Box role="dialog">
         <WrapperDimmed
           $dimmedColor={$dimmedColor}
           onClick={onClickDimmedCloseModal}
@@ -69,7 +70,7 @@ const Modal = ({
         >
           {children}
         </Wrapper>
-      </>
+      </Box>
     ),
     root,
   );
