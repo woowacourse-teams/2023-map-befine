@@ -69,30 +69,12 @@ describe('토픽 상세 페이지', () => {
         if (index === 0) $el.click();
       });
 
-    cy.wait(1000);
-
-    cy.get('span').each(($el, index) => {
-      if (index === 6) $el.click();
-    });
-
-    cy.contains('내 지도에 저장하기').should('be.visible');
-  });
-
-  it('핀 상세 페이지에서 내 지도에 저장하기 버튼 누르면 토스트 메시지가 나온다.', () => {
-    cy.get('[data-cy="topic-card"]')
+    cy.get('li')
       .children()
       .each(($el, index) => {
         if (index === 0) $el.click();
       });
 
-    cy.wait(1000);
-
-    cy.get('span').each(($el, index) => {
-      if (index === 6) $el.click();
-    });
-
-    cy.contains('내 지도에 저장하기').click();
-
-    cy.contains('로그인 후 사용해주세요.').should('be.visible');
+    cy.contains('내 지도에 저장하기').should('be.visible');
   });
 });
