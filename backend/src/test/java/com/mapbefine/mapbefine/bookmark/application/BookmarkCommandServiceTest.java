@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkForbiddenException;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -17,6 +18,7 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @ServiceTest
 class BookmarkCommandServiceTest {
@@ -32,6 +34,9 @@ class BookmarkCommandServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private TestEntityManager testEntityManager;
 
     @Test
     @DisplayName("다른 유저의 토픽을 즐겨찾기에 추가할 수 있다.")
@@ -92,8 +97,7 @@ class BookmarkCommandServiceTest {
         assertThatThrownBy(() -> bookmarkCommandService.addTopicInBookmark(
                 MemberFixture.createUser(otherMember),
                 topic.getId()
-        )).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("토픽에 대한 권한이 없어서 즐겨찾기에 추가할 수 없습니다.");
+        )).isInstanceOf(BookmarkForbiddenException.class);
     }
 
     @Test
@@ -157,42 +161,43 @@ class BookmarkCommandServiceTest {
         //when then
         AuthMember otherUser = MemberFixture.createUser(otherMember);
 
-        assertThatThrownBy(
-                () -> bookmarkCommandService.deleteTopicInBookmark(otherUser, topic.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("즐겨찾기 삭제에 대한 권한이 없습니다.");
+        assertThatThrownBy(() -> bookmarkCommandService.deleteTopicInBookmark(otherUser, topic.getId()))
+                .isInstanceOf(BookmarkForbiddenException.class);
     }
 
     @Test
     @DisplayName("즐겨찾기 목록에 있는 모든 토픽을 삭제할 수 있다")
     public void deleteAllBookmarks_Success() {
         //given
-        Member creator = MemberFixture.create(
+        Member creatorBefore = memberRepository.save(MemberFixture.create(
                 "member",
                 "member@naver.com",
                 Role.USER
-        );
-        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
-        Topic topic2 = TopicFixture.createPrivateAndGroupOnlyTopic(creator);
+        ));
+        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(creatorBefore);
+        Topic topic2 = TopicFixture.createPrivateAndGroupOnlyTopic(creatorBefore);
 
-        memberRepository.save(creator);
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
-        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic1, creator);
+        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creatorBefore);
+        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic1, creatorBefore);
 
         bookmarkRepository.save(bookmark1);
         bookmarkRepository.save(bookmark2);
 
         //when
-        assertThat(bookmarkRepository.findAllByMemberId(creator.getId())).hasSize(2);
+        assertThat(creatorBefore.getBookmarks()).hasSize(2);
 
-        AuthMember user = MemberFixture.createUser(creator);
+        AuthMember user = MemberFixture.createUser(creatorBefore);
         bookmarkCommandService.deleteAllBookmarks(user);
 
+        testEntityManager.flush();
+        testEntityManager.clear();
+
         //then
-        assertThat(bookmarkRepository.findAllByMemberId(creator.getId())).hasSize(0);
+        Member creatorAfter = memberRepository.findById(creatorBefore.getId()).get();
+        assertThat(creatorAfter.getBookmarks()).hasSize(0);
     }
 
 }

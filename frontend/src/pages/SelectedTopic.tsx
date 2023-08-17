@@ -1,8 +1,15 @@
-import { lazy, Suspense, useContext, useEffect, useState } from 'react';
+import {
+  Fragment,
+  lazy,
+  Suspense,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { styled } from 'styled-components';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
-import { TopicInfoType } from '../types/Topic';
+import { TopicDetailType } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
@@ -14,38 +21,45 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
+import { TagContext } from '../context/TagContext';
+import { PinType } from '../types/Pin';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
-  const [tagPins, setTagPins] = useState<string[]>([]);
   const [searchParams, _] = useSearchParams();
-  const [topicDetail, setTopicDetail] = useState<TopicInfoType[]>([]);
+  const [topicDetails, setTopicDetails] = useState<TopicDetailType[] | null>(
+    null,
+  );
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
-  const [taggedPinIds, setTaggedPinIds] = useState<number[]>([]);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
+  const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi<TopicInfoType[]>(
+    const data = await getApi<TopicDetailType[]>(
       'default',
-      `/topics/ids?ids=${topicId?.split(',').join('&ids=')}`,
+      `/topics/ids?ids=${topicId}`,
     );
+
     const topicHashmap = new Map([]);
+
+    setTopicDetails(data);
 
     // 각 topic의 pin들의 좌표를 가져옴
     const newCoordinates: any = [];
 
-    data.forEach((topic: any) => {
-      topic.pins.forEach((pin: any) => {
+    data.forEach((topic: TopicDetailType) => {
+      topic.pins.forEach((pin: PinType) => {
         newCoordinates.push({
           id: pin.id,
           topicId: topic.id,
+          pinName: pin.name,
           latitude: pin.latitude,
           longitude: pin.longitude,
         });
@@ -54,26 +68,25 @@ const SelectedTopic = () => {
 
     setCoordinates(newCoordinates);
 
-    data.forEach((topicDetailFromData: TopicInfoType) =>
+    data.forEach((topicDetailFromData: TopicDetailType) =>
       topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
     );
 
     const topicDetailFromData = topicId
       ?.split(',')
-      .map((number) => topicHashmap.get(number)) as TopicInfoType[];
+      .map((number) => topicHashmap.get(number)) as TopicDetailType[];
 
     if (!topicDetailFromData) return;
 
-    setTopicDetail([...topicDetailFromData]);
+    setTopicDetails([...topicDetailFromData]);
   };
 
   const onClickConfirm = () => {
-    routePage('/new-topic', taggedPinIds.join(','));
+    routePage('/new-topic', tags.map((tag) => tag.id).join(','));
   };
 
   const onTagCancel = () => {
-    setTagPins([]);
-    setTaggedPinIds([]);
+    setTags([]);
   };
 
   useEffect(() => {
@@ -83,6 +96,7 @@ const SelectedTopic = () => {
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
     }
+
     setIsOpen(true);
   }, [searchParams]);
 
@@ -90,8 +104,8 @@ const SelectedTopic = () => {
     setIsOpen(!isOpen);
   };
 
-  if (!topicDetail) return <></>;
-  if (!tagPins) return <></>;
+  if (!topicDetails) return <></>;
+  if (!topicId) return <></>;
 
   return (
     <>
@@ -100,29 +114,27 @@ const SelectedTopic = () => {
         $flexDirection="column"
       >
         <Space size={2} />
-        {taggedPinIds.length > 0 && (
+        {tags.length > 0 && (
           <PullPin
-            tag={tagPins}
+            tags={tags}
             confirmButton="뽑아오기"
             onClickConfirm={onClickConfirm}
             onClickClose={onTagCancel}
           />
         )}
         <Suspense fallback={<PinsOfTopicSkeleton />}>
-          {topicDetail.length !== 0 ? (
-            <PinsOfTopic
-              topicId={topicId}
-              tagPins={tagPins}
-              topicDetail={topicDetail}
-              taggedPinIds={taggedPinIds}
-              setSelectedPinId={setSelectedPinId}
-              setTagPins={setTagPins}
-              setTaggedPinIds={setTaggedPinIds}
-              setIsEditPinDetail={setIsEditPinDetail}
-            />
-          ) : (
-            <></>
-          )}
+          {topicDetails.map((topicDetail, idx) => (
+            <Fragment key={topicDetail.id}>
+              <PinsOfTopic
+                topicId={topicId.split(',')[idx]}
+                topicDetail={topicDetail}
+                setSelectedPinId={setSelectedPinId}
+                setIsEditPinDetail={setIsEditPinDetail}
+                setTopicsFromServer={getAndSetDataFromServer}
+              />
+              {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
+            </Fragment>
+          ))}
         </Suspense>
 
         {selectedPinId && (
@@ -145,6 +157,7 @@ const SelectedTopic = () => {
                 $zIndex={1}
               >
                 <PinDetail
+                  topicId={Number(topicId)}
                   pinId={selectedPinId}
                   isEditPinDetail={isEditPinDetail}
                   setIsEditPinDetail={setIsEditPinDetail}
@@ -157,12 +170,6 @@ const SelectedTopic = () => {
     </>
   );
 };
-
-const MultiSelectButton = styled.input`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-`;
 
 const PinDetailWrapper = styled.div`
   &.collapsedPinDetail {

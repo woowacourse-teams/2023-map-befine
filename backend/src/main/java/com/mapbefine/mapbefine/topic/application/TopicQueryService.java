@@ -1,12 +1,24 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_READ;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
+
+import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import com.mapbefine.mapbefine.topic.domain.TopicWithBookmarkStatus;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,53 +28,101 @@ import org.springframework.transaction.annotation.Transactional;
 public class TopicQueryService {
 
     private final TopicRepository topicRepository;
+    private final PinRepository pinRepository;
+    private final MemberRepository memberRepository;
 
-    public TopicQueryService(final TopicRepository topicRepository) {
+    public TopicQueryService(
+            TopicRepository topicRepository,
+            PinRepository pinRepository,
+            MemberRepository memberRepository
+    ) {
         this.topicRepository = topicRepository;
+        this.pinRepository = pinRepository;
+        this.memberRepository = memberRepository;
     }
 
-    public List<TopicResponse> findAllReadable(AuthMember member) {
-        if (Objects.isNull(member.getMemberId())) {
-            return findAllWithoutBookmarkStatus(member);
+    public List<TopicResponse> findAllReadable(AuthMember authMember) {
+        if (Objects.isNull(authMember.getMemberId())) {
+            return getGuestTopicResponses(authMember);
         }
-
-        return findAllWithBookmarkStatus(member);
+        return getUserTopicResponses(authMember);
     }
 
-    private List<TopicResponse> findAllWithoutBookmarkStatus(AuthMember member) {
+    private List<TopicResponse> getGuestTopicResponses(AuthMember authMember) {
         return topicRepository.findAll()
                 .stream()
-                .filter(member::canRead)
-                .map(topic -> TopicResponse.from(topic, Boolean.FALSE))
+                .filter(authMember::canRead)
+                .map(topic -> TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
                 .toList();
     }
 
-    private List<TopicResponse> findAllWithBookmarkStatus(AuthMember member) {
-        return topicRepository.findAllWithBookmarkStatusByMemberId(member.getMemberId())
-                .stream()
-                .filter(topicWithBookmark -> member.canRead(topicWithBookmark.getTopic()))
-                .map(topicWithBookmark -> TopicResponse.from(
-                        topicWithBookmark.getTopic(),
-                        topicWithBookmark.getIsBookmarked()
+    private List<TopicResponse> getUserTopicResponses(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return topicRepository.findAll().stream()
+                .filter(authMember::canRead)
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked(topicsInBookMark, topic)
                 ))
                 .toList();
     }
 
-    public TopicDetailResponse findDetailById(AuthMember member, Long topicId) {
-        if (Objects.isNull(member.getMemberId())) {
-            return findWithoutBookmarkStatus(member, topicId);
-        }
-
-        return findWithBookmarkStatus(member, topicId);
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + id));
     }
 
-    private TopicDetailResponse findWithoutBookmarkStatus(AuthMember member, Long topicId) {
-        Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+    private List<Topic> findTopicsInAtlas(Member member) {
+        return member.getAtlantes()
+                .stream()
+                .map(Atlas::getTopic)
+                .toList();
+    }
 
-        validateReadableTopic(member, topic);
+    private List<Topic> findBookMarkedTopics(Member member) {
+        return member.getBookmarks()
+                .stream()
+                .map(Bookmark::getTopic)
+                .toList();
+    }
 
-        return TopicDetailResponse.from(topic, Boolean.FALSE);
+    private boolean isInAtlas(List<Topic> topicsInAtlas, Topic topic) {
+        return topicsInAtlas.contains(topic);
+    }
+
+    private boolean isBookMarked(List<Topic> bookMarkedTopics, Topic topic) {
+        return bookMarkedTopics.contains(topic);
+    }
+
+
+    public TopicDetailResponse findDetailById(AuthMember authMember, Long topicId) {
+        Topic topic = findTopic(topicId);
+        validateReadableTopic(authMember, topic);
+
+        if (Objects.isNull(authMember.getMemberId())) {
+            return TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE);
+        }
+
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return TopicDetailResponse.from(
+                topic,
+                isInAtlas(topicsInAtlas, topic),
+                isBookMarked(topicsInBookMark, topic)
+        );
+    }
+
+    private Topic findTopic(Long id) {
+        return topicRepository.findById(id)
+                .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND));
     }
 
     private void validateReadableTopic(AuthMember member, Topic topic) {
@@ -70,45 +130,46 @@ public class TopicQueryService {
             return;
         }
 
-        throw new IllegalArgumentException("조회권한이 없는 Topic 입니다.");
+        throw new TopicForbiddenException(FORBIDDEN_TOPIC_READ);
     }
 
-    private TopicDetailResponse findWithBookmarkStatus(AuthMember member, Long topicId) {
-        TopicWithBookmarkStatus topicWithBookmarkStatus =
-                topicRepository.findWithBookmarkStatusByIdAndMemberId(topicId, member.getMemberId())
-                        .orElseThrow(() -> new IllegalArgumentException("해당하는 Topic이 존재하지 않습니다."));
+    public List<TopicDetailResponse> findDetailsByIds(AuthMember authMember, List<Long> ids) {
+        List<Topic> topics = topicRepository.findByIdIn(ids);
 
-        validateReadableTopic(member, topicWithBookmarkStatus.getTopic());
+        validateTopicsCount(ids, topics);
+        validateReadableTopics(authMember, topics);
 
-        return TopicDetailResponse.from(
-                topicWithBookmarkStatus.getTopic(),
-                topicWithBookmarkStatus.getIsBookmarked()
-        );
-    }
-
-    public List<TopicDetailResponse> findDetailsByIds(AuthMember member, List<Long> topicIds) {
-        if (Objects.isNull(member.getMemberId())) {
-            return findDetailsWithoutBookmarkStatus(member, topicIds);
+        if (Objects.isNull(authMember.getMemberId())) {
+            return getGuestTopicDetailResponses(topics);
         }
 
-        return findDetailsWithBookmarkStatus(member, topicIds);
+        return getUserTopicDetailResponses(authMember, topics);
     }
 
-    private List<TopicDetailResponse> findDetailsWithoutBookmarkStatus(AuthMember member,
-            List<Long> topicIds) {
-        List<Topic> topics = topicRepository.findByIdIn(topicIds);
+    private static List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
+        return topics.stream()
+                .map(topic -> TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
+                .toList();
+    }
 
-        validateTopicsCount(topicIds, topics);
-        validateReadableTopics(member, topics);
+    private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember, List<Topic> topics) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
 
         return topics.stream()
-                .map(topic -> TopicDetailResponse.from(topic, Boolean.FALSE))
+                .map(topic -> TopicDetailResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked(topicsInBookMark, topic)
+                ))
                 .toList();
     }
 
     private void validateTopicsCount(List<Long> topicIds, List<Topic> topics) {
         if (topicIds.size() != topics.size()) {
-            throw new IllegalArgumentException("존재하지 않는 토픽이 존재합니다");
+            throw new TopicNotFoundException(TOPIC_NOT_FOUND);
         }
     }
 
@@ -118,33 +179,71 @@ public class TopicQueryService {
                 .count();
 
         if (topics.size() != readableCount) {
-            throw new IllegalArgumentException("읽을 수 없는 토픽이 존재합니다.");
+            throw new TopicForbiddenException(FORBIDDEN_TOPIC_READ);
         }
     }
 
-    private List<TopicDetailResponse> findDetailsWithBookmarkStatus(
-            AuthMember member,
-            List<Long> topicIds
-    ) {
-        List<TopicWithBookmarkStatus> topicsWithBookmarkStatus =
-                topicRepository.findWithBookmarkStatusByIdsAndMemberId(
-                        topicIds,
-                        member.getMemberId()
-                );
+    public List<TopicResponse> findAllTopicsByMemberId(AuthMember authMember, Long memberId) {
 
-        List<Topic> topics = topicsWithBookmarkStatus.stream()
-                .map(TopicWithBookmarkStatus::getTopic)
-                .toList();
+        if (Objects.isNull(authMember.getMemberId())) {
+            return topicRepository.findByCreatorId(memberId)
+                    .stream()
+                    .filter(authMember::canRead)
+                    .map(topic -> TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
+                    .toList();
+        }
 
-        validateTopicsCount(topicIds, topics);
-        validateReadableTopics(member, topics);
+        Member member = findMemberById(authMember.getMemberId());
 
-        return topicsWithBookmarkStatus.stream()
-                .map(topicWithBookmarkStatus -> TopicDetailResponse.from(
-                        topicWithBookmarkStatus.getTopic(),
-                        topicWithBookmarkStatus.getIsBookmarked()
-                ))
-                .toList();
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return topicRepository.findByCreatorId(memberId)
+                .stream()
+                .filter(authMember::canRead)
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked(topicsInBookMark, topic)
+                )).
+                toList();
+
+    }
+
+    public List<TopicResponse> findAllByOrderByUpdatedAtDesc(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return pinRepository.findAllByOrderByUpdatedAtDesc()
+                .stream()
+                .map(Pin::getTopic)
+                .distinct()
+                .filter(authMember::canRead)
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked(topicsInBookMark, topic)
+                )).
+                toList();
+    }
+
+    public List<TopicResponse> findAllBestTopics(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
+        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
+
+        return topicRepository.findAll()
+                .stream()
+                .filter(authMember::canRead)
+                .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        isInAtlas(topicsInAtlas, topic),
+                        isBookMarked((topicsInBookMark), topic))
+                ).toList();
     }
 
 }

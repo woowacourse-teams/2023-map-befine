@@ -9,6 +9,8 @@ type MarkerContextType = {
   clickedMarker: any;
   createMarkers: (map: any) => void;
   removeMarkers: () => void;
+  removeInfowindows: () => void;
+  createInfowindows: (map: any) => void;
   displayClickedMarker: (map: any) => void;
 };
 
@@ -18,6 +20,8 @@ export const MarkerContext = createContext<MarkerContextType>({
   createMarkers: () => {},
   removeMarkers: () => {},
   displayClickedMarker: () => {},
+  removeInfowindows: () => {},
+  createInfowindows: () => {},
 });
 
 interface Props {
@@ -26,6 +30,7 @@ interface Props {
 
 const MarkerProvider = ({ children }: Props): JSX.Element => {
   const [markers, setMarkers] = useState<any>([]);
+  const [infoWindows, setInfoWindows] = useState<any>([]);
   const [clickedMarker, setClickedMarker] = useState<any>(null);
   const { coordinates, clickedCoordinate } = useContext(CoordinatesContext);
   const { topicId } = useParams<{ topicId: string }>();
@@ -82,9 +87,33 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
     setMarkers(newMarkers);
   };
 
+  const createInfowindows = (map: any) => {
+    const newInfowindows = coordinates.map((coordinate: any) => {
+      const infoWindow = new window.Tmapv3.InfoWindow({
+        position: new window.Tmapv3.LatLng(
+          coordinate.latitude,
+          coordinate.longitude,
+        ),
+
+        content: coordinate.pinName,
+        offset: new window.Tmapv3.Point(0, -60),
+        type: 2,
+        map: map,
+      });
+      return infoWindow;
+    });
+
+    setInfoWindows(newInfowindows);
+  };
+
   const removeMarkers = () => {
     markers.forEach((marker: any) => marker.setMap(null));
     setMarkers([]);
+  };
+
+  const removeInfowindows = () => {
+    infoWindows.forEach((infowindow: any) => infowindow.setMap(null));
+    setInfoWindows([]);
   };
 
   return (
@@ -93,6 +122,8 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         clickedMarker,
         markers,
         removeMarkers,
+        removeInfowindows,
+        createInfowindows,
         createMarkers,
         displayClickedMarker,
       }}

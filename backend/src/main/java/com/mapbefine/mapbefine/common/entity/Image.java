@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.common.entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.common.exception.BadRequestException.ImageBadRequestException;
 import com.mapbefine.mapbefine.common.util.RegexUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Image {
 
-    private static final String VALID_IMAGE_URL_REGEX = "(http(s?):)([/|.|\\w|\\s|-])*\\.(?:jpg|gif|png)";
+    private static final String VALID_IMAGE_URL_REGEX = "(http(s?):)([/|.|\\w|\\s|-])*";
 
     @Pattern(regexp = VALID_IMAGE_URL_REGEX)
     @Column(nullable = false, length = 2048)
@@ -35,7 +36,7 @@ public class Image {
             return;
         }
 
-        throw new IllegalArgumentException("잘못된 형식의 URL입니다.");
+        throw new ImageBadRequestException();
     }
 
 }

@@ -19,12 +19,13 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,7 +116,7 @@ class PinQueryServiceTest {
     void findDetailById_FailByNonExisting() {
         // given, when, then
         assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, 1L))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(PinNotFoundException.class);
     }
 
     @Test
@@ -126,7 +127,29 @@ class PinQueryServiceTest {
 
         // when, then
         assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, pin.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinForbiddenException.class);
     }
 
+    @Test
+    @DisplayName("멤버 Id를 이용하여 그 멤버가 만든 모든 Pin을 확인할 수 있다.")
+    void findAllPinsByMemberId_success() {
+        // given
+        List<Pin> expected = pinRepository.saveAll(List.of(
+                PinFixture.create(location, publicUser1Topic, user1),
+                PinFixture.create(location, publicUser1Topic, user1),
+                PinFixture.create(location, publicUser1Topic, user1)
+        ));
+
+        // when
+        List<PinResponse> actual = pinQueryService.findAllPinsByMemberId(authMemberUser1, user1.getId());
+
+        // then
+        List<Long> pinIds = expected.stream()
+                .map(Pin::getId)
+                .toList();
+
+        assertThat(actual).hasSize(expected.size());
+        assertThat(actual).extractingResultOf("id")
+                .isEqualTo(pinIds);
+    }
 }

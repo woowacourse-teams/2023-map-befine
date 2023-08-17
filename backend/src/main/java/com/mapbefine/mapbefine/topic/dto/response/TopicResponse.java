@@ -8,20 +8,23 @@ public record TopicResponse(
         Long id,
         String name,
         String image,
+        String creator,
         Integer pinCount,
+        Boolean isInAtlas,
         Integer bookmarkCount,
         Boolean isBookmarked,
         LocalDateTime updatedAt
 ) {
-
-    public static TopicResponse from(Topic topic, Boolean isBookmarked) {
+    public static TopicResponse from(Topic topic, Boolean isInAtlas, Boolean isBookmarked) {
         TopicInfo topicInfo = topic.getTopicInfo();
 
         return new TopicResponse(
                 topic.getId(),
                 topicInfo.getName(),
                 topicInfo.getImageUrl(),
+                topic.getCreator().getMemberInfo().getNickName(),
                 topic.countPins(),
+                isInAtlas,
                 topic.countBookmarks(),
                 isBookmarked,
                 topic.getUpdatedAt()

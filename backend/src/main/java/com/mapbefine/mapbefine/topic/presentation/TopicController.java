@@ -48,14 +48,19 @@ public class TopicController {
 
     @LoginRequired
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeAndCreate(
-            AuthMember member,
-            @RequestBody TopicMergeRequest request
-    ) {
+    public ResponseEntity<Void> mergeAndCreate(AuthMember member, @RequestBody TopicMergeRequest request) {
         Long topicId = topicCommandService.merge(member, request);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();
+    }
+
+    @LoginRequired
+    @PostMapping("/{topicId}/copy")
+    public ResponseEntity<Void> copyPin(AuthMember member, @PathVariable Long topicId, @RequestParam List<Long> pinIds) {
+        topicCommandService.copyPin(member, topicId, pinIds);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping
@@ -66,10 +71,7 @@ public class TopicController {
     }
 
     @GetMapping("/{topicId}")
-    public ResponseEntity<TopicDetailResponse> findById(
-            AuthMember member,
-            @PathVariable Long topicId
-    ) {
+    public ResponseEntity<TopicDetailResponse> findById(AuthMember member, @PathVariable Long topicId) {
         TopicDetailResponse response = topicQueryService.findDetailById(member, topicId);
 
         return ResponseEntity.ok(response);
@@ -78,9 +80,26 @@ public class TopicController {
     @GetMapping("/ids")
     public ResponseEntity<List<TopicDetailResponse>> findByIds(
             AuthMember member,
-            @RequestParam(value = "ids") List<Long> topicIds
+            @RequestParam("ids") List<Long> topicIds
     ) {
         List<TopicDetailResponse> responses = topicQueryService.findDetailsByIds(member, topicIds);
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/members")
+    public ResponseEntity<List<TopicResponse>> findAllTopicsByMemberId(
+            AuthMember authMember,
+            @RequestParam("id") Long memberId
+    ) {
+        List<TopicResponse> responses = topicQueryService.findAllTopicsByMemberId(authMember, memberId);
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/newest")
+    public ResponseEntity<List<TopicResponse>> findAllByOrderByUpdatedAtDesc(AuthMember member) {
+        List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(member);
 
         return ResponseEntity.ok(responses);
     }
@@ -103,6 +122,13 @@ public class TopicController {
         topicCommandService.delete(member, topicId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/bests")
+    public ResponseEntity<List<TopicResponse>> findAllBestTopics(AuthMember authMember) {
+        List<TopicResponse> responses = topicQueryService.findAllBestTopics(authMember);
+
+        return ResponseEntity.ok(responses);
     }
 
 }

@@ -1,11 +1,13 @@
 package com.mapbefine.mapbefine.permission.application;
 
+import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.PERMISSION_NOT_FOUND;
+
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
+import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionNotFoundException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +30,7 @@ public class PermissionQueryService {
 
     public PermissionDetailResponse findPermissionById(Long permissionId) {
         Permission permission = permissionRepository.findById(permissionId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PermissionNotFoundException(PERMISSION_NOT_FOUND));
 
         return PermissionDetailResponse.from(permission);
     }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -77,6 +78,17 @@ public class PinController {
         List<PinResponse> allResponses = pinQueryService.findAllReadable(member);
 
         return ResponseEntity.ok(allResponses);
+    }
+
+    @GetMapping("/members")
+    public ResponseEntity<List<PinResponse>> findAllPinsByMemberId(
+            AuthMember authMember,
+            @RequestParam("id") Long memberId
+
+    ) {
+        List<PinResponse> responses = pinQueryService.findAllPinsByMemberId(authMember, memberId);
+
+        return ResponseEntity.ok(responses);
     }
 
     @LoginRequired

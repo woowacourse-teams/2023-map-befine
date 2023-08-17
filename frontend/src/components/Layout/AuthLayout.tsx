@@ -22,7 +22,6 @@ const AuthLayout = ({
     let curAuth: boolean = getUserTokenInLocalStorage() === null ? false : true;
 
     if (withAuth) {
-      console.log('withAuth');
       if (!curAuth) routePage(to);
     }
 

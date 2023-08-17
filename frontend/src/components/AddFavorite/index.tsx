@@ -1,27 +1,68 @@
 import { styled } from 'styled-components';
 import { postApi } from '../../apis/postApi';
 import useToast from '../../hooks/useToast';
-import { useState } from 'react';
+import { deleteApi } from '../../apis/deleteApi';
 
 interface AddFavoriteProps {
   id: number;
+  isBookmarked: boolean;
+  setTopicFromServer: () => void;
   children: React.ReactNode;
 }
 
-const AddFavorite = ({ id, children }: AddFavoriteProps) => {
+const AddFavorite = ({
+  id,
+  isBookmarked,
+  setTopicFromServer,
+  children,
+}: AddFavoriteProps) => {
   const { showToast } = useToast();
 
   const addFavoriteList = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    // TODO : post 후 전역 favorite List 에 담기, toast 메세지 수정
-    // await postApi('',{});
-    // await getApi('');
+    try {
+      await postApi(`/bookmarks/topics?id=${id}`, {}, 'x-www-form-urlencoded');
 
-    showToast('info', '준비중인 기능입니다.');
+      setTopicFromServer();
+
+      showToast('info', '즐겨찾기에 추가되었습니다.');
+    } catch {
+      showToast(
+        'error',
+        '즐겨찾기 추가에 실패했습니다. 로그인 후 사용해주세요.',
+      );
+    }
   };
 
-  return <Wrapper onClick={addFavoriteList}>{children}</Wrapper>;
+  const deleteFavoriteList = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
+    try {
+      await deleteApi(`/bookmarks/topics?id=${id}`, 'x-www-form-urlencoded');
+
+      setTopicFromServer();
+
+      showToast('info', '해당 지도를 즐겨찾기에서 제외했습니다.');
+    } catch {
+      showToast(
+        'error',
+        '즐겨찾기 추가에 실패했습니다. 로그인 후 사용해주세요.',
+      );
+    }
+
+    await deleteApi(`/bookmarks/topics?id=${id}`, 'x-www-form-urlencoded');
+
+    setTopicFromServer();
+
+    showToast('info', '해당 지도를 즐겨찾기에서 제외했습니다.');
+  };
+
+  return (
+    <Wrapper onClick={isBookmarked ? deleteFavoriteList : addFavoriteList}>
+      {children}
+    </Wrapper>
+  );
 };
 
 const Wrapper = styled.div`

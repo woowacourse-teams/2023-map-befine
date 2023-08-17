@@ -4,19 +4,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
+import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.location.LocationFixture;
+import com.mapbefine.mapbefine.location.domain.Location;
+import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,16 +38,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 class TopicQueryServiceTest {
 
     @Autowired
-    private TopicQueryService topicQueryService;
+    private TopicRepository topicRepository;
+
+    @Autowired
+    private PinRepository pinRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
 
     @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
-    private TopicRepository topicRepository;
+    private BookmarkRepository bookmarkRepository;
 
     @Autowired
-    private BookmarkRepository bookmarkRepository;
+    private TopicQueryService topicQueryService;
 
     private Member member;
 
@@ -108,9 +125,9 @@ class TopicQueryServiceTest {
         topicRepository.save(topic);
 
         //when
-        AuthMember guest = new Guest();
+        AuthMember authMember = new Admin(member.getId());
 
-        TopicDetailResponse detail = topicQueryService.findDetailById(guest, topic.getId());
+        TopicDetailResponse detail = topicQueryService.findDetailById(authMember, topic.getId());
 
         //then
         assertThat(detail.id()).isEqualTo(topic.getId());
@@ -129,8 +146,7 @@ class TopicQueryServiceTest {
         AuthMember guest = new Guest();
 
         assertThatThrownBy(() -> topicQueryService.findDetailById(guest, topic.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("조회권한이 없는 Topic 입니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 
     @Test
@@ -196,8 +212,7 @@ class TopicQueryServiceTest {
         List<Long> topicIds = List.of(topic1.getId(), topic2.getId());
 
         assertThatThrownBy(() -> topicQueryService.findDetailsByIds(guest, topicIds))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("읽을 수 없는 토픽이 존재합니다.");
+                .isInstanceOf(TopicForbiddenException.class);
     }
 
     @Test
@@ -215,8 +230,7 @@ class TopicQueryServiceTest {
         List<Long> topicIds = List.of(topic1.getId(), topic2.getId(), Long.MAX_VALUE);
 
         assertThatThrownBy(() -> topicQueryService.findDetailsByIds(user, topicIds))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 토픽이 존재합니다");
+                .isInstanceOf(TopicNotFoundException.class);
     }
 
     @Test
@@ -231,7 +245,7 @@ class TopicQueryServiceTest {
         Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
         bookmarkRepository.save(bookmark);
 
-        //when //then
+        //when then
         AuthMember user = MemberFixture.createUser(member);
         List<TopicResponse> topics = topicQueryService.findAllReadable(user);
 
@@ -348,6 +362,129 @@ class TopicQueryServiceTest {
                 .containsExactlyInAnyOrder(topic1.getId(), topic2.getId());
         assertThat(topicDetails).extractingResultOf("isBookmarked")
                 .containsExactlyInAnyOrder(Boolean.FALSE, Boolean.FALSE);
+    }
+
+    @Test
+    @DisplayName("멤버 Id를 이용하여 그 멤버가 만든 모든 Topic을 확인할 수 있다.")
+    void findAllTopicsByMemberId_Success() {
+        //given
+        AuthMember authMember = new Admin(member.getId());
+
+        List<Topic> expected = topicRepository.saveAll(List.of(
+                TopicFixture.createPublicAndAllMembersTopic(member),
+                TopicFixture.createPublicAndAllMembersTopic(member),
+                TopicFixture.createPublicAndAllMembersTopic(member)
+        ));
+
+        //when
+        List<TopicResponse> actual = topicQueryService.findAllTopicsByMemberId(authMember, member.getId());
+
+        //then
+        List<Long> topicIds = expected.stream()
+                .map(Topic::getId)
+                .toList();
+        assertThat(actual).hasSize(expected.size());
+        assertThat(actual).extractingResultOf("id")
+                .isEqualTo(topicIds);
+    }
+
+    @Test
+    @DisplayName("핀 수정일 기준으로 토픽을 나열한다")
+    void findAllByOrderByUpdatedAtDesc_Success() {
+        // given
+        Location location = LocationFixture.create();
+        locationRepository.save(location);
+
+        List<Topic> topics = List.of(
+                TopicFixture.createByName("5등", member),
+                TopicFixture.createByName("4등", member),
+                TopicFixture.createByName("3등", member),
+                TopicFixture.createByName("2등", member),
+                TopicFixture.createByName("1등", member)
+
+        );
+        topicRepository.saveAll(topics);
+
+        List<Pin> pins = topics.stream()
+                .map(topic -> PinFixture.create(location, topic, member))
+                .toList();
+        pinRepository.saveAll(pins);
+
+        User user = new User(member.getId(), Collections.emptyList(), Collections.emptyList());
+
+        // when
+        List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(user);
+
+        // then
+        assertThat(responses).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("즐겨찾기가 많이 있는 토픽 순서대로 조회할 수 있다.")
+    public void findAllBestTopics_Success1() {
+        //given
+        Member otherMember = MemberFixture.create(
+                "otherMember",
+                "otherMember@email.com",
+                Role.USER
+        );
+        memberRepository.save(otherMember);
+
+        Topic topicWithNoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topicWithOneBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic topicWithTwoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topicWithNoBookmark);
+        topicRepository.save(topicWithOneBookmark);
+        topicRepository.save(topicWithTwoBookmark);
+
+        saveBookmark(topicWithOneBookmark, member);
+        saveBookmark(topicWithTwoBookmark, member);
+        saveBookmark(topicWithTwoBookmark, otherMember);
+
+        //when
+        AuthMember user = MemberFixture.createUser(member);
+        List<TopicResponse> actual = topicQueryService.findAllBestTopics(user);
+
+        //then
+        assertThat(actual).extractingResultOf("id")
+                .containsExactly(
+                        topicWithTwoBookmark.getId(),
+                        topicWithOneBookmark.getId(),
+                        topicWithNoBookmark.getId()
+                );
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 순서대로 조회하더라도, private 토픽인 경우 조회할 수 없다.")
+    public void findAllBestTopics_Success2() {
+        //given
+        Member otherMember = MemberFixture.create(
+                "otherMember",
+                "otherMember@email.com",
+                Role.USER
+        );
+        memberRepository.save(otherMember);
+
+        Topic topicWithNoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        Topic privateTopicWithOneBookmark = TopicFixture.createPrivateAndGroupOnlyTopic(member);
+        topicRepository.save(topicWithNoBookmark);
+        topicRepository.save(privateTopicWithOneBookmark);
+
+        saveBookmark(privateTopicWithOneBookmark, member);
+
+        //when
+        AuthMember otherUser = MemberFixture.createUser(otherMember);
+
+        List<TopicResponse> actual = topicQueryService.findAllBestTopics(otherUser);
+        List<TopicResponse> expect = topicQueryService.findAllReadable(otherUser);
+
+        //then
+        assertThat(actual).usingRecursiveComparison()
+                .isEqualTo(expect);
+    }
+
+    private Bookmark saveBookmark(Topic topic, Member member) {
+        return bookmarkRepository.save(Bookmark.createWithAssociatedTopicAndMember(topic, member));
     }
 
 }

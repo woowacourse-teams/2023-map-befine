@@ -16,6 +16,7 @@ interface ModalProps {
   children: React.ReactNode;
   top?: string;
   left?: string;
+  overflow?: string;
 }
 
 const Modal = ({
@@ -27,6 +28,7 @@ const Modal = ({
   children,
   top,
   left,
+  overflow,
 }: ModalProps) => {
   const { modalOpens, closeModal } = useContext(ModalContext);
 
@@ -63,6 +65,7 @@ const Modal = ({
           height={height}
           top={top}
           left={left}
+          overflow={overflow}
         >
           {children}
         </Wrapper>
@@ -77,6 +80,7 @@ const Wrapper = styled.div<ModalWrapperType>`
   ${({ position }) => getModalPosition(position)};
   top: ${({ top }) => top && top};
   left: ${({ left }) => left && left};
+  z-index: 2;
 `;
 
 const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
@@ -85,6 +89,7 @@ const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
   position: fixed;
   top: 0;
   background-color: ${({ $dimmedColor }) => $dimmedColor};
+  z-index: 2;
 `;
 
 const translateModalAnimation = keyframes`
@@ -117,6 +122,7 @@ const getModalPosition = (position: 'center' | 'bottom' | 'absolute') => {
         transform: translate(-50%, -50%);
         border-radius: ${({ theme }) => theme.radius.medium};
         animation: ${openModalAnimation} 0.3s ease 1;
+        overflow: scroll;
       `;
 
     case 'bottom':

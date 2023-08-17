@@ -7,8 +7,8 @@ import com.mapbefine.mapbefine.permission.application.PermissionQueryService;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
-import java.net.URI;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,9 +36,9 @@ public class PermissionController {
     @LoginRequired
     @PostMapping
     public ResponseEntity<Void> addPermission(AuthMember authMember, @RequestBody PermissionRequest request) {
-        Long savedId = permissionCommandService.savePermission(authMember, request);
+        permissionCommandService.addPermission(authMember, request);
 
-        return ResponseEntity.created(URI.create("/permissions/" + savedId)).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @LoginRequired

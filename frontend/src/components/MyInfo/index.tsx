@@ -1,29 +1,21 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
-import InfoDefalutImg from '../../assets/InfoDefalutImg.svg';
-import ModifyMyInfoIcon from '../../assets/ModifyMyInfoIcon.svg';
 import Box from '../common/Box';
 import Text from '../common/Text';
 import Space from '../common/Space';
 import { useEffect, useState } from 'react';
-import UpdateMyInfo from './updateMyInfo';
 import { MyInfoType } from '../../types/MyInfo';
+import UpdateMyInfo from './UpdateMyInfo';
+
+const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 const MyInfo = () => {
-  const [isThereImg, setisThereImg] = useState<boolean>(true);
+  const [isThereImg, setIsThereImg] = useState<boolean>(true);
   const [isModifyMyInfo, setIsModifyMyInfo] = useState<boolean>(false);
   const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<MyInfoType>({
     name: 'Patrick',
     email: 'qkrtk9230@naver.com',
   });
-
-  //   useEffect(()=>{
-  //     setMyInfoName()
-  //   }, [])
-
-  const onModifyInfo = () => {
-    setIsModifyMyInfo(true);
-  };
 
   if (isModifyMyInfo) {
     return (
@@ -44,11 +36,7 @@ const MyInfo = () => {
       $justifyContent="center"
       $alignItems="center"
     >
-      {isThereImg ? (
-        <MyInfoImg src="https://images.unsplash.com/photo-1480429370139-e0132c086e2a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80" />
-      ) : (
-        <InfoDefalutImg />
-      )}
+      <MyInfoImg src={user.imageUrl} />
       <Space size={7} />
       <Box>
         <Text color="black" $fontSize="default" $fontWeight="normal">
@@ -58,14 +46,12 @@ const MyInfo = () => {
           {myInfoNameAndEmail.email}
         </Text>
       </Box>
-      <MyInfoModifyIcon>
-        <ModifyMyInfoIcon onClick={onModifyInfo} />
-      </MyInfoModifyIcon>
     </MyInfoContainer>
   );
 };
 
 const MyInfoContainer = styled(Flex)`
+  position: relative;
   border: 1px solid ${({ theme }) => theme.color.lightGray};
 `;
 
@@ -74,12 +60,6 @@ const MyInfoImg = styled.img`
   height: 80px;
 
   border-radius: 50%;
-`;
-
-const MyInfoModifyIcon = styled(Box)`
-  position: absolute;
-  right: 32px;
-  top: 32px;
 `;
 
 export default MyInfo;

@@ -1,17 +1,25 @@
 import { styled } from 'styled-components';
-import LoginErrorIcon from '../../assets/LoginErrorIcon.svg';
-import Button from '../common/Button';
-import Flex from '../common/Flex';
-import Space from '../common/Space';
-import Text from '../common/Text';
+import LoginErrorIcon from '../assets/LoginErrorIcon.svg';
+import Button from '../components/common/Button';
+import Flex from '../components/common/Flex';
+import Space from '../components/common/Space';
+import Text from '../components/common/Text';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { FULLSCREEN } from '../constants';
 
 const LoginError = () => {
+  const { width } = useSetLayoutWidth(FULLSCREEN);
+
+  const loginButtonClick = () => {
+    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
+  };
+
   return (
     <Flex
       $flexDirection="column"
       $justifyContent="center"
       $alignItems="center"
-      width="100vw"
+      width={width}
       height="100vh"
     >
       <LoginErrorIcon />
@@ -25,7 +33,9 @@ const LoginError = () => {
           나만의 지도를 만들어 보세요.
         </Text>
         <Space size={5} />
-        <NotFoundButton variant="primary">카카오로 시작하기</NotFoundButton>
+        <NotFoundButton variant="primary" onClick={loginButtonClick}>
+          카카오로 시작하기
+        </NotFoundButton>
       </Flex>
     </Flex>
   );

@@ -7,34 +7,36 @@ import { SyntheticEvent } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
+import FavoriteNotFilledSVG from '../../assets/favoriteBtn_notFilled.svg';
 import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
+import SeeTogetherNotFilledSVG from '../../assets/seeTogetherBtn_notFilled.svg';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
+import { TopicType } from '../../types/Topic';
 
-const FAVORITE_COUNT = 10;
-
-export interface TopicCardProps {
-  topicId: number;
-  topicImage: string;
-  topicTitle: string;
-  topicUpdatedAt: string;
-  topicPinCount: number;
+interface TopicCardProps extends TopicType {
+  setTopicsFromServer: () => void;
 }
 
 const TopicCard = ({
-  topicId,
-  topicImage,
-  topicTitle,
-  topicUpdatedAt,
-  topicPinCount,
+  id,
+  image,
+  creator,
+  name,
+  updatedAt,
+  pinCount,
+  bookmarkCount,
+  isInAtlas,
+  isBookmarked,
+  setTopicsFromServer,
 }: TopicCardProps) => {
   const { routePage } = useNavigator();
 
   const goToSelectedTopic = () => {
-    routePage(`/topics/${topicId}`, [topicId]);
+    routePage(`/topics/${id}`, [id]);
   };
 
   return (
@@ -43,7 +45,7 @@ const TopicCard = ({
         <TopicImage
           height="138px"
           width="138px"
-          src={topicImage}
+          src={image}
           alt="토픽 이미지"
           $objectFit="cover"
           onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
@@ -54,18 +56,18 @@ const TopicCard = ({
         <Box width="192px" padding={1}>
           <Box height="52px">
             <Text color="black" $fontSize="default" $fontWeight="bold">
-              {topicTitle}
+              {name}
             </Text>
           </Box>
 
           <Text color="black" $fontSize="small" $fontWeight="normal">
-            토픽 생성자
+            {creator}
           </Text>
 
           <Space size={0} />
 
           <Text color="gray" $fontSize="small" $fontWeight="normal">
-            {topicUpdatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
+            {updatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
           </Text>
 
           <Space size={0} />
@@ -75,24 +77,32 @@ const TopicCard = ({
               <SmallTopicPin />
               <Space size={0} />
               <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
-                {topicPinCount > 999 ? '+999' : topicPinCount}개
+                {pinCount > 999 ? '+999' : pinCount}개
               </Text>
             </Flex>
             <Flex $alignItems="center" width="64px">
               <SmallTopicStar />
               <Space size={0} />
               <Text color="black" $fontSize="extraSmall" $fontWeight="normal">
-                {FAVORITE_COUNT > 999 ? '+999' : FAVORITE_COUNT}명
+                {bookmarkCount > 999 ? '+999' : bookmarkCount}명
               </Text>
             </Flex>
           </Flex>
 
           <ButtonWrapper>
-            <AddSeeTogether id={topicId}>
-              <SeeTogetherSVG />
+            <AddSeeTogether
+              isInAtlas={isInAtlas}
+              id={id}
+              setTopicsFromServer={setTopicsFromServer}
+            >
+              {isInAtlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
             </AddSeeTogether>
-            <AddFavorite id={topicId}>
-              <FavoriteSVG />
+            <AddFavorite
+              isBookmarked={isBookmarked}
+              id={id}
+              setTopicFromServer={setTopicsFromServer}
+            >
+              {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
             </AddFavorite>
           </ButtonWrapper>
         </Box>
@@ -107,6 +117,8 @@ const Wrapper = styled.li`
   cursor: pointer;
   border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
+
+  margin: 0 auto;
 `;
 
 const ButtonWrapper = styled.div`

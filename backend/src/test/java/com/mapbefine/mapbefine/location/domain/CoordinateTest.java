@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.mapbefine.mapbefine.location.LocationFixture;
+import com.mapbefine.mapbefine.location.exception.LocationException.LocationBadRequestException;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,8 +24,7 @@ class CoordinateTest {
         @DisplayName("위도의 값이 33~43사이의 값이 아니면 실패한다.")
         void createCoordinate_FailByInvalidLatitude(double latitude) {
             assertThatThrownBy(() -> Coordinate.of(latitude, 127))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("한국 내의 좌표만 입력해주세요.");
+                    .isInstanceOf(LocationBadRequestException.class);
         }
 
         @ParameterizedTest
@@ -46,8 +46,7 @@ class CoordinateTest {
         @DisplayName("경도의 값이 124~132사이의 값이 아니면 실패한다.")
         void createCoordinate_FailByInvalidLongitude(double longitude) {
             assertThatThrownBy(() -> Coordinate.of(37, longitude))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("한국 내의 좌표만 입력해주세요.");
+                    .isInstanceOf(LocationBadRequestException.class);
         }
 
     }

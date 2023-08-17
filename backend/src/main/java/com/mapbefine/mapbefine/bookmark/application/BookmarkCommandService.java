@@ -1,8 +1,16 @@
 package com.mapbefine.mapbefine.bookmark.application;
 
+import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.CONFLICT_TOPIC_ALREADY_ADD;
+import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.FORBIDDEN_TOPIC_ADD;
+import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.FORBIDDEN_TOPIC_DELETE;
+import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.ILLEGAL_TOPIC_ID;
+
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkBadRequestException;
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkConflictException;
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkForbiddenException;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -12,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class BookmarkCommandService {
 
     private final BookmarkRepository bookmarkRepository;
@@ -35,7 +43,7 @@ public class BookmarkCommandService {
         validateBookmarkDuplication(authMember, topicId);
         Topic topic = getTopicById(topicId);
         validateBookmarkingPermission(authMember, topic);
-        Member member = getMemberById(authMember);
+        Member member = findMemberById(authMember);
 
         Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
         bookmarkRepository.save(bookmark);
@@ -45,12 +53,12 @@ public class BookmarkCommandService {
 
     private Topic getTopicById(Long topicId) {
         return topicRepository.findById(topicId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 토픽입니다."));
+                .orElseThrow(() -> new BookmarkBadRequestException(ILLEGAL_TOPIC_ID));
     }
 
     private void validateBookmarkDuplication(AuthMember authMember, Long topicId) {
         if (isExistBookmark(authMember, topicId)) {
-            throw new IllegalArgumentException("이미 즐겨찾기로 등록된 토픽입니다.");
+            throw new BookmarkConflictException(CONFLICT_TOPIC_ALREADY_ADD);
         }
     }
 
@@ -63,12 +71,14 @@ public class BookmarkCommandService {
             return;
         }
 
-        throw new IllegalArgumentException("토픽에 대한 권한이 없어서 즐겨찾기에 추가할 수 없습니다.");
+        throw new BookmarkForbiddenException(FORBIDDEN_TOPIC_ADD);
     }
 
-    private Member getMemberById(AuthMember authMember) {
-        return memberRepository.findById(authMember.getMemberId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 멤버입니다."));
+    private Member findMemberById(AuthMember authMember) {
+        Long memberId = authMember.getMemberId();
+
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("findMemberById; memberId=" + memberId));
     }
 
     public void deleteTopicInBookmark(AuthMember authMember, Long topicId) {
@@ -82,7 +92,7 @@ public class BookmarkCommandService {
             return;
         }
 
-        throw new IllegalArgumentException("즐겨찾기 삭제에 대한 권한이 없습니다.");
+        throw new BookmarkForbiddenException(FORBIDDEN_TOPIC_DELETE);
     }
 
     public void deleteAllBookmarks(AuthMember authMember) {

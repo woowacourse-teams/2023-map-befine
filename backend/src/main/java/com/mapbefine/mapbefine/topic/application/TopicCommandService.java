@@ -1,15 +1,26 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_CREATE;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_DELETE;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_UPDATE;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_TOPIC_ID;
+
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -62,12 +73,13 @@ public class TopicCommandService {
     }
 
     private Member findCreatorByAuthMember(AuthMember member) {
-        if (Objects.isNull(member.getMemberId())) {
-            throw new IllegalArgumentException("Guest는 토픽을 생성할 수 없습니다.");
+        Long memberId = member.getMemberId();
+        if (Objects.isNull(memberId)) {
+            throw new TopicForbiddenException(FORBIDDEN_TOPIC_CREATE);
         }
 
-        return memberRepository.findById(member.getMemberId())
-                .orElseThrow(NoSuchElementException::new);
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + memberId));
     }
 
     private void copyPinsToTopic(
@@ -87,7 +99,7 @@ public class TopicCommandService {
         List<Pin> findPins = pinRepository.findAllById(pinIds);
 
         if (pinIds.size() != findPins.size()) {
-            throw new IllegalArgumentException("존재하지 않는 핀 Id가 존재합니다.");
+            throw new PinBadRequestException(ILLEGAL_PIN_ID);
         }
 
         return findPins;
@@ -99,7 +111,7 @@ public class TopicCommandService {
                 .count();
 
         if (copyablePinCount != originalPins.size()) {
-            throw new IllegalArgumentException("복사할 수 없는 pin이 존재합니다.");
+            throw new PinBadRequestException(ILLEGAL_PIN_ID);
         }
     }
 
@@ -135,7 +147,7 @@ public class TopicCommandService {
         List<Topic> findTopics = topicRepository.findAllById(topicIds);
 
         if (topicIds.size() != findTopics.size()) {
-            throw new IllegalArgumentException("존재하지 않는 토픽 Id가 존재합니다.");
+            throw new TopicBadRequestException(ILLEGAL_TOPIC_ID);
         }
 
         return findTopics;
@@ -147,7 +159,7 @@ public class TopicCommandService {
                 .count();
 
         if (copyablePinCount != originalTopics.size()) {
-            throw new IllegalArgumentException("복사할 수 없는 토픽이 존재합니다.");
+            throw new TopicBadRequestException(ILLEGAL_TOPIC_ID);
         }
     }
 
@@ -156,6 +168,33 @@ public class TopicCommandService {
                 .map(Topic::getPins)
                 .flatMap(Collection::stream)
                 .toList();
+    }
+
+    public void copyPin(AuthMember member, Long topicId, List<Long> pinIds) {
+        Topic topic = findTopic(topicId);
+        validatePinCreateOrUpdateAuthInTopic(member, topic);
+
+        validateCopyPinSelected(pinIds);
+
+        copyPinsToTopic(member, topic, pinIds);
+    }
+
+    private Topic findTopic(Long topicId) {
+        return topicRepository.findById(topicId)
+                .orElseThrow(() -> new TopicBadRequestException(ILLEGAL_TOPIC_ID));
+    }
+
+    private void validatePinCreateOrUpdateAuthInTopic(AuthMember member, Topic topic) {
+        if (member.canPinCreateOrUpdate(topic)) {
+            return;
+        }
+        throw new PinForbiddenException(FORBIDDEN_PIN_CREATE_OR_UPDATE);
+    }
+
+    private void validateCopyPinSelected(List<Long> pinIds) {
+        if (pinIds.isEmpty()) {
+            throw new PinBadRequestException(ILLEGAL_PIN_ID);
+        }
     }
 
     public void updateTopicInfo(
@@ -171,17 +210,11 @@ public class TopicCommandService {
         topic.updateTopicStatus(request.publicity(), request.permissionType());
     }
 
-    private Topic findTopic(Long topicId) {
-        return topicRepository.findById(topicId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Topic입니다."));
-    }
-
     private void validateUpdateAuth(AuthMember member, Topic topic) {
         if (member.canTopicUpdate(topic)) {
             return;
         }
-
-        throw new IllegalArgumentException("업데이트 권한이 없습니다.");
+        throw new TopicForbiddenException(FORBIDDEN_TOPIC_UPDATE);
     }
 
     public void delete(AuthMember member, Long topicId) {
@@ -197,8 +230,7 @@ public class TopicCommandService {
         if (member.canDelete(topic)) {
             return;
         }
-
-        throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        throw new TopicForbiddenException(FORBIDDEN_TOPIC_DELETE);
     }
 
 }

@@ -23,6 +23,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -132,9 +133,9 @@ class PinCommandServiceTest {
     @Test
     @DisplayName("권한이 없는 토픽에 핀을 저장하면 예외를 발생시킨다.")
     void save_FailByForbidden() {
-        
+
         assertThatThrownBy(() -> pinCommandService.save(new Guest(), createRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinForbiddenException.class);
     }
 
     @Test
@@ -144,7 +145,7 @@ class PinCommandServiceTest {
 
         assertThatThrownBy(() -> pinCommandService.update(
                 new Guest(), pinId, new PinUpdateRequest("name", "description"))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(PinForbiddenException.class);
 
     }
 
@@ -176,7 +177,7 @@ class PinCommandServiceTest {
         long pinId = pinCommandService.save(authMember, createRequest);
 
         assertThatThrownBy(() -> pinCommandService.removeById(new Guest(), pinId))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinForbiddenException.class);
     }
 
     @Test
@@ -193,7 +194,7 @@ class PinCommandServiceTest {
                 .ifPresentOrElse(
                         found -> assertThat(found.getImageUrl()).isEqualTo(BASE_IMAGE),
                         Assertions::fail
-                );;
+                );
     }
 
     @Test
@@ -204,7 +205,7 @@ class PinCommandServiceTest {
 
         // when, then
         assertThatThrownBy(() -> pinCommandService.addImage(new Guest(), new PinImageCreateRequest(pinId, BASE_IMAGE)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinForbiddenException.class);
     }
 
     @Test
@@ -240,7 +241,7 @@ class PinCommandServiceTest {
         long pinImageId = savePinImageAndGetId(pinId);
 
         assertThatThrownBy(() -> pinCommandService.removeImageById(new Guest(), pinImageId))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(PinForbiddenException.class);
     }
 
 }

@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.topic;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -22,6 +24,7 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
+import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -48,6 +51,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
 
     private Member member;
     private Topic topic;
@@ -317,5 +322,99 @@ class TopicIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responses).hasSize(2);
+        assertThat(responses).hasSize(2);
     }
+
+    @Test
+    @DisplayName("인기 토픽 목록을 조회하면 200을 반환한다")
+    void findAllBestTopics_Success() {
+        //given
+        Topic bestOneTopic = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(bestOneTopic);
+
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(bestOneTopic, member);
+        bookmarkRepository.save(bookmark);
+
+        // when
+        List<TopicResponse> expect = List.of(
+                TopicResponse.from(bestOneTopic, Boolean.FALSE, Boolean.TRUE),
+                TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE)
+        );
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/topics/bests")
+                .then().log().all()
+                .extract();
+
+        List<TopicResponse> actual = response.jsonPath().getList(".", TopicResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringFields("updatedAt")
+                .isEqualTo(expect);
+        assertThat(actual).extractingResultOf("id")
+                .containsExactly(bestOneTopic.getId(), topic.getId());
+    }
+
+
+    @Test
+    @DisplayName("핀이 추가/수정된 일자 기준 내림차순으로 토픽 목록을 조회할 경우, 200을 반환한다")
+    void findAllByOrderByUpdatedAtDesc_Success() {
+        // given
+        Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", member));
+        Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", member));
+        Topic topic3 = topicRepository.save(TopicFixture.createByName("topic3", member));
+
+        List<Pin> pins = List.of(
+                PinFixture.create(location, topic1, member),
+                PinFixture.create(location, topic2, member),
+                PinFixture.create(location, topic2, member),
+                PinFixture.create(location, topic3, member),
+                PinFixture.create(location, topic3, member),
+                PinFixture.create(location, topic3, member)
+        );
+
+        pinRepository.saveAll(pins);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/topics/newest")
+                .then().log().all()
+                .extract();
+
+        List<TopicResponse> topicResponses = response.jsonPath().getList(".", TopicResponse.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(topicResponses).hasSize(3);
+        assertThat(topicResponses.get(0).pinCount()).isEqualTo(3);
+        assertThat(topicResponses.get(2).pinCount()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("멤버별 Topic 목록을 조회하면 200을 반환한다")
+    void findAllTopicsByMemberId_Success() {
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("id", member.getId())
+                .when().get("/topics/members")
+
+                .then().log().all()
+                .extract();
+
+        List<TopicResponse> responses = response.jsonPath().getList(".", TopicResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responses).hasSize(1);
+    }
+
 }

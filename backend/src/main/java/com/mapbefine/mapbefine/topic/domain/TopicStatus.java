@@ -1,7 +1,13 @@
 package com.mapbefine.mapbefine.topic.domain;
 
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PERMISSION_NULL;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PERMISSION_FOR_PUBLICITY_PRIVATE;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PERMISSION_UPDATE;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PUBLICITY_FOR_PERMISSION_ALL_MEMBERS;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PUBLICITY_NULL;
 import static lombok.AccessLevel.PROTECTED;
 
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -36,15 +42,15 @@ public class TopicStatus {
 
     private static void validateTopicStatus(Publicity publicity, PermissionType permissionType) {
         if (Objects.isNull(publicity)) {
-            throw new IllegalArgumentException("공개 범위는 null일 수 없습니다.");
+            throw new TopicBadRequestException(ILLEGAL_PUBLICITY_NULL);
         }
 
         if (Objects.isNull(permissionType)) {
-            throw new IllegalArgumentException("권한 설정은 null일 수 없습니다.");
+            throw new TopicBadRequestException(ILLEGAL_PERMISSION_NULL);
         }
 
         if (publicity.isPrivate() && permissionType.isAllMembers()) {
-            throw new IllegalArgumentException("공개 범위가 혼자 볼 지도인 경우, 권한 설정이 소속 회원이어야합니다.");
+            throw new TopicBadRequestException(ILLEGAL_PERMISSION_FOR_PUBLICITY_PRIVATE);
         }
     }
 
@@ -58,14 +64,14 @@ public class TopicStatus {
 
     private void validatePublicity(Publicity publicity, PermissionType permissionType) {
         if (publicity.isPrivate() && permissionType.isAllMembers()) {
-            throw new IllegalArgumentException("권한 범위가 모든 멤버인 경우, 공개 범위를 혼자 볼 지도로 설정할 수 없습니다.");
+            throw new TopicBadRequestException(ILLEGAL_PUBLICITY_FOR_PERMISSION_ALL_MEMBERS);
         }
     }
 
     // TODO: 2023/08/09 해당 정책으로 인해, TopicStatus는 불변 객체로 만들 수 없을까 ?
     private void validatePermission(PermissionType permissionType) {
         if (this.permissionType.isAllMembers() && permissionType.isGroupOnly()) {
-            throw new IllegalArgumentException("권한 범위는 줄어들 수 없습니다.");
+            throw new TopicBadRequestException(ILLEGAL_PERMISSION_UPDATE);
         }
     }
 

@@ -3,9 +3,10 @@ import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
-import { useEffect, useRef, useState, KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, KeyboardEvent, useContext } from 'react';
 import theme from '../../themes';
 import Box from '../common/Box';
+import { TagContext } from '../../context/TagContext';
 
 export interface PinPreviewProps {
   idx: number;
@@ -14,11 +15,7 @@ export interface PinPreviewProps {
   pinInformation: string;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   pinId: number;
-  topicId: string | undefined;
-  tagPins: string[];
-  setTagPins: React.Dispatch<React.SetStateAction<string[]>>;
-  taggedPinIds: number[];
-  setTaggedPinIds: React.Dispatch<React.SetStateAction<number[]>>;
+  topicId: string;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -30,35 +27,28 @@ const PinPreview = ({
   setSelectedPinId,
   pinId,
   topicId,
-  tagPins,
-  setTagPins,
-  taggedPinIds,
-  setTaggedPinIds,
   setIsEditPinDetail,
 }: PinPreviewProps) => {
   const { routePage } = useNavigator();
-
+  const { tags, setTags } = useContext(TagContext);
   const [announceText, setAnnounceText] = useState<string>('토픽 핀 선택');
-
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
 
     if (e.target.checked) {
-      setTagPins([...tagPins, pinTitle]);
-      setTaggedPinIds((prev) => [...prev, pinId]);
+      setTags((prevTags) => [...prevTags, { id: pinId, title: pinTitle }]);
 
-      if (taggedPinIds.length === 0) {
+      if (tags.length === 0) {
         setAnnounceText(`핀 ${pinTitle}이 태그에 추가됨. 뽑아오기 기능 활성화`);
         return;
       }
       setAnnounceText(`핀 ${pinTitle}이 태그에 추가됨`);
     } else {
-      setTagPins(tagPins.filter((value) => value !== pinTitle));
-      setTaggedPinIds(taggedPinIds.filter((value) => value !== pinId));
+      setTags(tags.filter((tag) => tag.id !== pinId));
 
-      if (taggedPinIds.length === 1) {
+      if (tags.length === 1) {
         setAnnounceText(
           `핀 ${pinTitle}이 태그에서 삭제됨. 뽑아오기 기능 비활성화`,
         );
@@ -71,6 +61,7 @@ const PinPreview = ({
   const onClickSetSelectedPinId = () => {
     setSelectedPinId(pinId);
     setIsEditPinDetail(false);
+
     routePage(`/topics/${topicId}?pinDetail=${pinId}`);
   };
 
@@ -92,7 +83,7 @@ const PinPreview = ({
 
   return (
     <Flex
-      height="150px"
+      height="152px"
       position="relative"
       $justifyContent="space-between"
       $backgroundColor="white"
@@ -131,7 +122,7 @@ const PinPreview = ({
           type="checkbox"
           onChange={onAddTagOfTopic}
           onKeyDown={onInputKeyDown}
-          checked={Boolean(taggedPinIds.includes(pinId))}
+          checked={Boolean(tags.map((tag) => tag.id).includes(pinId))}
           aria-label={`${pinTitle} 핀 선택`}
           ref={inputRef}
         />

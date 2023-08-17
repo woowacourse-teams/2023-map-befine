@@ -5,10 +5,11 @@ import {
   createContext,
   useState,
 } from 'react';
+import { TopicType } from '../types/Topic';
 
 interface SeeTogetherContextProps {
-  seeTogetherTopics: number[];
-  setSeeTogetherTopic: Dispatch<SetStateAction<number[]>>;
+  seeTogetherTopics: TopicType[];
+  setSeeTogetherTopics: Dispatch<SetStateAction<TopicType[]>>;
 }
 
 interface SeeTogetherProviderProps {
@@ -17,17 +18,17 @@ interface SeeTogetherProviderProps {
 
 export const SeeTogetherContext = createContext<SeeTogetherContextProps>({
   seeTogetherTopics: [],
-  setSeeTogetherTopic: () => {},
+  setSeeTogetherTopics: () => {},
 });
 
 const SeeTogetherProvider = ({ children }: SeeTogetherProviderProps) => {
-  const [seeTogetherTopics, setSeeTogetherTopic] = useState<number[]>([]);
+  const [seeTogetherTopics, setSeeTogetherTopics] = useState<TopicType[]>([]);
 
   return (
     <SeeTogetherContext.Provider
       value={{
         seeTogetherTopics,
-        setSeeTogetherTopic,
+        setSeeTogetherTopics,
       }}
     >
       {children}

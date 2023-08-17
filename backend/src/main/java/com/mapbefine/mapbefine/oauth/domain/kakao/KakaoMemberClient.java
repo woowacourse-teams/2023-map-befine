@@ -30,7 +30,7 @@ public class KakaoMemberClient implements OauthMemberClient {
 
     @Override
     public OauthMember fetch(String authCode) {
-        KakaoToken kakaoToken = kakaoApiClient.fetchToken(tokenRequestParams(authCode)); // kakaoApiClient 는 ?? 그냥 kakaoToken 을 반환하고
+        KakaoToken kakaoToken = kakaoApiClient.fetchToken(tokenRequestParams(authCode));
         KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember(
                 kakaoToken.tokenType() + " " + kakaoToken.accessToken()
         );

@@ -8,7 +8,8 @@ interface UseUpdateCoordinatesProps {
 
 export default function useUpdateCoordinates(map: UseUpdateCoordinatesProps) {
   const { coordinates } = useContext(CoordinatesContext);
-  const { markers, createMarkers, removeMarkers } = useContext(MarkerContext);
+  const { markers, createMarkers, removeMarkers, createInfowindows } =
+    useContext(MarkerContext);
 
   useEffect(() => {
     if (!map) return;
@@ -17,6 +18,7 @@ export default function useUpdateCoordinates(map: UseUpdateCoordinatesProps) {
     }
     if (coordinates.length > 0) {
       createMarkers(map);
+      createInfowindows(map);
     }
   }, [coordinates]);
 }

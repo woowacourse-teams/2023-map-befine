@@ -1,69 +1,54 @@
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import { TopicInfoType } from '../../types/Topic';
-import Space from '../common/Space';
+import { TopicDetailType } from '../../types/Topic';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
-  topicId: string | undefined;
-  tagPins: string[];
-  topicDetail: TopicInfoType[];
-  taggedPinIds: number[];
+  topicId: string;
+  topicDetail: TopicDetailType;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
-  setTagPins: React.Dispatch<React.SetStateAction<string[]>>;
-  setTaggedPinIds: React.Dispatch<React.SetStateAction<number[]>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
+  setTopicsFromServer: () => void;
 }
 
 const PinsOfTopic = ({
   topicId,
-  tagPins,
   topicDetail,
-  taggedPinIds,
   setSelectedPinId,
-  setTagPins,
-  setTaggedPinIds,
   setIsEditPinDetail,
+  setTopicsFromServer,
 }: PinsOfTopicProps) => {
   return (
-    <>
-      {topicDetail.map((topic, idx) => {
-        return (
-          <ul key={topic.id}>
-            {idx !== 0 && <Space size={5} />}
-            <TopicInfo
-              fullUrl={topicId}
-              topicId={Number(topicId?.split(',')[idx])}
-              topicImage={DEFAULT_TOPIC_IMAGE}
-              topicParticipant={1}
-              topicPinCount={topic.pinCount}
-              topicTitle={topic.name}
-              topicOwner={'토픽을 만든 사람'}
-              topicDescription={topic.description}
-            />
-            {topic.pins.map((pin) => (
-              <li key={pin.id}>
-                <Space size={3} />
-                <PinPreview
-                  idx={idx}
-                  pinTitle={pin.name}
-                  pinLocation={pin.address}
-                  pinInformation={pin.description}
-                  setSelectedPinId={setSelectedPinId}
-                  pinId={Number(pin.id)}
-                  topicId={topicId}
-                  tagPins={tagPins}
-                  setTagPins={setTagPins}
-                  taggedPinIds={taggedPinIds}
-                  setTaggedPinIds={setTaggedPinIds}
-                  setIsEditPinDetail={setIsEditPinDetail}
-                />
-              </li>
-            ))}
-          </ul>
-        );
-      })}
-    </>
+    <ul>
+      <TopicInfo
+        fullUrl={String(topicId)}
+        topicId={topicId}
+        topicImage={DEFAULT_TOPIC_IMAGE}
+        topicTitle={topicDetail.name}
+        topicCreator={topicDetail.creator}
+        topicUpdatedAt={topicDetail.updatedAt}
+        topicPinCount={topicDetail.pinCount}
+        topicBookmarkCount={topicDetail.bookmarkCount}
+        topicDescription={topicDetail.description}
+        isInAtlas={topicDetail.isInAtlas}
+        isBookmarked={topicDetail.isBookmarked}
+        setTopicsFromServer={setTopicsFromServer}
+      />
+      {topicDetail.pins.map((pin, idx) => (
+        <li key={pin.id}>
+          <PinPreview
+            idx={idx}
+            pinTitle={pin.name}
+            pinLocation={pin.address}
+            pinInformation={pin.description}
+            setSelectedPinId={setSelectedPinId}
+            pinId={Number(pin.id)}
+            topicId={String(topicId)}
+            setIsEditPinDetail={setIsEditPinDetail}
+          />
+        </li>
+      ))}
+    </ul>
   );
 };
 
