@@ -88,9 +88,16 @@ const NewTopic = () => {
     }
 
     //생성하기 버튼 눌렀을 때 postToServer로 TopicId 받고, 받은 topicId로 권한 추가
-    const topicId = await postToServer();
+    try {
+      const topicId = await postToServer();
 
-    if (topicId) routePage(`/topics/${topicId}`);
+      if (topicId) routePage(`/topics/${topicId}`);
+    } catch {
+      showToast(
+        'error',
+        '지도 생성을 실패하였습니다. 잠시 후 다시 시도해주세요.',
+      );
+    }
   };
 
   const postToServer = async () => {
@@ -154,7 +161,7 @@ const NewTopic = () => {
         $flexDirection="column"
       >
         <Text color="black" $fontSize="large" $fontWeight="bold">
-          토픽 생성
+          지도 생성
         </Text>
         <Space size={5} />
         <InputContainer
@@ -211,7 +218,7 @@ const NewTopic = () => {
               checked={!isPrivate}
               onChange={() => setIsPrivate(false)}
             />
-            <label htmlFor="public">같이볼지도</label>
+            <label htmlFor="public">공개 지도</label>
           </div>
           <Space size={2} />
           <div>
@@ -223,7 +230,7 @@ const NewTopic = () => {
               checked={isPrivate}
               onChange={() => setIsPrivate(true)}
             />
-            <label htmlFor="private">혼자볼지도</label>
+            <label htmlFor="private">비공개 지도</label>
           </div>
         </Flex>
 
