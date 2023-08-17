@@ -31,7 +31,7 @@ public class AuthService {
     public AuthMember findAuthMemberByMemberId(Long memberId) {
         return memberRepository.findById(memberId)
                 .map(this::convertToAuthMember)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+                .orElseThrow(() -> new IllegalArgumentException("findAuthMemberByMemberId; memberId= " + memberId));
     }
 
     private AuthMember convertToAuthMember(Member member) {
@@ -59,4 +59,5 @@ public class AuthService {
                 .map(Topic::getId)
                 .toList();
     }
+
 }
