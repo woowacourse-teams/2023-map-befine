@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
   pull_request:
-    branches: [ develop ]
-    types: [ closed ]
+    branches: [develop]
+    types: [closed]
     paths: frontend/**
 
 permissions:
@@ -23,12 +23,17 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "npm"
-          cache-dependency-path: "frontend"
+          cache: 'npm'
+          cache-dependency-path: 'frontend'
 
       - name: Install npm
         run: npm install
         working-directory: frontend
+
+      - name: 테스트 환경변수 설정
+        run: |
+          echo "REACT_APP_API_DEFAULT_DEV=${{ secrets.REACT_APP_API_DEFAULT_DEV }}" >> $GITHUB_ENV
+          echo "REACT_APP_API_DEFAULT_PROD=${{ secrets.REACT_APP_API_DEFAULT_PROD }}" >> $GITHUB_ENV
 
       - name: Build project
         run: npm run build
@@ -41,7 +46,7 @@ jobs:
           path: frontend/dist
 
   deploy:
-    runs-on: [ self-hosted, dev ]
+    runs-on: [self-hosted, dev]
     needs: build-and-upload
 
     if: github.event.pull_request.merged
@@ -70,5 +75,3 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
-
-
