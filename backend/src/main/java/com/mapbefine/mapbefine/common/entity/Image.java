@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Image {
 
-    private static final String VALID_IMAGE_URL_REGEX = "(http(s?):)([/|.|\\w|\\s|-])*";
+    private static final String VALID_IMAGE_URL_REGEX = "https?://.+";
 
     @Pattern(regexp = VALID_IMAGE_URL_REGEX)
     @Column(nullable = false, length = 2048)
