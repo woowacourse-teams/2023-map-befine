@@ -89,15 +89,6 @@ const Bookmark = () => {
               즐겨찾기한 지도들을 한 눈에 보세요.
             </Text>
           </Box>
-
-          <PointerText
-            color="primary"
-            $fontSize="small"
-            $fontWeight="normal"
-            tabIndex={2}
-          >
-            생선된 순
-          </PointerText>
         </Flex>
 
         <Space size={6} />
