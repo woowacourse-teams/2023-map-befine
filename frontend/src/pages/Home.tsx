@@ -126,6 +126,7 @@ const Home = () => {
           topics={newestTopics}
           setTopicsFromServer={topicsFetchingFromServer}
         />
+        <Space size={5} />
       </Wrapper>
     </>
   );

@@ -122,9 +122,7 @@ const NewTopic = () => {
 
   //header의 location으로 받아온 topicId에 권한 추가 기능
   const addAuthority = async (topicId: any) => {
-    console.log('ADDAUTHORITY1');
     if (isAll && !isPrivate) return; // 모두 권한 준거면 return
-    console.log('ADDAUTHORITY2');
 
     const response = await postApi(`/permissions`, {
       topicId: topicId,
