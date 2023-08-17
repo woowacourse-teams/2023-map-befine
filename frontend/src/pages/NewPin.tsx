@@ -121,10 +121,7 @@ const NewPin = () => {
 
       if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
     } catch {
-      showToast(
-        'error',
-        '핀 추가에 실패하였습니다. 입력하신 항목을 확인해주세요.',
-      );
+      showToast('error', '해당 지도에 핀을 추가할 수 있는 권한이 없습니다.');
     }
   };
 

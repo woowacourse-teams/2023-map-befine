@@ -14,6 +14,7 @@ import SeeTogetherSVG from '../../assets/topicInfo_seeTogetherBtn_filled.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
+import { styled } from 'styled-components';
 
 export interface TopicInfoProps {
   fullUrl?: string;
@@ -121,7 +122,7 @@ const TopicInfo = ({
 
       <Space size={3} />
 
-      <Flex $justifyContent="center">
+      <ButtonsWrapper>
         <AddSeeTogether
           isInAtlas={isInAtlas}
           id={Number(topicId.split(',')[idx])}
@@ -143,11 +144,17 @@ const TopicInfo = ({
         </AddFavorite>
         <Space size={5} />
         <TopicShareUrlSVG cursor="pointer" onClick={copyContent} />
-      </Flex>
+      </ButtonsWrapper>
 
       <Space size={3} />
     </Flex>
   );
 };
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default TopicInfo;
