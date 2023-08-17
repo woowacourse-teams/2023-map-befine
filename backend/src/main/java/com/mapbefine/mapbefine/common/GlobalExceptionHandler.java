@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.common;
 
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
 import com.mapbefine.mapbefine.common.dto.ErrorResponse;
 import com.mapbefine.mapbefine.common.exception.ErrorCode;
 import com.mapbefine.mapbefine.common.exception.GlobalException;
@@ -34,5 +36,13 @@ public class GlobalExceptionHandler {
         }
         return "Unknown Source";
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> handleServerException(Exception exception) {
+        log.error("", exception);
+
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
+    }
+
 
 }
