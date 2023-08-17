@@ -99,10 +99,12 @@ const NewTopic = () => {
       const topicId = await postToServer();
 
       if (topicId) routePage(`/topics/${topicId}`);
+
+      showToast('info', '지도를 생성하였습니다.');
     } catch {
       showToast(
         'error',
-        '지도 생성을 실패하였습니다. 잠시 후 다시 시도해주세요.',
+        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
       );
     }
   };
@@ -112,7 +114,7 @@ const NewTopic = () => {
       taggedIds?.length > 1 && typeof taggedIds !== 'string'
         ? await mergeTopics()
         : await createTopic();
-    const location = response.headers.get('Location');
+    const location = response?.headers.get('Location');
 
     if (location) {
       const topicIdFromLocation = location.split('/')[2];
@@ -134,31 +136,43 @@ const NewTopic = () => {
   const mergeTopics = async () => {
     showToast('info', `${formValues.name} 토픽을 병합하였습니다.`);
 
-    return await postApi('/topics/merge', {
-      image: formValues.image || DEFAULT_TOPIC_IMAGE,
-      name: formValues.name,
-      description: formValues.description,
-      topics: taggedIds,
-      publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-      permissionType: isAll ? 'ALL_MEMBERS' : 'GROUP_ONLY',
-    });
+    try {
+      return await postApi('/topics/merge', {
+        image: formValues.image || DEFAULT_TOPIC_IMAGE,
+        name: formValues.name,
+        description: formValues.description,
+        topics: taggedIds,
+        publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
+        permissionType: isAll ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+      });
+    } catch {
+      showToast(
+        'error',
+        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
+      );
+    }
   };
 
   const createTopic = async () => {
-    showToast('info', `${formValues.name} 토픽을 생성하였습니다.`);
-    const response = await postApi('/topics/new', {
-      image: formValues.image || DEFAULT_TOPIC_IMAGE,
-      name: formValues.name,
-      description: formValues.description,
-      pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
-      publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-      permissionType: isPrivate
-        ? 'GROUP_ONLY'
-        : isAll
-        ? 'ALL_MEMBERS'
-        : 'GROUP_ONLY',
-    });
-    return response;
+    try {
+      return await postApi('/topics/new', {
+        image: formValues.image || DEFAULT_TOPIC_IMAGE,
+        name: formValues.name,
+        description: formValues.description,
+        pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
+        publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
+        permissionType: isPrivate
+          ? 'GROUP_ONLY'
+          : isAll
+          ? 'ALL_MEMBERS'
+          : 'GROUP_ONLY',
+      });
+    } catch {
+      showToast(
+        'error',
+        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
+      );
+    }
   };
 
   return (
