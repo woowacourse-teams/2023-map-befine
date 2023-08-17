@@ -1,10 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ProvidePlugin, EnvironmentPlugin } = require('webpack');
-const dotenv = require('dotenv');
-
-// Load environment variables from '.env' file
-const env = dotenv.config().parsed || {};
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: {
@@ -23,10 +20,8 @@ module.exports = {
       React: 'react',
       process: 'process/browser.js',
     }),
-    new EnvironmentPlugin({
-      REACT_APP_API_DEFAULT_DEV: env.REACT_APP_API_DEFAULT_DEV,
-      REACT_APP_API_DEFAULT_PROD: env.REACT_APP_API_DEFAULT_PROD,
-    }),
+
+    new Dotenv(),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
