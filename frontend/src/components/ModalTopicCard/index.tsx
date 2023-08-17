@@ -32,15 +32,20 @@ const ModalTopicCard = ({
 }: ModalTopicCardProps) => {
   const { routePage } = useNavigator();
   const { closeModal } = useContext(ModalContext);
-  const goToSelectedTopic = (topic: any) => {
-    topicClick(topic);
-    closeModal('newPin');
+  const goToSelectedTopic = (topic: any, type: 'newPin' | 'addToTopic') => {
+    if (type === 'newPin') {
+      topicClick(topic);
+      closeModal('newPin');
+    }
+    if (type === 'addToTopic') {
+      topicClick(topic);
+    }
   };
 
   return (
     <Wrapper
       onClick={() => {
-        goToSelectedTopic({ topicId, topicTitle });
+        goToSelectedTopic({ topicId, topicTitle }, 'newPin');
       }}
     >
       <Flex position="relative">

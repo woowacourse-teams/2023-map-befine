@@ -1,11 +1,14 @@
-import { Fragment, useEffect, useState } from 'react';
-import { styled } from 'styled-components';
-import { getApi } from '../../apis/getApi';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { ModalMyTopicType } from '../../types/Topic';
+import { getApi } from '../../apis/getApi';
+import { styled } from 'styled-components';
 import ModalTopicCard from '../ModalTopicCard';
+import { ModalContext } from '../../context/ModalContext';
+import { postApi } from '../../apis/postApi';
 
-const ModalMyTopicList = ({ topicClick }: any) => {
+const AddToMyTopicList = ({ pin }: any) => {
   const [myTopics, setMyTopics] = useState<ModalMyTopicType[]>([]);
+  const { closeModal } = useContext(ModalContext);
   const getMyTopicFromServer = async () => {
     const serverMyTopic = await getApi<ModalMyTopicType[]>(
       'default',
@@ -17,7 +20,19 @@ const ModalMyTopicList = ({ topicClick }: any) => {
   useEffect(() => {
     getMyTopicFromServer();
   }, []);
-
+  console.log(pin, 'PIN');
+  const addPinToTopic = async (topicId: any) => {
+    await postApi(`/pins`, {
+      topicId: topicId.topicId,
+      name: pin.name,
+      description: pin.description,
+      address: pin.address,
+      latitude: pin.latitude,
+      longitude: pin.longitude,
+      legalDongCode: '',
+    });
+    closeModal('addToMyTopicList');
+  };
   if (!myTopics) return <></>;
 
   return (
@@ -30,7 +45,7 @@ const ModalMyTopicList = ({ topicClick }: any) => {
             topicTitle={topic.name}
             topicUpdatedAt={topic.updatedAt}
             topicPinCount={topic.pinCount}
-            topicClick={topicClick}
+            topicClick={addPinToTopic}
           />
         </Fragment>
       ))}
@@ -44,4 +59,4 @@ const ModalMyTopicListWrapper = styled.ul`
   grid-row-gap: ${({ theme }) => theme.spacing[5]};
 `;
 
-export default ModalMyTopicList;
+export default AddToMyTopicList;

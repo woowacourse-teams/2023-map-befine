@@ -59,7 +59,6 @@ const NewPin = () => {
     if (!topic) {
       //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
       postTopicId = selectedTopic?.topicId;
-      postName = selectedTopic?.topicTitle;
     }
 
     await postApi('/pins', {
