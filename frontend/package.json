@@ -1,6 +1,6 @@
 {
   "name": "mapbefine",
-  "version": "1.0.0",
+  "version": "0.8.0",
   "description": "내 관심사로 만든 지도…? 괜찮을 지도! 괜찮을 지도는 지도 기반 참여형 데이터 매핑 서비스로서, 당신의 관심사를 다양한 지도로 만들 수 있게 도와드리고 있어요!",
   "main": "index.js",
   "scripts": {
