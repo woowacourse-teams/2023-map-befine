@@ -5,13 +5,13 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { FULLSCREEN } from '../constants';
+import { DEFAULT_PROD_URL, FULLSCREEN } from '../constants';
 
 const LoginError = () => {
   const { width } = useSetLayoutWidth(FULLSCREEN);
 
   const loginButtonClick = () => {
-    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
+    window.location.href = `${DEFAULT_PROD_URL}/oauth/kakao`;
   };
 
   return (

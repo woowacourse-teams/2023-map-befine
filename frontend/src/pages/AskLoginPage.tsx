@@ -2,10 +2,11 @@ import { keyframes, styled } from 'styled-components';
 import Image from '../components/common/Image';
 import Text from '../components/common/Text';
 import Space from '../components/common/Space';
+import { DEFAULT_PROD_URL } from '../constants';
 
 export default function AskLoginPage() {
   const loginButtonClick = () => {
-    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
+    window.location.href = `${DEFAULT_PROD_URL}/oauth/kakao`;
   };
 
   return (
