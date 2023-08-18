@@ -19,7 +19,7 @@ export const handleOAuthKakao = async (code: string) => {
     localStorage.setItem('user', JSON.stringify(data.member));
     location.reload();
   } catch (error) {
-    window.alert('로그인 실패');
+    window.alert('로그인에 실패하였습니다. 이메일 수집을 동의해주세요.');
   }
 };
 
