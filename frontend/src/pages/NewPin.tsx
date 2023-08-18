@@ -121,7 +121,10 @@ const NewPin = () => {
 
       if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
     } catch {
-      showToast('error', '핀을 추가할 수 있는 권한이 없거나 지도를 선택하지 않았습니다.');
+      showToast(
+        'error',
+        '핀을 추가할 수 있는 권한이 없거나 지도를 선택하지 않았습니다.',
+      );
     }
   };
 
@@ -209,6 +212,7 @@ const NewPin = () => {
               type="button"
               variant="primary"
               onClick={() => {
+                if (topic && topic.name) return;
                 openModal('newPin');
               }}
             >
