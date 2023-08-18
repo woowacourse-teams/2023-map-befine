@@ -33,9 +33,6 @@ jobs:
       - name: Build project
         run: npm run build
         working-directory: frontend
-        env: 
-          REACT_APP_API_DEFAULT_DEV: ${{ secrets.REACT_APP_API_DEFAULT_DEV }}
-          REACT_APP_API_DEFAULT_PROD: ${{ secrets.REACT_APP_API_DEFAULT_PROD }}
 
       - name: upload to artifact
         uses: actions/upload-artifact@v3
