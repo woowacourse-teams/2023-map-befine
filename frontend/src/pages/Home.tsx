@@ -112,18 +112,18 @@ const Home = () => {
         />
         <Space size={9} />
         <TopicListContainer
-          containerTitle="내 주변일 지도?"
-          containerDescription="내 주변에 있는 지도를 확인해보세요."
-          routeWhenSeeAll={goToNearByMeTopics}
-          topics={nearTopics}
-          setTopicsFromServer={topicsFetchingFromServer}
-        />
-        <Space size={9} />
-        <TopicListContainer
           containerTitle="새로울 지도?"
           containerDescription="방금 새로운 핀이 추가된 지도를 확인해보세요."
           routeWhenSeeAll={goToLatestTopics}
           topics={newestTopics}
+          setTopicsFromServer={topicsFetchingFromServer}
+        />
+        <Space size={9} />
+        <TopicListContainer
+          containerTitle="모두일 지도?"
+          containerDescription="괜찮을지도의 모든 지도를 확인해보세요."
+          routeWhenSeeAll={goToNearByMeTopics}
+          topics={nearTopics}
           setTopicsFromServer={topicsFetchingFromServer}
         />
         <Space size={5} />
