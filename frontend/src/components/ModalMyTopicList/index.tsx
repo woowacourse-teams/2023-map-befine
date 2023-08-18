@@ -45,6 +45,7 @@ const ModalMyTopicList = ({ topicId, topicClick }: ModalMyTopicList) => {
               topicId={topic.id}
               topicImage={topic.image}
               topicTitle={topic.name}
+              topicCreator={topic.creator}
               topicUpdatedAt={topic.updatedAt}
               topicPinCount={topic.pinCount}
               topicClick={topicClick}

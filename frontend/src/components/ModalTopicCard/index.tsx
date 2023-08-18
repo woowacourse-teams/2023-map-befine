@@ -17,6 +17,7 @@ export interface ModalTopicCardProps {
   topicId: number;
   topicImage: string;
   topicTitle: string;
+  topicCreator: string;
   topicUpdatedAt: string;
   topicPinCount: number;
   topicClick: any;
@@ -27,6 +28,7 @@ const ModalTopicCard = ({
   topicId,
   topicImage,
   topicTitle,
+  topicCreator,
   topicUpdatedAt,
   topicPinCount,
   topicClick,
@@ -75,7 +77,7 @@ const ModalTopicCard = ({
           </Box>
 
           <Text color="black" $fontSize="small" $fontWeight="normal">
-            토픽 생성자
+            {topicCreator}
           </Text>
 
           <Space size={0} />

@@ -51,6 +51,7 @@ const AddToMyTopicList = ({ pin }: any) => {
             topicId={topic.id}
             topicImage={topic.image}
             topicTitle={topic.name}
+            topicCreator={topic.creator}
             topicUpdatedAt={topic.updatedAt}
             topicPinCount={topic.pinCount}
             topicClick={addPinToTopic}

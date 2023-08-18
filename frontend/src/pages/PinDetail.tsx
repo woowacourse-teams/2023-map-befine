@@ -121,7 +121,7 @@ const PinDetail = ({
 
       <Flex $justifyContent="space-between" $alignItems="flex-end" width="100%">
         <Text color="black" $fontSize="small" $fontWeight="normal">
-          핀 생성자
+          {pin.creator}
         </Text>
         <Flex $flexDirection="column" $alignItems="flex-end">
           <Box cursor="pointer">
@@ -135,7 +135,7 @@ const PinDetail = ({
             </Text>
           </Box>
           <Text color="black" $fontSize="small" $fontWeight="normal">
-            {pin.updatedAt.split('T')[0].split('-').join('.')} 핀 수정자
+            {pin.updatedAt.split('T')[0].split('-').join('.')}
           </Text>
         </Flex>
       </Flex>
