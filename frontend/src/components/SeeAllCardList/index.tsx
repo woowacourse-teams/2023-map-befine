@@ -13,7 +13,7 @@ const SeeAllCardList = ({ url }: SeeAllCardListProps) => {
   const [topics, setTopics] = useState<TopicType[]>([]);
 
   const getAndSetDataFromServer = async () => {
-    const topics = await getApi<TopicType[]>('default', url);
+    const topics = await getApi<TopicType[]>(url);
     setTopics(topics);
   };
 

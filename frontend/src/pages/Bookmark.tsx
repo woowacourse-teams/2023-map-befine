@@ -27,7 +27,6 @@ const Bookmark = () => {
   const getBookmarksFromServer = async () => {
     try {
       const serverBookmarks = await getApi<TopicType[]>(
-        'default',
         '/members/my/bookmarks',
       );
       setBookmarks(serverBookmarks);

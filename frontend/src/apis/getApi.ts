@@ -10,11 +10,8 @@ interface Headers {
   [key: string]: string;
 }
 
-export const getApi = async <T>(
-  type: 'default' | 'login',
-  url: string,
-): Promise<T> => {
-  const apiUrl = type === 'login' ? url : `${DEFAULT_PROD_URL + url}`;
+export const getApi = async <T>(url: string): Promise<T> => {
+  const apiUrl = `${DEFAULT_PROD_URL + url}`;
   const userToken = localStorage.getItem('userToken');
   const headers: Headers = {
     'content-type': 'application/json',

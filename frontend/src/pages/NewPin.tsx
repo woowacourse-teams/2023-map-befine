@@ -165,16 +165,13 @@ const NewPin = () => {
   useEffect(() => {
     const getTopicId = async () => {
       if (topicId && topicId.split(',').length === 1) {
-        const data = await getApi<TopicType>('default', `/topics/${topicId}`);
+        const data = await getApi<TopicType>(`/topics/${topicId}`);
 
         setTopic(data);
       }
 
       if (topicId && topicId.split(',').length > 1) {
-        const topics = await getApi<any>(
-          'default',
-          `/topics/ids?ids=${topicId}`,
-        );
+        const topics = await getApi<any>(`/topics/ids?ids=${topicId}`);
 
         setTopic(topics);
       }

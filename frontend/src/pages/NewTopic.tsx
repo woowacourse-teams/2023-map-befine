@@ -45,7 +45,7 @@ const NewTopic = () => {
 
   useEffect(() => {
     const getMemberData = async () => {
-      const memberData = await getApi<any>('default', `/members`);
+      const memberData = await getApi<any>(`/members`);
       setMembers(memberData);
     };
 

@@ -35,7 +35,7 @@ const Home = () => {
 
   const getNearTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>('default', `/topics`);
+      const topics = await getApi<TopicType[]>(`/topics`);
       setNearTopics(topics);
     } catch {
       showToast(
@@ -47,7 +47,7 @@ const Home = () => {
 
   const getNewestTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>('default', '/topics/newest');
+      const topics = await getApi<TopicType[]>('/topics/newest');
       setNewestTopics(topics);
     } catch {
       showToast(
@@ -59,7 +59,7 @@ const Home = () => {
 
   const getPopularTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>('default', '/topics/bests');
+      const topics = await getApi<TopicType[]>('/topics/bests');
       setPopularTopics(topics);
     } catch {
       showToast(

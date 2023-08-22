@@ -13,7 +13,6 @@ const MyInfoList = () => {
   const getMyInfoListFromServer = async () => {
     try {
       const serverMyInfoTopics = await getApi<TopicType[]>(
-        'default',
         '/members/my/topics',
       );
 

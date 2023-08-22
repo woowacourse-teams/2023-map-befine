@@ -15,7 +15,7 @@ const SeeTogetherCounter = () => {
     try {
       if (!userToken) return;
 
-      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+      const topics = await getApi<TopicType[]>('/members/my/atlas');
       setSeeTogetherTopics(topics);
     } catch {
       showToast(

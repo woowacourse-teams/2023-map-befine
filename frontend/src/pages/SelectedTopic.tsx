@@ -42,10 +42,7 @@ const SelectedTopic = () => {
   const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi<TopicDetailType[]>(
-      'default',
-      `/topics/ids?ids=${topicId}`,
-    );
+    const data = await getApi<TopicDetailType[]>(`/topics/ids?ids=${topicId}`);
 
     const topicHashmap = new Map([]);
 

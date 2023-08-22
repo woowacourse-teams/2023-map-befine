@@ -30,7 +30,7 @@ const SeeTogetherTopics = () => {
 
   const setTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+      const topics = await getApi<TopicType[]>('/members/my/atlas');
 
       setSeeTogetherTopics(topics);
     } catch {

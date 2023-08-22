@@ -16,7 +16,6 @@ const ModalMyTopicList = ({ topicId, topicClick }: ModalMyTopicList) => {
   const getMyTopicFromServer = async () => {
     if (topicId && topicId.split(',').length > 1) {
       const topics = await getApi<ModalMyTopicType[]>(
-        'default',
         `/topics/ids?ids=${topicId}`,
       );
 
@@ -24,7 +23,6 @@ const ModalMyTopicList = ({ topicId, topicClick }: ModalMyTopicList) => {
       return;
     }
     const serverMyTopic = await getApi<ModalMyTopicType[]>(
-      'default',
       '/members/my/topics',
     );
     setMyTopics(serverMyTopic);

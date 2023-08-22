@@ -35,7 +35,7 @@ const AddSeeTogether = ({
 
       await postApi(`/atlas/topics?id=${id}`, {}, 'x-www-form-urlencoded');
 
-      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+      const topics = await getApi<TopicType[]>('/members/my/atlas');
 
       setSeeTogetherTopics(topics);
 
@@ -54,7 +54,7 @@ const AddSeeTogether = ({
     try {
       await deleteApi(`/atlas/topics?id=${id}`, 'x-www-form-urlencoded');
 
-      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+      const topics = await getApi<TopicType[]>('/members/my/atlas');
 
       setSeeTogetherTopics(topics);
 
