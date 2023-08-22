@@ -1,10 +1,10 @@
 import { Fragment, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import { getApi } from '../../../apis/getApi';
-import PinCard from '../../PinCard';
-import TopicCard from '../../TopicCard';
-import { TopicType } from '../../../types/Topic';
-import useToast from '../../../hooks/useToast';
+import { getApi } from '../../apis/getApi';
+import PinCard from '../PinCard';
+import TopicCard from '../TopicCard';
+import { TopicType } from '../../types/Topic';
+import useToast from '../../hooks/useToast';
 
 const MyInfoList = () => {
   const [myInfoTopics, setMyInfoTopics] = useState<TopicType[]>([]);

@@ -7,7 +7,7 @@ import { lazy, Suspense } from 'react';
 import TopicCardListSkeleton from '../TopicCardList/TopicCardListSkeleton';
 import Button from '../common/Button';
 
-const MyInfoList = lazy(() => import('./MyInfoList'));
+const MyInfoList = lazy(() => import('../MyInfoList'));
 
 interface MyInfoContainerProps {
   containerTitle: string;
