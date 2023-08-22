@@ -10,7 +10,7 @@ interface Headers {
   [key: string]: string;
 }
 
-export const getApi = async <T>(url: string): Promise<T> => {
+export const getApi = async <T>(url: string) => {
   const apiUrl = `${DEFAULT_PROD_URL + url}`;
   const userToken = localStorage.getItem('userToken');
   const headers: Headers = {
@@ -23,11 +23,11 @@ export const getApi = async <T>(url: string): Promise<T> => {
 
   const response = await fetch(apiUrl, {
     method: 'GET',
-    headers: headers,
+    headers,
   });
 
   if (response.status >= 400) {
-    throw new Error('[SERVER] API GET 요청에 실패했습니다.');
+    throw new Error('[SERVER] GET 요청에 실패했습니다.');
   }
 
   const responseData: T = await response.json();

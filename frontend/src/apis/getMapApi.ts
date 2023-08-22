@@ -7,7 +7,7 @@ export const getMapApi = async <T>(url: string) => {
   });
 
   if (response.status >= 400) {
-    throw new Error('[MAP] API GET 요청에 실패했습니다.');
+    throw new Error('[MAP] GET 요청에 실패했습니다.');
   }
 
   const responseData: T = await response.json();
