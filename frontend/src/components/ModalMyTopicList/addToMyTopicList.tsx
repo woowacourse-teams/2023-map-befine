@@ -14,7 +14,6 @@ const AddToMyTopicList = ({ pin }: any) => {
 
   const getMyTopicFromServer = async () => {
     const serverMyTopic = await getApi<ModalMyTopicType[]>(
-      'default',
       '/members/my/topics',
     );
     setMyTopics(serverMyTopic);
