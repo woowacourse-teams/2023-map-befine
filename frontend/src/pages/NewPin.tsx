@@ -23,6 +23,7 @@ import { ModalContext } from '../context/ModalContext';
 import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import ModalMyTopicList from '../components/ModalMyTopicList';
+import { getMapApi } from '../apis/getMapApi';
 
 type NewPinFormValueType = Pick<
   NewPinFormProps,
@@ -144,8 +145,7 @@ const NewPin = () => {
         const addr = data.roadAddress; // 주소 변수
 
         //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getApi<any>(
-          'tMap',
+        const { ConvertAdd } = await getMapApi<any>(
           `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
         );
         const lat = ConvertAdd.oldLat;
