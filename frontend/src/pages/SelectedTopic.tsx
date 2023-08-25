@@ -9,7 +9,7 @@ import {
 import { styled } from 'styled-components';
 import Space from '../components/common/Space';
 import Flex from '../components/common/Flex';
-import { TopicDetailType } from '../types/Topic';
+import { TopicDetailProps } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
 import theme from '../themes';
 import PinDetail from './PinDetail';
@@ -22,14 +22,14 @@ import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
 import { TagContext } from '../context/TagContext';
-import { PinType } from '../types/Pin';
+import { PinProps } from '../types/Pin';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
-  const [topicDetails, setTopicDetails] = useState<TopicDetailType[] | null>(
+  const [topicDetails, setTopicDetails] = useState<TopicDetailProps[] | null>(
     null,
   );
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
@@ -42,7 +42,7 @@ const SelectedTopic = () => {
   const { navbarHighlights: __ } = useSetNavbarHighlight('');
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi<TopicDetailType[]>(`/topics/ids?ids=${topicId}`);
+    const data = await getApi<TopicDetailProps[]>(`/topics/ids?ids=${topicId}`);
 
     const topicHashmap = new Map([]);
 
@@ -51,8 +51,8 @@ const SelectedTopic = () => {
     // 각 topic의 pin들의 좌표를 가져옴
     const newCoordinates: any = [];
 
-    data.forEach((topic: TopicDetailType) => {
-      topic.pins.forEach((pin: PinType) => {
+    data.forEach((topic: TopicDetailProps) => {
+      topic.pins.forEach((pin: PinProps) => {
         newCoordinates.push({
           id: pin.id,
           topicId: topic.id,
@@ -65,13 +65,13 @@ const SelectedTopic = () => {
 
     setCoordinates(newCoordinates);
 
-    data.forEach((topicDetailFromData: TopicDetailType) =>
+    data.forEach((topicDetailFromData: TopicDetailProps) =>
       topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
     );
 
     const topicDetailFromData = topicId
       ?.split(',')
-      .map((number) => topicHashmap.get(number)) as TopicDetailType[];
+      .map((number) => topicHashmap.get(number)) as TopicDetailProps[];
 
     if (!topicDetailFromData) return;
 

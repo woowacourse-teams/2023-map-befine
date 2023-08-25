@@ -1,5 +1,5 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { ModalMyTopicType } from '../../types/Topic';
+import { ModalTopicCardProps } from '../../types/Topic';
 import { getApi } from '../../apis/getApi';
 import { styled } from 'styled-components';
 import ModalTopicCard from '../ModalTopicCard';
@@ -8,12 +8,12 @@ import { postApi } from '../../apis/postApi';
 import useToast from '../../hooks/useToast';
 
 const AddToMyTopicList = ({ pin }: any) => {
-  const [myTopics, setMyTopics] = useState<ModalMyTopicType[]>([]);
+  const [myTopics, setMyTopics] = useState<ModalTopicCardProps[]>([]);
   const { closeModal } = useContext(ModalContext);
   const { showToast } = useToast();
 
   const getMyTopicFromServer = async () => {
-    const serverMyTopic = await getApi<ModalMyTopicType[]>(
+    const serverMyTopic = await getApi<ModalTopicCardProps[]>(
       '/members/my/topics',
     );
     setMyTopics(serverMyTopic);

@@ -5,7 +5,7 @@ import Box from '../common/Box';
 import Space from '../common/Space';
 import { lazy, Suspense } from 'react';
 import TopicCardListSkeleton from '../TopicCardList/TopicCardListSkeleton';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import useKeyDown from '../../hooks/useKeyDown';
 
 const TopicCardList = lazy(() => import('../TopicCardList'));
@@ -14,7 +14,7 @@ interface TopicListContainerProps {
   containerTitle: string;
   containerDescription: string;
   routeWhenSeeAll: () => void;
-  topics: TopicType[];
+  topics: TopicCardProps[];
   setTopicsFromServer: () => void;
 }
 

@@ -15,10 +15,10 @@ import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import useKeyDown from '../../hooks/useKeyDown';
 
-interface TopicCardProps extends TopicType {
+interface TopicCardWithSetterProps extends TopicCardProps {
   setTopicsFromServer: () => void;
 }
 
@@ -33,7 +33,7 @@ const TopicCard = ({
   isInAtlas,
   isBookmarked,
   setTopicsFromServer,
-}: TopicCardProps) => {
+}: TopicCardWithSetterProps) => {
   const { routePage } = useNavigator();
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
 

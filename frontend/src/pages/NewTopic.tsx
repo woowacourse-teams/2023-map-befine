@@ -18,7 +18,7 @@ import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import { ModalContext } from '../context/ModalContext';
 import { getApi } from '../apis/getApi';
-import { Member } from '../types/Login';
+import { MemberProps } from '../types/Login';
 import Checkbox from '../components/common/CheckBox';
 import { TagContext } from '../context/TagContext';
 
@@ -41,7 +41,7 @@ const NewTopic = () => {
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
   const { setTags } = useContext(TagContext);
 
-  const [members, setMembers] = useState<Member[]>([]);
+  const [members, setMembers] = useState<MemberProps[]>([]);
 
   useEffect(() => {
     const getMemberData = async () => {
@@ -57,7 +57,7 @@ const NewTopic = () => {
   const [checkedMemberIds, setCheckedMemberIds] = useState<number[]>([]);
 
   const handleChecked = (isChecked: boolean, id: number) =>
-    setCheckedMemberIds((prev: Member['id'][]) =>
+    setCheckedMemberIds((prev: MemberProps['id'][]) =>
       isChecked ? [...prev, id] : prev.filter((n: number) => n !== id),
     );
 

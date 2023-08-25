@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getApi } from '../../apis/getApi';
-import { ModalMyTopicType } from '../../types/Topic';
+import { ModalTopicCardProps } from '../../types/Topic';
 import ModalTopicCard from '../ModalTopicCard';
 import Space from '../common/Space';
 
@@ -11,18 +11,18 @@ interface ModalMyTopicList {
 }
 
 const ModalMyTopicList = ({ topicId, topicClick }: ModalMyTopicList) => {
-  const [myTopics, setMyTopics] = useState<ModalMyTopicType[]>([]);
+  const [myTopics, setMyTopics] = useState<ModalTopicCardProps[]>([]);
 
   const getMyTopicFromServer = async () => {
     if (topicId && topicId.split(',').length > 1) {
-      const topics = await getApi<ModalMyTopicType[]>(
+      const topics = await getApi<ModalTopicCardProps[]>(
         `/topics/ids?ids=${topicId}`,
       );
 
       setMyTopics(topics);
       return;
     }
-    const serverMyTopic = await getApi<ModalMyTopicType[]>(
+    const serverMyTopic = await getApi<ModalTopicCardProps[]>(
       '/members/my/topics',
     );
     setMyTopics(serverMyTopic);

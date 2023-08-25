@@ -1,12 +1,12 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { getApi } from '../../apis/getApi';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import TopicCard from '../TopicCard';
 import { MarkerContext } from '../../context/MarkerContext';
 import Flex from '../common/Flex';
 
 interface TopicCardList {
-  topics: TopicType[];
+  topics: TopicCardProps[];
   setTopicsFromServer: () => void;
 }
 

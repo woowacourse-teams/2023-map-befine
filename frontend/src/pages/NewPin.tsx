@@ -6,7 +6,7 @@ import Button from '../components/common/Button';
 import { postApi } from '../apis/postApi';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../apis/getApi';
-import { TopicType } from '../types/Topic';
+import { TopicCardProps } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { NewPinFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
@@ -165,7 +165,7 @@ const NewPin = () => {
   useEffect(() => {
     const getTopicId = async () => {
       if (topicId && topicId.split(',').length === 1) {
-        const data = await getApi<TopicType>(`/topics/${topicId}`);
+        const data = await getApi<TopicCardProps>(`/topics/${topicId}`);
 
         setTopic(data);
       }

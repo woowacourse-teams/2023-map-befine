@@ -1,4 +1,4 @@
-export interface PinType {
+export interface PinProps {
   id: number;
   name: string;
   address: string;

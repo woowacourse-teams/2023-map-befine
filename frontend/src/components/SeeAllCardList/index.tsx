@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import { getApi } from '../../apis/getApi';
 import TopicCard from '../TopicCard';
 import Flex from '../common/Flex';
@@ -10,10 +10,10 @@ interface SeeAllCardListProps {
 }
 
 const SeeAllCardList = ({ url }: SeeAllCardListProps) => {
-  const [topics, setTopics] = useState<TopicType[]>([]);
+  const [topics, setTopics] = useState<TopicCardProps[]>([]);
 
   const getAndSetDataFromServer = async () => {
-    const topics = await getApi<TopicType[]>(url);
+    const topics = await getApi<TopicCardProps[]>(url);
     setTopics(topics);
   };
 

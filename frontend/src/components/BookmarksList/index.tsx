@@ -2,11 +2,11 @@ import { Fragment, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getApi } from '../../apis/getApi';
 import TopicCard from '../TopicCard';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import useToast from '../../hooks/useToast';
 
 interface BookmarksListProps {
-  bookmarks: TopicType[];
+  bookmarks: TopicCardProps[];
   setTopicsFromServer: () => void;
 }
 

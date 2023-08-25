@@ -2,7 +2,7 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import { useContext, useEffect, useState } from 'react';
-import { PinType } from '../types/Pin';
+import { PinProps } from '../types/Pin';
 import { getApi } from '../apis/getApi';
 import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
@@ -32,7 +32,7 @@ const PinDetail = ({
   setIsEditPinDetail,
 }: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [pin, setPin] = useState<PinType | null>(null);
+  const [pin, setPin] = useState<PinProps | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<any>(null); //토픽이 없을 때 사용하는 변수
   const { showToast } = useToast();
   const {
@@ -59,7 +59,7 @@ const PinDetail = ({
 
   useEffect(() => {
     const getPinData = async () => {
-      const pinData = await getApi<PinType>(`/pins/${pinId}`);
+      const pinData = await getApi<PinProps>(`/pins/${pinId}`);
       setPin(pinData);
       setFormValues({
         name: pinData.name,

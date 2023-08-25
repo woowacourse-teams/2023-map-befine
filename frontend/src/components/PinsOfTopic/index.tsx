@@ -1,12 +1,12 @@
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import { TopicDetailType } from '../../types/Topic';
+import { TopicDetailProps } from '../../types/Topic';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
   topicId: string;
   idx: number;
-  topicDetail: TopicDetailType;
+  topicDetail: TopicDetailProps;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
   setTopicsFromServer: () => void;

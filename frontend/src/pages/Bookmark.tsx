@@ -10,7 +10,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
 import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
 import useToast from '../hooks/useToast';
-import { TopicType } from '../types/Topic';
+import { TopicCardProps } from '../types/Topic';
 import { getApi } from '../apis/getApi';
 import Button from '../components/common/Button';
 import useNavigator from '../hooks/useNavigator';
@@ -20,13 +20,13 @@ const BookmarksList = lazy(() => import('../components/BookmarksList'));
 const Bookmark = () => {
   const { width } = useSetLayoutWidth(FULLSCREEN);
   const { navbarHighlights: __ } = useSetNavbarHighlight('favorite');
-  const [bookmarks, setBookmarks] = useState<TopicType[] | null>(null);
+  const [bookmarks, setBookmarks] = useState<TopicCardProps[] | null>(null);
   const { showToast } = useToast();
   const { routePage } = useNavigator();
 
   const getBookmarksFromServer = async () => {
     try {
-      const serverBookmarks = await getApi<TopicType[]>(
+      const serverBookmarks = await getApi<TopicCardProps[]>(
         '/members/my/bookmarks',
       );
       setBookmarks(serverBookmarks);

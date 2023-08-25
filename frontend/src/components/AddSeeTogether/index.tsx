@@ -3,7 +3,7 @@ import { postApi } from '../../apis/postApi';
 import useToast from '../../hooks/useToast';
 import { useContext } from 'react';
 import { getApi } from '../../apis/getApi';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import { SeeTogetherContext } from '../../context/SeeTogetherContext';
 import { deleteApi } from '../../apis/deleteApi';
 
@@ -35,7 +35,7 @@ const AddSeeTogether = ({
 
       await postApi(`/atlas/topics?id=${id}`, {}, 'x-www-form-urlencoded');
 
-      const topics = await getApi<TopicType[]>('/members/my/atlas');
+      const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
 
       setSeeTogetherTopics(topics);
 
@@ -54,7 +54,7 @@ const AddSeeTogether = ({
     try {
       await deleteApi(`/atlas/topics?id=${id}`, 'x-www-form-urlencoded');
 
-      const topics = await getApi<TopicType[]>('/members/my/atlas');
+      const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
 
       setSeeTogetherTopics(topics);
 

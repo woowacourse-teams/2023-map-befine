@@ -14,7 +14,7 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { deleteApi } from '../apis/deleteApi';
 import useToast from '../hooks/useToast';
 import { getApi } from '../apis/getApi';
-import { TopicType } from '../types/Topic';
+import { TopicCardProps } from '../types/Topic';
 
 const SeeTogetherTopics = () => {
   const { routePage } = useNavigator();
@@ -30,7 +30,7 @@ const SeeTogetherTopics = () => {
 
   const setTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>('/members/my/atlas');
+      const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
 
       setSeeTogetherTopics(topics);
     } catch {

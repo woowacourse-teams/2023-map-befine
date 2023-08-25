@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { SeeTogetherContext } from '../../context/SeeTogetherContext';
 import { keyframes, styled } from 'styled-components';
 import { getApi } from '../../apis/getApi';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import useToast from '../../hooks/useToast';
 
 const SeeTogetherCounter = () => {
@@ -15,7 +15,7 @@ const SeeTogetherCounter = () => {
     try {
       if (!userToken) return;
 
-      const topics = await getApi<TopicType[]>('/members/my/atlas');
+      const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
       setSeeTogetherTopics(topics);
     } catch {
       showToast(

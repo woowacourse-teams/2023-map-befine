@@ -6,14 +6,14 @@ import Box from '../common/Box';
 import Text from '../common/Text';
 import Space from '../common/Space';
 import { useEffect, useState } from 'react';
-import { MyInfoType } from '../../types/MyInfo';
+import { ProfileProps } from '../../types/Profile';
 import Button from '../common/Button';
 
 interface UpdateMyInfoProps {
   isThereImg: boolean;
-  myInfoNameAndEmail: MyInfoType;
+  myInfoNameAndEmail: ProfileProps;
   setIsModifyMyInfo: React.Dispatch<React.SetStateAction<boolean>>;
-  setMyInfoNameAndEmail: React.Dispatch<React.SetStateAction<MyInfoType>>;
+  setMyInfoNameAndEmail: React.Dispatch<React.SetStateAction<ProfileProps>>;
 }
 
 const UpdateMyInfo = ({

@@ -7,19 +7,25 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useToast from '../hooks/useToast';
-import { TopicType } from '../types/Topic';
+import { TopicCardProps } from '../types/Topic';
 import { getApi } from '../apis/getApi';
 import { useEffect, useState } from 'react';
 import Text from '../components/common/Text';
+import useGet from '../apiHooks/useGet';
 
 const Home = () => {
-  const [popularTopics, setPopularTopics] = useState<TopicType[] | null>(null);
-  const [nearTopics, setNearTopics] = useState<TopicType[] | null>(null);
-  const [newestTopics, setNewestTopics] = useState<TopicType[] | null>(null);
+  const [popularTopics, setPopularTopics] = useState<TopicCardProps[] | null>(
+    null,
+  );
+  const [nearTopics, setNearTopics] = useState<TopicCardProps[] | null>(null);
+  const [newestTopics, setNewestTopics] = useState<TopicCardProps[] | null>(
+    null,
+  );
   const { routePage } = useNavigator();
   const { width: _ } = useSetLayoutWidth(FULLSCREEN);
   const { navbarHighlights: __ } = useSetNavbarHighlight('home');
   const { showToast } = useToast();
+  const { fetchGet } = useGet();
 
   const goToPopularTopics = () => {
     routePage('see-all/popularity');
@@ -35,7 +41,7 @@ const Home = () => {
 
   const getNearTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>(`/topics`);
+      const topics = await getApi<TopicCardProps[]>(`/topics`);
       setNearTopics(topics);
     } catch {
       showToast(
@@ -47,7 +53,7 @@ const Home = () => {
 
   const getNewestTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>('/topics/newest');
+      const topics = await getApi<TopicCardProps[]>('/topics/newest');
       setNewestTopics(topics);
     } catch {
       showToast(
@@ -59,7 +65,7 @@ const Home = () => {
 
   const getPopularTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>('/topics/bests');
+      const topics = await getApi<TopicCardProps[]>('/topics/bests');
       setPopularTopics(topics);
     } catch {
       showToast(

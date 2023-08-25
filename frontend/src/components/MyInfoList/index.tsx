@@ -3,16 +3,16 @@ import { styled } from 'styled-components';
 import { getApi } from '../../apis/getApi';
 import PinCard from '../PinCard';
 import TopicCard from '../TopicCard';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import useToast from '../../hooks/useToast';
 
 const MyInfoList = () => {
-  const [myInfoTopics, setMyInfoTopics] = useState<TopicType[]>([]);
+  const [myInfoTopics, setMyInfoTopics] = useState<TopicCardProps[]>([]);
   const { showToast } = useToast();
 
   const getMyInfoListFromServer = async () => {
     try {
-      const serverMyInfoTopics = await getApi<TopicType[]>(
+      const serverMyInfoTopics = await getApi<TopicCardProps[]>(
         '/members/my/topics',
       );
 
