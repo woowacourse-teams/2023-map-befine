@@ -7,13 +7,13 @@ import SelectedTopic from './pages/SelectedTopic';
 import SeeAllPopularTopics from './pages/SeeAllPopularTopics';
 import SeeAllNearTopics from './pages/SeeAllNearTopics';
 import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
-import KakaoRedirectPage from './pages/KaKaoRedirectPage';
+import KakaoRedirectPage from './pages/KakaoRedirectPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './components/NotFound';
 import SeeTogetherTopics from './pages/SeeTogetherTopics';
 import Profile from './pages/Profile';
-import LoginError from './pages/LoginError';
+import AskLogin from './pages/AskLogin';
 import Bookmark from './pages/Bookmark';
 
 interface routeElement {
@@ -85,7 +85,7 @@ const routes: routeElement[] = [
       },
       {
         path: '/askLogin',
-        element: <LoginError />,
+        element: <AskLogin />,
         withAuth: false,
       },
       {
