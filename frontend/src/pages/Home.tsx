@@ -6,26 +6,23 @@ import { styled } from 'styled-components';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import useToast from '../hooks/useToast';
 import { TopicCardProps } from '../types/Topic';
-import { getApi } from '../apis/getApi';
 import { useEffect, useState } from 'react';
 import Text from '../components/common/Text';
 import useGet from '../apiHooks/useGet';
 
 const Home = () => {
-  const [popularTopics, setPopularTopics] = useState<TopicCardProps[] | null>(
-    null,
-  );
-  const [nearTopics, setNearTopics] = useState<TopicCardProps[] | null>(null);
-  const [newestTopics, setNewestTopics] = useState<TopicCardProps[] | null>(
-    null,
-  );
+  const [topics, setTopics] = useState<
+    Record<'popular' | 'near' | 'newest', TopicCardProps[] | null>
+  >({
+    popular: null,
+    near: null,
+    newest: null,
+  });
   const { routePage } = useNavigator();
-  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
-  const { showToast } = useToast();
   const { fetchGet } = useGet();
+  useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('home');
 
   const goToPopularTopics = () => {
     routePage('see-all/popularity');
@@ -40,39 +37,33 @@ const Home = () => {
   };
 
   const getNearTopicsFromServer = async () => {
-    try {
-      const topics = await getApi<TopicCardProps[]>(`/topics`);
-      setNearTopics(topics);
-    } catch {
-      showToast(
-        'error',
-        '로그인 정보가 만료되었습니다. 로그아웃 후 다시 로그인 해주세요.',
-      );
-    }
+    fetchGet<TopicCardProps[]>(
+      '/topics',
+      '내 주변 지도를 가져오는데 실패했습니다.',
+      (response) => {
+        setTopics((prevState) => ({ ...prevState, near: response }));
+      },
+    );
   };
 
   const getNewestTopicsFromServer = async () => {
-    try {
-      const topics = await getApi<TopicCardProps[]>('/topics/newest');
-      setNewestTopics(topics);
-    } catch {
-      showToast(
-        'error',
-        '로그인 정보가 만료되었습니다. 로그아웃 후 다시 로그인 해주세요.',
-      );
-    }
+    fetchGet<TopicCardProps[]>(
+      '/topics/newest',
+      '새롭게 장소가 추가된 지도를 가져오는데 실패했습니다.',
+      (response) => {
+        setTopics((prevState) => ({ ...prevState, newest: response }));
+      },
+    );
   };
 
   const getPopularTopicsFromServer = async () => {
-    try {
-      const topics = await getApi<TopicCardProps[]>('/topics/bests');
-      setPopularTopics(topics);
-    } catch {
-      showToast(
-        'error',
-        '로그인 정보가 만료되었습니다. 로그아웃 후 다시 로그인 해주세요.',
-      );
-    }
+    fetchGet<TopicCardProps[]>(
+      '/topics/bests',
+      '즐겨찾기가 많이 된 지도를 가져오는데 실패했습니다.',
+      (response) => {
+        setTopics((prevState) => ({ ...prevState, popular: response }));
+      },
+    );
   };
 
   const topicsFetchingFromServer = async () => {
@@ -85,21 +76,19 @@ const Home = () => {
     topicsFetchingFromServer();
   }, []);
 
-  if (!(popularTopics && nearTopics && newestTopics)) return <></>;
+  const { popular, near, newest } = topics;
 
-  if (
-    popularTopics.length === 0 &&
-    nearTopics.length === 0 &&
-    newestTopics.length === 0
-  ) {
+  if (!(popular && near && newest)) return <></>;
+
+  if (popular.length === 0 && near.length === 0 && newest.length === 0) {
     return (
       <EmptyWrapper>
         <Text color="primary" $fontSize="extraLarge" $fontWeight="bold">
-          추가하기 버튼을 눌러 토픽을 추가해보세요!
+          추가하기 버튼을 눌러 지도를 추가해보세요!
         </Text>
         <Space size={1} />
         <Text color="black" $fontSize="default" $fontWeight="normal">
-          토픽이 없습니다.
+          지도가 없습니다.
         </Text>
       </EmptyWrapper>
     );
@@ -113,7 +102,7 @@ const Home = () => {
           containerTitle="인기 급상승할 지도?"
           containerDescription="즐겨찾기가 많이 된 지도를 확인해보세요."
           routeWhenSeeAll={goToPopularTopics}
-          topics={popularTopics}
+          topics={popular}
           setTopicsFromServer={topicsFetchingFromServer}
         />
         <Space size={9} />
@@ -121,7 +110,7 @@ const Home = () => {
           containerTitle="새로울 지도?"
           containerDescription="방금 새로운 핀이 추가된 지도를 확인해보세요."
           routeWhenSeeAll={goToLatestTopics}
-          topics={newestTopics}
+          topics={newest}
           setTopicsFromServer={topicsFetchingFromServer}
         />
         <Space size={9} />
@@ -129,7 +118,7 @@ const Home = () => {
           containerTitle="모두일 지도?"
           containerDescription="괜찮을지도의 모든 지도를 확인해보세요."
           routeWhenSeeAll={goToNearByMeTopics}
-          topics={nearTopics}
+          topics={near}
           setTopicsFromServer={topicsFetchingFromServer}
         />
         <Space size={5} />
