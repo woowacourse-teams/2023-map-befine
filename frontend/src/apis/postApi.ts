@@ -13,7 +13,7 @@ interface Headers {
 
 export const postApi = async (
   url: string,
-  data: {},
+  payload: {},
   contentType?: ContentTypeType,
 ) => {
   const apiUrl = `${DEFAULT_PROD_URL + url}`;
@@ -33,7 +33,7 @@ export const postApi = async (
   const response = await fetch(apiUrl, {
     method: 'POST',
     headers,
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 
   if (response.status >= 400) {
