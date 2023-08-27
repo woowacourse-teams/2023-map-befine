@@ -3,29 +3,42 @@ import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Box from '../common/Box';
 import Space from '../common/Space';
-import { lazy, Suspense } from 'react';
-import TopicCardListSkeleton from '../TopicCardList/TopicCardListSkeleton';
+import { Fragment, useEffect, useState } from 'react';
 import { TopicCardProps } from '../../types/Topic';
 import useKeyDown from '../../hooks/useKeyDown';
-
-const TopicCardList = lazy(() => import('../TopicCardList'));
+import TopicCard from '../TopicCard';
+import useGet from '../../apiHooks/useGet';
 
 interface TopicListContainerProps {
+  url: string;
   containerTitle: string;
   containerDescription: string;
   routeWhenSeeAll: () => void;
-  topics: TopicCardProps[];
-  setTopicsFromServer: () => void;
 }
 
 const TopicListContainer = ({
+  url,
   containerTitle,
   containerDescription,
   routeWhenSeeAll,
-  topics,
-  setTopicsFromServer,
 }: TopicListContainerProps) => {
+  const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLSpanElement>();
+  const { fetchGet } = useGet();
+
+  const setTopicsFromServer = async () => {
+    await fetchGet<TopicCardProps[]>(
+      url,
+      '지도를 가져오는데 실패했습니다. 잠시 후 다시 시도해주세요.',
+      (response) => {
+        setTopics(response);
+      },
+    );
+  };
+
+  useEffect(() => {
+    setTopicsFromServer();
+  }, []);
 
   return (
     <section>
@@ -66,18 +79,43 @@ const TopicListContainer = ({
 
       <Space size={4} />
 
-      <Suspense fallback={<TopicCardListSkeleton />}>
-        <TopicCardList
-          topics={topics}
-          setTopicsFromServer={setTopicsFromServer}
-        />
-      </Suspense>
+      <TopicsWrapper>
+        {topics &&
+          topics.map((topic, index) => {
+            return (
+              index < 6 && (
+                <Fragment key={topic.id}>
+                  <TopicCard
+                    id={topic.id}
+                    image={topic.image}
+                    name={topic.name}
+                    creator={topic.creator}
+                    updatedAt={topic.updatedAt}
+                    pinCount={topic.pinCount}
+                    bookmarkCount={topic.bookmarkCount}
+                    isInAtlas={topic.isInAtlas}
+                    isBookmarked={topic.isBookmarked}
+                    setTopicsFromServer={setTopicsFromServer}
+                  />
+                </Fragment>
+              )
+            );
+          })}
+      </TopicsWrapper>
     </section>
   );
 };
 
 const PointerText = styled(Text)`
   cursor: pointer;
+`;
+
+const TopicsWrapper = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  height: 300px;
+  overflow: hidden;
 `;
 
 export default TopicListContainer;
