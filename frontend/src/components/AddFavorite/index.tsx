@@ -44,12 +44,6 @@ const AddFavorite = ({
     } catch {
       showToast('error', '로그인 후 사용해주세요.');
     }
-
-    await deleteApi(`/bookmarks/topics?id=${id}`, 'x-www-form-urlencoded');
-
-    setTopicsFromServer();
-
-    showToast('info', '해당 지도를 즐겨찾기에서 제외했습니다.');
   };
 
   return (
