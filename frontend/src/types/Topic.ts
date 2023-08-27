@@ -29,6 +29,7 @@ export interface TopicDetailProps {
 export interface ModalTopicCardProps {
   id: number;
   name: string;
+  creator: string;
   image: string;
   pinCount: number;
   bookmarkCount: number;
