@@ -14,13 +14,13 @@ const usePost = () => {
   const fetchPost = async (
     { url, payload, contentType }: fetchPostProps,
     errorMessage: string,
-    successMessage?: string,
+    onSuccess?: () => void,
   ) => {
     try {
       const responseData = await postApi(url, payload, contentType);
 
-      if (successMessage) {
-        showToast('info', successMessage);
+      if (onSuccess) {
+        onSuccess();
       }
 
       return responseData;
