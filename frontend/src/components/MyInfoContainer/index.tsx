@@ -1,11 +1,9 @@
-import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Box from '../common/Box';
 import Space from '../common/Space';
 import { lazy, Suspense } from 'react';
 import TopicCardContainerSkeleton from '../TopicCardContainer/TopicCardContainerSkeleton';
-import Button from '../common/Button';
 
 const MyInfoList = lazy(() => import('../MyInfoList'));
 
@@ -48,9 +46,5 @@ const MyInfoContainer = ({
     </Suspense>
   </section>
 );
-
-const SeeAllButton = styled(Button)`
-  cursor: pointer;
-`;
 
 export default MyInfoContainer;
