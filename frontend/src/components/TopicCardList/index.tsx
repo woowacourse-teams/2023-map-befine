@@ -64,6 +64,7 @@ const TopicCardList = ({
       {topics.map((topic) => (
         <Fragment key={topic.id}>
           <TopicCard
+            cardType="default"
             id={topic.id}
             image={topic.image}
             name={topic.name}
@@ -73,7 +74,7 @@ const TopicCardList = ({
             bookmarkCount={topic.bookmarkCount}
             isInAtlas={topic.isInAtlas}
             isBookmarked={topic.isBookmarked}
-            setTopicsFromServer={getTopicsFromServer}
+            getTopicsFromServer={getTopicsFromServer}
           />
         </Fragment>
       ))}

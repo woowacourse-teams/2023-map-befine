@@ -238,10 +238,10 @@ const ShareButton = styled(Button)`
 const ModalContentsWrapper = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: white;
-
-  text-align: center;
-
   overflow: scroll;
 `;
 

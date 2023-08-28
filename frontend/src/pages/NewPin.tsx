@@ -117,7 +117,7 @@ const NewPin = () => {
       if (!topic) {
         //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
         postTopicId = selectedTopic?.topicId;
-        postName = selectedTopic?.topicTitle;
+        postName = selectedTopic?.topicName;
       }
 
       if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
@@ -215,8 +215,8 @@ const NewPin = () => {
             >
               {topic?.name
                 ? topic?.name
-                : selectedTopic?.topicTitle
-                ? selectedTopic?.topicTitle
+                : selectedTopic?.topicName
+                ? selectedTopic?.topicName
                 : '지도를 선택해주세요.'}
             </Button>
           </section>
@@ -322,9 +322,9 @@ const ModalContentsWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: white;
-
-  text-align: center;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow: scroll;
 `;
 

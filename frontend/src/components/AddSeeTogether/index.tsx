@@ -11,14 +11,14 @@ interface AddSeeTogetherProps {
   isInAtlas: boolean;
   id: number;
   children: React.ReactNode;
-  setTopicsFromServer: () => void;
+  getTopicsFromServer: () => void;
 }
 
 const AddSeeTogether = ({
   isInAtlas,
   id,
   children,
-  setTopicsFromServer,
+  getTopicsFromServer,
 }: AddSeeTogetherProps) => {
   const { showToast } = useToast();
   const { seeTogetherTopics, setSeeTogetherTopics } =
@@ -40,7 +40,7 @@ const AddSeeTogether = ({
       setSeeTogetherTopics(topics);
 
       // TODO: 모아보기 페이지에서는 GET /members/my/atlas 두 번 됨
-      setTopicsFromServer();
+      getTopicsFromServer();
 
       showToast('info', '모아보기에 추가했습니다.');
     } catch {
@@ -59,7 +59,7 @@ const AddSeeTogether = ({
       setSeeTogetherTopics(topics);
 
       // TODO: 모아보기 페이지에서는 GET /members/my/atlas 두 번 됨
-      setTopicsFromServer();
+      getTopicsFromServer();
 
       showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
     } catch {

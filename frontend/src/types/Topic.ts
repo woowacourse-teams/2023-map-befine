@@ -8,8 +8,8 @@ export interface TopicCardProps {
   pinCount: number;
   bookmarkCount: number;
   updatedAt: string;
-  isInAtlas: false;
-  isBookmarked: false;
+  isInAtlas: boolean;
+  isBookmarked: boolean;
 }
 
 export interface TopicDetailProps {
@@ -21,8 +21,8 @@ export interface TopicDetailProps {
   pinCount: number;
   bookmarkCount: number;
   updatedAt: string;
-  isInAtlas: false;
-  isBookmarked: false;
+  isInAtlas: boolean;
+  isBookmarked: boolean;
   pins: PinProps[];
 }
 

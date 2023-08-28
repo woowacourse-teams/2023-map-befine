@@ -86,6 +86,7 @@ const TopicCardContainer = ({
               index < 6 && (
                 <Fragment key={topic.id}>
                   <TopicCard
+                    cardType="default"
                     id={topic.id}
                     image={topic.image}
                     name={topic.name}
@@ -95,7 +96,7 @@ const TopicCardContainer = ({
                     bookmarkCount={topic.bookmarkCount}
                     isInAtlas={topic.isInAtlas}
                     isBookmarked={topic.isBookmarked}
-                    setTopicsFromServer={setTopicsFromServer}
+                    getTopicsFromServer={setTopicsFromServer}
                   />
                 </Fragment>
               )
