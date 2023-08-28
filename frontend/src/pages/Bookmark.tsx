@@ -9,8 +9,9 @@ import Space from '../components/common/Space';
 import { Suspense, lazy } from 'react';
 import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
 import useNavigator from '../hooks/useNavigator';
+import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
 
-const BookmarksList = lazy(() => import('../components/BookmarksList'));
+const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
 const Bookmark = () => {
   const { routePage } = useNavigator();
@@ -22,7 +23,7 @@ const Bookmark = () => {
   };
 
   return (
-    <BookMarksWrapper>
+    <Wrapper>
       <Space size={5} />
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
@@ -49,13 +50,21 @@ const Bookmark = () => {
       <Space size={6} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
-        <BookmarksList goToHome={goToHome} />
+        <TopicCardList
+          url="/members/my/bookmarks"
+          errorMessage="로그인 후 이용해주세요."
+          commentWhenEmpty="버튼을 눌러 지도를 즐겨찾기에 추가해보세요."
+          pageCommentWhenEmpty="메인페이지로 가기"
+          routePage={goToHome}
+        >
+          <FavoriteNotFilledSVG />
+        </TopicCardList>
       </Suspense>
-    </BookMarksWrapper>
+    </Wrapper>
   );
 };
 
-const BookMarksWrapper = styled.section`
+const Wrapper = styled.article`
   width: 1036px;
   margin: 0 auto;
 `;

@@ -1,39 +1,73 @@
-import { useState } from 'react';
 import { styled } from 'styled-components';
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import MyInfo from '../components/MyInfo';
-import MyInfoContainer from '../components/MyInfoContainer';
-import useNavigator from '../hooks/useNavigator';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
+import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
+import { Suspense, lazy } from 'react';
+import Text from '../components/common/Text';
+import useNavigator from '../hooks/useNavigator';
+
+const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
 const Profile = () => {
   const { routePage } = useNavigator();
-  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('profile');
+  useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('profile');
 
-  const goToPopularTopics = () => {
-    routePage('/see-all/popularity');
+  const goToNewTopic = () => {
+    routePage('/new-topic');
   };
 
   return (
-    <ProfileWrapper>
+    <Wrapper>
       <MyInfoWrapper $justifyContent="center" $alignItems="center">
         <MyInfo />
       </MyInfoWrapper>
+
       <Space size={6} />
-      <MyInfoContainer
-        containerTitle="나의 지도"
-        containerDescription="내가 만든 지도를 확인해보세요"
-      />
-    </ProfileWrapper>
+
+      <Flex $justifyContent="space-between" $alignItems="flex-end">
+        <Box>
+          <Text
+            color="black"
+            $fontSize="extraLarge"
+            $fontWeight="bold"
+            tabIndex={0}
+          >
+            나의 지도
+          </Text>
+          <Space size={0} />
+          <Text
+            color="gray"
+            $fontSize="default"
+            $fontWeight="normal"
+            tabIndex={1}
+          >
+            내가 만든 지도를 확인해보세요.
+          </Text>
+        </Box>
+      </Flex>
+
+      <Space size={6} />
+
+      <Suspense fallback={<TopicCardContainerSkeleton />}>
+        <TopicCardList
+          url="/members/my/topics"
+          errorMessage="내가 만든 지도를 가져오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+          commentWhenEmpty="버튼을 눌러 지도를 추가해보세요."
+          pageCommentWhenEmpty="지도 만들러 가기"
+          routePage={goToNewTopic}
+        />
+      </Suspense>
+    </Wrapper>
   );
 };
 
-const ProfileWrapper = styled(Box)`
+const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
 `;
