@@ -57,7 +57,7 @@ const Profile = () => {
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicCardList
           url="/members/my/topics"
-          errorMessage="내가 만든 지도를 가져오는데 실패했습니다. 잠시 후 다시 시도해주세요."
+          errorMessage="로그인 후 이용해주세요."
           commentWhenEmpty="버튼을 눌러 지도를 추가해보세요."
           pageCommentWhenEmpty="지도 만들러 가기"
           routePage={goToNewTopic}
