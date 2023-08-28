@@ -58,7 +58,7 @@ const Profile = () => {
         <TopicCardList
           url="/members/my/topics"
           errorMessage="로그인 후 이용해주세요."
-          commentWhenEmpty="버튼을 눌러 지도를 추가해보세요."
+          commentWhenEmpty="추가하기 버튼을 눌러 지도를 추가해보세요."
           pageCommentWhenEmpty="지도 만들러 가기"
           routePage={goToNewTopic}
         />
