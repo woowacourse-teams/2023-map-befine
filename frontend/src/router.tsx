@@ -10,7 +10,7 @@ import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
 import KakaoRedirectPage from './pages/KakaoRedirectPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
-import NotFound from './components/NotFound';
+import NotFound from './pages/NotFound';
 import SeeTogetherTopics from './pages/SeeTogetherTopics';
 import Profile from './pages/Profile';
 import AskLogin from './pages/AskLogin';

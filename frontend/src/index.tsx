@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import theme from './themes';
 import GlobalStyle from './GlobalStyle';
 import ErrorBoundary from './components/ErrorBoundary';
-import NotFound from './components/NotFound';
+import NotFound from './pages/NotFound';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
