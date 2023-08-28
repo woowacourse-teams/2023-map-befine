@@ -20,7 +20,7 @@ import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
+import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { TagContext } from '../context/TagContext';
 import { PinProps } from '../types/Pin';
 

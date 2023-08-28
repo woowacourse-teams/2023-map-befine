@@ -6,7 +6,7 @@ import MyInfo from '../components/MyInfo';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
-import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { Suspense, lazy } from 'react';
 import Text from '../components/common/Text';
 import useNavigator from '../hooks/useNavigator';

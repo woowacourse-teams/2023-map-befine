@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import TopicCardSkeleton from '../TopicCardSkeleton';
+import TopicCardSkeleton from './TopicCardSkeleton';
 
 const TopicCardContainerSkeleton = () => {
   return (

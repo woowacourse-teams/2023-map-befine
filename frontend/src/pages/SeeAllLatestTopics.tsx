@@ -6,7 +6,7 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import Box from '../components/common/Box';
 import { Suspense, lazy } from 'react';
-import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import useNavigator from '../hooks/useNavigator';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));

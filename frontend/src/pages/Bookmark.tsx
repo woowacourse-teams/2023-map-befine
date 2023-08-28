@@ -7,7 +7,7 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import { Suspense, lazy } from 'react';
-import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import useNavigator from '../hooks/useNavigator';
 import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
 

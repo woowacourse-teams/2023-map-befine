@@ -6,7 +6,7 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { Suspense, lazy } from 'react';
-import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import useNavigator from '../hooks/useNavigator';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));

@@ -1,7 +1,7 @@
 import Flex from '../common/Flex';
-import PinPreviewSkeleton from '../PinPreviewSkeleton';
+import PinPreviewSkeleton from './PinPreviewSkeleton';
 import Space from '../common/Space';
-import TopicInfoSkeleton from '../TopicInfoSkeleton';
+import TopicInfoSkeleton from './TopicInfoSkeleton';
 
 const PinsOfTopicSkeleton = () => {
   return (

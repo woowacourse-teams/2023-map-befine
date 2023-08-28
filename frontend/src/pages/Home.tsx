@@ -7,7 +7,7 @@ import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { Suspense, lazy, useContext, useEffect } from 'react';
 import { MarkerContext } from '../context/MarkerContext';
-import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 
 const TopicListContainer = lazy(
   () => import('../components/TopicCardContainer'),
