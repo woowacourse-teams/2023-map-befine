@@ -1,5 +1,5 @@
 <configuration>
-    <springProperty name="LOG_PATTERN" source="logging.pattern.file"/>
+    <springProperty name="LOG_PATTERN" source="logging.pattern.console"/>
 
     <!-- 콘솔 로그 설정 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
