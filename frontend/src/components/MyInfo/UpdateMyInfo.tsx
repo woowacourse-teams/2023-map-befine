@@ -1,11 +1,8 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
 import ProfileDefaultImage from '../../assets/profile_defaultImage.svg';
-import ModifyMyInfoIcon from '../../assets/ModifyMyInfoIcon.svg';
 import Box from '../common/Box';
-import Text from '../common/Text';
 import Space from '../common/Space';
-import { useEffect, useState } from 'react';
 import { ProfileProps } from '../../types/Profile';
 import Button from '../common/Button';
 

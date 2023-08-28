@@ -39,7 +39,7 @@ const MyInfo = () => {
       <MyInfoImg src={user.imageUrl} />
       <Space size={7} />
       <Box>
-        <Text color="black" $fontSize="default" $fontWeight="normal">
+        <Text color="black" $fontSize="medium" $fontWeight="bold">
           {user.nickName}
         </Text>
         <Text color="black" $fontSize="small" $fontWeight="normal">
