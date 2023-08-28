@@ -7,14 +7,18 @@ import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
 import { Suspense, lazy } from 'react';
+import useNavigator from '../hooks/useNavigator';
 
-const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
-
-const url = '/topics';
+const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
 const SeeAllNearTopics = () => {
-  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
+  const { routePage } = useNavigator();
+  useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('home');
+
+  const goToHome = () => {
+    routePage('/new-topic');
+  };
 
   return (
     <Wrapper>
@@ -26,7 +30,13 @@ const SeeAllNearTopics = () => {
       <Space size={5} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
-        <SeeAllCardList url={url} />
+        <TopicCardList
+          url="/topics"
+          errorMessage="로그인 후 이용해주세요."
+          commentWhenEmpty="지도가 없습니다. 추가하기 버튼을 눌러 지도를 추가해보세요."
+          pageCommentWhenEmpty="지도 만들러 가기"
+          routePage={goToHome}
+        />
       </Suspense>
     </Wrapper>
   );

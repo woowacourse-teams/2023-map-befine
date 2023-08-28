@@ -7,14 +7,18 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import Box from '../components/common/Box';
 import { Suspense, lazy } from 'react';
 import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
+import useNavigator from '../hooks/useNavigator';
 
-const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
-
-const url = '/topics/newest';
+const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
 const SeeAllLatestTopics = () => {
-  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
+  const { routePage } = useNavigator();
+  useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('home');
+
+  const goToHome = () => {
+    routePage('/');
+  };
 
   return (
     <Wrapper>
@@ -26,7 +30,13 @@ const SeeAllLatestTopics = () => {
       <Space size={5} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
-        <SeeAllCardList url={url} />
+        <TopicCardList
+          url="/topics/newest"
+          errorMessage="로그인 후 이용해주세요."
+          commentWhenEmpty="최근에 핀이 찍힌 지도가 없습니다."
+          pageCommentWhenEmpty="메인페이지로 가기"
+          routePage={goToHome}
+        />
       </Suspense>
     </Wrapper>
   );
