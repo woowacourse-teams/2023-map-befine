@@ -23,8 +23,8 @@ logging:
     # jar 파일 실행 시, jar 파일과 동일한 디렉토리 내 log 디렉토리에 생성됨
     path: /home/ubuntu/backend/build/log
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %msg %n"
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %msg %n"
+    console: "%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) ${PID} %highlight(%5level) %cyan(%logger) - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${PID} %5level %logger - %msg%n"
 
 oauth:
   kakao:
