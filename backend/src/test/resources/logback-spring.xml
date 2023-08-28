@@ -3,15 +3,15 @@
 
     <!-- 콘솔 로그 설정 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
+        <encoder>
             <Pattern>
                 ${LOG_PATTERN}
             </Pattern>
-        </layout>
+        </encoder>
     </appender>
 
     <!-- 레벨 별 Appender 적용 -->
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
