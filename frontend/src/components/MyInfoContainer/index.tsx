@@ -4,7 +4,7 @@ import Text from '../common/Text';
 import Box from '../common/Box';
 import Space from '../common/Space';
 import { lazy, Suspense } from 'react';
-import TopicCardListSkeleton from '../TopicCardList/TopicCardListSkeleton';
+import TopicCardContainerSkeleton from '../TopicCardContainer/TopicCardContainerSkeleton';
 import Button from '../common/Button';
 
 const MyInfoList = lazy(() => import('../MyInfoList'));
@@ -43,7 +43,7 @@ const MyInfoContainer = ({
 
     <Space size={4} />
 
-    <Suspense fallback={<TopicCardListSkeleton />}>
+    <Suspense fallback={<TopicCardContainerSkeleton />}>
       <MyInfoList />
     </Suspense>
   </section>

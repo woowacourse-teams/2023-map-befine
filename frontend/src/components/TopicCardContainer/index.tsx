@@ -9,19 +9,19 @@ import useKeyDown from '../../hooks/useKeyDown';
 import TopicCard from '../TopicCard';
 import useGet from '../../apiHooks/useGet';
 
-interface TopicListContainerProps {
+interface TopicCardContainerProps {
   url: string;
   containerTitle: string;
   containerDescription: string;
   routeWhenSeeAll: () => void;
 }
 
-const TopicListContainer = ({
+const TopicCardContainer = ({
   url,
   containerTitle,
   containerDescription,
   routeWhenSeeAll,
-}: TopicListContainerProps) => {
+}: TopicCardContainerProps) => {
   const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLSpanElement>();
   const { fetchGet } = useGet();
@@ -118,4 +118,4 @@ const TopicsWrapper = styled.ul`
   overflow: hidden;
 `;
 
-export default TopicListContainer;
+export default TopicCardContainer;

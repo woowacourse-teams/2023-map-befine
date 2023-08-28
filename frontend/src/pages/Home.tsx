@@ -7,10 +7,10 @@ import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { Suspense, lazy, useContext, useEffect } from 'react';
 import { MarkerContext } from '../context/MarkerContext';
-import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
+import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
 
 const TopicListContainer = lazy(
-  () => import('../components/TopicListContainer'),
+  () => import('../components/TopicCardContainer'),
 );
 
 const Home = () => {
@@ -43,7 +43,7 @@ const Home = () => {
     <>
       <Wrapper position="relative">
         <Space size={5} />
-        <Suspense fallback={<TopicCardListSkeleton />}>
+        <Suspense fallback={<TopicCardContainerSkeleton />}>
           <TopicListContainer
             url="/topics/bests"
             containerTitle="인기 급상승할 지도?"
@@ -54,7 +54,7 @@ const Home = () => {
 
         <Space size={9} />
 
-        <Suspense fallback={<TopicCardListSkeleton />}>
+        <Suspense fallback={<TopicCardContainerSkeleton />}>
           <TopicListContainer
             url="/topics/newest"
             containerTitle="새로울 지도?"
@@ -65,7 +65,7 @@ const Home = () => {
 
         <Space size={9} />
 
-        <Suspense fallback={<TopicCardListSkeleton />}>
+        <Suspense fallback={<TopicCardContainerSkeleton />}>
           <TopicListContainer
             url="/topics"
             containerTitle="모두일 지도?"

@@ -7,7 +7,7 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import { Suspense, lazy } from 'react';
-import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
+import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
 import useNavigator from '../hooks/useNavigator';
 
 const BookmarksList = lazy(() => import('../components/BookmarksList'));
@@ -48,7 +48,7 @@ const Bookmark = () => {
 
       <Space size={6} />
 
-      <Suspense fallback={<TopicCardListSkeleton />}>
+      <Suspense fallback={<TopicCardContainerSkeleton />}>
         <BookmarksList goToHome={goToHome} />
       </Suspense>
     </BookMarksWrapper>

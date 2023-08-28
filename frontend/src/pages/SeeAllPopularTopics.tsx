@@ -6,7 +6,7 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { Suspense, lazy } from 'react';
-import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
+import TopicCardContainerSkeleton from '../components/TopicCardContainer/TopicCardContainerSkeleton';
 
 const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
 
@@ -25,7 +25,7 @@ const SeeAllTopics = () => {
 
       <Space size={5} />
 
-      <Suspense fallback={<TopicCardListSkeleton />}>
+      <Suspense fallback={<TopicCardContainerSkeleton />}>
         <SeeAllCardList url={url} />
       </Suspense>
     </Wrapper>
