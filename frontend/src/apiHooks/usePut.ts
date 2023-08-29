@@ -14,13 +14,13 @@ const usePut = () => {
   const fetchPut = async (
     { url, payload, contentType }: fetchPutProps,
     errorMessage: string,
-    successMessage?: string,
+    onSuccess?: () => void,
   ) => {
     try {
       const responseData = await putApi(url, payload, contentType);
 
-      if (successMessage) {
-        showToast('info', successMessage);
+      if (onSuccess) {
+        onSuccess();
       }
 
       return responseData;

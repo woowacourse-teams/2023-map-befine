@@ -13,13 +13,13 @@ const useDelete = () => {
   const fetchDelete = async (
     { url, contentType }: fetchDeleteProps,
     errorMessage: string,
-    successMessage?: string,
+    onSuccess: () => void,
   ) => {
     try {
       await deleteApi(url, contentType);
 
-      if (successMessage) {
-        showToast('info', successMessage);
+      if (onSuccess) {
+        onSuccess();
       }
     } catch (e) {
       showToast('error', errorMessage);
