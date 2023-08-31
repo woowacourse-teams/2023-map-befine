@@ -1,7 +1,13 @@
 import { rest } from 'msw';
 import topics from './db/topics';
+import newestTopics from './db/newestTopics';
+import bestTopics from './db/bestTopics';
 import detailTopic from './db/detailTopic';
 import tempPins from './db/tempPins';
+import resLogin from './db/resLogin';
+import bookmarks from './db/bookmarks';
+import myTopics from './db/myTopics';
+import atlas from './db/atlas';
 
 export const handlers = [
   // 포스트 목록
@@ -25,10 +31,9 @@ export const handlers = [
     );
   }),
 
-  // 토픽 디테일 보기
-  rest.get('/topics/:id', (req, res, ctx) => {
-    const topicId = Number(req.params.id);
-    const data = detailTopic.filter((pin) => Number(pin.id) === topicId);
+  // 인기 급상승 토픽 목록
+  rest.get('/topics/bests', (req, res, ctx) => {
+    const data = bestTopics;
 
     if (!data) {
       return res(ctx.status(403), ctx.json(data));
@@ -37,7 +42,94 @@ export const handlers = [
     return res(
       ctx.set('Content-Type', 'application/json'),
       ctx.status(200),
-      ctx.json(data[0]),
+      ctx.json(data),
+    );
+  }),
+
+  // 최신 토픽 목록
+  rest.get('/topics/newest', (req, res, ctx) => {
+    const data = newestTopics;
+
+    if (!data) {
+      return res(ctx.status(403), ctx.json(data));
+    }
+
+    return res(
+      ctx.set('Content-Type', 'application/json'),
+      ctx.status(200),
+      ctx.json(data),
+    );
+  }),
+
+  // 토픽 디테일 보기
+  rest.get('/topics/ids?ids=:id', (req, res, ctx) => {
+    let data = [];
+    if (req.url.searchParams.get('ids').split(',').length > 1) {
+      const topicId = req.url.searchParams.get('ids').split(',');
+      topicId.forEach((id) => {
+        detailTopic.forEach((topic) => {
+          if (Number(topic.id) === Number(id)) {
+            data.push(topic);
+          }
+        });
+      });
+    } else {
+      const topicId = Number(req.url.searchParams.get('ids'));
+      data = detailTopic.filter((topic) => Number(topic.id) === topicId);
+    }
+
+    console.log(data);
+    if (!data) {
+      return res(ctx.status(403), ctx.json(data));
+    }
+
+    return res(
+      ctx.set('Content-Type', 'application/json'),
+      ctx.status(200),
+      ctx.json(data),
+    );
+  }),
+
+  // login
+  rest.get('/login', (req, res, ctx) => {
+    const data = resLogin;
+
+    return res(
+      ctx.set('Content-Type', 'application/json'),
+      ctx.status(200),
+      ctx.json(data),
+    );
+  }),
+
+  // bookmarks
+  rest.get('/members/my/bookmarks', (req, res, ctx) => {
+    const data = bookmarks;
+
+    return res(
+      ctx.set('Content-Type', 'application/json'),
+      ctx.status(200),
+      ctx.json(data),
+    );
+  }),
+
+  // 나의 지도 목록
+  rest.get('/members/my/topics', (req, res, ctx) => {
+    const data = myTopics;
+
+    return res(
+      ctx.set('Content-Type', 'application/json'),
+      ctx.status(200),
+      ctx.json(data),
+    );
+  }),
+
+  rest.get('/members/my/atlas', (req, res, ctx) => {
+    const data = atlas;
+
+    return res(
+      ctx.set('Content-Type', 'application/json'),
+      ctx.status(200),
+      ctx.json(data),
     );
   }),
 

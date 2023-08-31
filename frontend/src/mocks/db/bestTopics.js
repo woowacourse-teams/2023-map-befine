@@ -1,4 +1,4 @@
-const topics = [
+const bestTopics = [
   {
     id: 1,
     name: '준팍의 또 토픽',
@@ -23,4 +23,4 @@ const topics = [
   },
 ];
 
-export default topics;
+export default bestTopics

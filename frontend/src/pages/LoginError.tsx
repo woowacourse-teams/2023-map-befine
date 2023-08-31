@@ -6,12 +6,30 @@ import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { DEFAULT_PROD_URL, FULLSCREEN } from '../constants';
+import { getApi } from '../apis/getApi';
+import useNavigator from '../hooks/useNavigator';
+
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_API_DEFAULT_PROD
+    : 'http://localhost:3000';
 
 const LoginError = () => {
+  const { routePage } = useNavigator();
   const { width } = useSetLayoutWidth(FULLSCREEN);
 
-  const loginButtonClick = () => {
-    window.location.href = `${DEFAULT_PROD_URL}/oauth/kakao`;
+  const loginButtonClick = async () => {
+    if (API_URL === 'http://localhost:3000') {
+      const data = await getApi<any>('default', '/login');
+
+      localStorage.setItem('userToken', data.accessToken);
+      localStorage.setItem('user', JSON.stringify(data.member));
+
+      routePage('/');
+      return;
+    }
+
+    window.location.href = `${API_URL}/oauth/kakao`;
   };
 
   return (
