@@ -1,0 +1,19 @@
+<configuration>
+    <springProperty name="LOG_PATTERN" source="logging.pattern.console"/>
+
+    <!-- 콘솔 로그 설정 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                ${LOG_PATTERN}
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- 프로젝트 패키지에 해당하는 로그만 DEBUG 레벨로 설정 (라이브러리 DEBUG 로그 제외) -->
+    <logger name="com.mapbefine.mapbefine" level="DEBUG" />
+    <!-- 레벨 별 Appender 적용 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
