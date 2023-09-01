@@ -13,7 +13,6 @@
             <fileNamePattern>${LOG_PATH}/debug/debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>1KB</maxFileSize>
             <maxHistory>7</maxHistory>
-
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
