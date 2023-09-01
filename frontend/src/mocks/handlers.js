@@ -135,16 +135,43 @@ export const handlers = [
 
   // 토픽 생성
   rest.post('/topics/new', async (req, res, ctx) => {
-    const { name, image, description } = await req.json();
+    const { name, image, description, pins, publicity, permissionType } =
+      await req.json();
 
     topics.push({
       id: `${topics.length + 1}`,
       image,
       name,
-      description,
-      pins: [],
+      creator: '패트릭',
+      isInAtlas: false,
+      isBookmarked: false,
+      bookmarkCount: 5,
       pinCount: 0,
-      updatedAt: '2023-07-19',
+      updatedAt: '2023-08-17T20:45:00.123284785',
+    });
+
+    newestTopics.push({
+      id: `${newestTopics.length + 1}`,
+      image,
+      name,
+      creator: '패트릭',
+      isInAtlas: false,
+      isBookmarked: false,
+      bookmarkCount: 5,
+      pinCount: 0,
+      updatedAt: '2023-08-17T20:45:00.123284785',
+    });
+
+    bestTopics.push({
+      id: `${bestTopics.length + 1}`,
+      image,
+      name,
+      creator: '패트릭',
+      isInAtlas: false,
+      isBookmarked: false,
+      bookmarkCount: 5,
+      pinCount: 0,
+      updatedAt: '2023-08-17T20:45:00.123284785',
     });
 
     detailTopic.push({
@@ -152,9 +179,13 @@ export const handlers = [
       image,
       name,
       description,
-      pins: [],
+      creator: '패트릭',
+      isInAtlas: false,
+      pins: pins,
+      isBookmarked: false,
+      bookmarkCount: 5,
       pinCount: 0,
-      updatedAt: '2023-07-19',
+      updatedAt: '2023-08-17T20:45:00.123284785',
     });
 
     if (!name) {
@@ -169,15 +200,18 @@ export const handlers = [
 
   // 핀 생성
   rest.post('/pins', async (req, res, ctx) => {
-    const { topicId, name, address, description } = await req.json();
+    const { topicId, name, address, description, latitude, longitude } =
+      await req.json();
 
     const newPin = {
       id: `${detailTopic[topicId - 1].pins.length + 1}`,
       name,
       description,
       address,
-      latitude: '37',
-      longitude: '127',
+      latitude: latitude,
+      longitude: longitude,
+      legalDongCode: '',
+      images: [],
     };
 
     detailTopic[topicId - 1].pins.push(newPin);
@@ -193,6 +227,42 @@ export const handlers = [
     );
   }),
 
+  // 즐겨찾기 추가
+  rest.post('/bookmarks/topics?id=:id', async (req, res, ctx) => {
+    const id = req.url.searchParams.get('id');
+
+    const bookmarkTopic = [];
+    topics.forEach((topic) => {
+      if (topic.id === Number(id)) {
+        bookmarkTopic.push(topic);
+      }
+    });
+
+    bookmarks.push(bookmarkTopic[0]);
+
+    return res(
+      ctx.status(201),
+      ctx.set('Location', `/bookmarks/topics/${id}}`),
+    );
+  }),
+
+  // 모아보기 추가
+  rest.post('/atlas/topics?id=:id', async (req, res, ctx) => {
+    const id = req.url.searchParams.get('id');
+
+    const atlasTopic = [];
+    topics.forEach((topic) => {
+      if (topic.id === Number(id)) {
+        atlasTopic.push(topic);
+      }
+    });
+
+    atlas.push(atlasTopic[0]);
+
+    return res(ctx.status(201));
+  }),
+
+  // pin 변경
   rest.put('/pins/:id', async (req, res, ctx) => {
     const { id } = req.params;
     const { name, image, description } = await req.json();

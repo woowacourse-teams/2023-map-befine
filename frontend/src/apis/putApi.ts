@@ -5,6 +5,8 @@
 
 import { DEFAULT_PROD_URL } from '../constants';
 
+const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : DEFAULT_PROD_URL
+
 interface Headers {
   'Content-Type': string;
   [key: string]: string;
@@ -21,7 +23,7 @@ export const putApi = async (
     headers['Authorization'] = `Bearer ${userToken}`;
   }
 
-  const response = await fetch(`${DEFAULT_PROD_URL + url}`, {
+  const response = await fetch(`${API_URL + url}`, {
     method: 'PUT',
     headers: headers,
     body: JSON.stringify(data),

@@ -7,7 +7,7 @@ const bestTopics = [
     pinCount: 3,
     isInAtlas: false,
     bookmarkCount: 5,
-    isBookmarked: false,
+    isBookmarked: true,
     updatedAt: '2023-08-17T20:44:58.712930015',
   },
   {
