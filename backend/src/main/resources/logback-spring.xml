@@ -1,17 +1,16 @@
 <configuration>
     <springProperty name="LOG_PATH" source="logging.file.path"/>
-    <springProperty name="LOG_PATTERN" source="logging.pattern.file"/>
+    <springProperty name="FILE_LOG_PATTERN" source="logging.pattern.file"/>
+    <springProperty name="CONSOLE_LOG_PATTERN" source="logging.pattern.console"/>
 
     <timestamp key="DateFormat" datePattern="yyyy-MM-dd"/>
 
     <!-- 콘솔 로그 설정 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="ch.qos.logback.classic.PatternLayout">
-                <Pattern>
-                    ${LOG_PATTERN}
-                </Pattern>
-            </layout>
+        <encoder>
+                <pattern>
+                    ${CONSOLE_LOG_PATTERN}
+                </pattern>
         </encoder>
     </appender>
 
@@ -24,7 +23,7 @@
         </filter>
         <file>${LOG_PATH}/warn.log</file>
         <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
@@ -38,7 +37,7 @@
 
         <file>${LOG_PATH}/error.log</file>
         <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
