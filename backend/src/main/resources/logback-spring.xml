@@ -1,50 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <timestamp key="DATE_FORMAT" datePattern="yyyy-MM-dd"/>
+
     <springProperty name="LOG_PATH" source="logging.file.path"/>
-    <springProperty name="FILE_LOG_PATTERN" source="logging.pattern.file"/>
-    <springProperty name="CONSOLE_LOG_PATTERN" source="logging.pattern.console"/>
+    <property name="LOG_PATTERN_DEFAULT" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] ${PID} %5level %logger - %msg%n" />
+    <property name="LOG_PATTERN_COLORED" value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] ${PID} %highlight(%-5level) %cyan(%logger) - %msg%n" />
 
-    <timestamp key="DateFormat" datePattern="yyyy-MM-dd"/>
+    <springProfile name="default">
+        <include resource="console-appender.xml"/>
 
-    <!-- 콘솔 로그 설정 -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-                <pattern>
-                    ${CONSOLE_LOG_PATTERN}
-                </pattern>
-        </encoder>
-    </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
 
-    <!-- WARN 레벨 파일 로그 설정 -->
-    <appender name="FILE_WARN" class="ch.qos.logback.core.FileAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>WARN</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <file>${LOG_PATH}/warn.log</file>
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
+    <springProfile name="dev">
+        <include resource="file-hibernate-appender.xml"/>
+        <include resource="file-debug-appender.xml"/>
+        <include resource="file-warn-appender.xml"/>
+        <include resource="file-error-appender.xml"/>
 
-    <!-- ERROR 레벨 파일 로그 설정 -->
-    <appender name="FILE_ERROR" class="ch.qos.logback.core.FileAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
+        <root level="DEBUG">
+            <appender-ref ref="FILE_DEBUG"/>
+            <appender-ref ref="FILE_WARN"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </root>
 
-        <file>${LOG_PATH}/error.log</file>
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
+        <logger name="org.hibernate.SQL" level="DEBUG">
+            <appender-ref ref="FILE_HIBERNATE"/>
+        </logger>
+        <logger name="org.hibernate.type" level="TRACE">
+            <appender-ref ref="FILE_HIBERNATE"/>
+        </logger>
+    </springProfile>
 
-    <!-- 레벨 별 Appender 적용 -->
-    <root level="WARN">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE_WARN"/>
-        <appender-ref ref="FILE_ERROR"/>
-    </root>
+    <springProfile name="prod">
+        <include resource="file-info-appender.xml"/>
+        <include resource="file-warn-appender.xml"/>
+        <include resource="file-error-appender.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="FILE_INFO"/>
+            <appender-ref ref="FILE_WARN"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </root>
+        <!-- ERROR 슬랙 알림 추가 -->
+    </springProfile>
 </configuration>
