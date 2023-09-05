@@ -21,8 +21,6 @@ spring:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: trace
-  pattern:
-    console: "%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] ${PID} %highlight(%5level) %cyan(%logger) - %msg%n"
 
 oauth:
   kakao:
