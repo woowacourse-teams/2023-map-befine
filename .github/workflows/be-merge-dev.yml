@@ -24,7 +24,9 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        
+        submodules: recursive
+        token: ${{ secrets.SUBMODULE_ACCESS_TOKEN }}
+
     - name: 테스트 환경변수 설정
       run: |
         echo "TEST_JWT_SECRET_KEY=${{ secrets.TEST_JWT_SECRET_KEY }}" >> $GITHUB_ENV
