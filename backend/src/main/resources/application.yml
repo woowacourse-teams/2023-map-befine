@@ -21,8 +21,6 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
-  file:
-    path: ./log
 
 oauth:
   kakao:
