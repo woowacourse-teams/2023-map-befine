@@ -34,18 +34,17 @@
         </logger>
     </springProfile>
 
-    <!-- 슬랙 알림 appender는 웹훅 URI을 가져와야 하므로 서브모듈 적용 이후 수정하며 활성화시키겠습니다. -->
     <springProfile name="prod">
         <include resource="file-info-appender.xml"/>
         <include resource="file-warn-appender.xml"/>
         <include resource="file-error-appender.xml"/>
-<!--        <include resource="slack-error-appender.xml"/>-->
+        <include resource="slack-error-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="FILE_INFO"/>
             <appender-ref ref="FILE_WARN"/>
             <appender-ref ref="FILE_ERROR"/>
-<!--            <appender-ref ref="SLACK_ERROR"/>-->
+            <appender-ref ref="SLACK_ERROR"/>
         </root>
     </springProfile>
 </configuration>
