@@ -75,6 +75,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   return (
     <Wrapper $layoutWidth={$layoutWidth}>
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={goToHome}
         tabIndex={10}
         ref={firstElement}
@@ -90,9 +91,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} $layoutWidth={$layoutWidth} />
-
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={goToSeeTogether}
         tabIndex={10}
         ref={secondElement}
@@ -109,9 +109,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         <SeeTogetherCounter />
       </IconWrapper>
 
-      <IconSpace size={7} $layoutWidth={$layoutWidth} />
-
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={onClickAddMapOrPin}
         tabIndex={10}
         ref={thirdElement}
@@ -127,9 +126,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} $layoutWidth={$layoutWidth} />
-
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={goToFavorite}
         tabIndex={11}
         ref={fourElement}
@@ -145,9 +143,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} $layoutWidth={$layoutWidth} />
-
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={goToProfile}
         tabIndex={11}
         ref={FifthElement}
@@ -193,28 +190,33 @@ const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
   justify-content: ${({ $layoutWidth }) =>
     $layoutWidth === '100vw' ? 'center' : 'space-around'};
   align-items: center;
+
+  @media (max-width: 480px) {
+    justify-content: space-around;
+  }
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<{ $layoutWidth: '100vw' | '372px' }>`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 52px;
   cursor: pointer;
-`;
+  margin-right: ${({ $layoutWidth }) =>
+    $layoutWidth === '100vw' ? '48px' : '0'};
 
-const IconSpace = styled(Space)<{ $layoutWidth: '100vw' | '372px' }>`
-  display: ${({ $layoutWidth }) =>
-    $layoutWidth === '100vw' ? 'block' : 'none'};
+  &:last-of-type {
+    margin-right: 0;
+  }
+
+  @media (max-width: 480px) {
+    margin-right: 0;
+  }
 `;
 
 const RouteButton = styled(Button)`
   box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.5);
 `;
 
-const ModalWrapper = styled(Flex)`
-  width: 100%;
-  height: 100%;
-`;
 export default Navbar;
