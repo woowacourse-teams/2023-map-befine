@@ -113,10 +113,9 @@ const PointerText = styled(Text)`
 
 const TopicsWrapper = styled.ul`
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
-  height: 300px;
-  overflow: hidden;
 `;
 
 export default TopicCardContainer;

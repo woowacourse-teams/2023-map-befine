@@ -40,49 +40,55 @@ const Home = () => {
   }, []);
 
   return (
-    <>
-      <Wrapper position="relative">
-        <Space size={5} />
-        <Suspense fallback={<TopicCardContainerSkeleton />}>
-          <TopicListContainer
-            url="/topics/bests"
-            containerTitle="인기 급상승할 지도?"
-            containerDescription="즐겨찾기가 많이 된 지도를 확인해보세요."
-            routeWhenSeeAll={goToPopularTopics}
-          />
-        </Suspense>
+    <Wrapper position="relative" as="article">
+      <Space size={5} />
+      <Suspense fallback={<TopicCardContainerSkeleton />}>
+        <TopicListContainer
+          url="/topics/bests"
+          containerTitle="인기 급상승할 지도?"
+          containerDescription="즐겨찾기가 많이 된 지도를 확인해보세요."
+          routeWhenSeeAll={goToPopularTopics}
+        />
+      </Suspense>
 
-        <Space size={9} />
+      <Space size={9} />
 
-        <Suspense fallback={<TopicCardContainerSkeleton />}>
-          <TopicListContainer
-            url="/topics/newest"
-            containerTitle="새로울 지도?"
-            containerDescription="방금 새로운 핀이 추가된 지도를 확인해보세요."
-            routeWhenSeeAll={goToLatestTopics}
-          />
-        </Suspense>
+      <Suspense fallback={<TopicCardContainerSkeleton />}>
+        <TopicListContainer
+          url="/topics/newest"
+          containerTitle="새로울 지도?"
+          containerDescription="방금 핀이 추가된 지도를 확인해보세요."
+          routeWhenSeeAll={goToLatestTopics}
+        />
+      </Suspense>
 
-        <Space size={9} />
+      <Space size={9} />
 
-        <Suspense fallback={<TopicCardContainerSkeleton />}>
-          <TopicListContainer
-            url="/topics"
-            containerTitle="모두일 지도?"
-            containerDescription="괜찮을지도의 모든 지도를 확인해보세요."
-            routeWhenSeeAll={goToNearByMeTopics}
-          />
-        </Suspense>
+      <Suspense fallback={<TopicCardContainerSkeleton />}>
+        <TopicListContainer
+          url="/topics"
+          containerTitle="모두일 지도?"
+          containerDescription="괜찮을지도의 모든 지도를 확인해보세요."
+          routeWhenSeeAll={goToNearByMeTopics}
+        />
+      </Suspense>
 
-        <Space size={5} />
-      </Wrapper>
-    </>
+      <Space size={5} />
+    </Wrapper>
   );
 };
 
 const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
+
+  @media (max-width: 1036px) {
+    width: calc(100vw - 40px);
+  }
+
+  @media (max-width: 372px) {
+    width: 332px;
+  }
 `;
 
 export default Home;
