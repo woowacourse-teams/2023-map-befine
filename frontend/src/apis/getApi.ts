@@ -5,6 +5,11 @@
 
 import { DEFAULT_PROD_URL } from '../constants';
 
+const API_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : DEFAULT_PROD_URL;
+
 interface Headers {
   'content-type': string;
   [key: string]: string;
