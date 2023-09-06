@@ -1,13 +1,14 @@
 import Space from '../components/common/Space';
 import Box from '../components/common/Box';
 import useNavigator from '../hooks/useNavigator';
-import { styled } from 'styled-components';
+import { css, styled } from 'styled-components';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { Suspense, lazy, useContext, useEffect } from 'react';
 import { MarkerContext } from '../context/MarkerContext';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import { fullScreenResponsive } from '../constants/responsive';
 
 const TopicListContainer = lazy(
   () => import('../components/TopicCardContainer'),
@@ -82,13 +83,7 @@ const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
 
-  @media (max-width: 1036px) {
-    width: calc(100vw - 40px);
-  }
-
-  @media (max-width: 372px) {
-    width: 332px;
-  }
+  ${fullScreenResponsive()}
 `;
 
 export default Home;
