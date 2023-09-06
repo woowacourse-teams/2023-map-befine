@@ -8,6 +8,7 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { Suspense, lazy } from 'react';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import useNavigator from '../hooks/useNavigator';
+import { fullScreenResponsive } from '../constants/responsive';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
@@ -45,6 +46,8 @@ const SeeAllTopics = () => {
 const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
+
+  ${fullScreenResponsive()}
 `;
 
 export default SeeAllTopics;
