@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
 
-export const fullScreenResponsive = () => {
+export const setFullScreenResponsive = () => {
   return css`
     @media (max-width: 1076px) {
       width: 684px;

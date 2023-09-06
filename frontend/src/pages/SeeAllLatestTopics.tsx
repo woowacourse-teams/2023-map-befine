@@ -8,7 +8,7 @@ import Box from '../components/common/Box';
 import { Suspense, lazy } from 'react';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import useNavigator from '../hooks/useNavigator';
-import { fullScreenResponsive } from '../constants/responsive';
+import { setFullScreenResponsive } from '../constants/responsive';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
@@ -47,7 +47,7 @@ const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
 
-  ${fullScreenResponsive()}
+  ${setFullScreenResponsive()}
 `;
 
 export default SeeAllLatestTopics;

@@ -8,7 +8,7 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { Suspense, lazy, useContext, useEffect } from 'react';
 import { MarkerContext } from '../context/MarkerContext';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { fullScreenResponsive } from '../constants/responsive';
+import { setFullScreenResponsive } from '../constants/responsive';
 
 const TopicListContainer = lazy(
   () => import('../components/TopicCardContainer'),
@@ -83,7 +83,7 @@ const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
 
-  ${fullScreenResponsive()}
+  ${setFullScreenResponsive()}
 `;
 
 export default Home;
