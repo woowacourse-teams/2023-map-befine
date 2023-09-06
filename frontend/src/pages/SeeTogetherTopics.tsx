@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { SIDEBAR } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
@@ -14,15 +14,15 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { deleteApi } from '../apis/deleteApi';
 import useToast from '../hooks/useToast';
 import { getApi } from '../apis/getApi';
-import { TopicType } from '../types/Topic';
+import { TopicCardProps } from '../types/Topic';
 
 const SeeTogetherTopics = () => {
   const { routePage } = useNavigator();
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { navbarHighlights } = useSetNavbarHighlight('seeTogether');
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
   const { showToast } = useToast();
+  useSetNavbarHighlight('seeTogether');
 
   const goToHome = () => {
     routePage('/');
@@ -30,7 +30,7 @@ const SeeTogetherTopics = () => {
 
   const setTopicsFromServer = async () => {
     try {
-      const topics = await getApi<TopicType[]>('default', '/members/my/atlas');
+      const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
 
       setSeeTogetherTopics(topics);
     } catch {
@@ -93,6 +93,7 @@ const SeeTogetherTopics = () => {
       {seeTogetherTopics.map((topic, idx) => (
         <ul key={topic.id}>
           <TopicCard
+            cardType="default"
             id={topic.id}
             image={topic.image}
             name={topic.name}
@@ -102,7 +103,7 @@ const SeeTogetherTopics = () => {
             updatedAt={topic.updatedAt}
             isInAtlas={topic.isInAtlas}
             isBookmarked={topic.isBookmarked}
-            setTopicsFromServer={setTopicsFromServer}
+            getTopicsFromServer={setTopicsFromServer}
           />
           {idx !== seeTogetherTopics.length - 1 ? <Space size={4} /> : <></>}
         </ul>

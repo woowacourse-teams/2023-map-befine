@@ -9,7 +9,7 @@ const Loader = () => {
 };
 
 const Rotate = keyframes`
- 0% {
+  0% {
     transform: rotate(0deg);
   }
   100% {

@@ -5,11 +5,11 @@ import {
   createContext,
   useState,
 } from 'react';
-import { TopicType } from '../types/Topic';
+import { TopicCardProps } from '../types/Topic';
 
 interface SeeTogetherContextProps {
-  seeTogetherTopics: TopicType[] | null;
-  setSeeTogetherTopics: Dispatch<SetStateAction<TopicType[] | null>>;
+  seeTogetherTopics: TopicCardProps[] | null;
+  setSeeTogetherTopics: Dispatch<SetStateAction<TopicCardProps[] | null>>;
 }
 
 interface SeeTogetherProviderProps {
@@ -23,7 +23,7 @@ export const SeeTogetherContext = createContext<SeeTogetherContextProps>({
 
 const SeeTogetherProvider = ({ children }: SeeTogetherProviderProps) => {
   const [seeTogetherTopics, setSeeTogetherTopics] = useState<
-    TopicType[] | null
+    TopicCardProps[] | null
   >(null);
 
   return (

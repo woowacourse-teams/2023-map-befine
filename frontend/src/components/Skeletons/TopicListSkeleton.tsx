@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
-import TopicCardSkeleton from '../TopicCardSkeleton';
+import TopicCardSkeleton from './TopicCardSkeleton';
 
-const TopicCardListSkeleton = () => {
+const TopicCardContainerSkeleton = () => {
   return (
     <Wrapper>
       <TopicCardSkeleton />
@@ -22,4 +22,4 @@ const Wrapper = styled.section`
   height: 300px;
 `;
 
-export default TopicCardListSkeleton;
+export default TopicCardContainerSkeleton;

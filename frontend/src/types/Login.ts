@@ -1,4 +1,4 @@
-export interface Member {
+export interface MemberProps {
   id: number;
   nickName: string;
   email: string;
@@ -6,7 +6,7 @@ export interface Member {
   updatedAt: string;
 }
 
-export interface LoginResponse {
+export interface LoginResponseProps {
   accessToken: string;
-  member: Member;
+  member: MemberProps;
 }

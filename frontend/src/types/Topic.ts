@@ -1,6 +1,6 @@
-import { PinType } from './Pin';
+import { PinProps } from './Pin';
 
-export interface TopicType {
+export interface TopicCardProps {
   id: number;
   name: string;
   image: string;
@@ -8,11 +8,11 @@ export interface TopicType {
   pinCount: number;
   bookmarkCount: number;
   updatedAt: string;
-  isInAtlas: false;
-  isBookmarked: false;
+  isInAtlas: boolean;
+  isBookmarked: boolean;
 }
 
-export interface TopicDetailType {
+export interface TopicDetailProps {
   id: number;
   image: string;
   name: string;
@@ -21,14 +21,15 @@ export interface TopicDetailType {
   pinCount: number;
   bookmarkCount: number;
   updatedAt: string;
-  isInAtlas: false;
-  isBookmarked: false;
-  pins: PinType[];
+  isInAtlas: boolean;
+  isBookmarked: boolean;
+  pins: PinProps[];
 }
 
-export interface ModalMyTopicType {
+export interface ModalTopicCardProps {
   id: number;
   name: string;
+  creator: string;
   image: string;
   pinCount: number;
   bookmarkCount: number;

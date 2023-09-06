@@ -44,7 +44,7 @@ const Layout = ({ children }: LayoutProps) => {
     const map = new Tmapv3.Map(mapContainer.current, {
       center: new Tmapv3.LatLng(37.5154, 127.1029),
     });
-    map.setZoomLimit(7, 17);
+    map.setZoomLimit(7, 18);
     setMap(map);
     return () => {
       map.destroy();
