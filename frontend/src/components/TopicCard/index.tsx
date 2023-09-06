@@ -3,7 +3,7 @@ import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
 import Image from '../common/Image';
-import { SyntheticEvent } from 'react';
+import { SyntheticEvent, useContext } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
@@ -15,14 +15,23 @@ import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
-import { TopicType } from '../../types/Topic';
+import { TopicCardProps } from '../../types/Topic';
 import useKeyDown from '../../hooks/useKeyDown';
+import { ModalContext } from '../../context/ModalContext';
 
-interface TopicCardProps extends TopicType {
-  setTopicsFromServer: () => void;
+interface OnClickDesignatedProps {
+  topicId: number;
+  topicName: string;
+}
+
+interface TopicCardExtendedProps extends TopicCardProps {
+  cardType: 'default' | 'modal';
+  onClickDesignated?: ({ topicId, topicName }: OnClickDesignatedProps) => void;
+  getTopicsFromServer?: () => void;
 }
 
 const TopicCard = ({
+  cardType,
   id,
   image,
   creator,
@@ -32,19 +41,29 @@ const TopicCard = ({
   bookmarkCount,
   isInAtlas,
   isBookmarked,
-  setTopicsFromServer,
-}: TopicCardProps) => {
+  onClickDesignated,
+  getTopicsFromServer,
+}: TopicCardExtendedProps) => {
   const { routePage } = useNavigator();
+  const { closeModal } = useContext(ModalContext);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
 
   const goToSelectedTopic = () => {
     routePage(`/topics/${id}`, [id]);
   };
 
+  const addPinToThisTopic = () => {
+    if (onClickDesignated) {
+      onClickDesignated({ topicId: id, topicName: name });
+    }
+
+    closeModal('newPin');
+  };
+
   return (
     <Wrapper
       data-cy="topic-card"
-      onClick={goToSelectedTopic}
+      onClick={cardType === 'default' ? goToSelectedTopic : addPinToThisTopic}
       ref={elementRef}
       onKeyDown={onElementKeyDown}
     >
@@ -116,22 +135,24 @@ const TopicCard = ({
             </Flex>
           </Flex>
 
-          <ButtonWrapper>
-            <AddSeeTogether
-              isInAtlas={isInAtlas}
-              id={id}
-              setTopicsFromServer={setTopicsFromServer}
-            >
-              {isInAtlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
-            </AddSeeTogether>
-            <AddFavorite
-              isBookmarked={isBookmarked}
-              id={id}
-              setTopicsFromServer={setTopicsFromServer}
-            >
-              {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
-            </AddFavorite>
-          </ButtonWrapper>
+          {cardType === 'default' && getTopicsFromServer && (
+            <ButtonWrapper>
+              <AddSeeTogether
+                isInAtlas={isInAtlas}
+                id={id}
+                getTopicsFromServer={getTopicsFromServer}
+              >
+                {isInAtlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
+              </AddSeeTogether>
+              <AddFavorite
+                isBookmarked={isBookmarked}
+                id={id}
+                getTopicsFromServer={getTopicsFromServer}
+              >
+                {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
+              </AddFavorite>
+            </ButtonWrapper>
+          )}
         </Box>
       </Flex>
     </Wrapper>

@@ -6,7 +6,7 @@ import Button from '../components/common/Button';
 import { postApi } from '../apis/postApi';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../apis/getApi';
-import { TopicType } from '../types/Topic';
+import { TopicCardProps } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { NewPinFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
@@ -23,6 +23,7 @@ import { ModalContext } from '../context/ModalContext';
 import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import ModalMyTopicList from '../components/ModalMyTopicList';
+import { getMapApi } from '../apis/getMapApi';
 
 type NewPinFormValueType = Pick<
   NewPinFormProps,
@@ -116,7 +117,7 @@ const NewPin = () => {
       if (!topic) {
         //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
         postTopicId = selectedTopic?.topicId;
-        postName = selectedTopic?.topicTitle;
+        postName = selectedTopic?.topicName;
       }
 
       if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
@@ -144,8 +145,7 @@ const NewPin = () => {
         const addr = data.roadAddress; // 주소 변수
 
         //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getApi<any>(
-          'tMap',
+        const { ConvertAdd } = await getMapApi<any>(
           `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
         );
         const lat = ConvertAdd.oldLat;
@@ -165,16 +165,13 @@ const NewPin = () => {
   useEffect(() => {
     const getTopicId = async () => {
       if (topicId && topicId.split(',').length === 1) {
-        const data = await getApi<TopicType>('default', `/topics/${topicId}`);
+        const data = await getApi<TopicCardProps>(`/topics/${topicId}`);
 
         setTopic(data);
       }
 
       if (topicId && topicId.split(',').length > 1) {
-        const topics = await getApi<any>(
-          'default',
-          `/topics/ids?ids=${topicId}`,
-        );
+        const topics = await getApi<any>(`/topics/ids?ids=${topicId}`);
 
         setTopic(topics);
       }
@@ -218,8 +215,8 @@ const NewPin = () => {
             >
               {topic?.name
                 ? topic?.name
-                : selectedTopic?.topicTitle
-                ? selectedTopic?.topicTitle
+                : selectedTopic?.topicName
+                ? selectedTopic?.topicName
                 : '지도를 선택해주세요.'}
             </Button>
           </section>
@@ -325,9 +322,9 @@ const ModalContentsWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: white;
-
-  text-align: center;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow: scroll;
 `;
 

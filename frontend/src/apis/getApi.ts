@@ -11,31 +11,31 @@ const API_URL =
     : DEFAULT_PROD_URL;
 
 interface Headers {
-  'Content-Type': string;
+  'content-type': string;
   [key: string]: string;
 }
-export const getApi = async <T>(
-  type: 'tMap' | 'default' | 'login',
-  url: string,
-): Promise<T> => {
-  const apiUrl = type === 'tMap' || type === 'login' ? url : `${API_URL + url}`;
 
+export const getApi = async <T>(url: string) => {
+  const apiUrl = `${DEFAULT_PROD_URL + url}`;
   const userToken = localStorage.getItem('userToken');
   const headers: Headers = {
-    'Content-Type': 'application/json',
+    'content-type': 'application/json',
   };
+
   if (userToken) {
     headers['Authorization'] = `Bearer ${userToken}`;
   }
+
   const response = await fetch(apiUrl, {
     method: 'GET',
-    headers: headers,
+    headers,
   });
 
-  const responseData: T = await response.json();
   if (response.status >= 400) {
-    //todo: status 상태별로 로그인 토큰 유효 검증
-    throw new Error('API 요청에 실패했습니다.');
+    throw new Error('[SERVER] GET 요청에 실패했습니다.');
   }
+
+  const responseData: T = await response.json();
+
   return responseData;
 };

@@ -14,7 +14,7 @@ const API_URL =
     ? process.env.REACT_APP_API_DEFAULT_PROD
     : 'http://localhost:3000';
 
-const LoginError = () => {
+const AskLogin = () => {
   const { routePage } = useNavigator();
   const { width } = useSetLayoutWidth(FULLSCREEN);
 
@@ -71,4 +71,4 @@ const NotFoundButton = styled(Button)`
   border: 1px solid ${({ theme }) => theme.color.white};
 `;
 
-export default LoginError;
+export default AskLogin;

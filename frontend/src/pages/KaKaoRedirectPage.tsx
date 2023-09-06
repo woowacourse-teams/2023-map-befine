@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getApi } from '../apis/getApi';
 import { keyframes, styled } from 'styled-components';
 import useNavigator from '../hooks/useNavigator';
 import { DEFAULT_PROD_URL } from '../constants';
+import { getLoginApi } from '../apis/getLoginApi';
 
 // const API_URL =
 //   process.env.NODE_ENV === 'production'
@@ -13,7 +13,7 @@ import { DEFAULT_PROD_URL } from '../constants';
 export const handleOAuthKakao = async (code: string) => {
   try {
     const url = `${DEFAULT_PROD_URL}/oauth/login/kakao?code=${code}`;
-    const data = await getApi<any>('login', url);
+    const data = await getLoginApi<any>(url);
 
     localStorage.setItem('userToken', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.member));

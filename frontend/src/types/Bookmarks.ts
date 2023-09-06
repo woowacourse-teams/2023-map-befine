@@ -1,4 +1,4 @@
-export interface BookmarksType {
+export interface BookmarksProps {
   id: number;
   name: string;
   image: string;

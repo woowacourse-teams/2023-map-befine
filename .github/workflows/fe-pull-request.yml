@@ -1,13 +1,15 @@
 name: Frontend CI For Test Validation
-# 어떤 이벤트가 발생하면 실행할지 결정
+
 on:
-  #pull request open과 reopen 시 실행한다.
+  # pull request open과 reopen 시 실행한다.
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop-FE]
     paths: frontend/**
+
 defaults:
   run:
     working-directory: ./frontend
+
 jobs:
   jest:
     runs-on: ubuntu-22.04
@@ -19,10 +21,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "18"
+          node-version: '18'
 
       - name: Install node modules
         run: npm install
 
       - name: Run Jest test
         run: npm run test
+
+      - name: Start npm
+        run: npm run dev
+
+      - name: Run Cypress
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm run cypress

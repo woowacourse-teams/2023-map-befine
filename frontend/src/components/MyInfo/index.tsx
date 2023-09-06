@@ -4,7 +4,7 @@ import Box from '../common/Box';
 import Text from '../common/Text';
 import Space from '../common/Space';
 import { useState } from 'react';
-import { MyInfoType } from '../../types/MyInfo';
+import { ProfileProps } from '../../types/Profile';
 import UpdateMyInfo from './UpdateMyInfo';
 
 const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -12,7 +12,7 @@ const user = JSON.parse(localStorage.getItem('user') || '{}');
 const MyInfo = () => {
   const [isThereImg, setIsThereImg] = useState<boolean>(true);
   const [isModifyMyInfo, setIsModifyMyInfo] = useState<boolean>(false);
-  const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<MyInfoType>({
+  const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<ProfileProps>({
     name: user.nickName,
     email: user.email,
   });
@@ -39,7 +39,7 @@ const MyInfo = () => {
       <MyInfoImg src={user.imageUrl} />
       <Space size={7} />
       <Box>
-        <Text color="black" $fontSize="default" $fontWeight="normal">
+        <Text color="black" $fontSize="medium" $fontWeight="bold">
           {user.nickName}
         </Text>
         <Text color="black" $fontSize="small" $fontWeight="normal">
