@@ -89,8 +89,6 @@ const SelectedTopic = () => {
   useEffect(() => {
     getAndSetDataFromServer();
 
-    console.log(location);
-
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
@@ -113,67 +111,66 @@ const SelectedTopic = () => {
   if (!topicId) return <></>;
 
   return (
-    <>
-      <Flex
-        width={`calc(${width} - ${LAYOUT_PADDING})`}
-        $flexDirection="column"
-      >
-        <Space size={3} />
-        {tags.length > 0 && (
-          <PullPin
-            tags={tags}
-            confirmButton="뽑아오기"
-            onClickConfirm={onClickConfirm}
-            onClickClose={onTagCancel}
-          />
-        )}
-        <Suspense fallback={<PinsOfTopicSkeleton />}>
-          {topicDetails.map((topicDetail, idx) => (
-            <Fragment key={topicDetail.id}>
-              <PinsOfTopic
-                topicId={topicId}
-                idx={idx}
-                topicDetail={topicDetail}
-                setSelectedPinId={setSelectedPinId}
-                setIsEditPinDetail={setIsEditPinDetail}
-                setTopicsFromServer={getAndSetDataFromServer}
-              />
-              {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
-            </Fragment>
-          ))}
-        </Suspense>
+    <Flex
+      width={`calc(${width} - ${LAYOUT_PADDING})`}
+      $flexDirection="column"
+      as="section"
+    >
+      <Space size={3} />
+      {tags.length > 0 && (
+        <PullPin
+          tags={tags}
+          confirmButton="뽑아오기"
+          onClickConfirm={onClickConfirm}
+          onClickClose={onTagCancel}
+        />
+      )}
+      <Suspense fallback={<PinsOfTopicSkeleton />}>
+        {topicDetails.map((topicDetail, idx) => (
+          <Fragment key={topicDetail.id}>
+            <PinsOfTopic
+              topicId={topicId}
+              idx={idx}
+              topicDetail={topicDetail}
+              setSelectedPinId={setSelectedPinId}
+              setIsEditPinDetail={setIsEditPinDetail}
+              setTopicsFromServer={getAndSetDataFromServer}
+            />
+            {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
+          </Fragment>
+        ))}
+      </Suspense>
 
-        {selectedPinId && (
-          <>
-            <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>
-              ◀
-            </ToggleButton>
-            <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
-              <Flex
-                $backgroundColor="white"
-                width={width}
-                height="100vh"
-                overflow="auto"
-                position="absolute"
-                left={width}
-                top="0px"
-                padding={4}
-                $flexDirection="column"
-                $borderLeft={`1px solid ${theme.color.gray}`}
-                $zIndex={1}
-              >
-                <PinDetail
-                  topicId={topicId}
-                  pinId={selectedPinId}
-                  isEditPinDetail={isEditPinDetail}
-                  setIsEditPinDetail={setIsEditPinDetail}
-                />
-              </Flex>
-            </PinDetailWrapper>
-          </>
-        )}
-      </Flex>
-    </>
+      {selectedPinId && (
+        <>
+          <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>
+            ◀
+          </ToggleButton>
+          <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
+            <Flex
+              $backgroundColor="white"
+              width={width}
+              height="100vh"
+              overflow="auto"
+              position="absolute"
+              left={width}
+              top="0px"
+              padding={4}
+              $flexDirection="column"
+              $borderLeft={`1px solid ${theme.color.gray}`}
+              $zIndex={1}
+            >
+              <PinDetail
+                topicId={topicId}
+                pinId={selectedPinId}
+                isEditPinDetail={isEditPinDetail}
+                setIsEditPinDetail={setIsEditPinDetail}
+              />
+            </Flex>
+          </PinDetailWrapper>
+        </>
+      )}
+    </Flex>
   );
 };
 
