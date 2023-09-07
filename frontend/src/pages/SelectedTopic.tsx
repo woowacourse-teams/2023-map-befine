@@ -147,26 +147,13 @@ const SelectedTopic = () => {
             ◀
           </ToggleButton>
           <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
-            <Flex
-              $backgroundColor="white"
+            <PinDetail
               width={width}
-              height="100vh"
-              overflow="auto"
-              position="absolute"
-              left={width}
-              top="0px"
-              padding={4}
-              $flexDirection="column"
-              $borderLeft={`1px solid ${theme.color.gray}`}
-              $zIndex={1}
-            >
-              <PinDetail
-                topicId={topicId}
-                pinId={selectedPinId}
-                isEditPinDetail={isEditPinDetail}
-                setIsEditPinDetail={setIsEditPinDetail}
-              />
-            </Flex>
+              topicId={topicId}
+              pinId={selectedPinId}
+              isEditPinDetail={isEditPinDetail}
+              setIsEditPinDetail={setIsEditPinDetail}
+            />
           </PinDetailWrapper>
         </>
       )}
@@ -180,7 +167,9 @@ const PinDetailWrapper = styled.div`
   }
 `;
 
-const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
+const ToggleButton = styled.button<{
+  $isCollapsed: boolean;
+}>`
   position: absolute;
   top: 50%;
   left: 744px;
@@ -204,6 +193,10 @@ const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
 
   &:hover {
     background-color: #f5f5f5;
+  }
+
+  @media (max-width: 1076px) {
+    display: none;
   }
 `;
 

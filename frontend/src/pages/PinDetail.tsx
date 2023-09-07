@@ -17,6 +17,7 @@ import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 
 interface PinDetailProps {
+  width: '372px' | '100vw';
   topicId: string;
   pinId: number;
   isEditPinDetail: boolean;
@@ -26,6 +27,7 @@ interface PinDetailProps {
 const userToken = localStorage.getItem('userToken');
 
 const PinDetail = ({
+  width,
   topicId,
   pinId,
   isEditPinDetail,
@@ -110,7 +112,7 @@ const PinDetail = ({
     );
 
   return (
-    <>
+    <Wrapper $mediaWidth={width}>
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
@@ -184,6 +186,8 @@ const PinDetail = ({
         </Text>
       </Flex>
 
+      <Space size={7} />
+
       <ButtonsWrapper>
         <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
           내 지도에 저장하기
@@ -213,9 +217,30 @@ const PinDetail = ({
           <AddToMyTopicList pin={pin} />
         </ModalContentsWrapper>
       </Modal>
-    </>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.section<{ $mediaWidth: '372px' | '100vw' }>`
+  display: flex;
+  flex-direction: column;
+  width: ${({ $mediaWidth }) => $mediaWidth};
+  height: 100vh;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  left: ${({ $mediaWidth }) => $mediaWidth};
+  padding: ${({ theme }) => theme.spacing[4]};
+  border-left: 1px solid ${({ theme }) => theme.color.gray};
+  background-color: ${({ theme }) => theme.color.white};
+  z-index: 2;
+
+  @media (max-width: 1076px) {
+    margin-top: 50vh;
+    height: ${({ $mediaWidth }) => $mediaWidth === '372px' && '50vh'};
+    left: ${({ $mediaWidth }) => $mediaWidth === '372px' && 0};
+  }
+`;
 
 const PinDetailImgContainer = styled(Flex)`
   box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
@@ -251,8 +276,6 @@ const ButtonsWrapper = styled.div`
   align-items: center;
   width: 332px;
   height: 48px;
-  position: fixed;
-  bottom: 24px;
 `;
 
 export default PinDetail;
