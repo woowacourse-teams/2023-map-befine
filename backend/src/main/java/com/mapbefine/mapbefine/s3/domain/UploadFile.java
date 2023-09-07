@@ -73,9 +73,9 @@ public class UploadFile implements MultipartFile {
 
     @Override
     public void transferTo(File dest) throws IOException, IllegalStateException {
-        FileOutputStream fileOutputStream = new FileOutputStream(dest);
-        fileOutputStream.write(bytes);
-        fileOutputStream.close();
+        try (FileOutputStream fileOutputStream = new FileOutputStream(dest)) {
+            fileOutputStream.write(bytes);
+        }
     }
 
 }
