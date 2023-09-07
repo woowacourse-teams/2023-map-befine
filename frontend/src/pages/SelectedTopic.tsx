@@ -89,9 +89,13 @@ const SelectedTopic = () => {
   useEffect(() => {
     getAndSetDataFromServer();
 
+    console.log(location);
+
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
+    } else {
+      setSelectedPinId(null);
     }
 
     setIsOpen(true);
