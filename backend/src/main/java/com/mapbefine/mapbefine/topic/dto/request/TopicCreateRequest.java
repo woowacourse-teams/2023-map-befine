@@ -3,10 +3,11 @@ package com.mapbefine.mapbefine.topic.dto.request;
 import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public record TopicCreateRequest(
         String name,
-        String image,
+        MultipartFile image,
         String description,
         Publicity publicity,
         PermissionType permissionType,
