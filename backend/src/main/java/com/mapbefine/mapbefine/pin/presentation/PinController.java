@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -93,7 +94,7 @@ public class PinController {
 
     @LoginRequired
     @PostMapping("/images")
-    public ResponseEntity<Void> addImage(AuthMember member, @RequestBody PinImageCreateRequest request) {
+    public ResponseEntity<Void> addImage(AuthMember member, @RequestPart PinImageCreateRequest request) {
         pinCommandService.addImage(member, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
