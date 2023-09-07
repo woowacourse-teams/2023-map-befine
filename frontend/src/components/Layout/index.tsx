@@ -6,7 +6,7 @@ import CoordinatesProvider from '../../context/CoordinatesContext';
 import MarkerProvider from '../../context/MarkerContext';
 import ToastProvider from '../../context/ToastContext';
 import Toast from '../Toast';
-import { styled } from 'styled-components';
+import { css, styled } from 'styled-components';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 import SeeTogetherProvider from '../../context/SeeTogetherContext';
 import Space from '../common/Space';
@@ -14,7 +14,6 @@ import Navbar from './Navbar';
 import ModalProvider from '../../context/ModalContext';
 import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
 import TagProvider from '../../context/TagContext';
-import InfoDefalutImg from '../../assets/InfoDefalutImg.svg';
 import Box from '../common/Box';
 
 type LayoutProps = {
@@ -33,10 +32,6 @@ const Layout = ({ children }: LayoutProps) => {
   const mapContainer = useRef(null);
   const { width } = useContext(LayoutWidthContext);
   const isLogined = localStorage.getItem('userToken');
-
-  const loginButtonClick = () => {
-    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
-  };
 
   const [map, setMap] = useState(null);
 
@@ -59,24 +54,22 @@ const Layout = ({ children }: LayoutProps) => {
             <MarkerProvider>
               <SeeTogetherProvider>
                 <TagProvider>
-                  <Flex height="100vh" width="100vw" overflow="hidden">
+                  <MediaWrapper $mediaWidth={width}>
                     <LayoutFlex
                       $flexDirection="column"
                       $minWidth={width}
                       height="100vh"
                       $backgroundColor="white"
+                      $mediaWidth={width}
                     >
-                      <Flex
-                        $justifyContent="space-between"
-                        padding="20px 20px 0 20px"
-                      >
+                      <LogoWrapper $mediaWidth={width}>
                         <Box>
                           <Logo />
-                          <Space size={3} />
+                          <Space size={2} />
                         </Box>
-                      </Flex>
+                      </LogoWrapper>
                       <Flex
-                        height="calc(100vh - 52px)"
+                        height="calc(100vh - 48px)"
                         $flexDirection="column"
                         overflow="auto"
                         padding="0 20px 20px 20px"
@@ -84,10 +77,11 @@ const Layout = ({ children }: LayoutProps) => {
                         {children}
                       </Flex>
                       <Navbar $layoutWidth={width} />
-                      <Toast />
                     </LayoutFlex>
+
                     <Map ref={mapContainer} map={map} $minWidth={width} />
-                  </Flex>
+                  </MediaWrapper>
+                  <Toast />
                 </TagProvider>
               </SeeTogetherProvider>
             </MarkerProvider>
@@ -98,8 +92,41 @@ const Layout = ({ children }: LayoutProps) => {
   );
 };
 
-const LayoutFlex = styled(Flex)`
+const LogoWrapper = styled.section<{ $mediaWidth: '372px' | '100vw' }>`
+  width: 372px;
+  display: flex;
+  padding: 12px 20px 0 20px;
+
+  @media (max-width: 1076px) {
+    ${({ $mediaWidth }) =>
+      $mediaWidth === '372px' &&
+      css`
+        width: 100vw;
+        background-color: white;
+        position: fixed;
+        top: 0;
+        z-index: 1;
+      `};
+  }
+`;
+
+const MediaWrapper = styled.section<{ $mediaWidth: '372px' | '100vw' }>`
+  display: flex;
+  width: 100vw;
+  overflow: hidden;
+
+  @media (max-width: 1076px) {
+    flex-direction: ${({ $mediaWidth }) =>
+      $mediaWidth === '372px' && 'column-reverse'};
+  }
+`;
+
+const LayoutFlex = styled(Flex)<{ $mediaWidth: '372px' | '100vw' }>`
   transition: all ease 0.3s;
+
+  @media (max-width: 1076px) {
+    height: ${({ $mediaWidth }) => $mediaWidth === '372px' && '50vh'};
+  }
 `;
 
 const MyInfoImg = styled.img`
