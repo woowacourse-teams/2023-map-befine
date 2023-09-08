@@ -185,7 +185,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
 
 const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
   width: 100%;
-  height: 64px;
+  min-height: 64px;
   display: flex;
   justify-content: ${({ $layoutWidth }) =>
     $layoutWidth === '100vw' ? 'center' : 'space-around'};
@@ -193,7 +193,7 @@ const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
   background-color: ${({ theme }) => theme.color.white};
   z-index: 2;
 
-  @media (max-width: 480px) {
+  @media (max-width: 1076px) {
     justify-content: space-around;
   }
 `;
@@ -212,7 +212,7 @@ const IconWrapper = styled.div<{ $layoutWidth: '100vw' | '372px' }>`
     margin-right: 0;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 1076px) {
     margin-right: 0;
   }
 `;
