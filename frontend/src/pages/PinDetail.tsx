@@ -112,7 +112,7 @@ const PinDetail = ({
     );
 
   return (
-    <Wrapper $mediaWidth={width} selectedPinId={pinId}>
+    <Wrapper $mediaWidth={width} $selectedPinId={pinId}>
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
@@ -225,7 +225,7 @@ const PinDetail = ({
 
 const Wrapper = styled.div<{
   $mediaWidth: '372px' | '100vw';
-  selectedPinId: number | null;
+  $selectedPinId: number | null;
 }>`
   display: flex;
   flex-direction: column;
@@ -244,7 +244,7 @@ const Wrapper = styled.div<{
     width: 50vw;
     margin-top: 50vh;
     height: ${({ $mediaWidth }) => $mediaWidth === '372px' && '50vh'};
-    left: ${({ selectedPinId }) => selectedPinId && '50vw'};
+    left: ${({ $selectedPinId }) => $selectedPinId && '50vw'};
   }
 
   @media (max-width: 744px) {

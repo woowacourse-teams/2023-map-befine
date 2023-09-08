@@ -111,7 +111,7 @@ const SelectedTopic = () => {
   return (
     <Wrapper
       width={`calc(${width} - ${LAYOUT_PADDING})`}
-      selectedPinId={selectedPinId}
+      $selectedPinId={selectedPinId}
     >
       <Space size={3} />
       {tags.length > 0 && (
@@ -160,12 +160,12 @@ const SelectedTopic = () => {
 
 const Wrapper = styled.section<{
   width: 'calc(100vw - 40px)' | 'calc(372px - 40px)';
-  selectedPinId: number | null;
+  $selectedPinId: number | null;
 }>`
   display: flex;
   flex-direction: column;
   width: ${({ width }) => width};
-  margin: ${({ selectedPinId }) => selectedPinId === null && '0 auto'};
+  margin: ${({ $selectedPinId }) => $selectedPinId === null && '0 auto'};
 
   @media (max-width: 1076px) {
     width: calc(50vw - 40px);
