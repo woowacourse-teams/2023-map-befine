@@ -1,3 +1,4 @@
+import { styled } from 'styled-components';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import { TopicDetailProps } from '../../types/Topic';
 import PinPreview from '../PinPreview';
@@ -21,7 +22,7 @@ const PinsOfTopic = ({
   setTopicsFromServer,
 }: PinsOfTopicProps) => {
   return (
-    <ul>
+    <Wrapper>
       <TopicInfo
         fullUrl={String(topicId)}
         topicId={topicId}
@@ -51,8 +52,10 @@ const PinsOfTopic = ({
           />
         </li>
       ))}
-    </ul>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.ul``;
 
 export default PinsOfTopic;

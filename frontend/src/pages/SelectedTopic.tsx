@@ -8,10 +8,8 @@ import {
 } from 'react';
 import { styled } from 'styled-components';
 import Space from '../components/common/Space';
-import Flex from '../components/common/Flex';
 import { TopicDetailProps } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
-import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../apis/getApi';
 import PullPin from '../components/PullPin';
@@ -111,10 +109,9 @@ const SelectedTopic = () => {
   if (!topicId) return <></>;
 
   return (
-    <Flex
+    <Wrapper
       width={`calc(${width} - ${LAYOUT_PADDING})`}
-      $flexDirection="column"
-      as="section"
+      selectedPinId={selectedPinId}
     >
       <Space size={3} />
       {tags.length > 0 && (
@@ -157,9 +154,28 @@ const SelectedTopic = () => {
           </PinDetailWrapper>
         </>
       )}
-    </Flex>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.section<{
+  width: 'calc(100vw - 40px)' | 'calc(372px - 40px)';
+  selectedPinId: number | null;
+}>`
+  display: flex;
+  flex-direction: column;
+  width: ${({ width }) => width};
+  margin: ${({ selectedPinId }) => selectedPinId === null && '0 auto'};
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: ${({ width }) => width};
+    margin: 0 auto;
+  }
+`;
 
 const PinDetailWrapper = styled.div`
   &.collapsedPinDetail {

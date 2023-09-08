@@ -75,7 +75,7 @@ const TopicInfo = ({
     >
       <TopicImage
         height="168px"
-        width="332px"
+        width="100%"
         src={topicImage}
         alt="토픽 이미지"
         $objectFit="cover"

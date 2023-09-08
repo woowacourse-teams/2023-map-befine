@@ -112,7 +112,7 @@ const PinDetail = ({
     );
 
   return (
-    <Wrapper $mediaWidth={width}>
+    <Wrapper $mediaWidth={width} selectedPinId={pinId}>
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
@@ -198,6 +198,8 @@ const PinDetail = ({
         </ShareButton>
       </ButtonsWrapper>
 
+      <Space size={7} />
+
       <Modal
         modalKey="addToMyTopicList"
         position="center"
@@ -221,7 +223,10 @@ const PinDetail = ({
   );
 };
 
-const Wrapper = styled.section<{ $mediaWidth: '372px' | '100vw' }>`
+const Wrapper = styled.div<{
+  $mediaWidth: '372px' | '100vw';
+  selectedPinId: number | null;
+}>`
   display: flex;
   flex-direction: column;
   width: ${({ $mediaWidth }) => $mediaWidth};
@@ -233,12 +238,23 @@ const Wrapper = styled.section<{ $mediaWidth: '372px' | '100vw' }>`
   padding: ${({ theme }) => theme.spacing[4]};
   border-left: 1px solid ${({ theme }) => theme.color.gray};
   background-color: ${({ theme }) => theme.color.white};
-  z-index: 2;
+  z-index: 1;
 
   @media (max-width: 1076px) {
+    width: 50vw;
     margin-top: 50vh;
     height: ${({ $mediaWidth }) => $mediaWidth === '372px' && '50vh'};
-    left: ${({ $mediaWidth }) => $mediaWidth === '372px' && 0};
+    left: ${({ selectedPinId }) => selectedPinId && '50vw'};
+  }
+
+  @media (max-width: 744px) {
+    border-left: 0;
+    left: calc((100vw - 372px) / 2);
+    width: ${({ $mediaWidth }) => $mediaWidth};
+  }
+
+  @media (max-width: 372px) {
+    left: 0;
   }
 `;
 

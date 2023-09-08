@@ -190,6 +190,8 @@ const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
   justify-content: ${({ $layoutWidth }) =>
     $layoutWidth === '100vw' ? 'center' : 'space-around'};
   align-items: center;
+  background-color: ${({ theme }) => theme.color.white};
+  z-index: 2;
 
   @media (max-width: 480px) {
     justify-content: space-around;
