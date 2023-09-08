@@ -82,6 +82,10 @@ const Wrapper = styled.div<ModalWrapperType>`
   top: ${({ top }) => top && top};
   left: ${({ left }) => left && left};
   z-index: 2;
+
+  @media (max-width: 1076px) {
+    left: 50%;
+  }
 `;
 
 const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
