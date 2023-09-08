@@ -12,7 +12,7 @@ import SeeTogetherProvider from '../../context/SeeTogetherContext';
 import Space from '../common/Space';
 import Navbar from './Navbar';
 import ModalProvider from '../../context/ModalContext';
-import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
+import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
 import TagProvider from '../../context/TagContext';
 import Box from '../common/Box';
 
@@ -31,7 +31,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { Tmapv3 } = window;
   const mapContainer = useRef(null);
   const { width } = useContext(LayoutWidthContext);
-  const isLogined = localStorage.getItem('userToken');
+  const { navbarHighlights } = useContext(NavbarHighlightsContext);
 
   const [map, setMap] = useState(null);
 
@@ -49,50 +49,52 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <ToastProvider>
       <ModalProvider>
-        <NavbarHighlightsProvider>
-          <CoordinatesProvider>
-            <MarkerProvider>
-              <SeeTogetherProvider>
-                <TagProvider>
-                  <MediaWrapper $mediaWidth={width}>
-                    <LayoutFlex
+        <CoordinatesProvider>
+          <MarkerProvider>
+            <SeeTogetherProvider>
+              <TagProvider>
+                <MediaWrapper
+                  $isAddPage={navbarHighlights.addMapOrPin}
+                  $mediaWidth={width}
+                >
+                  <LayoutFlex
+                    $flexDirection="column"
+                    $minWidth={width}
+                    height="100vh"
+                    $backgroundColor="white"
+                    $mediaWidth={width}
+                  >
+                    <LogoWrapper $mediaWidth={width}>
+                      <Box>
+                        <Logo />
+                        <Space size={2} />
+                      </Box>
+                    </LogoWrapper>
+                    <Flex
+                      height="calc(100vh - 48px)"
                       $flexDirection="column"
-                      $minWidth={width}
-                      height="100vh"
-                      $backgroundColor="white"
-                      $mediaWidth={width}
+                      overflow="auto"
+                      padding="0 20px 20px 20px"
                     >
-                      <LogoWrapper $mediaWidth={width}>
-                        <Box>
-                          <Logo />
-                          <Space size={2} />
-                        </Box>
-                      </LogoWrapper>
-                      <Flex
-                        height="calc(100vh - 48px)"
-                        $flexDirection="column"
-                        overflow="auto"
-                        padding="0 20px 20px 20px"
-                      >
-                        {children}
-                      </Flex>
-                      <Navbar $layoutWidth={width} />
-                    </LayoutFlex>
-
-                    <Map ref={mapContainer} map={map} $minWidth={width} />
-                  </MediaWrapper>
-                  <Toast />
-                </TagProvider>
-              </SeeTogetherProvider>
-            </MarkerProvider>
-          </CoordinatesProvider>
-        </NavbarHighlightsProvider>
+                      {children}
+                    </Flex>
+                    <Navbar $layoutWidth={width} />
+                  </LayoutFlex>
+                  <Map ref={mapContainer} map={map} $minWidth={width} />
+                </MediaWrapper>
+                <Toast />
+              </TagProvider>
+            </SeeTogetherProvider>
+          </MarkerProvider>
+        </CoordinatesProvider>
       </ModalProvider>
     </ToastProvider>
   );
 };
 
-const LogoWrapper = styled.section<{ $mediaWidth: '372px' | '100vw' }>`
+const LogoWrapper = styled.section<{
+  $mediaWidth: '372px' | '100vw';
+}>`
   width: 372px;
   display: flex;
   padding: 12px 20px 0 20px;
@@ -110,14 +112,19 @@ const LogoWrapper = styled.section<{ $mediaWidth: '372px' | '100vw' }>`
   }
 `;
 
-const MediaWrapper = styled.section<{ $mediaWidth: '372px' | '100vw' }>`
+const MediaWrapper = styled.section<{
+  $isAddPage: boolean;
+  $mediaWidth: '372px' | '100vw';
+}>`
   display: flex;
   width: 100vw;
   overflow: hidden;
 
   @media (max-width: 1076px) {
-    flex-direction: ${({ $mediaWidth }) =>
-      $mediaWidth === '372px' && 'column-reverse'};
+    flex-direction: ${({ $isAddPage, $mediaWidth }) => {
+      if ($isAddPage) return 'column';
+      if ($mediaWidth === '372px') return 'column-reverse';
+    }};
   }
 `;
 
@@ -126,14 +133,8 @@ const LayoutFlex = styled(Flex)<{ $mediaWidth: '372px' | '100vw' }>`
 
   @media (max-width: 1076px) {
     height: ${({ $mediaWidth }) => $mediaWidth === '372px' && '50vh'};
+    transition: none;
   }
-`;
-
-const MyInfoImg = styled.img`
-  width: 40px;
-  height: 40px;
-
-  border-radius: 50%;
 `;
 
 export default Layout;

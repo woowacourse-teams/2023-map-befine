@@ -184,7 +184,7 @@ const NewPin = () => {
     <>
       <form onSubmit={onSubmit}>
         <Space size={4} />
-        <Flex
+        <Wrapper
           width={`calc(${width} - ${LAYOUT_PADDING})`}
           $flexDirection="column"
         >
@@ -194,32 +194,30 @@ const NewPin = () => {
 
           <Space size={5} />
 
-          <section>
-            <Flex>
-              <Text color="black" $fontSize="default" $fontWeight="normal">
-                지도 선택
-              </Text>
-              <Space size={0} />
-              <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-                *
-              </Text>
-            </Flex>
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              지도 선택
+            </Text>
             <Space size={0} />
-            <Button
-              type="button"
-              variant="primary"
-              onClick={() => {
-                if (topic && topic.name) return;
-                openModal('newPin');
-              }}
-            >
-              {topic?.name
-                ? topic?.name
-                : selectedTopic?.topicName
-                ? selectedTopic?.topicName
-                : '지도를 선택해주세요.'}
-            </Button>
-          </section>
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
+              *
+            </Text>
+          </Flex>
+          <Space size={0} />
+          <Button
+            type="button"
+            variant="primary"
+            onClick={() => {
+              if (topic && topic.name) return;
+              openModal('newPin');
+            }}
+          >
+            {topic?.name
+              ? topic?.name
+              : selectedTopic?.topicName
+              ? selectedTopic?.topicName
+              : '지도를 선택해주세요.'}
+          </Button>
 
           <Space size={5} />
 
@@ -239,27 +237,25 @@ const NewPin = () => {
 
           <Space size={1} />
 
-          <section>
-            <Flex>
-              <Text color="black" $fontSize="default" $fontWeight="normal">
-                장소 위치
-              </Text>
-              <Space size={0} />
-              <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-                *
-              </Text>
-            </Flex>
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              장소 위치
+            </Text>
             <Space size={0} />
-            <Input
-              name="address"
-              readOnly
-              value={clickedCoordinate.address}
-              onClick={onClickAddressInput}
-              onKeyDown={onClickAddressInput}
-              tabIndex={2}
-              placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
-            />
-          </section>
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
+              *
+            </Text>
+          </Flex>
+          <Space size={0} />
+          <Input
+            name="address"
+            readOnly
+            value={clickedCoordinate.address}
+            onClick={onClickAddressInput}
+            onKeyDown={onClickAddressInput}
+            tabIndex={2}
+            placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
+          />
 
           <Space size={5} />
 
@@ -292,7 +288,7 @@ const NewPin = () => {
               추가하기
             </Button>
           </Flex>
-        </Flex>
+        </Wrapper>
       </form>
 
       <Modal
@@ -317,6 +313,19 @@ const NewPin = () => {
     </>
   );
 };
+
+const Wrapper = styled(Flex)`
+  margin: 0 auto;
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: ${({ width }) => width};
+    margin: 0 auto;
+  }
+`;
 
 const ModalContentsWrapper = styled.div`
   width: 100%;

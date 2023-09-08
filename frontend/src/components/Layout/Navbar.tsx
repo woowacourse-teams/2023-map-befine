@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { styled } from 'styled-components';
+import { css, styled } from 'styled-components';
 import useNavigator from '../../hooks/useNavigator';
 import Flex from '../common/Flex';
 import Button from '../common/Button';
@@ -73,7 +73,10 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   };
 
   return (
-    <Wrapper $layoutWidth={$layoutWidth}>
+    <Wrapper
+      $isAddPage={navbarHighlights.addMapOrPin}
+      $layoutWidth={$layoutWidth}
+    >
       <IconWrapper
         $layoutWidth={$layoutWidth}
         onClick={goToHome}
@@ -183,7 +186,10 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   );
 };
 
-const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
+const Wrapper = styled.nav<{
+  $isAddPage: boolean;
+  $layoutWidth: '100vw' | '372px';
+}>`
   width: 100%;
   min-height: 64px;
   display: flex;
@@ -192,6 +198,13 @@ const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
   align-items: center;
   background-color: ${({ theme }) => theme.color.white};
   z-index: 2;
+
+  ${({ $isAddPage }) =>
+    $isAddPage &&
+    css`
+      position: fixed;
+      bottom: 0;
+    `}
 
   @media (max-width: 1076px) {
     justify-content: space-around;
