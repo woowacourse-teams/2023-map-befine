@@ -4,6 +4,7 @@ import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
@@ -60,7 +61,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
 
         TopicCreateRequest topicCreateRequest = new TopicCreateRequest(
                 "준팍의 안갈집",
-                "https://map-befine-official.github.io/favicon.png",
+                FileFixture.createFile(),
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,

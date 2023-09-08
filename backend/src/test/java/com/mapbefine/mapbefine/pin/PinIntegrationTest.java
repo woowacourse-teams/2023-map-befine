@@ -12,7 +12,6 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
-import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
@@ -21,6 +20,7 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.io.File;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,8 +30,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 class PinIntegrationTest extends IntegrationTest {
-
-    private static final String BASE_IMAGE = "https://map-befine-official.github.io/favicon.png";
 
     private Topic topic;
     private Location location;
@@ -187,15 +185,28 @@ class PinIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = createPinImage(pinId);
 
+        System.out.println(response);
+
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     private ExtractableResponse<Response> createPinImage(long pinId) {
+        String imageFilePath = getClass().getClassLoader().getResource("test.png").getPath();
+        File mockFile = new File(imageFilePath);
+
         return RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new PinImageCreateRequest(pinId, BASE_IMAGE))
+                .multiPart(
+                        "image",
+                        mockFile,
+                        MediaType.MULTIPART_FORM_DATA_VALUE
+                )
+                .multiPart(
+                        "pinId",
+                        pinId,
+                        MediaType.APPLICATION_JSON_VALUE
+                )
                 .when().post("/pins/images")
                 .then().log().all()
                 .extract();

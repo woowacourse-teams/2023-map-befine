@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.topic;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.IntegrationTest;
@@ -72,7 +73,7 @@ class TopicIntegrationTest extends IntegrationTest {
     void createNewTopicWithoutPins_Success() {
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
+                FileFixture.createFile(),
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -111,7 +112,7 @@ class TopicIntegrationTest extends IntegrationTest {
 
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
+                FileFixture.createFile(),
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -132,7 +133,7 @@ class TopicIntegrationTest extends IntegrationTest {
         // given
         TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
+                FileFixture.createFile(),
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -140,7 +141,7 @@ class TopicIntegrationTest extends IntegrationTest {
         );
         TopicCreateRequest 준팍의_또안간집 = new TopicCreateRequest(
                 "준팍의 또안간집",
-                "https://map-befine-official.github.io/favicon.png",
+                FileFixture.createFile(),
                 "준팍이 2번 이상 안간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -182,7 +183,7 @@ class TopicIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> newTopic = createNewTopic(
                 new TopicCreateRequest(
                         "준팍의 또간집",
-                        "https://map-befine-official.github.io/favicon.png",
+                        FileFixture.createFile(),
                         "준팍이 두번 간집",
                         Publicity.PUBLIC,
                         PermissionType.ALL_MEMBERS,
@@ -219,7 +220,7 @@ class TopicIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> newTopic = createNewTopic(
                 new TopicCreateRequest(
                         "준팍의 또간집",
-                        "https://map-befine-official.github.io/favicon.png",
+                        FileFixture.createFile(),
                         "준팍이 두번 간집 ",
                         Publicity.PUBLIC,
                         PermissionType.ALL_MEMBERS,
@@ -264,7 +265,7 @@ class TopicIntegrationTest extends IntegrationTest {
         //given
         TopicCreateRequest request = new TopicCreateRequest(
                 "topicName",
-                "https://map-befine-official.github.io/favicon.png",
+                FileFixture.createFile(),
                 "description",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -293,7 +294,7 @@ class TopicIntegrationTest extends IntegrationTest {
         //given
         TopicCreateRequest request = new TopicCreateRequest(
                 "topicName",
-                "https://map-befine-official.github.io/favicon.png",
+                FileFixture.createFile(),
                 "description",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,

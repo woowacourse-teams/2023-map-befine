@@ -83,7 +83,6 @@ class OauthServiceTest {
     void getAuthCodeRequestUrl_success() {
         // when
         String url = oauthService.getAuthCodeRequestUrl(OauthServerType.KAKAO);
-        System.out.println(oauthMember.toRegisterMember().getMemberInfo().getNickName());
 
         // then
         assertThat(url).isEqualTo("https://kauth.kakao.com/oauth/authorize?"

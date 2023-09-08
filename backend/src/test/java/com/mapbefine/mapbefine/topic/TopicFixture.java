@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.topic;
 
 
+import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
@@ -62,7 +63,8 @@ public class TopicFixture {
     ) {
         return new TopicCreateRequest(
                 "아무나 읽을 수 있는 토픽",
-                IMAGE_URL,
+                FileFixture.createFile(),
+//                IMAGE_URL,
                 "아무나 읽을 수 있는 토픽입니다.",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,

@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 
+import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
@@ -148,7 +149,8 @@ class PinControllerTest extends RestDocsIntegration {
     void addImage() throws Exception {
         PinImageCreateRequest pinImageCreateRequest = new PinImageCreateRequest(
                 1L,
-                "https://map-befine-official.github.io/favicon.png"
+                FileFixture.createFile()
+//                "https://map-befine-official.github.io/favicon.png"
         );
 
         mockMvc.perform(

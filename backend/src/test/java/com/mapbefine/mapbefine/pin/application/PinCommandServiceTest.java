@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
@@ -33,11 +34,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 @ServiceTest
 class PinCommandServiceTest {
 
-    private static final String BASE_IMAGE = "https://map-befine-official.github.io/favicon.png";
+    private static final MultipartFile BASE_IMAGE_FILE = FileFixture.createFile();
+    private static final String BASE_IMAGE = "https://mapbefine.github.io/favicon.png";
 
     @Autowired
     private PinCommandService pinCommandService;
@@ -192,7 +195,7 @@ class PinCommandServiceTest {
         // then
         pinImageRepository.findById(pinImageId)
                 .ifPresentOrElse(
-                        found -> assertThat(found.getImageUrl()).isEqualTo(BASE_IMAGE),
+                        found -> assertThat(found.getImageUrl()).isNotNull(),
                         Assertions::fail
                 );
     }
@@ -204,7 +207,8 @@ class PinCommandServiceTest {
         long pinId = pinCommandService.save(authMember, createRequest);
 
         // when, then
-        assertThatThrownBy(() -> pinCommandService.addImage(new Guest(), new PinImageCreateRequest(pinId, BASE_IMAGE)))
+        assertThatThrownBy(() -> pinCommandService.addImage(new Guest(), new PinImageCreateRequest(pinId,
+                BASE_IMAGE_FILE)))
                 .isInstanceOf(PinForbiddenException.class);
     }
 
@@ -227,7 +231,7 @@ class PinCommandServiceTest {
     }
 
     private long savePinImageAndGetId(long pinId) {
-        pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE));
+        pinCommandService.addImage(authMember, new PinImageCreateRequest(pinId, BASE_IMAGE_FILE));
         List<PinImageResponse> pinImages = pinQueryService.findDetailById(authMember, pinId)
                 .images();
         PinImageResponse pinImage = pinImages.get(0);
