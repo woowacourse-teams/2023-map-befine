@@ -59,23 +59,19 @@ const PinDetail = ({
     showToast('error', '로그인 후 사용해주세요.');
   };
 
-  useEffect(() => {
-    const getPinData = async () => {
-      const pinData = await getApi<PinProps>(`/pins/${pinId}`);
-      setPin(pinData);
-      setFormValues({
-        name: pinData.name,
-        images: pinData.images,
-        description: pinData.description,
-      });
-    };
+  const getPinData = async () => {
+    const pinData = await getApi<PinProps>(`/pins/${pinId}`);
+    setPin(pinData);
+    setFormValues({
+      name: pinData.name,
+      images: pinData.images,
+      description: pinData.description,
+    });
+  };
 
+  useEffect(() => {
     getPinData();
   }, [pinId, searchParams]);
-
-  const updateQueryString = (key: string, value: string) => {
-    setSearchParams({ ...Object.fromEntries(searchParams), [key]: value });
-  };
 
   const onClickEditPin = () => {
     setIsEditPinDetail(true);
@@ -84,7 +80,6 @@ const PinDetail = ({
       images: '',
       description: '',
     });
-    updateQueryString('edit', 'true');
   };
 
   const copyContent = async () => {
@@ -100,15 +95,18 @@ const PinDetail = ({
 
   if (isEditPinDetail)
     return (
-      <UpdatedPinDetail
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-        setIsEditing={setIsEditPinDetail}
-        pinId={pinId}
-        formValues={formValues}
-        errorMessages={errorMessages}
-        onChangeInput={onChangeInput}
-      />
+      <Wrapper $layoutWidth={width} $selectedPinId={pinId}>
+        <UpdatedPinDetail
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+          setIsEditing={setIsEditPinDetail}
+          updatePinDetailAfterEditing={getPinData}
+          pinId={pinId}
+          formValues={formValues}
+          errorMessages={errorMessages}
+          onChangeInput={onChangeInput}
+        />
+      </Wrapper>
     );
 
   return (
@@ -192,7 +190,7 @@ const PinDetail = ({
         <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
           내 지도에 저장하기
         </SaveToMyMapButton>
-        <Space size={4} />
+        <Space size={3} />
         <ShareButton variant="secondary" onClick={copyContent}>
           공유하기
         </ShareButton>
