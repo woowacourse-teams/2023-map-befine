@@ -11,7 +11,7 @@ defaults:
     working-directory: ./frontend
 
 jobs:
-  jest:
+  jest_cypress:
     runs-on: ubuntu-22.04
 
     steps:
