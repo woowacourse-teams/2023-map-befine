@@ -191,7 +191,7 @@ const Wrapper = styled.nav<{
   $layoutWidth: '100vw' | '372px';
 }>`
   width: 100%;
-  min-height: 64px;
+  min-height: 56px;
   display: flex;
   justify-content: ${({ $layoutWidth }) =>
     $layoutWidth === '100vw' ? 'center' : 'space-around'};
@@ -199,15 +199,15 @@ const Wrapper = styled.nav<{
   background-color: ${({ theme }) => theme.color.white};
   z-index: 2;
 
-  ${({ $isAddPage }) =>
-    $isAddPage &&
-    css`
-      position: fixed;
-      bottom: 0;
-    `}
-
   @media (max-width: 1076px) {
     justify-content: space-around;
+
+    ${({ $isAddPage }) =>
+      $isAddPage &&
+      css`
+        position: fixed;
+        bottom: 0;
+      `}
   }
 `;
 
