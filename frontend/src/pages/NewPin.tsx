@@ -294,7 +294,7 @@ const NewPin = () => {
       <Modal
         modalKey="newPin"
         position="center"
-        width="768px"
+        width="744px"
         height="512px"
         $dimmedColor="rgba(0,0,0,0.25)"
       >

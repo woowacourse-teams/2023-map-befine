@@ -74,6 +74,12 @@ const ModalMyTopicListWrapper = styled.ul`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+
+  @media (max-width: 744px) {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
 `;
 
 export default ModalMyTopicList;

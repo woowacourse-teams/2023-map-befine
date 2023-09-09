@@ -75,27 +75,6 @@ const Modal = ({
     root,
   );
 };
-const Wrapper = styled.div<ModalWrapperType>`
-  width: ${({ width }) => width || '400px'};
-  height: ${({ height }) => height || '400px'};
-  ${({ position }) => getModalPosition(position)};
-  top: ${({ top }) => top && top};
-  left: ${({ left }) => left && left};
-  z-index: 2;
-
-  @media (max-width: 1076px) {
-    left: 50%;
-  }
-`;
-
-const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  background-color: ${({ $dimmedColor }) => $dimmedColor};
-  z-index: 2;
-`;
 
 const translateModalAnimation = keyframes`
   from {
@@ -117,7 +96,7 @@ const openModalAnimation = keyframes`
   }
 `;
 
-const getModalPosition = (position: 'center' | 'bottom' | 'absolute') => {
+const getModalPosition = (position: 'center' | 'bottom') => {
   switch (position) {
     case 'center':
       return css`
@@ -142,5 +121,32 @@ const getModalPosition = (position: 'center' | 'bottom' | 'absolute') => {
       `;
   }
 };
+
+const Wrapper = styled.div<ModalWrapperType>`
+  width: ${({ width }) => width || '400px'};
+  height: ${({ height }) => height || '400px'};
+  ${({ position }) => getModalPosition(position)};
+  top: ${({ top }) => top && top};
+  left: ${({ left }) => left && left};
+  z-index: 2;
+
+  @media (max-width: 1076px) {
+    left: 50%;
+  }
+
+  @media (max-width: 744px) {
+    ${getModalPosition('bottom')};
+    width: 100%;
+  }
+`;
+
+const WrapperDimmed = styled.div<{ $dimmedColor: string }>`
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  background-color: ${({ $dimmedColor }) => $dimmedColor};
+  z-index: 2;
+`;
 
 export default Modal;
