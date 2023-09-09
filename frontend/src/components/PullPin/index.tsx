@@ -103,7 +103,11 @@ const Wrapper = styled.section`
     width: calc(50vw - 40px);
   }
 
-  @media (max-width: 774px) {
+  @media (max-width: 744px) {
+    width: calc(100vw - 40px);
+  }
+
+  @media (max-width: 372px) {
     width: 332px;
   }
 `;

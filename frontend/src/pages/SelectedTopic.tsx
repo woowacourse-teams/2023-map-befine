@@ -172,8 +172,11 @@ const Wrapper = styled.section<{
   }
 
   @media (max-width: 744px) {
+    width: 100%;
+  }
+
+  @media (max-width: 372px) {
     width: ${({ width }) => width};
-    margin: 0 auto;
   }
 `;
 

@@ -198,7 +198,7 @@ const PinDetail = ({
         </ShareButton>
       </ButtonsWrapper>
 
-      <Space size={7} />
+      <Space size={8} />
 
       <Modal
         modalKey="addToMyTopicList"
@@ -249,12 +249,12 @@ const Wrapper = styled.div<{
 
   @media (max-width: 744px) {
     border-left: 0;
-    left: calc((100vw - 372px) / 2);
-    width: ${({ $mediaWidth }) => $mediaWidth};
+    left: 0;
+    width: 100vw;
   }
 
   @media (max-width: 372px) {
-    left: 0;
+    width: ${({ $mediaWidth }) => $mediaWidth};
   }
 `;
 
@@ -292,6 +292,7 @@ const ButtonsWrapper = styled.div`
   align-items: center;
   width: 332px;
   height: 48px;
+  margin: 0 auto;
 `;
 
 export default PinDetail;
