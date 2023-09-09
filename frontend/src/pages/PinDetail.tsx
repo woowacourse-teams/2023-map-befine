@@ -203,7 +203,7 @@ const PinDetail = ({
       <Modal
         modalKey="addToMyTopicList"
         position="center"
-        width="768px"
+        width="744px"
         height="512px"
         $dimmedColor="rgba(0,0,0,0.25)"
       >
