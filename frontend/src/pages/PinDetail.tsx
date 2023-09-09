@@ -112,7 +112,7 @@ const PinDetail = ({
     );
 
   return (
-    <Wrapper $mediaWidth={width} $selectedPinId={pinId}>
+    <Wrapper $layoutWidth={width} $selectedPinId={pinId}>
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
@@ -223,18 +223,18 @@ const PinDetail = ({
   );
 };
 
-const Wrapper = styled.div<{
-  $mediaWidth: '372px' | '100vw';
+const Wrapper = styled.section<{
+  $layoutWidth: '372px' | '100vw';
   $selectedPinId: number | null;
 }>`
   display: flex;
   flex-direction: column;
-  width: ${({ $mediaWidth }) => $mediaWidth};
+  width: ${({ $layoutWidth }) => $layoutWidth};
   height: 100vh;
   overflow: auto;
   position: absolute;
   top: 0;
-  left: ${({ $mediaWidth }) => $mediaWidth};
+  left: ${({ $layoutWidth }) => $layoutWidth};
   padding: ${({ theme }) => theme.spacing[4]};
   border-left: 1px solid ${({ theme }) => theme.color.gray};
   background-color: ${({ theme }) => theme.color.white};
@@ -243,7 +243,7 @@ const Wrapper = styled.div<{
   @media (max-width: 1076px) {
     width: 50vw;
     margin-top: 50vh;
-    height: ${({ $mediaWidth }) => $mediaWidth === '372px' && '50vh'};
+    height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
     left: ${({ $selectedPinId }) => $selectedPinId && '50vw'};
   }
 
@@ -254,7 +254,7 @@ const Wrapper = styled.div<{
   }
 
   @media (max-width: 372px) {
-    width: ${({ $mediaWidth }) => $mediaWidth};
+    width: ${({ $layoutWidth }) => $layoutWidth};
   }
 `;
 

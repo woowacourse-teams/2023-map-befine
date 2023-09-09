@@ -55,16 +55,16 @@ const Layout = ({ children }: LayoutProps) => {
               <TagProvider>
                 <MediaWrapper
                   $isAddPage={navbarHighlights.addMapOrPin}
-                  $mediaWidth={width}
+                  $layoutWidth={width}
                 >
                   <LayoutFlex
                     $flexDirection="column"
                     $minWidth={width}
                     height="100vh"
                     $backgroundColor="white"
-                    $mediaWidth={width}
+                    $layoutWidth={width}
                   >
-                    <LogoWrapper $mediaWidth={width}>
+                    <LogoWrapper $layoutWidth={width}>
                       <Box>
                         <Logo />
                         <Space size={2} />
@@ -93,15 +93,15 @@ const Layout = ({ children }: LayoutProps) => {
 };
 
 const LogoWrapper = styled.section<{
-  $mediaWidth: '372px' | '100vw';
+  $layoutWidth: '372px' | '100vw';
 }>`
   width: 372px;
   display: flex;
   padding: 12px 20px 0 20px;
 
   @media (max-width: 1076px) {
-    ${({ $mediaWidth }) =>
-      $mediaWidth === '372px' &&
+    ${({ $layoutWidth }) =>
+      $layoutWidth === '372px' &&
       css`
         width: 100vw;
         background-color: white;
@@ -114,25 +114,25 @@ const LogoWrapper = styled.section<{
 
 const MediaWrapper = styled.section<{
   $isAddPage: boolean;
-  $mediaWidth: '372px' | '100vw';
+  $layoutWidth: '372px' | '100vw';
 }>`
   display: flex;
   width: 100vw;
   overflow: hidden;
 
   @media (max-width: 1076px) {
-    flex-direction: ${({ $isAddPage, $mediaWidth }) => {
+    flex-direction: ${({ $isAddPage, $layoutWidth }) => {
       if ($isAddPage) return 'column';
-      if ($mediaWidth === '372px') return 'column-reverse';
+      if ($layoutWidth === '372px') return 'column-reverse';
     }};
   }
 `;
 
-const LayoutFlex = styled(Flex)<{ $mediaWidth: '372px' | '100vw' }>`
+const LayoutFlex = styled(Flex)<{ $layoutWidth: '372px' | '100vw' }>`
   transition: all ease 0.3s;
 
   @media (max-width: 1076px) {
-    height: ${({ $mediaWidth }) => $mediaWidth === '372px' && '50vh'};
+    height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
     transition: none;
   }
 `;
