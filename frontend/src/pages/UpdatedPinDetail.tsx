@@ -8,6 +8,7 @@ import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
 import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
+import styled from 'styled-components';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
@@ -65,7 +66,7 @@ const UpdatedPinDetail = ({
   };
 
   return (
-    <>
+    <Wrapper>
       <Flex
         width="100%"
         height="180px"
@@ -132,8 +133,21 @@ const UpdatedPinDetail = ({
       </Flex>
 
       <Space size={8} />
-    </>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  margin: 0 auto;
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: 332px;
+    margin: 0 auto;
+  }
+`;
 
 export default UpdatedPinDetail;
