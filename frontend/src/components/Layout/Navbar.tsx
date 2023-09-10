@@ -198,6 +198,7 @@ const Wrapper = styled.nav<{
   align-items: center;
   background-color: ${({ theme }) => theme.color.white};
   z-index: 2;
+  box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.3);
 
   @media (max-width: 1076px) {
     justify-content: space-around;
