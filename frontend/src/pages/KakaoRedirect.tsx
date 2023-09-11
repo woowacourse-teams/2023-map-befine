@@ -23,7 +23,7 @@ export const handleOAuthKakao = async (code: string) => {
   }
 };
 
-const KakaoRedirectPage = () => {
+const KakaoRedirect = () => {
   const { routePage } = useNavigator();
 
   const routerLocation = useLocation();
@@ -48,7 +48,7 @@ const KakaoRedirectPage = () => {
   );
 };
 
-export default KakaoRedirectPage;
+export default KakaoRedirect;
 
 const KakaoRedirectPageWrapper = styled.div`
   display: flex;
