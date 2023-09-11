@@ -20,7 +20,7 @@ public record TopicDetailResponse(
         LocalDateTime updatedAt,
         List<PinResponse> pins
 ) {
-    public static TopicDetailResponse from(
+    public static TopicDetailResponse of(
             Topic topic,
             Boolean isInAtlas,
             Boolean isBookmarked,

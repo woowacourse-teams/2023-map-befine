@@ -43,7 +43,7 @@ public class TopicQueryService {
 
     private static List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
         return topics.stream()
-                .map(topic -> TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE))
+                .map(topic -> TopicDetailResponse.of(topic, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE))
                 .toList();
     }
 
@@ -110,7 +110,7 @@ public class TopicQueryService {
         validateReadableTopic(authMember, topic);
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE);
+            return TopicDetailResponse.of(topic, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE);
         }
 
         Member member = findMemberById(authMember.getMemberId());
@@ -118,7 +118,7 @@ public class TopicQueryService {
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
         List<Topic> topicsInBookMark = findBookMarkedTopics(member);
 
-        return TopicDetailResponse.from(
+        return TopicDetailResponse.of(
                 topic,
                 isInAtlas(topicsInAtlas, topic),
                 isBookMarked(topicsInBookMark, topic),
@@ -159,7 +159,7 @@ public class TopicQueryService {
         List<Topic> topicsInBookMark = findBookMarkedTopics(member);
 
         return topics.stream()
-                .map(topic -> TopicDetailResponse.from(
+                .map(topic -> TopicDetailResponse.of(
                         topic,
                         isInAtlas(topicsInAtlas, topic),
                         isBookMarked(topicsInBookMark, topic),
