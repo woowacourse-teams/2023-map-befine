@@ -16,7 +16,7 @@ public record TopicDetailResponse(
         Boolean isInAtlas,
         Integer bookmarkCount,
         Boolean isBookmarked,
-        Boolean hasUpdatePermission,
+        Boolean canUpdate,
         LocalDateTime updatedAt,
         List<PinResponse> pins
 ) {
@@ -24,7 +24,7 @@ public record TopicDetailResponse(
             Topic topic,
             Boolean isInAtlas,
             Boolean isBookmarked,
-            Boolean hasUpdatePermission
+            Boolean canUpdate
     ) {
         List<PinResponse> pinResponses = topic.getPins().stream()
                 .map(PinResponse::from)
@@ -42,7 +42,7 @@ public record TopicDetailResponse(
                 isInAtlas,
                 topic.countBookmarks(),
                 isBookmarked,
-                hasUpdatePermission,
+                canUpdate,
                 topic.getUpdatedAt(),
                 pinResponses
         );

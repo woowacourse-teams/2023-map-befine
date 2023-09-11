@@ -296,7 +296,7 @@ class TopicQueryServiceTest {
         assertThat(topicDetail.id()).isEqualTo(topic.getId());
         assertThat(topicDetail.isBookmarked()).isEqualTo(Boolean.TRUE);
         assertThat(topicDetail.isInAtlas()).isEqualTo(Boolean.FALSE);
-        assertThat(topicDetail.hasUpdatePermission()).isEqualTo(Boolean.TRUE);
+        assertThat(topicDetail.canUpdate()).isEqualTo(Boolean.TRUE);
     }
 
     @Test
@@ -316,7 +316,7 @@ class TopicQueryServiceTest {
         assertThat(topicDetail.id()).isEqualTo(topic.getId());
         assertThat(topicDetail.isBookmarked()).isEqualTo(Boolean.FALSE);
         assertThat(topicDetail.isInAtlas()).isEqualTo(Boolean.FALSE);
-        assertThat(topicDetail.hasUpdatePermission()).isEqualTo(Boolean.FALSE);
+        assertThat(topicDetail.canUpdate()).isEqualTo(Boolean.FALSE);
     }
 
     @Test
