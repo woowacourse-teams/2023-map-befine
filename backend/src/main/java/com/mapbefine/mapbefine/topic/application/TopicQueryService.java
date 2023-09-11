@@ -41,6 +41,12 @@ public class TopicQueryService {
         this.memberRepository = memberRepository;
     }
 
+    private static List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
+        return topics.stream()
+                .map(topic -> TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE))
+                .toList();
+    }
+
     public List<TopicResponse> findAllReadable(AuthMember authMember) {
         if (Objects.isNull(authMember.getMemberId())) {
             return getGuestTopicResponses(authMember);
@@ -99,13 +105,12 @@ public class TopicQueryService {
         return bookMarkedTopics.contains(topic);
     }
 
-
     public TopicDetailResponse findDetailById(AuthMember authMember, Long topicId) {
         Topic topic = findTopic(topicId);
         validateReadableTopic(authMember, topic);
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE);
+            return TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE);
         }
 
         Member member = findMemberById(authMember.getMemberId());
@@ -116,7 +121,8 @@ public class TopicQueryService {
         return TopicDetailResponse.from(
                 topic,
                 isInAtlas(topicsInAtlas, topic),
-                isBookMarked(topicsInBookMark, topic)
+                isBookMarked(topicsInBookMark, topic),
+                authMember.canTopicUpdate(topic)
         );
     }
 
@@ -146,12 +152,6 @@ public class TopicQueryService {
         return getUserTopicDetailResponses(authMember, topics);
     }
 
-    private static List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
-        return topics.stream()
-                .map(topic -> TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
-                .toList();
-    }
-
     private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember, List<Topic> topics) {
         Member member = findMemberById(authMember.getMemberId());
 
@@ -162,7 +162,8 @@ public class TopicQueryService {
                 .map(topic -> TopicDetailResponse.from(
                         topic,
                         isInAtlas(topicsInAtlas, topic),
-                        isBookMarked(topicsInBookMark, topic)
+                        isBookMarked(topicsInBookMark, topic),
+                        authMember.canTopicUpdate(topic)
                 ))
                 .toList();
     }

@@ -235,7 +235,7 @@ class TopicQueryServiceTest {
 
     @Test
     @DisplayName("모든 토픽을 조회할 때, 즐겨찾기 여부를 함께 반환한다.")
-    public void findAllReadableWithBookmark_Success() {
+    void findAllReadableWithBookmark_Success() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -258,7 +258,7 @@ class TopicQueryServiceTest {
 
     @Test
     @DisplayName("모든 토픽을 조회할 때, 로그인 유저가 아니면 즐겨찾기 여부가 항상 False다")
-    public void findAllReadableWithoutBookmark_Success() {
+    void findAllReadableWithoutBookmark_Success() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -280,8 +280,8 @@ class TopicQueryServiceTest {
     }
 
     @Test
-    @DisplayName("토픽 상세조회시, 즐겨찾기 여부를 함께 반환한다.")
-    public void findWithBookmarkStatus_Success() {
+    @DisplayName("토픽 상세조회시, 즐겨찾기 여부, 모아보기 여부, 수정 권한 여부를 함께 반환한다.")
+    void findWithBookmarkStatus_Success() {
         //given
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
@@ -295,12 +295,13 @@ class TopicQueryServiceTest {
 
         assertThat(topicDetail.id()).isEqualTo(topic.getId());
         assertThat(topicDetail.isBookmarked()).isEqualTo(Boolean.TRUE);
-
+        assertThat(topicDetail.isInAtlas()).isEqualTo(Boolean.FALSE);
+        assertThat(topicDetail.hasUpdatePermission()).isEqualTo(Boolean.TRUE);
     }
 
     @Test
-    @DisplayName("토픽 상세조회시, 로그인 유저가 아니라면 즐겨찾기 여부가 항상 False다.")
-    public void findWithoutBookmarkStatus_Success() {
+    @DisplayName("토픽 상세조회시, 로그인 유저가 아니라면 즐겨찾기 여부, 모아보기 여부, 수정 권한 여부가 항상 False다.")
+    void findWithoutBookmarkStatus_Success() {
         //given
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
@@ -314,11 +315,13 @@ class TopicQueryServiceTest {
 
         assertThat(topicDetail.id()).isEqualTo(topic.getId());
         assertThat(topicDetail.isBookmarked()).isEqualTo(Boolean.FALSE);
+        assertThat(topicDetail.isInAtlas()).isEqualTo(Boolean.FALSE);
+        assertThat(topicDetail.hasUpdatePermission()).isEqualTo(Boolean.FALSE);
     }
 
     @Test
     @DisplayName("여러 토픽 조회시, 즐겨 찾기 여부를 함께 반환한다.")
-    public void findDetailsWithBookmarkStatus_Success() {
+    void findDetailsWithBookmarkStatus_Success() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -342,7 +345,7 @@ class TopicQueryServiceTest {
 
     @Test
     @DisplayName("여러 토픽 조회시, 로그인 유저가 아니라면 즐겨 찾기 여부가 항상 False다.")
-    public void findDetailsWithoutBookmarkStatus_Success() {
+    void findDetailsWithoutBookmarkStatus_Success() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -421,7 +424,7 @@ class TopicQueryServiceTest {
 
     @Test
     @DisplayName("즐겨찾기가 많이 있는 토픽 순서대로 조회할 수 있다.")
-    public void findAllBestTopics_Success1() {
+    void findAllBestTopics_Success1() {
         //given
         Member otherMember = MemberFixture.create(
                 "otherMember",
@@ -456,7 +459,7 @@ class TopicQueryServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 순서대로 조회하더라도, private 토픽인 경우 조회할 수 없다.")
-    public void findAllBestTopics_Success2() {
+    void findAllBestTopics_Success2() {
         //given
         Member otherMember = MemberFixture.create(
                 "otherMember",
