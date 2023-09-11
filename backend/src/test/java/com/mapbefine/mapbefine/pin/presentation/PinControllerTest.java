@@ -93,6 +93,7 @@ class PinControllerTest extends RestDocsIntegration {
                 "매튜",
                 37,
                 127,
+                Boolean.FALSE,
                 LocalDateTime.now(),
                 List.of(new PinImageResponse(1L, BASE_IMAGES.get(0)))
         );

@@ -40,7 +40,7 @@ public class PinQueryService {
                 .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
         validateReadAuth(member, pin.getTopic());
 
-        return PinDetailResponse.from(pin);
+        return PinDetailResponse.of(pin, member.canPinCreateOrUpdate(pin.getTopic()));
     }
 
     private void validateReadAuth(AuthMember member, Topic topic) {
