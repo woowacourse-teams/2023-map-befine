@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
+import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithOutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/topics")
@@ -40,8 +42,15 @@ public class TopicController {
 
     @LoginRequired
     @PostMapping("/new")
-    public ResponseEntity<Void> create(AuthMember member, @RequestPart TopicCreateRequest request) {
-        Long topicId = topicCommandService.saveTopic(member, request);
+    public ResponseEntity<Void> create(
+            AuthMember member,
+            @RequestPart TopicCreateRequestWithOutImage request,
+            @RequestPart MultipartFile image
+    ) {
+        System.out.println(request);
+        System.out.println(image);
+        TopicCreateRequest topicCreateRequest = TopicCreateRequest.of(request, image);
+        Long topicId = topicCommandService.saveTopic(member, topicCreateRequest);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();

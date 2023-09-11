@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.presentation;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 
@@ -16,6 +17,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -147,17 +149,22 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 이미지 추가")
     void addImage() throws Exception {
-        PinImageCreateRequest pinImageCreateRequest = new PinImageCreateRequest(
-                1L,
-                FileFixture.createFile()
-//                "https://map-befine-official.github.io/favicon.png"
-        );
+        String imageFilePath = getClass().getClassLoader()
+                .getResource("test.png")
+                .getPath();
+        File mockFile = new File(imageFilePath);
+
+//        PinImageCreateRequest pinImageCreateRequest = new PinImageCreateRequest(
+//                1L,
+//                FileFixture.createFile()
+//        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/pins/images")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(pinImageCreateRequest))
+                        .content(objectMapper.writeValueAsString(1L))
+                        .content(objectMapper.writeValueAsString(mockFile))
         ).andDo(restDocs.document());
     }
 

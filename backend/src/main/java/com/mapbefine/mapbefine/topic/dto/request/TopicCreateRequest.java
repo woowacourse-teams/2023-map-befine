@@ -13,4 +13,18 @@ public record TopicCreateRequest(
         PermissionType permissionType,
         List<Long> pins
 ) {
+
+    public static TopicCreateRequest of(
+            TopicCreateRequestWithOutImage request,
+            MultipartFile image
+    ) {
+        return new TopicCreateRequest(
+                request.name(),
+                image,
+                request.description(),
+                request.publicity(),
+                request.permissionType(),
+                request.pins()
+        );
+    }
 }

@@ -192,21 +192,15 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> createPinImage(long pinId) {
-        String imageFilePath = getClass().getClassLoader().getResource("test.png").getPath();
+        String imageFilePath = getClass().getClassLoader()
+                .getResource("test.png")
+                .getPath();
         File mockFile = new File(imageFilePath);
 
         return RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
-                .multiPart(
-                        "image",
-                        mockFile,
-                        MediaType.MULTIPART_FORM_DATA_VALUE
-                )
-                .multiPart(
-                        "pinId",
-                        pinId,
-                        MediaType.APPLICATION_JSON_VALUE
-                )
+                .multiPart("image", mockFile, MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("pinId", pinId, MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/pins/images")
                 .then().log().all()
                 .extract();
