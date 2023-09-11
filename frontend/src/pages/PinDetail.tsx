@@ -110,7 +110,7 @@ const PinDetail = ({
     );
 
   return (
-    <Wrapper $layoutWidth={width} $selectedPinId={pinId}>
+    <Wrapper $layoutWidth={width} $selectedPinId={pinId} data-cy="pin-detail">
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
