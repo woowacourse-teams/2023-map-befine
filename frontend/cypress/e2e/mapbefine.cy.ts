@@ -69,7 +69,7 @@ describe('토픽 상세 페이지', () => {
         if (index === 0) $el.click();
       });
 
-    cy.wait(2000);
+    cy.wait(3000);
 
     cy.get('span').each(($el, index) => {
       if (index === 6) $el.click();
