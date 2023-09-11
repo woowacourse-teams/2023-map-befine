@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.topic;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.IntegrationTest;
@@ -21,12 +22,14 @@ import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
+import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithOutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.*;
 import io.restassured.response.*;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +38,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 class TopicIntegrationTest extends IntegrationTest {
 
@@ -70,9 +74,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록 없이 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithoutPins_Success() {
-        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
+        TopicCreateRequestWithOutImage 준팍의_또간집 = new TopicCreateRequestWithOutImage(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -87,12 +90,24 @@ class TopicIntegrationTest extends IntegrationTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    private ExtractableResponse<Response> createNewTopic(TopicCreateRequest request, String authHeader) {
+    private ExtractableResponse<Response> createNewTopic(TopicCreateRequestWithOutImage request, String authHeader) {
+        String imageFilePath = getClass().getClassLoader()
+                .getResource("test.png")
+                .getPath();
+        File mockFile = new File(imageFilePath);
+        
+//        MockMultipartFile mockFile = new MockMultipartFile( // 이것은 왜 그런 것일까??
+//                "test",
+//                "test.png",
+//                "image/png",
+//                "byteCode".getBytes()
+//        );
+
         return RestAssured.given()
                 .log().all()
                 .header(AUTHORIZATION, authHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
+                .multiPart("image", mockFile, MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("request", request, MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/topics/new")
                 .then().log().all()
                 .extract();
@@ -109,9 +124,8 @@ class TopicIntegrationTest extends IntegrationTest {
                 .map(Pin::getId)
                 .toList();
 
-        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
+        TopicCreateRequestWithOutImage 준팍의_또간집 = new TopicCreateRequestWithOutImage(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -130,17 +144,15 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("여러개의 토픽을 병합하면 201을 반환한다")
     void createMergeTopic_Success() {
         // given
-        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
+        TopicCreateRequestWithOutImage 준팍의_또간집 = new TopicCreateRequestWithOutImage(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
-        TopicCreateRequest 준팍의_또안간집 = new TopicCreateRequest(
+        TopicCreateRequestWithOutImage 준팍의_또안간집 = new TopicCreateRequestWithOutImage(
                 "준팍의 또안간집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 안간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -180,9 +192,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic을 수정하면 200을 반환한다")
     void updateTopic_Success() {
         ExtractableResponse<Response> newTopic = createNewTopic(
-                new TopicCreateRequest(
+                new TopicCreateRequestWithOutImage(
                         "준팍의 또간집",
-                        "https://map-befine-official.github.io/favicon.png",
                         "준팍이 두번 간집",
                         Publicity.PUBLIC,
                         PermissionType.ALL_MEMBERS,
@@ -217,9 +228,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic을 삭제하면 204를 반환한다")
     void deleteTopic_Success() {
         ExtractableResponse<Response> newTopic = createNewTopic(
-                new TopicCreateRequest(
+                new TopicCreateRequestWithOutImage(
                         "준팍의 또간집",
-                        "https://map-befine-official.github.io/favicon.png",
                         "준팍이 두번 간집 ",
                         Publicity.PUBLIC,
                         PermissionType.ALL_MEMBERS,
@@ -262,9 +272,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 상세 정보를 조회하면 200을 반환한다")
     void findTopicDetail_Success() {
         //given
-        TopicCreateRequest request = new TopicCreateRequest(
+        TopicCreateRequestWithOutImage request = new TopicCreateRequestWithOutImage(
                 "topicName",
-                "https://map-befine-official.github.io/favicon.png",
                 "description",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -291,9 +300,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 상세 정보 여러개를 조회하면 200을 반환한다")
     void findTopicDetailsByIds_Success() {
         //given
-        TopicCreateRequest request = new TopicCreateRequest(
+        TopicCreateRequestWithOutImage request = new TopicCreateRequestWithOutImage(
                 "topicName",
-                "https://map-befine-official.github.io/favicon.png",
                 "description",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,

@@ -21,6 +21,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
+import com.mapbefine.mapbefine.s3.application.S3Service;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
@@ -40,21 +41,23 @@ public class PinCommandService {
     private final TopicRepository topicRepository;
     private final MemberRepository memberRepository;
     private final PinImageRepository pinImageRepository;
+    private final S3Service s3Service;
 
     public PinCommandService(
             PinRepository pinRepository,
             LocationRepository locationRepository,
             TopicRepository topicRepository,
             MemberRepository memberRepository,
-            PinImageRepository pinImageRepository
+            PinImageRepository pinImageRepository,
+            S3Service s3Service
     ) {
         this.pinRepository = pinRepository;
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
         this.memberRepository = memberRepository;
         this.pinImageRepository = pinImageRepository;
+        this.s3Service = s3Service;
     }
-
 
     public long save(AuthMember authMember, PinCreateRequest request) {
         Topic topic = findTopic(request.topicId());
@@ -138,8 +141,9 @@ public class PinCommandService {
     public void addImage(AuthMember authMember, PinImageCreateRequest request) {
         Pin pin = findPin(request.pinId());
         validatePinCreateOrUpdate(authMember, pin.getTopic());
+        String image = s3Service.upload(request.image());
 
-        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(request.imageUrl(), pin);
+        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(image, pin);
         pinImageRepository.save(pinImage);
     }
 
