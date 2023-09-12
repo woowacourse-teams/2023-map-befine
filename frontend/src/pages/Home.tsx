@@ -33,7 +33,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (markers.length > 0) {
+    if (markers && markers.length > 0) {
       removeMarkers();
       removeInfowindows();
     }
