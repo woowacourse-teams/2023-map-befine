@@ -3,11 +3,11 @@ import { CoordinatesContext } from '../context/CoordinatesContext';
 import getAddressFromServer from '../lib/getAddressFromServer';
 import useToast from './useToast';
 
-export default function useMapClick(map: any) {
+export default function useMapClick(map: TMap) {
   const { setClickedCoordinate } = useContext(CoordinatesContext);
   const { showToast } = useToast();
 
-  const clickHandler = async (evt: any) => {
+  const clickHandler = async (evt: evt) => {
     try {
       const roadName = await getAddressFromServer(
         evt.data.lngLat._lat,

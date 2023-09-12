@@ -14,7 +14,7 @@ const Map = () => {
 
   const { markers } = useContext(MarkerContext);
   const { width } = useContext(LayoutWidthContext);
-  const [mapInstance, setMapInstance] = useState(null);
+  const [mapInstance, setMapInstance] = useState<TMap>(null!);
 
   const mapContainer = useRef(null);
 
@@ -24,6 +24,8 @@ const Map = () => {
     const map = new Tmapv3.Map(mapContainer.current, {
       center: new Tmapv3.LatLng(37.5154, 127.1029),
     });
+
+    if (!map) return;
 
     map.setZoomLimit(7, 17);
 
