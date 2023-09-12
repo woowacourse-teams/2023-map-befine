@@ -32,7 +32,7 @@ public record TopicResponse(
         );
     }
 
-    public static TopicResponse ofGuestQuery(Topic topic) {
+    public static TopicResponse fromGuestQuery(Topic topic) {
         TopicInfo topicInfo = topic.getTopicInfo();
 
         return new TopicResponse(

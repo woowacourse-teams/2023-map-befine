@@ -49,7 +49,7 @@ public record TopicDetailResponse(
         );
     }
 
-    public static TopicDetailResponse ofGuestQuery(Topic topic) {
+    public static TopicDetailResponse fromGuestQuery(Topic topic) {
         List<PinResponse> pinResponses = topic.getPins().stream()
                 .map(PinResponse::from)
                 .toList();

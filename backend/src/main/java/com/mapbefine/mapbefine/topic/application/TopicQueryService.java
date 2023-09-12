@@ -41,12 +41,6 @@ public class TopicQueryService {
         this.memberRepository = memberRepository;
     }
 
-    private static List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
-        return topics.stream()
-                .map(TopicDetailResponse::ofGuestQuery)
-                .toList();
-    }
-
     public List<TopicResponse> findAllReadable(AuthMember authMember) {
         if (Objects.isNull(authMember.getMemberId())) {
             return getGuestTopicResponses(authMember);
@@ -58,7 +52,7 @@ public class TopicQueryService {
         return topicRepository.findAll()
                 .stream()
                 .filter(authMember::canRead)
-                .map(topic -> TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
+                .map(TopicResponse::fromGuestQuery)
                 .toList();
     }
 
@@ -110,7 +104,7 @@ public class TopicQueryService {
         validateReadableTopic(authMember, topic);
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return TopicDetailResponse.ofGuestQuery(topic);
+            return TopicDetailResponse.fromGuestQuery(topic);
         }
 
         Member member = findMemberById(authMember.getMemberId());
@@ -150,6 +144,12 @@ public class TopicQueryService {
         }
 
         return getUserTopicDetailResponses(authMember, topics);
+    }
+
+    private List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
+        return topics.stream()
+                .map(TopicDetailResponse::fromGuestQuery)
+                .toList();
     }
 
     private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember, List<Topic> topics) {
@@ -195,7 +195,7 @@ public class TopicQueryService {
             return topicRepository.findByCreatorId(memberId)
                     .stream()
                     .filter(authMember::canRead)
-                    .map(TopicResponse::ofGuestQuery)
+                    .map(TopicResponse::fromGuestQuery)
                     .toList();
         }
 
@@ -248,7 +248,7 @@ public class TopicQueryService {
                 .map(Pin::getTopic)
                 .distinct()
                 .filter(authMember::canRead)
-                .map(TopicResponse::ofGuestQuery)
+                .map(TopicResponse::fromGuestQuery)
                 .toList();
     }
 
@@ -264,7 +264,7 @@ public class TopicQueryService {
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
-                .map(TopicResponse::ofGuestQuery)
+                .map(TopicResponse::fromGuestQuery)
                 .toList();
     }
 
