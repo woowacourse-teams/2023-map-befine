@@ -213,8 +213,4 @@ const RouteButton = styled(Button)`
   box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.5);
 `;
 
-const ModalWrapper = styled(Flex)`
-  width: 100%;
-  height: 100%;
-`;
 export default Navbar;

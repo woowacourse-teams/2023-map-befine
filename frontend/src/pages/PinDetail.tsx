@@ -26,14 +26,12 @@ interface PinDetailProps {
 const userToken = localStorage.getItem('userToken');
 
 const PinDetail = ({
-  topicId,
   pinId,
   isEditPinDetail,
   setIsEditPinDetail,
 }: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinProps | null>(null);
-  const [selectedTopic, setSelectedTopic] = useState<any>(null); //토픽이 없을 때 사용하는 변수
   const { showToast } = useToast();
   const {
     formValues,
