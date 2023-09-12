@@ -3,7 +3,7 @@ import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
-import { postApi } from '../apis/postApi';
+import { postApi, postFormApi } from '../apis/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
@@ -42,6 +42,10 @@ const NewTopic = () => {
   const { setTags } = useContext(TagContext);
 
   const [members, setMembers] = useState<MemberProps[]>([]);
+
+  const [showImage, setShowImage] = useState<string>('');
+  const [formImage, setFormImage] = useState<File | null>(null);
+  const formData = new FormData();
 
   useEffect(() => {
     const getMemberData = async () => {
@@ -109,11 +113,8 @@ const NewTopic = () => {
     }
   };
 
-  const postToServer = async () => {
-    const response =
-      taggedIds?.length > 1 && typeof taggedIds !== 'string'
-        ? await mergeTopics()
-        : await createTopic();
+  const postToServer = async () => { 
+    const response = await createTopic();
     const location = response?.headers.get('Location');
 
     if (location) {
@@ -133,29 +134,15 @@ const NewTopic = () => {
     return response;
   };
 
-  const mergeTopics = async () => {
-    try {
-      return await postApi('/topics/merge', {
-        image: formValues.image || DEFAULT_TOPIC_IMAGE,
-        name: formValues.name,
-        description: formValues.description,
-        topics: taggedIds,
-        publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-        permissionType: isAll ? 'ALL_MEMBERS' : 'GROUP_ONLY',
-      });
-    } catch {
-      showToast(
-        'error',
-        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
-      );
-      throw new Error('지도 생성 실패');
-    }
-  };
-
   const createTopic = async () => {
     try {
-      return await postApi('/topics/new', {
-        image: formValues.image || DEFAULT_TOPIC_IMAGE,
+      const formData = new FormData();
+      if (!formImage) return;
+
+      console.log('1');
+      formData.append('image', formImage);
+
+      const objectData = {
         name: formValues.name,
         description: formValues.description,
         pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
@@ -165,7 +152,14 @@ const NewTopic = () => {
           : isAll
           ? 'ALL_MEMBERS'
           : 'GROUP_ONLY',
-      });
+      };
+
+      const data = JSON.stringify(objectData);
+      const jsonBlob = new Blob([data], { type: 'application/json' });
+
+      formData.append('request', jsonBlob);
+
+      return await postFormApi('/topics/new', formData);
     } catch {
       showToast(
         'error',
@@ -174,6 +168,24 @@ const NewTopic = () => {
       throw new Error('지도 생성 실패');
     }
   };
+
+  const handleImageFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
+      console.log('No file selected');
+      return;
+    }
+
+    setFormImage(file);
+    setShowImage(URL.createObjectURL(file))
+  };
+
+  useEffect(() => {
+    console.log(formValues);
+  }, [formValues]);
 
   return (
     <form onSubmit={onSubmit}>
@@ -185,21 +197,20 @@ const NewTopic = () => {
         <Text color="black" $fontSize="large" $fontWeight="bold">
           지도 생성
         </Text>
+        <Space size={2} />
+        <Flex>
+          {showImage && <ShowImage src={showImage} alt={`토픽 사진 대체`}/>}
+          <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+          <input
+            id="file"
+            type="file"
+            name="image"
+            onChange={handleImageFileChange}
+            style={{ display: 'none' }}
+          />
+        </Flex>
+
         <Space size={5} />
-        <InputContainer
-          tagType="input"
-          containerTitle="지도 이미지"
-          isRequired={false}
-          name="image"
-          value={formValues.image}
-          placeholder="이미지 URL을 입력해주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={1}
-          autoFocus
-          errorMessage={errorMessages.image}
-          maxLength={2048}
-        />
-        <Space size={1} />
         <InputContainer
           tagType="input"
           containerTitle="지도 이름"
@@ -424,6 +435,32 @@ const CheckboxListItem = styled.div`
   &:hover {
     background-color: #f8f9fa;
   }
+`;
+
+const ImageInput = styled.input`
+  height: 40px;
+  width: 78%;
+  padding: 0 10px;
+
+  border: 1px solid ${({ theme }) => theme.color.gray};
+  color: #999999;
+`;
+
+const ImageInputLabel = styled.label`
+  height: 40px;
+  margin-left: 10px;
+  padding: 10px 10px;
+
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  cursor: pointer;
+`;
+
+const ShowImage = styled.img`
+  width: 80px;
+  height: 80px;
 `;
 
 export default NewTopic;
