@@ -9,9 +9,5 @@ export const setFullScreenResponsive = () => {
     @media (max-width: 724px) {
       width: 332px;
     }
-
-    @media (max-width: 372px) {
-      width: 332px;
-    }
   `;
 };

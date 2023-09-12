@@ -130,10 +130,6 @@ const Wrapper = styled.div<ModalWrapperType>`
   left: ${({ left }) => left && left};
   z-index: 2;
 
-  @media (max-width: 1076px) {
-    left: 50%;
-  }
-
   @media (max-width: 744px) {
     ${getModalPosition('bottom')};
     width: 100%;
