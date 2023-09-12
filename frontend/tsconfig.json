@@ -14,5 +14,10 @@
     "types": ["cypress"]
   },
   "exclude": ["node_modules"],
-  "include": ["./src/**/*.tsx", "./src/**/*.ts", "cypress/**/*"]
+  "include": [
+    "./src/**/*.tsx",
+    "./src/**/*.ts",
+    "cypress/**/*",
+    "./global.d.ts"
+  ]
 }
