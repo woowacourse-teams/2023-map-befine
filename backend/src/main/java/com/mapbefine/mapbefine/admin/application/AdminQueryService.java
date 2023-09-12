@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.admin.application;
 
+import com.mapbefine.mapbefine.admin.dto.AdminMemberResponse;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -20,14 +21,14 @@ public class AdminQueryService {
         this.memberRepository = memberRepository;
     }
 
-    public List<MemberDetailResponse> findAllMemberDetails(AuthMember authMember) {
+    public List<AdminMemberResponse> findAllMemberDetails(AuthMember authMember) {
         Member admin = findMemberById(authMember.getMemberId());
         validateAdminPermission(admin);
 
         List<Member> members = memberRepository.findAll();
 
         return members.stream()
-                .map(MemberDetailResponse::from)
+                .map(AdminMemberResponse::from)
                 .toList();
     }
 
