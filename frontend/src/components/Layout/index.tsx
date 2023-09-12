@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext } from 'react';
 import Map from '../Map';
 import Flex from '../common/Flex';
 import Logo from './Logo';
@@ -14,42 +14,14 @@ import Navbar from './Navbar';
 import ModalProvider from '../../context/ModalContext';
 import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
 import TagProvider from '../../context/TagContext';
-import InfoDefalutImg from '../../assets/InfoDefalutImg.svg';
 import Box from '../common/Box';
 
 type LayoutProps = {
   children: React.ReactNode;
 };
 
-declare global {
-  interface Window {
-    Tmapv3: any;
-    daum: any;
-  }
-}
-
 const Layout = ({ children }: LayoutProps) => {
-  const { Tmapv3 } = window;
-  const mapContainer = useRef(null);
   const { width } = useContext(LayoutWidthContext);
-  const isLogined = localStorage.getItem('userToken');
-
-  const loginButtonClick = () => {
-    window.location.href = 'https://mapbefine.kro.kr/api/oauth/kakao';
-  };
-
-  const [map, setMap] = useState(null);
-
-  useEffect(() => {
-    const map = new Tmapv3.Map(mapContainer.current, {
-      center: new Tmapv3.LatLng(37.5154, 127.1029),
-    });
-    map.setZoomLimit(7, 18);
-    setMap(map);
-    return () => {
-      map.destroy();
-    };
-  }, []);
 
   return (
     <ToastProvider>
@@ -86,7 +58,7 @@ const Layout = ({ children }: LayoutProps) => {
                       <Navbar $layoutWidth={width} />
                       <Toast />
                     </LayoutFlex>
-                    <Map ref={mapContainer} map={map} $minWidth={width} />
+                    <Map />
                   </Flex>
                 </TagProvider>
               </SeeTogetherProvider>
@@ -100,13 +72,6 @@ const Layout = ({ children }: LayoutProps) => {
 
 const LayoutFlex = styled(Flex)`
   transition: all ease 0.3s;
-`;
-
-const MyInfoImg = styled.img`
-  width: 40px;
-  height: 40px;
-
-  border-radius: 50%;
 `;
 
 export default Layout;

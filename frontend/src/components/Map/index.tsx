@@ -1,4 +1,4 @@
-import { forwardRef, useContext } from 'react';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import Flex from '../common/Flex';
 import { MarkerContext } from '../../context/MarkerContext';
 import useMapClick from '../../hooks/useMapClick';
@@ -9,24 +9,44 @@ import useAnimateClickedPin from '../../hooks/useAnimateClickedPin';
 import { styled } from 'styled-components';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 
-const Map = (props: any, ref: any) => {
-  const { map } = props;
+const Map = () => {
+  const { Tmapv3 } = window;
+
   const { markers } = useContext(MarkerContext);
   const { width } = useContext(LayoutWidthContext);
+  const [mapInstance, setMapInstance] = useState(null);
 
-  useMapClick(map);
-  useClickedCoordinate(map);
-  useUpdateCoordinates(map);
+  const mapContainer = useRef(null);
 
-  useFocusToMarker(map, markers);
-  useAnimateClickedPin(map, markers);
+  useLayoutEffect(() => {
+    if (!Tmapv3 || !mapContainer.current) return;
+
+    const map = new Tmapv3.Map(mapContainer.current, {
+      center: new Tmapv3.LatLng(37.5154, 127.1029),
+    });
+
+    map.setZoomLimit(7, 17);
+
+    setMapInstance(map);
+
+    return () => {
+      map.destroy();
+    };
+  }, []);
+
+  useMapClick(mapInstance);
+  useClickedCoordinate(mapInstance);
+  useUpdateCoordinates(mapInstance!);
+
+  useFocusToMarker(mapInstance, markers);
+  useAnimateClickedPin(mapInstance, markers);
 
   return (
     <MapFlex
       aria-label="괜찮을지도 지도 이미지"
       flex="1"
       id="map"
-      ref={ref}
+      ref={mapContainer}
       height="100vh"
       $minWidth={width}
     />
@@ -42,4 +62,4 @@ const MapFlex = styled(Flex)`
   }
 `;
 
-export default forwardRef(Map);
+export default Map;
