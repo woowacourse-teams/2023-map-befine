@@ -17,6 +17,7 @@ import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 
 interface PinDetailProps {
+  width: '372px' | '100vw';
   topicId: string;
   pinId: number;
   isEditPinDetail: boolean;
@@ -26,6 +27,7 @@ interface PinDetailProps {
 const userToken = localStorage.getItem('userToken');
 
 const PinDetail = ({
+  width,
   topicId,
   pinId,
   isEditPinDetail,
@@ -57,23 +59,19 @@ const PinDetail = ({
     showToast('error', '로그인 후 사용해주세요.');
   };
 
-  useEffect(() => {
-    const getPinData = async () => {
-      const pinData = await getApi<PinProps>(`/pins/${pinId}`);
-      setPin(pinData);
-      setFormValues({
-        name: pinData.name,
-        images: pinData.images,
-        description: pinData.description,
-      });
-    };
+  const getPinData = async () => {
+    const pinData = await getApi<PinProps>(`/pins/${pinId}`);
+    setPin(pinData);
+    setFormValues({
+      name: pinData.name,
+      images: pinData.images,
+      description: pinData.description,
+    });
+  };
 
+  useEffect(() => {
     getPinData();
   }, [pinId, searchParams]);
-
-  const updateQueryString = (key: string, value: string) => {
-    setSearchParams({ ...Object.fromEntries(searchParams), [key]: value });
-  };
 
   const onClickEditPin = () => {
     setIsEditPinDetail(true);
@@ -82,7 +80,6 @@ const PinDetail = ({
       images: '',
       description: '',
     });
-    updateQueryString('edit', 'true');
   };
 
   const copyContent = async () => {
@@ -98,19 +95,22 @@ const PinDetail = ({
 
   if (isEditPinDetail)
     return (
-      <UpdatedPinDetail
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-        setIsEditing={setIsEditPinDetail}
-        pinId={pinId}
-        formValues={formValues}
-        errorMessages={errorMessages}
-        onChangeInput={onChangeInput}
-      />
+      <Wrapper $layoutWidth={width} $selectedPinId={pinId}>
+        <UpdatedPinDetail
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+          setIsEditing={setIsEditPinDetail}
+          updatePinDetailAfterEditing={getPinData}
+          pinId={pinId}
+          formValues={formValues}
+          errorMessages={errorMessages}
+          onChangeInput={onChangeInput}
+        />
+      </Wrapper>
     );
 
   return (
-    <>
+    <Wrapper $layoutWidth={width} $selectedPinId={pinId} data-cy="pin-detail">
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
@@ -184,20 +184,24 @@ const PinDetail = ({
         </Text>
       </Flex>
 
+      <Space size={7} />
+
       <ButtonsWrapper>
         <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
           내 지도에 저장하기
         </SaveToMyMapButton>
-        <Space size={4} />
+        <Space size={3} />
         <ShareButton variant="secondary" onClick={copyContent}>
           공유하기
         </ShareButton>
       </ButtonsWrapper>
 
+      <Space size={8} />
+
       <Modal
         modalKey="addToMyTopicList"
         position="center"
-        width="768px"
+        width="744px"
         height="512px"
         $dimmedColor="rgba(0,0,0,0.25)"
       >
@@ -213,9 +217,44 @@ const PinDetail = ({
           <AddToMyTopicList pin={pin} />
         </ModalContentsWrapper>
       </Modal>
-    </>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.section<{
+  $layoutWidth: '372px' | '100vw';
+  $selectedPinId: number | null;
+}>`
+  display: flex;
+  flex-direction: column;
+  width: ${({ $layoutWidth }) => $layoutWidth};
+  height: 100vh;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  left: ${({ $layoutWidth }) => $layoutWidth};
+  padding: ${({ theme }) => theme.spacing[4]};
+  border-left: 1px solid ${({ theme }) => theme.color.gray};
+  background-color: ${({ theme }) => theme.color.white};
+  z-index: 1;
+
+  @media (max-width: 1076px) {
+    width: 50vw;
+    margin-top: 50vh;
+    height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
+    left: ${({ $selectedPinId }) => $selectedPinId && '50vw'};
+  }
+
+  @media (max-width: 744px) {
+    border-left: 0;
+    left: 0;
+    width: 100vw;
+  }
+
+  @media (max-width: 372px) {
+    width: ${({ $layoutWidth }) => $layoutWidth};
+  }
+`;
 
 const PinDetailImgContainer = styled(Flex)`
   box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
@@ -251,8 +290,7 @@ const ButtonsWrapper = styled.div`
   align-items: center;
   width: 332px;
   height: 48px;
-  position: fixed;
-  bottom: 24px;
+  margin: 0 auto;
 `;
 
 export default PinDetail;

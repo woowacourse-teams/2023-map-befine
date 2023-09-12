@@ -10,6 +10,7 @@ import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleto
 import { Suspense, lazy } from 'react';
 import Text from '../components/common/Text';
 import useNavigator from '../hooks/useNavigator';
+import { setFullScreenResponsive } from '../constants/responsive';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
@@ -70,6 +71,8 @@ const Profile = () => {
 const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
+
+  ${setFullScreenResponsive()}
 `;
 
 const MyInfoWrapper = styled(Flex)`

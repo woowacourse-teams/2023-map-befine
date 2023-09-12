@@ -8,6 +8,7 @@ import Text from '../components/common/Text';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { Suspense, lazy } from 'react';
 import useNavigator from '../hooks/useNavigator';
+import { setFullScreenResponsive } from '../constants/responsive';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
@@ -45,6 +46,8 @@ const SeeAllNearTopics = () => {
 const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
+
+  ${setFullScreenResponsive()}
 `;
 
 export default SeeAllNearTopics;

@@ -111,7 +111,7 @@ const InputContainer = ({
 };
 const ErrorText = styled.span`
   display: block;
-  height: 20px;
+  min-height: 20px;
   font-size: 14px;
   color: #ff4040;
 `;

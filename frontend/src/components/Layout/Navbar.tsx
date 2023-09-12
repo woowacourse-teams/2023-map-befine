@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { styled } from 'styled-components';
+import { css, styled } from 'styled-components';
 import useNavigator from '../../hooks/useNavigator';
 import Flex from '../common/Flex';
 import Button from '../common/Button';
@@ -73,8 +73,12 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   };
 
   return (
-    <Wrapper $layoutWidth={$layoutWidth}>
+    <Wrapper
+      $isAddPage={navbarHighlights.addMapOrPin}
+      $layoutWidth={$layoutWidth}
+    >
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={goToHome}
         tabIndex={10}
         ref={firstElement}
@@ -90,9 +94,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} $layoutWidth={$layoutWidth} />
-
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={goToSeeTogether}
         tabIndex={10}
         ref={secondElement}
@@ -109,9 +112,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         <SeeTogetherCounter />
       </IconWrapper>
 
-      <IconSpace size={7} $layoutWidth={$layoutWidth} />
-
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={onClickAddMapOrPin}
         tabIndex={10}
         ref={thirdElement}
@@ -127,9 +129,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} $layoutWidth={$layoutWidth} />
-
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={goToFavorite}
         tabIndex={11}
         ref={fourElement}
@@ -145,9 +146,8 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         </Text>
       </IconWrapper>
 
-      <IconSpace size={7} $layoutWidth={$layoutWidth} />
-
       <IconWrapper
+        $layoutWidth={$layoutWidth}
         onClick={goToProfile}
         tabIndex={11}
         ref={FifthElement}
@@ -186,35 +186,53 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   );
 };
 
-const Wrapper = styled.nav<{ $layoutWidth: '100vw' | '372px' }>`
+const Wrapper = styled.nav<{
+  $isAddPage: boolean;
+  $layoutWidth: '100vw' | '372px';
+}>`
   width: 100%;
-  height: 64px;
+  min-height: 56px;
   display: flex;
   justify-content: ${({ $layoutWidth }) =>
     $layoutWidth === '100vw' ? 'center' : 'space-around'};
   align-items: center;
+  background-color: ${({ theme }) => theme.color.white};
+  z-index: 2;
+  box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 1076px) {
+    justify-content: space-around;
+
+    ${({ $isAddPage }) =>
+      $isAddPage &&
+      css`
+        position: fixed;
+        bottom: 0;
+      `}
+  }
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<{ $layoutWidth: '100vw' | '372px' }>`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 52px;
   cursor: pointer;
-`;
+  margin-right: ${({ $layoutWidth }) =>
+    $layoutWidth === '100vw' ? '48px' : '0'};
 
-const IconSpace = styled(Space)<{ $layoutWidth: '100vw' | '372px' }>`
-  display: ${({ $layoutWidth }) =>
-    $layoutWidth === '100vw' ? 'block' : 'none'};
+  &:last-of-type {
+    margin-right: 0;
+  }
+
+  @media (max-width: 1076px) {
+    margin-right: 0;
+  }
 `;
 
 const RouteButton = styled(Button)`
   box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.5);
 `;
 
-const ModalWrapper = styled(Flex)`
-  width: 100%;
-  height: 100%;
-`;
 export default Navbar;

@@ -11,7 +11,7 @@ defaults:
     working-directory: ./frontend
 
 jobs:
-  jest:
+  jest_cypress:
     runs-on: ubuntu-22.04
 
     steps:
@@ -29,10 +29,8 @@ jobs:
       - name: Run Jest test
         run: npm run test
 
-      - name: Start npm
-        run: npm run dev
-
       - name: Run Cypress
         uses: cypress-io/github-action@v5
         with:
-          start: npm run cypress
+          working-directory: frontend
+          start: npm run dev
