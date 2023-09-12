@@ -177,6 +177,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 Boolean.FALSE,
                 0,
                 Boolean.FALSE,
+                Boolean.FALSE,
                 LocalDateTime.now(),
                 List.of(
                         new PinResponse(

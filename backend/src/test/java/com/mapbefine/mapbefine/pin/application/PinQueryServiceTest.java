@@ -108,7 +108,7 @@ class PinQueryServiceTest {
         // then
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("updatedAt")
-                .isEqualTo(PinDetailResponse.from(pin));
+                .isEqualTo(PinDetailResponse.of(pin, Boolean.TRUE));
     }
 
     @Test

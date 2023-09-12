@@ -94,7 +94,7 @@ class PinCommandServiceTest {
         assertThat(savedLocation.getId()).isEqualTo(location.getId());
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("updatedAt")
-                .isEqualTo(PinDetailResponse.from(pin));
+                .isEqualTo(PinDetailResponse.of(pin, Boolean.TRUE));
     }
 
     @Test
@@ -124,7 +124,7 @@ class PinCommandServiceTest {
         assertThat(savedLocation.getId()).isNotEqualTo(location.getId());
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("updatedAt")
-                .isEqualTo(PinDetailResponse.from(pin));
+                .isEqualTo(PinDetailResponse.of(pin, Boolean.TRUE));
 
         List<Location> locations = locationRepository.findAll();
         assertThat(locations).hasSize(2);
@@ -224,10 +224,10 @@ class PinCommandServiceTest {
 
         // then
         pinImageRepository.findById(pinImageId)
-                        .ifPresentOrElse(
-                                found -> assertThat(found.isDeleted()).isTrue(),
-                                Assertions::fail
-                        );
+                .ifPresentOrElse(
+                        found -> assertThat(found.isDeleted()).isTrue(),
+                        Assertions::fail
+                );
     }
 
     private long savePinImageAndGetId(long pinId) {
