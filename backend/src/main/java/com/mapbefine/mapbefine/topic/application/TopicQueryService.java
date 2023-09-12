@@ -140,16 +140,10 @@ public class TopicQueryService {
         validateReadableTopics(authMember, topics);
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return getGuestTopicDetailResponses(topics);
+            return TopicDetailResponse.ofGuestQueries(topics);
         }
 
         return getUserTopicDetailResponses(authMember, topics);
-    }
-
-    private List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
-        return topics.stream()
-                .map(TopicDetailResponse::fromGuestQuery)
-                .toList();
     }
 
     private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember, List<Topic> topics) {

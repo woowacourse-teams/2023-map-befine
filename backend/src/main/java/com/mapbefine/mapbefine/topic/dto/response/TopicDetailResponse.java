@@ -71,4 +71,11 @@ public record TopicDetailResponse(
                 pinResponses
         );
     }
+
+    public static List<TopicDetailResponse> ofGuestQueries(List<Topic> topics) {
+
+        return topics.stream()
+                .map(TopicDetailResponse::fromGuestQuery)
+                .toList();
+    }
 }
