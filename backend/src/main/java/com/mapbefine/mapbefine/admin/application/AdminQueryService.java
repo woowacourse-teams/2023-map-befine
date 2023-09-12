@@ -1,14 +1,16 @@
 package com.mapbefine.mapbefine.admin.application;
 
+import com.mapbefine.mapbefine.admin.dto.AdminMemberDetailResponse;
 import com.mapbefine.mapbefine.admin.dto.AdminMemberResponse;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.exception.MemberErrorCode;
 import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.permission.exception.PermissionErrorCode;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +45,17 @@ public class AdminQueryService {
         }
 
         throw new PermissionForbiddenException(PermissionErrorCode.PERMISSION_FORBIDDEN_BY_NOT_ADMIN);
+    }
+
+    public AdminMemberDetailResponse findMemberDetail(AuthMember authMember, Long memberId) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        validateAdminPermission(member);
+
+        Member findMember = findMemberById(memberId);
+        List<Topic> topics = findMember.getCreatedTopics();
+        List<Pin> pins = findMember.getCreatedPins();
+
+        return AdminMemberDetailResponse.of(member, topics, pins);
     }
 }
