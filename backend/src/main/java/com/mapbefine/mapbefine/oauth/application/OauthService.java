@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class OauthService {
 
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
-    private AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
-    private OauthMemberClientComposite oauthMemberClientComposite;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
+    private final OauthMemberClientComposite oauthMemberClientComposite;
 
     public OauthService(
             MemberRepository memberRepository,
