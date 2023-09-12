@@ -12,6 +12,7 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.net.URI;
 import java.util.List;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,14 +42,15 @@ public class TopicController {
     }
 
     @LoginRequired
-    @PostMapping("/new")
+    @PostMapping(
+            value = "/new",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
     public ResponseEntity<Void> create(
             AuthMember member,
             @RequestPart TopicCreateRequestWithOutImage request,
             @RequestPart MultipartFile image
     ) {
-        System.out.println(request);
-        System.out.println(image);
         TopicCreateRequest topicCreateRequest = TopicCreateRequest.of(request, image);
         Long topicId = topicCommandService.saveTopic(member, topicCreateRequest);
 
