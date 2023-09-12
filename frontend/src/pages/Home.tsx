@@ -41,7 +41,7 @@ const Home = () => {
   }, []);
 
   return (
-    <Wrapper position="relative" as="article">
+    <Wrapper>
       <Space size={5} />
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
@@ -79,9 +79,10 @@ const Home = () => {
   );
 };
 
-const Wrapper = styled(Box)`
+const Wrapper = styled.article`
   width: 1036px;
   margin: 0 auto;
+  position: relative;
 
   ${setFullScreenResponsive()}
 `;
