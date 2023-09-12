@@ -23,14 +23,19 @@ public class AdminCommandService {
 
     private final MemberRepository memberRepository;
     private final TopicRepository topicRepository;
+    private final PinRepository pinRepository;
+    private final PinImageRepository pinImageRepository;
 
     public AdminCommandService(
             MemberRepository memberRepository,
-            TopicRepository topicRepository
+            TopicRepository topicRepository,
+            PinRepository pinRepository,
+            PinImageRepository pinImageRepository
     ) {
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
-
+        this.pinRepository = pinRepository;
+        this.pinImageRepository = pinImageRepository;
     }
 
     // TODO: 2023/09/12 블랙리스트..?
@@ -77,6 +82,22 @@ public class AdminCommandService {
     private Topic findTopicById(Long topicId) {
         return topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicException.TopicNotFoundException(TOPIC_NOT_FOUND, List.of(topicId)));
+    }
+
+    public void deletePin(AuthMember authMember, Long pinId) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        validateAdminPermission(member);
+
+        pinRepository.deleteById(pinId);
+    }
+
+    public void deletePinImage(AuthMember authMember, Long pinImageId) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        validateAdminPermission(member);
+
+        pinImageRepository.deleteById(pinImageId);
     }
 
 }
