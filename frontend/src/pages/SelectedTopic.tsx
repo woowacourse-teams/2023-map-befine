@@ -39,7 +39,7 @@ const SelectedTopic = () => {
   const { setCoordinates } = useContext(CoordinatesContext);
   const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('');
+  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
 
   const getAndSetDataFromServer = async () => {
     const data = await getApi<TopicDetailProps[]>(`/topics/ids?ids=${topicId}`);
