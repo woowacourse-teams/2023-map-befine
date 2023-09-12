@@ -43,7 +43,7 @@ public class TopicQueryService {
 
     private static List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
         return topics.stream()
-                .map(topic -> TopicDetailResponse.of(topic, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE))
+                .map(TopicDetailResponse::ofGuestQuery)
                 .toList();
     }
 
@@ -110,7 +110,7 @@ public class TopicQueryService {
         validateReadableTopic(authMember, topic);
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return TopicDetailResponse.of(topic, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE);
+            return TopicDetailResponse.ofGuestQuery(topic);
         }
 
         Member member = findMemberById(authMember.getMemberId());
@@ -195,7 +195,7 @@ public class TopicQueryService {
             return topicRepository.findByCreatorId(memberId)
                     .stream()
                     .filter(authMember::canRead)
-                    .map(topic -> TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
+                    .map(TopicResponse::ofGuestQuery)
                     .toList();
         }
 
@@ -248,11 +248,8 @@ public class TopicQueryService {
                 .map(Pin::getTopic)
                 .distinct()
                 .filter(authMember::canRead)
-                .map(topic -> TopicResponse.from(
-                        topic,
-                        Boolean.FALSE,
-                        Boolean.FALSE
-                )).toList();
+                .map(TopicResponse::ofGuestQuery)
+                .toList();
     }
 
     public List<TopicResponse> findAllBestTopics(AuthMember authMember) {
@@ -267,11 +264,8 @@ public class TopicQueryService {
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
-                .map(topic -> TopicResponse.from(
-                        topic,
-                        Boolean.FALSE,
-                        Boolean.FALSE
-                )).toList();
+                .map(TopicResponse::ofGuestQuery)
+                .toList();
     }
 
     private List<TopicResponse> getUserBestTopicResponse(AuthMember authMember) {

@@ -20,6 +20,7 @@ public record TopicDetailResponse(
         LocalDateTime updatedAt,
         List<PinResponse> pins
 ) {
+
     public static TopicDetailResponse of(
             Topic topic,
             Boolean isInAtlas,
@@ -43,6 +44,29 @@ public record TopicDetailResponse(
                 topic.countBookmarks(),
                 isBookmarked,
                 canUpdate,
+                topic.getUpdatedAt(),
+                pinResponses
+        );
+    }
+
+    public static TopicDetailResponse ofGuestQuery(Topic topic) {
+        List<PinResponse> pinResponses = topic.getPins().stream()
+                .map(PinResponse::from)
+                .toList();
+
+        TopicInfo topicInfo = topic.getTopicInfo();
+
+        return new TopicDetailResponse(
+                topic.getId(),
+                topicInfo.getName(),
+                topicInfo.getDescription(),
+                topicInfo.getImageUrl(),
+                topic.getCreator().getMemberInfo().getNickName(),
+                topic.countPins(),
+                Boolean.FALSE,
+                topic.countBookmarks(),
+                Boolean.FALSE,
+                Boolean.FALSE,
                 topic.getUpdatedAt(),
                 pinResponses
         );
