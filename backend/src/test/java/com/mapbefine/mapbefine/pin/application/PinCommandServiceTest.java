@@ -85,7 +85,7 @@ class PinCommandServiceTest {
     @DisplayName("핀을 저장하려는 위치(Location)가 존재하면 해당 위치에 핀을 저장한다.")
     void saveIfExistLocation_Success() {
         // given, when
-        long savedPinId = pinCommandService.save(authMember, createRequest);
+        long savedPinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
         PinDetailResponse actual = pinQueryService.findDetailById(authMember, savedPinId);
         Pin pin = pinRepository.findById(savedPinId).get();
         Location savedLocation = pin.getLocation();
@@ -115,7 +115,7 @@ class PinCommandServiceTest {
         );
 
         // when
-        long savedPinId = pinCommandService.save(authMember, createRequest);
+        long savedPinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
         PinDetailResponse actual = pinQueryService.findDetailById(authMember, savedPinId);
         Pin pin = pinRepository.findById(savedPinId).get();
         Location savedLocation = pin.getLocation();
@@ -136,15 +136,14 @@ class PinCommandServiceTest {
     @Test
     @DisplayName("권한이 없는 토픽에 핀을 저장하면 예외를 발생시킨다.")
     void save_FailByForbidden() {
-
-        assertThatThrownBy(() -> pinCommandService.save(new Guest(), createRequest))
+        assertThatThrownBy(() -> pinCommandService.save(new Guest(), List.of(BASE_IMAGE_FILE), createRequest))
                 .isInstanceOf(PinForbiddenException.class);
     }
 
     @Test
     @DisplayName("권한이 없는 토픽에 핀을 수정하면 예외를 발생시킨다.")
     void update_FailByForbidden() {
-        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
 
         assertThatThrownBy(() -> pinCommandService.update(
                 new Guest(), pinId, new PinUpdateRequest("name", "description"))
@@ -156,7 +155,7 @@ class PinCommandServiceTest {
     @DisplayName("핀을 삭제하면 해당 핀을 soft delete 하고, 해당 핀의 이미지들도 soft delete 한다.")
     void removeById_Success() {
         // given
-        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
         Pin pin = pinRepository.findById(pinId).get();
         PinImage.createPinImageAssociatedWithPin(BASE_IMAGE, pin);
 
@@ -177,7 +176,7 @@ class PinCommandServiceTest {
     @Test
     @DisplayName("권한이 없는 토픽의 핀을 삭제하면 예외를 발생시킨다.")
     void removeById_FailByForbidden() {
-        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
 
         assertThatThrownBy(() -> pinCommandService.removeById(new Guest(), pinId))
                 .isInstanceOf(PinForbiddenException.class);
@@ -187,7 +186,7 @@ class PinCommandServiceTest {
     @DisplayName("핀 id를 전달받아 해당하는 핀에 핀 이미지를 추가한다.")
     void addImage_Success() {
         // given
-        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
 
         // when
         long pinImageId = savePinImageAndGetId(pinId);
@@ -204,7 +203,7 @@ class PinCommandServiceTest {
     @DisplayName("권한이 없는 토픽의 핀에 핀 이미지를 추가하면 예외를 발생시킨다.")
     void addImage_FailByForbidden() {
         // given
-        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
 
         // when, then
         assertThatThrownBy(() -> pinCommandService.addImage(new Guest(), new PinImageCreateRequest(pinId,
@@ -216,7 +215,7 @@ class PinCommandServiceTest {
     @DisplayName("핀 이미지의 id를 전달받아 해당하는 핀 이미지를 soft delete 한다.")
     void removeImageById_Success() {
         // given
-        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
         long pinImageId = savePinImageAndGetId(pinId);
 
         // when
@@ -241,7 +240,7 @@ class PinCommandServiceTest {
     @Test
     @DisplayName("권한이 없는 토픽의 핀 이미지를 삭제하면 예외를 발생시킨다.")
     void removeImageById_FailByForbidden() {
-        long pinId = pinCommandService.save(authMember, createRequest);
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
         long pinImageId = savePinImageAndGetId(pinId);
 
         assertThatThrownBy(() -> pinCommandService.removeImageById(new Guest(), pinImageId))

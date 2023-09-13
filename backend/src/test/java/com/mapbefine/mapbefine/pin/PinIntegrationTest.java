@@ -12,6 +12,7 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
@@ -70,7 +71,7 @@ class PinIntegrationTest extends IntegrationTest {
                 topic.getId(),
                 "pin",
                 "description",
-                "기존에 없는 주소",
+                "address",
                 "legalDongCode",
                 37,
                 126
@@ -79,7 +80,7 @@ class PinIntegrationTest extends IntegrationTest {
                 topic.getId(),
                 "pine2",
                 "description",
-                "기존에 없는 주소",
+                "address",
                 "legalDongCode",
                 37.12345,
                 126.12345
@@ -98,10 +99,17 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> createPin(PinCreateRequest request) {
-        return RestAssured.given().log().all()
+        String imageFilePath = getClass().getClassLoader()
+                .getResource("test.png")
+                .getPath();
+
+        return RestAssured.given()
+                .log().all()
                 .header(AUTHORIZATION, authHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
+                .multiPart("images", new File(imageFilePath), MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("images", new File(imageFilePath), MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("images", new File(imageFilePath), MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("request", request, MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/pins")
                 .then().log().all()
                 .extract();
@@ -151,6 +159,9 @@ class PinIntegrationTest extends IntegrationTest {
 
         // when
         ExtractableResponse<Response> response = findById(pinId);
+
+        PinDetailResponse as = response.as(PinDetailResponse.class);
+        System.out.println(as);
 
         // then
         assertThat(response.jsonPath().getString("name"))
