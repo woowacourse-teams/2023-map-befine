@@ -24,7 +24,7 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
 
     List<Pin> findAllByTopicId(Long topicId);
 
-    List<Pin> findByCreatorId(Long creatorId);
+    List<Pin> findAllByCreatorId(Long creatorId);
 
     List<Pin> findAllByOrderByUpdatedAtDesc();
 }

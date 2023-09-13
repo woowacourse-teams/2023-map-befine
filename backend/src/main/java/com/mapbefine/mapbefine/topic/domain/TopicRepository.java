@@ -22,6 +22,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     boolean existsById(Long id);
 
-    List<Topic> findByCreatorId(Long creatorId);
+    List<Topic> findAllByCreatorId(Long creatorId);
 
 }
