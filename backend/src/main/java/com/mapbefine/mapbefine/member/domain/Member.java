@@ -9,7 +9,6 @@ import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,19 +39,19 @@ public class Member extends BaseTimeEntity {
     @Embedded
     private OauthId oauthId;
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "creator")
     private List<Topic> createdTopics = new ArrayList<>();
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "creator")
     private List<Pin> createdPins = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member")
     private List<Permission> topicsWithPermissions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member")
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member")
     private List<Atlas> atlantes = new ArrayList<>();
 
     private Member(MemberInfo memberInfo, OauthId oauthId) {
@@ -65,13 +64,15 @@ public class Member extends BaseTimeEntity {
             String email,
             String imageUrl,
             Role role,
+            Status status,
             OauthId oauthId
     ) {
         MemberInfo memberInfo = MemberInfo.of(
                 nickName,
                 email,
                 imageUrl,
-                role
+                role,
+                status
         );
 
         return new Member(memberInfo, oauthId);
@@ -86,7 +87,7 @@ public class Member extends BaseTimeEntity {
     ) {
         String nickName = createNickname(nickname);
 
-        return Member.of(nickName, email, imageUrl, role, oauthId);
+        return Member.of(nickName, email, imageUrl, role, Status.NORMAL, oauthId);
     }
 
     private static String createNickname(String nickname) {
@@ -112,7 +113,8 @@ public class Member extends BaseTimeEntity {
                 nickName,
                 email,
                 imageUrl,
-                memberInfo.getRole()
+                memberInfo.getRole(),
+                memberInfo.getStatus()
         );
     }
 
@@ -150,4 +152,7 @@ public class Member extends BaseTimeEntity {
                 .toList();
     }
 
+    public boolean isNormalStatus() {
+        return memberInfo.getStatus() == Status.NORMAL;
+    }
 }

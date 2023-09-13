@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.member.domain.Status;
 import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 
@@ -16,6 +17,7 @@ public class MemberFixture {
                 email,
                 "https://map-befine-official.github.io/favicon.png",
                 role,
+                Status.NORMAL,
                 new OauthId(1L, OauthServerType.KAKAO)
         );
     }
@@ -26,6 +28,7 @@ public class MemberFixture {
                 email,
                 "https://map-befine-official.github.io/favicon.png",
                 role,
+                Status.NORMAL,
                 oauthId)
                 ;
     }
