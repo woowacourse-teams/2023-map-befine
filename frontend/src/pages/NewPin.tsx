@@ -8,7 +8,7 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../apis/getApi';
 import { TopicCardProps } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { NewPinFormProps } from '../types/FormValues';
+import { NewPinFormProps } from '../types/tmap';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';

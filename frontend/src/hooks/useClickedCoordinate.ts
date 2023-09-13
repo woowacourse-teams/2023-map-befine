@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 
-export default function useClickedCoordinate(map: TMap) {
+export default function useClickedCoordinate(map: TMap | null) {
   const { Tmapv3 } = window;
   const { clickedCoordinate } = useContext(CoordinatesContext);
   const { displayClickedMarker } = useContext(MarkerContext);

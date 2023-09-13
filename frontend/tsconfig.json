@@ -18,6 +18,6 @@
     "./src/**/*.tsx",
     "./src/**/*.ts",
     "cypress/**/*",
-    "./global.d.ts"
+    "src/types/tmap.d.ts"
   ]
 }

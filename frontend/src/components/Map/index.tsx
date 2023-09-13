@@ -18,8 +18,6 @@ const Map = () => {
 
   const mapContainer = useRef(null);
 
-  const narrowedMapInstance = narrowNotNull(mapInstance);
-
   useLayoutEffect(() => {
     if (!Tmapv3 || !mapContainer.current) return;
 
@@ -38,16 +36,12 @@ const Map = () => {
     };
   }, []);
 
-  if (narrowedMapInstance) {
-    useMapClick(narrowedMapInstance);
-    useClickedCoordinate(narrowedMapInstance);
-    useUpdateCoordinates(narrowedMapInstance);
+  useMapClick(mapInstance);
+  useClickedCoordinate(mapInstance);
+  useUpdateCoordinates(mapInstance);
 
-    useFocusToMarker(narrowedMapInstance, markers);
-    useAnimateClickedPin(narrowedMapInstance, markers);
-  } else {
-    return;
-  }
+  useFocusToMarker(mapInstance, markers);
+  useAnimateClickedPin(mapInstance, markers);
 
   return (
     <MapFlex

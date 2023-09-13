@@ -3,7 +3,7 @@ import { CoordinatesContext } from '../context/CoordinatesContext';
 import getAddressFromServer from '../lib/getAddressFromServer';
 import useToast from './useToast';
 
-export default function useMapClick(map: TMap) {
+export default function useMapClick(map: TMap | null) {
   const { setClickedCoordinate } = useContext(CoordinatesContext);
   const { showToast } = useToast();
 
