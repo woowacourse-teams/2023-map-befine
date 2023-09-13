@@ -26,7 +26,6 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <ToastProvider>
       <ModalProvider>
-         <NavbarHighlightsProvider>
         <CoordinatesProvider>
           <MarkerProvider>
             <SeeTogetherProvider>
@@ -54,33 +53,17 @@ const Layout = ({ children }: LayoutProps) => {
                       overflow="auto"
                       padding="0 20px 20px 20px"
                     >
-                      <Flex
-                        $justifyContent="space-between"
-                        padding="20px 20px 0 20px"
-                      >
-                        <Box>
-                          <Logo />
-                          <Space size={3} />
-                        </Box>
-                      </Flex>
-                      <Flex
-                        height="calc(100vh - 52px)"
-                        $flexDirection="column"
-                        overflow="auto"
-                        padding="0 20px 20px 20px"
-                      >
-                        {children}
-                      </Flex>
-                      <Navbar $layoutWidth={width} />
-                    </LayoutFlex>
-                    <Map/>
-        </MediaWrapper>
+                      {children}
+                    </Flex>
+                    <Navbar $layoutWidth={width} />
                     <Toast />
-                </TagProvider>
-              </SeeTogetherProvider>
-            </MarkerProvider>
-          </CoordinatesProvider>
-        </NavbarHighlightsProvider>
+                  </LayoutFlex>
+                  <Map />
+                </MediaWrapper>
+              </TagProvider>
+            </SeeTogetherProvider>
+          </MarkerProvider>
+        </CoordinatesProvider>
       </ModalProvider>
     </ToastProvider>
   );
@@ -92,7 +75,6 @@ const LogoWrapper = styled.section<{
   width: 372px;
   display: flex;
   padding: 12px 20px 0 20px;
-
   @media (max-width: 1076px) {
     ${({ $layoutWidth }) =>
       $layoutWidth === '372px' &&
@@ -113,7 +95,6 @@ const MediaWrapper = styled.section<{
   display: flex;
   width: 100vw;
   overflow: hidden;
-
   @media (max-width: 1076px) {
     flex-direction: ${({ $isAddPage, $layoutWidth }) => {
       if ($isAddPage) return 'column';
@@ -122,14 +103,11 @@ const MediaWrapper = styled.section<{
   }
 `;
 
-
 const LayoutFlex = styled(Flex)<{ $layoutWidth: '372px' | '100vw' }>`
   transition: all ease 0.3s;
-
   @media (max-width: 1076px) {
     height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
     transition: none;
   }
 `;
-
 export default Layout;
