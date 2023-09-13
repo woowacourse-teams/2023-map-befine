@@ -103,16 +103,9 @@ public class Member extends BaseTimeEntity {
     }
 
     public void update(
-            String nickName,
-            String email,
-            String imageUrl
+            String nickName
     ) {
-        memberInfo = MemberInfo.of(
-                nickName,
-                email,
-                imageUrl,
-                memberInfo.getRole()
-        );
+        memberInfo = memberInfo.createForPatch(nickName);
     }
 
     public void addTopic(Topic topic) {

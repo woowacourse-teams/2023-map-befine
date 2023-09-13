@@ -28,6 +28,7 @@ public class MemberInfo {
     @Column(nullable = false, length = 20, unique = true)
     private String nickName;
 
+    // TODO 카카오에서 email 선택 동의라 체크 안하고 가입하면 DB에서 터질듯
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -91,6 +92,11 @@ public class MemberInfo {
         if (Objects.isNull(role)) {
             throw new IllegalArgumentException("validateRole; member role is null;");
         }
+    }
+
+    public MemberInfo createForPatch(String nickName) {
+
+        return MemberInfo.of(nickName, this.email, this.imageUrl.getImageUrl(), this.role);
     }
 
     public String getImageUrl() {
