@@ -39,9 +39,13 @@ public class PinController {
     }
 
     @LoginRequired
-    @PostMapping
-    public ResponseEntity<Void> add(AuthMember member, @RequestBody PinCreateRequest request) {
-        long savedId = pinCommandService.save(member, request);
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> add(
+            AuthMember member,
+            @RequestPart List<MultipartFile> images,
+            @RequestPart PinCreateRequest request
+    ) {
+        long savedId = pinCommandService.save(member, images, request);
 
         return ResponseEntity.created(URI.create("/pins/" + savedId))
                 .build();
