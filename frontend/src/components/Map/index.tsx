@@ -62,6 +62,10 @@ const MapFlex = styled(Flex)`
         $minWidth === '100vw' ? '0' : 'calc(100vw - 400px)'};
     }
   }
+
+  @media (max-width: 1076px) {
+    max-height: 50vh;
+  }
 `;
 
 export default Map;

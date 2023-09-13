@@ -37,7 +37,7 @@ const MyInfo = () => {
       $alignItems="center"
     >
       <MyInfoImg src={user.imageUrl} />
-      <Space size={7} />
+      <Space size={5} />
       <Box>
         <Text color="black" $fontSize="medium" $fontWeight="bold">
           {user.nickName}

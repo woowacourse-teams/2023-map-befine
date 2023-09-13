@@ -66,9 +66,9 @@ const TopicInfo = ({
       role="button"
       data-cy="topic-info"
     >
-      <Image
+      <TopicImage
         height="168px"
-        width="332px"
+        width="100%"
         src={topicImage}
         alt="토픽 이미지"
         $objectFit="cover"
@@ -149,6 +149,10 @@ const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const TopicImage = styled(Image)`
+  border-radius: ${({ theme }) => theme.radius.medium};
 `;
 
 export default TopicInfo;

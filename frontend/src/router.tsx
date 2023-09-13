@@ -7,7 +7,7 @@ import SelectedTopic from './pages/SelectedTopic';
 import SeeAllPopularTopics from './pages/SeeAllPopularTopics';
 import SeeAllNearTopics from './pages/SeeAllNearTopics';
 import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
-import KakaoRedirectPage from './pages/KaKaoRedirectPage';
+import KakaoRedirect from './pages/KakaoRedirect';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './pages/NotFound';
@@ -90,7 +90,7 @@ const routes: routeElement[] = [
       },
       {
         path: '/oauth/redirected/kakao',
-        element: <KakaoRedirectPage />,
+        element: <KakaoRedirect />,
         withAuth: false,
       },
     ],

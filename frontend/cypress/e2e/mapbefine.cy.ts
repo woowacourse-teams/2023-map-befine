@@ -69,11 +69,13 @@ describe('토픽 상세 페이지', () => {
         if (index === 0) $el.click();
       });
 
-    cy.wait(1000);
+    cy.wait(3000);
 
     cy.get('span').each(($el, index) => {
       if (index === 6) $el.click();
     });
+
+    cy.get('[data-cy="pin-detail"]').scrollTo('bottom');
 
     cy.contains('내 지도에 저장하기').should('be.visible');
   });
@@ -85,11 +87,13 @@ describe('토픽 상세 페이지', () => {
         if (index === 0) $el.click();
       });
 
-    cy.wait(1000);
+    cy.wait(2000);
 
     cy.get('span').each(($el, index) => {
       if (index === 6) $el.click();
     });
+
+    cy.get('[data-cy="pin-detail"]').scrollTo('bottom');
 
     cy.contains('내 지도에 저장하기').click();
 

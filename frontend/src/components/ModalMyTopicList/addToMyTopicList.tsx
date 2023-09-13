@@ -6,6 +6,7 @@ import { ModalContext } from '../../context/ModalContext';
 import useToast from '../../hooks/useToast';
 import useGet from '../../apiHooks/useGet';
 import usePost from '../../apiHooks/usePost';
+import Space from '../common/Space';
 
 interface OnClickDesignatedProps {
   topicId: number;
@@ -61,25 +62,28 @@ const AddToMyTopicList = ({ pin }: any) => {
   if (!myTopics) return <></>;
 
   return (
-    <ModalMyTopicListWrapper>
-      {myTopics.map((topic) => (
-        <Fragment key={topic.id}>
-          <TopicCard
-            cardType="modal"
-            id={topic.id}
-            image={topic.image}
-            name={topic.name}
-            creator={topic.creator}
-            updatedAt={topic.updatedAt}
-            pinCount={topic.pinCount}
-            onClickDesignated={addPinToTopic}
-            bookmarkCount={topic.bookmarkCount}
-            isBookmarked={topic.isBookmarked}
-            isInAtlas={topic.isInAtlas}
-          />
-        </Fragment>
-      ))}
-    </ModalMyTopicListWrapper>
+    <>
+      <ModalMyTopicListWrapper>
+        {myTopics.map((topic) => (
+          <Fragment key={topic.id}>
+            <TopicCard
+              cardType="modal"
+              id={topic.id}
+              image={topic.image}
+              name={topic.name}
+              creator={topic.creator}
+              updatedAt={topic.updatedAt}
+              pinCount={topic.pinCount}
+              onClickDesignated={addPinToTopic}
+              bookmarkCount={topic.bookmarkCount}
+              isBookmarked={topic.isBookmarked}
+              isInAtlas={topic.isInAtlas}
+            />
+          </Fragment>
+        ))}
+      </ModalMyTopicListWrapper>
+      <Space size={5} />
+    </>
   );
 };
 
@@ -89,6 +93,12 @@ const ModalMyTopicListWrapper = styled.ul`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+
+  @media (max-width: 744px) {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
 `;
 
 export default AddToMyTopicList;

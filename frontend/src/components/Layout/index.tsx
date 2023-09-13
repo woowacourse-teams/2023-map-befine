@@ -6,13 +6,13 @@ import CoordinatesProvider from '../../context/CoordinatesContext';
 import MarkerProvider from '../../context/MarkerContext';
 import ToastProvider from '../../context/ToastContext';
 import Toast from '../Toast';
-import { styled } from 'styled-components';
+import { css, styled } from 'styled-components';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 import SeeTogetherProvider from '../../context/SeeTogetherContext';
 import Space from '../common/Space';
 import Navbar from './Navbar';
 import ModalProvider from '../../context/ModalContext';
-import NavbarHighlightsProvider from '../../context/NavbarHighlightsContext';
+import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
 import TagProvider from '../../context/TagContext';
 import Box from '../common/Box';
 
@@ -22,21 +22,37 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   const { width } = useContext(LayoutWidthContext);
-
+  const { navbarHighlights } = useContext(NavbarHighlightsContext);
   return (
     <ToastProvider>
       <ModalProvider>
-        <NavbarHighlightsProvider>
-          <CoordinatesProvider>
-            <MarkerProvider>
-              <SeeTogetherProvider>
-                <TagProvider>
-                  <Flex height="100vh" width="100vw" overflow="hidden">
-                    <LayoutFlex
+         <NavbarHighlightsProvider>
+        <CoordinatesProvider>
+          <MarkerProvider>
+            <SeeTogetherProvider>
+              <TagProvider>
+                <MediaWrapper
+                  $isAddPage={navbarHighlights.addMapOrPin}
+                  $layoutWidth={width}
+                >
+                  <LayoutFlex
+                    $flexDirection="column"
+                    $minWidth={width}
+                    height="100vh"
+                    $backgroundColor="white"
+                    $layoutWidth={width}
+                  >
+                    <LogoWrapper $layoutWidth={width}>
+                      <Box>
+                        <Logo />
+                        <Space size={2} />
+                      </Box>
+                    </LogoWrapper>
+                    <Flex
+                      height="calc(100vh - 48px)"
                       $flexDirection="column"
-                      $minWidth={width}
-                      height="100vh"
-                      $backgroundColor="white"
+                      overflow="auto"
+                      padding="0 20px 20px 20px"
                     >
                       <Flex
                         $justifyContent="space-between"
@@ -56,10 +72,10 @@ const Layout = ({ children }: LayoutProps) => {
                         {children}
                       </Flex>
                       <Navbar $layoutWidth={width} />
-                      <Toast />
                     </LayoutFlex>
-                    <Map />
-                  </Flex>
+                    <Map/>
+        </MediaWrapper>
+                    <Toast />
                 </TagProvider>
               </SeeTogetherProvider>
             </MarkerProvider>
@@ -70,8 +86,50 @@ const Layout = ({ children }: LayoutProps) => {
   );
 };
 
-const LayoutFlex = styled(Flex)`
+const LogoWrapper = styled.section<{
+  $layoutWidth: '372px' | '100vw';
+}>`
+  width: 372px;
+  display: flex;
+  padding: 12px 20px 0 20px;
+
+  @media (max-width: 1076px) {
+    ${({ $layoutWidth }) =>
+      $layoutWidth === '372px' &&
+      css`
+        width: 100vw;
+        background-color: white;
+        position: fixed;
+        top: 0;
+        z-index: 1;
+      `};
+  }
+`;
+
+const MediaWrapper = styled.section<{
+  $isAddPage: boolean;
+  $layoutWidth: '372px' | '100vw';
+}>`
+  display: flex;
+  width: 100vw;
+  overflow: hidden;
+
+  @media (max-width: 1076px) {
+    flex-direction: ${({ $isAddPage, $layoutWidth }) => {
+      if ($isAddPage) return 'column';
+      if ($layoutWidth === '372px') return 'column-reverse';
+    }};
+  }
+`;
+
+
+const LayoutFlex = styled(Flex)<{ $layoutWidth: '372px' | '100vw' }>`
   transition: all ease 0.3s;
+
+  @media (max-width: 1076px) {
+    height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
+    transition: none;
+  }
 `;
 
 export default Layout;
