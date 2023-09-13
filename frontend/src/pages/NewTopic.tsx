@@ -3,6 +3,7 @@ import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
+import Box from '../components/common/Box';
 import { postApi } from '../apis/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormProps } from '../types/FormValues';
@@ -42,6 +43,7 @@ const NewTopic = () => {
   const { setTags } = useContext(TagContext);
 
   const [members, setMembers] = useState<MemberProps[]>([]);
+  const [checkedMemberIds, setCheckedMemberIds] = useState<number[]>([]);
 
   useEffect(() => {
     const getMemberData = async () => {
@@ -51,10 +53,6 @@ const NewTopic = () => {
 
     getMemberData();
   }, []);
-
-  //해당 토픽에 권한을 부여할 아이디들을 담는 state
-  //addAuthority에 인자로 넘겨줌
-  const [checkedMemberIds, setCheckedMemberIds] = useState<number[]>([]);
 
   const handleChecked = (isChecked: boolean, id: number) =>
     setCheckedMemberIds((prev: MemberProps['id'][]) =>
@@ -176,75 +174,78 @@ const NewTopic = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <Space size={4} />
-      <Flex
-        width={`calc(${width} - ${LAYOUT_PADDING})`}
-        $flexDirection="column"
-      >
-        <Text color="black" $fontSize="large" $fontWeight="bold">
-          지도 생성
-        </Text>
-        <Space size={5} />
-        <InputContainer
-          tagType="input"
-          containerTitle="지도 이미지"
-          isRequired={false}
-          name="image"
-          value={formValues.image}
-          placeholder="이미지 URL을 입력해주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={1}
-          autoFocus
-          errorMessage={errorMessages.image}
-          maxLength={2048}
-        />
-        <Space size={1} />
-        <InputContainer
-          tagType="input"
-          containerTitle="지도 이름"
-          isRequired={true}
-          name="name"
-          value={formValues.name}
-          placeholder="20자 이내로 지도의 이름을 입력해주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={2}
-          errorMessage={errorMessages.name}
-          maxLength={20}
-        />
-        <Space size={1} />
-        <InputContainer
-          tagType="textarea"
-          containerTitle="한 줄 설명"
-          isRequired={true}
-          name="description"
-          value={formValues.description}
-          placeholder="100글자 이내로 지도에 대해서 설명해주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={3}
-          errorMessage={errorMessages.description}
-          maxLength={100}
-        />
-        <Space size={1} />
-        <Text color="black" $fontSize="default" $fontWeight="normal">
-          공개 여부
-        </Text>
-        <Space size={1} />
-        <Flex>
-          <div>
-            <input
-              type="radio"
-              id="public"
-              name="accessibility"
-              value="public"
-              checked={!isPrivate}
-              onChange={() => setIsPrivate(false)}
-              tabIndex={4}
-            />
-            <label htmlFor="public">공개 지도</label>
-          </div>
-          <Space size={2} />
-          <div>
+    <>
+      <form onSubmit={onSubmit}>
+        <Space size={4} />
+        <Flex
+          width={`calc(${width} - ${LAYOUT_PADDING})`}
+          $flexDirection="column"
+        >
+          <Text color="black" $fontSize="large" $fontWeight="bold">
+            지도 생성
+          </Text>
+          <Space size={5} />
+          <InputContainer
+            tagType="input"
+            containerTitle="지도 이미지"
+            isRequired={false}
+            name="image"
+            value={formValues.image}
+            placeholder="이미지 URL을 입력해주세요."
+            onChangeInput={onChangeInput}
+            tabIndex={1}
+            autoFocus
+            errorMessage={errorMessages.image}
+            maxLength={2048}
+          />
+          <Space size={1} />
+          <InputContainer
+            tagType="input"
+            containerTitle="지도 이름"
+            isRequired={true}
+            name="name"
+            value={formValues.name}
+            placeholder="20자 이내로 지도의 이름을 입력해주세요."
+            onChangeInput={onChangeInput}
+            tabIndex={2}
+            errorMessage={errorMessages.name}
+            maxLength={20}
+          />
+          <Space size={1} />
+          <InputContainer
+            tagType="textarea"
+            containerTitle="한 줄 설명"
+            isRequired={true}
+            name="description"
+            value={formValues.description}
+            placeholder="100글자 이내로 지도에 대해서 설명해주세요."
+            onChangeInput={onChangeInput}
+            tabIndex={3}
+            errorMessage={errorMessages.description}
+            maxLength={100}
+          />
+          <Space size={1} />
+          <Text color="black" $fontSize="default" $fontWeight="normal">
+            지도 종류
+          </Text>
+          <Space size={1} />
+          <Flex $alignItems="flex-start">
+            <Flex width="108px" $alignItems="flex-start">
+              <input
+                type="radio"
+                id="public"
+                name="accessibility"
+                value="public"
+                checked={!isPrivate}
+                onChange={() => setIsPrivate(false)}
+                tabIndex={4}
+              />
+              <Space size={1} />
+              <label htmlFor="public">공개 지도</label>
+            </Flex>
+
+            <Space size={2} />
+
             <input
               type="radio"
               id="private"
@@ -254,37 +255,43 @@ const NewTopic = () => {
               onChange={() => setIsPrivate(true)}
               tabIndex={4}
             />
+            <Space size={1} />
             <label htmlFor="private">비공개 지도</label>
-          </div>
-        </Flex>
+          </Flex>
 
-        <Space size={5} />
-        <Space size={0} />
-        <Text color="black" $fontSize="default" $fontWeight="normal">
-          핀 생성 및 수정 권한
-        </Text>
-        <Space size={1} />
-        <Flex>
-          <div>
-            <input
-              type="radio"
-              id="ALL_MEMBERS"
-              name="pinAuthority"
-              value="all"
-              checked={isAll}
-              onChange={() => {
-                setIsAll(true);
-              }}
-              tabIndex={5}
-            />
-            {isPrivate ? (
-              <label htmlFor="ALL_MEMBERS">혼자</label>
-            ) : (
-              <label htmlFor="ALL_MEMBERS">모두</label>
-            )}
-          </div>
-          <Space size={2} />
-          <div>
+          <Space size={5} />
+          <Space size={0} />
+
+          <Text color="black" $fontSize="default" $fontWeight="normal">
+            핀 생성 및 수정 권한 부여
+          </Text>
+
+          <Space size={1} />
+
+          <Flex $alignItems="flex-start">
+            <Flex width="108px" $alignItems="flex-start">
+              <input
+                type="radio"
+                id="ALL_MEMBERS"
+                name="pinAuthority"
+                value="all"
+                checked={isAll}
+                onChange={() => {
+                  setIsAll(true);
+                  setCheckedMemberIds([]);
+                }}
+                tabIndex={5}
+              />
+              <Space size={1} />
+              {isPrivate ? (
+                <label htmlFor="ALL_MEMBERS">혼자만</label>
+              ) : (
+                <label htmlFor="ALL_MEMBERS">모두에게</label>
+              )}
+            </Flex>
+
+            <Space size={2} />
+
             <input
               type="radio"
               id="GROUP_ONLY"
@@ -296,103 +303,135 @@ const NewTopic = () => {
                 openModal('newTopic');
                 setCheckedMemberIds([]);
               }}
+              onClick={() => {
+                isAll === false && openModal('newTopic');
+              }}
               tabIndex={5}
             />
-            <label htmlFor="GROUP_ONLY">특정 인원 지정</label>
-          </div>
-        </Flex>
+            <Space size={1} />
+            <label htmlFor="GROUP_ONLY">친구들에게</label>
+          </Flex>
 
-        <>
-          <Modal
-            modalKey="newTopic"
-            position="center"
-            width="400px"
-            height="520px"
-            overflow="scroll"
-            $dimmedColor="rgba(0, 0, 0, 0.5)"
-          >
-            <ModalContentsWrapper>
-              <Flex
-                padding={'12px'}
-                position="sticky"
-                top="0"
-                $justifyContent="space-between"
-                $alignItems="center"
-              >
-                <Text $fontSize="large" $fontWeight="bold" color="black">
-                  멤버 선택
+          {checkedMemberIds.length > 0 && (
+            <>
+              <Space size={5} />
+              <Space size={0} />
+              <Box>
+                <Text color="black" $fontSize="default" $fontWeight="normal">
+                  선택한 친구들
                 </Text>
-                <Text $fontSize="small" $fontWeight="normal" color="black">
-                  {checkedMemberIds.length}명 선택됨
-                </Text>
-              </Flex>
-              <Space size={2} />
-              <CheckboxList>
-                {members.map((member) => (
-                  <CheckboxListItem key={member.id}>
-                    <Checkbox
-                      id={member.id}
-                      isAlreadyChecked={checkedMemberIds.includes(member.id)}
-                      label={member.nickName}
-                      onChecked={handleChecked}
-                    />
-                  </CheckboxListItem>
-                ))}
-              </CheckboxList>
-              <Space size={1} />
-              <Flex $justifyContent="end" padding={'12px'} bottom="0px">
-                <Button
-                  tabIndex={6}
-                  type="button"
-                  variant="secondary"
-                  onClick={() => {
-                    closeModal('newTopic');
-                    setIsAll(true);
-                    setCheckedMemberIds([]);
-                  }}
-                >
-                  취소하기
-                </Button>
+                <Space size={1} />
+                {members.map((member) => {
+                  if (checkedMemberIds.includes(member.id))
+                    return (
+                      <Text
+                        color="black"
+                        $fontSize="default"
+                        $fontWeight="normal"
+                        key={member.id}
+                      >
+                        • {member.nickName}
+                      </Text>
+                    );
+                })}
+              </Box>
+            </>
+          )}
 
-                <Space size={3} />
+          <Space size={6} />
 
-                <Button
-                  tabIndex={6}
-                  variant="primary"
-                  onClick={() => {
-                    closeModal('newTopic');
-                  }}
-                >
-                  선택하기
-                </Button>
-              </Flex>
-              <Space size={2} />
-            </ModalContentsWrapper>
-          </Modal>
-        </>
-        <Space size={6} />
-        <Flex $justifyContent="end">
-          <Button
-            tabIndex={7}
-            type="button"
-            variant="secondary"
-            onClick={goToBack}
-          >
-            취소하기
-          </Button>
-          <Space size={3} />
-          <Button
-            tabIndex={7}
-            variant="primary"
-            onClick={() => {
-              setTags([]);
-            }}
-          >
-            생성하기
-          </Button>
+          <Flex $justifyContent="end">
+            <Button
+              tabIndex={7}
+              type="button"
+              variant="secondary"
+              onClick={goToBack}
+            >
+              취소하기
+            </Button>
+            <Space size={3} />
+            <Button
+              tabIndex={7}
+              variant="primary"
+              onClick={() => {
+                setTags([]);
+              }}
+            >
+              생성하기
+            </Button>
+          </Flex>
         </Flex>
-      </Flex>
-    </form>
+      </form>
+
+      <Modal
+        modalKey="newTopic"
+        position="center"
+        width="400px"
+        height="600px"
+        overflow="scroll"
+        $dimmedColor="rgba(0, 0, 0, 0.5)"
+      >
+        <ModalContentsWrapper>
+          <Flex
+            padding={'12px'}
+            position="sticky"
+            top="0"
+            $justifyContent="space-between"
+            $alignItems="center"
+          >
+            <Text $fontSize="large" $fontWeight="bold" color="black">
+              멤버 선택
+            </Text>
+            <Text $fontSize="small" $fontWeight="normal" color="black">
+              {checkedMemberIds.length}명 선택됨
+            </Text>
+          </Flex>
+          <Space size={2} />
+          <CheckboxList>
+            {members.map((member) => (
+              <CheckboxListItem key={member.id}>
+                <Checkbox
+                  id={member.id}
+                  isAlreadyChecked={checkedMemberIds.includes(member.id)}
+                  label={member.nickName}
+                  onChecked={handleChecked}
+                />
+              </CheckboxListItem>
+            ))}
+          </CheckboxList>
+
+          <Space size={1} />
+
+          <Flex $justifyContent="end" padding={'12px'} bottom="0px">
+            <Button
+              tabIndex={6}
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                closeModal('newTopic');
+                setIsAll(true);
+                setCheckedMemberIds([]);
+              }}
+            >
+              취소하기
+            </Button>
+
+            <Space size={3} />
+
+            <Button
+              tabIndex={6}
+              variant="primary"
+              onClick={() => {
+                closeModal('newTopic');
+              }}
+            >
+              선택하기
+            </Button>
+          </Flex>
+          <Space size={2} />
+        </ModalContentsWrapper>
+      </Modal>
+    </>
   );
 };
 
