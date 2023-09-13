@@ -22,10 +22,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.SQLDelete;
 
 @Entity
-@SQLDelete(sql = "UPDATE topic SET is_deleted = true WHERE id = ?")
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Topic extends BaseTimeEntity {

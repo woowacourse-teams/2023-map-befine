@@ -155,4 +155,14 @@ public class Member extends BaseTimeEntity {
     public boolean isNormalStatus() {
         return memberInfo.getStatus() == Status.NORMAL;
     }
+
+    public void updateStatus(Status status) {
+        memberInfo = MemberInfo.of(
+                memberInfo.getNickName(),
+                memberInfo.getEmail(),
+                memberInfo.getImageUrl(),
+                memberInfo.getRole(),
+                status
+        );
+    }
 }

@@ -48,14 +48,14 @@ public class AdminQueryService {
     }
 
     public AdminMemberDetailResponse findMemberDetail(AuthMember authMember, Long memberId) {
-        Member member = findMemberById(authMember.getMemberId());
+        Member admin = findMemberById(authMember.getMemberId());
 
-        validateAdminPermission(member);
+        validateAdminPermission(admin);
 
         Member findMember = findMemberById(memberId);
         List<Topic> topics = findMember.getCreatedTopics();
         List<Pin> pins = findMember.getCreatedPins();
 
-        return AdminMemberDetailResponse.of(member, topics, pins);
+        return AdminMemberDetailResponse.of(findMember, topics, pins);
     }
 }

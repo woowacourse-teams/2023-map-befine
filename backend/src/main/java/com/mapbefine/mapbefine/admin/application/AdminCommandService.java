@@ -6,9 +6,11 @@ import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_F
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.Status;
 import com.mapbefine.mapbefine.member.exception.MemberErrorCode;
 import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
+import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -38,13 +40,18 @@ public class AdminCommandService {
         this.pinImageRepository = pinImageRepository;
     }
 
-    // TODO: 2023/09/12 블랙리스트..?
-    public void deleteMember(AuthMember authMember, Long memberId) {
+    public void blockMember(AuthMember authMember, Long memberId) {
         Member admin = findMemberById(authMember.getMemberId());
 
         validateAdminPermission(admin);
 
-        memberRepository.deleteById(memberId);
+        Member member = findMemberById(memberId);
+        member.updateStatus(Status.BLOCKED);
+        List<Long> pinIds = extractPinIdsByMember(member);
+
+        topicRepository.deleteAllByMemberId(memberId);
+        pinRepository.deleteAllByMemberId(memberId);
+        pinImageRepository.deleteAllByPinIds(pinIds);
     }
 
     private Member findMemberById(Long id) {
@@ -58,6 +65,13 @@ public class AdminCommandService {
         }
 
         throw new PermissionForbiddenException(PERMISSION_FORBIDDEN_BY_NOT_ADMIN);
+    }
+
+    private List<Long> extractPinIdsByMember(Member member) {
+        return member.getCreatedPins()
+                .stream()
+                .map(Pin::getId)
+                .toList();
     }
 
     public void deleteTopic(AuthMember authMember, Long topicId) {

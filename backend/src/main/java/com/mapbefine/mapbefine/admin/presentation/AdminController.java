@@ -36,7 +36,7 @@ public class AdminController {
 
     @DeleteMapping("/members/{memberId}")
     public ResponseEntity<Void> deleteMember(AuthMember authMember, @PathVariable Long memberId) {
-        adminCommandService.deleteMember(authMember, memberId);
+        adminCommandService.blockMember(authMember, memberId);
 
         return ResponseEntity.noContent().build();
     }
