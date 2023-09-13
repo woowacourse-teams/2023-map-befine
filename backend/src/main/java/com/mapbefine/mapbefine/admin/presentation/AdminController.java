@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// TODO: 2023/09/12 컨트롤러 자체에서 검증할 수 있는 방법은 없을까 ?
 @RestController
 @RequestMapping("/admin")
 public class AdminController {

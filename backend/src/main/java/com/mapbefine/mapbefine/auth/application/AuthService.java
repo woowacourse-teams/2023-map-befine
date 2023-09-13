@@ -5,6 +5,8 @@ import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.exception.MemberErrorCode;
+import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import java.util.Objects;
@@ -60,4 +62,18 @@ public class AuthService {
                 .toList();
     }
 
+    public boolean isAdmin(Long memberId) {
+        if (Objects.isNull(memberId)) {
+            return false;
+        }
+
+        Member member = findMember(memberId);
+
+        return member.isAdmin();
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND, memberId));
+    }
 }
