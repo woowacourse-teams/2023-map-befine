@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.admin.dto.AdminMemberResponse;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.exception.MemberErrorCode;
 import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.permission.exception.PermissionErrorCode;
@@ -27,7 +28,7 @@ public class AdminQueryService {
         Member admin = findMemberById(authMember.getMemberId());
         validateAdminPermission(admin);
 
-        List<Member> members = memberRepository.findAll();
+        List<Member> members = memberRepository.findAllByMemberInfoRole(Role.USER);
 
         return members.stream()
                 .map(AdminMemberResponse::from)
