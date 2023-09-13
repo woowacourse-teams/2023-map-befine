@@ -3,7 +3,7 @@ import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import { putApi } from '../apis/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
-import { ModifyPinFormProps } from '../types/FormValues';
+import { ModifyPinFormProps } from '../types/tmap';
 import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
 import useToast from '../hooks/useToast';

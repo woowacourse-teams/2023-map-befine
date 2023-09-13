@@ -2,7 +2,6 @@ import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Image from '../common/Image';
 import Space from '../common/Space';
-import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
@@ -33,7 +32,6 @@ export interface TopicInfoProps {
 }
 
 const TopicInfo = ({
-  fullUrl,
   topicId,
   idx,
   topicImage,
@@ -47,12 +45,7 @@ const TopicInfo = ({
   isBookmarked,
   setTopicsFromServer,
 }: TopicInfoProps) => {
-  const { routePage } = useNavigator();
   const { showToast } = useToast();
-
-  const goToNewPin = () => {
-    routePage(`/new-pin?topic-id=${topicId}`, fullUrl);
-  };
 
   const copyContent = async () => {
     try {

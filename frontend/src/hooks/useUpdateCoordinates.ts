@@ -2,11 +2,7 @@ import { useContext, useEffect } from 'react';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 
-interface UseUpdateCoordinatesProps {
-  map: any;
-}
-
-export default function useUpdateCoordinates(map: UseUpdateCoordinatesProps) {
+export default function useUpdateCoordinates(map: TMap | null) {
   const { coordinates } = useContext(CoordinatesContext);
   const {
     markers,
@@ -18,7 +14,7 @@ export default function useUpdateCoordinates(map: UseUpdateCoordinatesProps) {
 
   useEffect(() => {
     if (!map) return;
-    if (markers.length > 0) {
+    if (markers && markers.length > 0) {
       removeMarkers();
       removeInfowindows();
     }

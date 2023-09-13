@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext } from 'react';
 import Map from '../Map';
 import Flex from '../common/Flex';
 import Logo from './Logo';
@@ -20,35 +20,13 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
-declare global {
-  interface Window {
-    Tmapv3: any;
-    daum: any;
-  }
-}
-
 const Layout = ({ children }: LayoutProps) => {
-  const { Tmapv3 } = window;
-  const mapContainer = useRef(null);
   const { width } = useContext(LayoutWidthContext);
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
-
-  const [map, setMap] = useState(null);
-
-  useEffect(() => {
-    const map = new Tmapv3.Map(mapContainer.current, {
-      center: new Tmapv3.LatLng(37.5154, 127.1029),
-    });
-    map.setZoomLimit(7, 18);
-    setMap(map);
-    return () => {
-      map.destroy();
-    };
-  }, []);
-
   return (
     <ToastProvider>
       <ModalProvider>
+         <NavbarHighlightsProvider>
         <CoordinatesProvider>
           <MarkerProvider>
             <SeeTogetherProvider>
@@ -76,17 +54,33 @@ const Layout = ({ children }: LayoutProps) => {
                       overflow="auto"
                       padding="0 20px 20px 20px"
                     >
-                      {children}
-                    </Flex>
-                    <Navbar $layoutWidth={width} />
-                  </LayoutFlex>
-                  <Map ref={mapContainer} map={map} $minWidth={width} />
-                </MediaWrapper>
-                <Toast />
-              </TagProvider>
-            </SeeTogetherProvider>
-          </MarkerProvider>
-        </CoordinatesProvider>
+                      <Flex
+                        $justifyContent="space-between"
+                        padding="20px 20px 0 20px"
+                      >
+                        <Box>
+                          <Logo />
+                          <Space size={3} />
+                        </Box>
+                      </Flex>
+                      <Flex
+                        height="calc(100vh - 52px)"
+                        $flexDirection="column"
+                        overflow="auto"
+                        padding="0 20px 20px 20px"
+                      >
+                        {children}
+                      </Flex>
+                      <Navbar $layoutWidth={width} />
+                    </LayoutFlex>
+                    <Map/>
+        </MediaWrapper>
+                    <Toast />
+                </TagProvider>
+              </SeeTogetherProvider>
+            </MarkerProvider>
+          </CoordinatesProvider>
+        </NavbarHighlightsProvider>
       </ModalProvider>
     </ToastProvider>
   );
@@ -127,6 +121,7 @@ const MediaWrapper = styled.section<{
     }};
   }
 `;
+
 
 const LayoutFlex = styled(Flex)<{ $layoutWidth: '372px' | '100vw' }>`
   transition: all ease 0.3s;

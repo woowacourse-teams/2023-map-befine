@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';
 import useFormValues from '../hooks/useFormValues';
-import { ModifyPinFormProps } from '../types/FormValues';
+import { ModifyPinFormProps } from '../types/tmap';
 import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
 import Modal from '../components/Modal';
@@ -18,7 +18,6 @@ import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 
 interface PinDetailProps {
   width: '372px' | '100vw';
-  topicId: string;
   pinId: number;
   isEditPinDetail: boolean;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,14 +27,12 @@ const userToken = localStorage.getItem('userToken');
 
 const PinDetail = ({
   width,
-  topicId,
   pinId,
   isEditPinDetail,
   setIsEditPinDetail,
 }: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinProps | null>(null);
-  const [selectedTopic, setSelectedTopic] = useState<any>(null); //토픽이 없을 때 사용하는 변수
   const { showToast } = useToast();
   const {
     formValues,
