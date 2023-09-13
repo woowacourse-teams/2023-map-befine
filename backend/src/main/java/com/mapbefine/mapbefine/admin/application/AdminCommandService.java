@@ -14,7 +14,6 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import com.mapbefine.mapbefine.topic.domain.TopicInfo;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException;
 import java.util.List;
@@ -88,9 +87,7 @@ public class AdminCommandService {
         validateAdminPermission(member);
 
         Topic topic = findTopicById(topicId);
-        TopicInfo topicInfo = topic.getTopicInfo();
-
-        topic.updateTopicInfo(topicInfo.getName(), topicInfo.getDescription(), "");
+        topic.removeImage();
     }
 
     private Topic findTopicById(Long topicId) {

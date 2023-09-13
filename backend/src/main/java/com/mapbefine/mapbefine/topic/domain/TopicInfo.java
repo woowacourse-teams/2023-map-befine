@@ -88,4 +88,13 @@ public class TopicInfo {
     public String getImageUrl() {
         return image.getImageUrl();
     }
+
+    public TopicInfo removeImage() {
+        return new TopicInfo(
+                this.name,
+                this.description,
+                DEFAULT_IMAGE
+        );
+    }
+
 }
