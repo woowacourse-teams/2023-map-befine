@@ -53,12 +53,7 @@ const TopicInfo = ({
   setTopicsFromServer,
 }: TopicInfoProps) => {
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
-  const { routePage } = useNavigator();
   const { showToast } = useToast();
-
-  const goToNewPin = () => {
-    routePage(`/new-pin?topic-id=${topicId}`, fullUrl);
-  };
 
   const updateTopicInfo = () => {
     setIsUpdate(true);
@@ -74,7 +69,7 @@ const TopicInfo = ({
     }
   };
 
-  if (isUpdate)
+  if (isUpdate) {
     return (
       <UpdatedTopicInfo
         id={Number(topicId)}
@@ -84,6 +79,7 @@ const TopicInfo = ({
         setIsUpdate={setIsUpdate}
       />
     );
+  }
 
   return (
     <Flex
