@@ -11,15 +11,37 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
 
-    public String createToken(String payload) {
+    private static final String EMPTY = "";
+    private final String secretKey;
+    private final long accessExpirationTime;
+    private final long refreshExpirationTime;
+
+    public JwtTokenProvider(
+            @Value("${security.jwt.token.secret-key}")
+            String secretKey,
+            @Value("${security.jwt.token.access-expire-length}")
+            long accessExpirationTime,
+            @Value("${security.jwt.token.refresh-expire-length}")
+            long refreshExpirationTime
+    ) {
+        this.secretKey = secretKey;
+        this.accessExpirationTime = accessExpirationTime;
+        this.refreshExpirationTime = refreshExpirationTime;
+    }
+
+    public String createAccessToken(String payload) {
+        return createToken(payload, accessExpirationTime);
+    }
+
+    public String createRefreshToken() {
+        return createToken(EMPTY, refreshExpirationTime);
+    }
+
+    private String createToken(final String payload, final Long validityInMilliseconds) {
         Claims claims = Jwts.claims().setSubject(payload);
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        final Date now = new Date();
+        final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -42,5 +64,6 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
 }
 
