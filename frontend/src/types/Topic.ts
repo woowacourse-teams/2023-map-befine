@@ -36,3 +36,19 @@ export interface ModalTopicCardProps {
   isBookmarked: boolean;
   updatedAt: string;
 }
+
+export interface TopicAuthor {
+  publicity: 'PUBLIC' | 'PRIVATE';
+  permissionMembers: PermissionMember[];
+}
+
+interface PermissionMember {
+  id: number;
+  memberResponse: Member;
+}
+
+export interface Member {
+  id: number;
+  nickName: string;
+  email: string;
+}
