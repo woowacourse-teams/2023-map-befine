@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.given;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
-import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
+import com.mapbefine.mapbefine.oauth.dto.LoginTokens;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,10 @@ class OauthControllerTest extends RestDocsIntegration {
         // given
         given(oauthService.getAuthCodeRequestUrl(KAKAO)).willReturn(
                 "https://kauth.kakao.com/oauth/authorize?"
-                + "response_type=code"
-                + "&client_id={client_id}"
-                + "&redirect_uri={redirection_uri}"
-                + "&scope={scope}"
+                        + "response_type=code"
+                        + "&client_id={client_id}"
+                        + "&redirect_uri={redirection_uri}"
+                        + "&scope={scope}"
         );
 
         // when then
@@ -41,8 +41,10 @@ class OauthControllerTest extends RestDocsIntegration {
     void login() throws Exception {
         // given
         String code = "auth_code";
-        LoginInfoResponse response = new LoginInfoResponse(
+
+        LoginTokens loginTokens = new LoginTokens(
                 testAuthHeaderProvider.createResponseAccessTokenById(Long.MAX_VALUE),
+                testAuthHeaderProvider.createResponseRefreshToken(),
                 new MemberDetailResponse(
                         Long.MAX_VALUE,
                         "모험가03fcb0d",
@@ -51,7 +53,8 @@ class OauthControllerTest extends RestDocsIntegration {
                         LocalDateTime.now()
                 )
         );
-        given(oauthService.login(KAKAO, code)).willReturn(response);
+
+        given(oauthService.login(KAKAO, code)).willReturn(loginTokens);
 
         // when then
         mockMvc.perform(

@@ -28,8 +28,12 @@ public class TestAuthHeaderProvider {
         return generateToken(id);
     }
 
+    public String createResponseRefreshToken() {
+        return jwtTokenProvider.createRefreshToken();
+    }
+
     private String generateToken(Long memberId) {
-        return jwtTokenProvider.createToken(String.valueOf(memberId));
+        return jwtTokenProvider.createAccessToken(String.valueOf(memberId));
     }
 
 }

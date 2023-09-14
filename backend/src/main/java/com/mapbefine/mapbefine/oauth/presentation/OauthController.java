@@ -3,6 +3,8 @@ package com.mapbefine.mapbefine.oauth.presentation;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
 import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import com.mapbefine.mapbefine.oauth.dto.LoginInfoResponse;
+import com.mapbefine.mapbefine.oauth.dto.LoginTokens;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +38,19 @@ public class OauthController {
     @GetMapping("/login/{oauthServerType}")
     public ResponseEntity<LoginInfoResponse> login(
             @PathVariable OauthServerType oauthServerType,
-            @RequestParam String code
+            @RequestParam String code,
+            HttpServletResponse response
     ) {
-        LoginInfoResponse loginInfo = oauthService.login(oauthServerType, code);
+        LoginTokens loginTokens = oauthService.login(oauthServerType, code);
+        addRefreshTokenToCookie(response, loginTokens.refreshToken());
 
-        return ResponseEntity.ok(loginInfo);
+        return ResponseEntity.ok(loginTokens.toResponse());
+    }
+
+    private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = new Cookie("refresh-token", refreshToken);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
     }
 
 }
