@@ -227,7 +227,6 @@ const PinDetail = ({
   );
 };
 
-
 const SaveToMyMapButton = styled(Button)`
   font-size: ${({ theme }) => theme.fontSize.default};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
@@ -263,7 +262,7 @@ const ButtonsWrapper = styled.div`
 `;
 
 const ImageInputLabel = styled.label`
-  width:80px;
+  width: 80px;
   height: 40px;
   margin-bottom: 10px;
   padding: 10px 10px;
@@ -276,6 +275,5 @@ const ImageInputLabel = styled.label`
 
   cursor: pointer;
 `;
-
 
 export default PinDetail;

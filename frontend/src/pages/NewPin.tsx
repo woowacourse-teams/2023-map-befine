@@ -71,11 +71,11 @@ const NewPin = () => {
     if (topic?.length > 1) {
       postTopicId = selectedTopic.topicId;
     }
-    
+
     if (!formImages) return;
-    formImages.forEach((file)=>{
+    formImages.forEach((file) => {
       formData.append('images', file);
-    })
+    });
 
     const objectData = {
       topicId: postTopicId,
@@ -185,7 +185,6 @@ const NewPin = () => {
 
     const file = event.target.files && event.target.files[0];
 
-
     if (!file) {
       showToast('error', 'No file selected');
       return;
@@ -193,19 +192,21 @@ const NewPin = () => {
 
     if (!imageLists) return;
 
-
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       imageUrlLists.push(currentImageUrl);
     }
 
     if (imageUrlLists.length > 8) {
-      showToast('error', '이미지 개수는 최대 8개까지만 선택 가능합니다. 다시 선택해 주세요.');
+      showToast(
+        'error',
+        '이미지 개수는 최대 8개까지만 선택 가능합니다. 다시 선택해 주세요.',
+      );
       imageUrlLists = imageUrlLists.slice(0, 8);
       return;
     }
 
-    setFormImages([...formImages, file])
+    setFormImages([...formImages, file]);
     setShowImages(imageUrlLists);
   };
 

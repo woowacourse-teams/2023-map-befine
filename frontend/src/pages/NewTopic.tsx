@@ -113,7 +113,7 @@ const NewTopic = () => {
     }
   };
 
-  const postToServer = async () => { 
+  const postToServer = async () => {
     const response = await createTopic();
     const location = response?.headers.get('Location');
 
@@ -169,10 +169,9 @@ const NewTopic = () => {
     }
   };
 
-  const handleImageFileChange = (
+  const handleTopicImageFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-
     const file = event.target.files && event.target.files[0];
     if (!file) {
       console.log('No file selected');
@@ -180,7 +179,7 @@ const NewTopic = () => {
     }
 
     setFormImage(file);
-    setShowImage(URL.createObjectURL(file))
+    setShowImage(URL.createObjectURL(file));
   };
 
   useEffect(() => {
@@ -199,13 +198,13 @@ const NewTopic = () => {
         </Text>
         <Space size={2} />
         <Flex>
-          {showImage && <ShowImage src={showImage} alt={`토픽 사진 대체`}/>}
+          {showImage && <ShowImage src={showImage} alt={`토픽 사진 대체`} />}
           <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
           <input
             id="file"
             type="file"
             name="image"
-            onChange={handleImageFileChange}
+            onChange={handleTopicImageFileChange}
             style={{ display: 'none' }}
           />
         </Flex>
