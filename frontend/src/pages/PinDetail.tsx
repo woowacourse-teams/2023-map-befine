@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';
 import useFormValues from '../hooks/useFormValues';
-import { ModifyPinFormProps } from '../types/tmap';
+import { ModifyPinFormProps } from '../types/FormValues';
 import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
 import Modal from '../components/Modal';
