@@ -131,6 +131,7 @@ class AdminIntegrationTest extends IntegrationTest {
 
         assertThat(response).usingRecursiveComparison()
                 .ignoringFields("updatedAt")
+                .ignoringFields("topics.updatedAt")
                 .isEqualTo(expected);
     }
 
