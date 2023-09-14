@@ -93,7 +93,7 @@ public class MemberInfo {
         }
     }
 
-    public MemberInfo createForPatch(String nickName) {
+    public MemberInfo createUpdatedMemberInfo(String nickName) {
 
         return MemberInfo.of(nickName, this.email, this.imageUrl.getImageUrl(), this.role);
     }

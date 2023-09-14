@@ -45,7 +45,7 @@ public class MemberInfoTest {
 
         @Test
         @DisplayName("일부 정보(닉네임)만 변경한 회원 정보를 생성할 수 있다.")
-        void createForPatch() {
+        void createUpdatedMemberInfo() {
             // given
             MemberInfo before = MemberInfo.of(
                     "member",
@@ -55,7 +55,7 @@ public class MemberInfoTest {
 
             // when
             String expected = "newNickName";
-            MemberInfo patched = before.createForPatch(expected);
+            MemberInfo patched = before.createUpdatedMemberInfo(expected);
 
             // then
             assertSoftly(softly -> {
