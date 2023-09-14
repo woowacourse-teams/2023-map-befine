@@ -8,7 +8,7 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../apis/getApi';
 import { TopicCardProps } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { NewPinFormProps } from '../types/FormValues';
+import { NewPinFormProps } from '../types/tmap';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
@@ -119,8 +119,8 @@ const NewPin = () => {
       }
 
       setClickedCoordinate({
-        latitude: '',
-        longitude: '',
+        latitude: 0,
+        longitude: 0,
         address: '',
       });
 
@@ -232,8 +232,7 @@ const NewPin = () => {
     <>
       <form onSubmit={onSubmit}>
         <Space size={4} />
-        <Space size={4} />
-        <Flex
+        <Wrapper
           width={`calc(${width} - ${LAYOUT_PADDING})`}
           $flexDirection="column"
         >
@@ -243,32 +242,30 @@ const NewPin = () => {
 
           <Space size={5} />
 
-          <section>
-            <Flex>
-              <Text color="black" $fontSize="default" $fontWeight="normal">
-                지도 선택
-              </Text>
-              <Space size={0} />
-              <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-                *
-              </Text>
-            </Flex>
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              지도 선택
+            </Text>
             <Space size={0} />
-            <Button
-              type="button"
-              variant="primary"
-              onClick={() => {
-                if (topic && topic.name) return;
-                openModal('newPin');
-              }}
-            >
-              {topic?.name
-                ? topic?.name
-                : selectedTopic?.topicName
-                ? selectedTopic?.topicName
-                : '지도를 선택해주세요.'}
-            </Button>
-          </section>
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
+              *
+            </Text>
+          </Flex>
+          <Space size={0} />
+          <Button
+            type="button"
+            variant="primary"
+            onClick={() => {
+              if (topic && topic.name) return;
+              openModal('newPin');
+            }}
+          >
+            {topic?.name
+              ? topic?.name
+              : selectedTopic?.topicName
+              ? selectedTopic?.topicName
+              : '지도를 선택해주세요.'}
+          </Button>
 
           <Space size={5} />
 
@@ -315,27 +312,25 @@ const NewPin = () => {
 
           <Space size={1} />
 
-          <section>
-            <Flex>
-              <Text color="black" $fontSize="default" $fontWeight="normal">
-                장소 위치
-              </Text>
-              <Space size={0} />
-              <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-                *
-              </Text>
-            </Flex>
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              장소 위치
+            </Text>
             <Space size={0} />
-            <Input
-              name="address"
-              readOnly
-              value={clickedCoordinate.address}
-              onClick={onClickAddressInput}
-              onKeyDown={onClickAddressInput}
-              tabIndex={2}
-              placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
-            />
-          </section>
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
+              *
+            </Text>
+          </Flex>
+          <Space size={0} />
+          <Input
+            name="address"
+            readOnly
+            value={clickedCoordinate.address}
+            onClick={onClickAddressInput}
+            onKeyDown={onClickAddressInput}
+            tabIndex={2}
+            placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
+          />
 
           <Space size={5} />
 
@@ -368,13 +363,13 @@ const NewPin = () => {
               추가하기
             </Button>
           </Flex>
-        </Flex>
+        </Wrapper>
       </form>
 
       <Modal
         modalKey="newPin"
         position="center"
-        width="768px"
+        width="744px"
         height="512px"
         $dimmedColor="rgba(0,0,0,0.25)"
       >
@@ -393,6 +388,19 @@ const NewPin = () => {
     </>
   );
 };
+
+const Wrapper = styled(Flex)`
+  margin: 0 auto;
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: ${({ width }) => width};
+    margin: 0 auto;
+  }
+`;
 
 const ModalContentsWrapper = styled.div`
   width: 100%;

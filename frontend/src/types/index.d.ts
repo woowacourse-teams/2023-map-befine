@@ -4,8 +4,8 @@ declare module '*.svg' {
   export default SVG;
 }
 
-declare global {
-  interface Window {
-    Tmapv3: Tmapv3;
-  }
-}
+// declare global {
+//   interface Window {
+//     Tmapv3: Tmapv3;
+//   }
+// }

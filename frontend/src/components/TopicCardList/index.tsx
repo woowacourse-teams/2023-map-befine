@@ -86,7 +86,6 @@ const EmptyWrapper = styled.section`
   height: 240px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 `;
 

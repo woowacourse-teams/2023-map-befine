@@ -10,6 +10,7 @@ import { Suspense, lazy } from 'react';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import useNavigator from '../hooks/useNavigator';
 import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
+import { setFullScreenResponsive } from '../constants/responsive';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
@@ -53,7 +54,7 @@ const Bookmark = () => {
         <TopicCardList
           url="/members/my/bookmarks"
           errorMessage="로그인 후 이용해주세요."
-          commentWhenEmpty="버튼을 눌러 지도를 즐겨찾기에 추가해보세요."
+          commentWhenEmpty="버튼으로 지도를 즐겨찾기에 담아보세요."
           pageCommentWhenEmpty="메인페이지로 가기"
           routePage={goToHome}
         >
@@ -67,6 +68,8 @@ const Bookmark = () => {
 const Wrapper = styled.article`
   width: 1036px;
   margin: 0 auto;
+
+  ${setFullScreenResponsive()}
 `;
 
 export default Bookmark;
