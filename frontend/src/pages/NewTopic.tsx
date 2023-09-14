@@ -55,10 +55,11 @@ const NewTopic = () => {
     getMemberData();
   }, []);
 
-  const onChangeMemberChecked = (isChecked: boolean, id: number) =>
+  const onChangeMemberChecked = (isChecked: boolean, id: number) => {
     setAuthorizedMemberIds((prev: Member['id'][]) =>
       isChecked ? [...prev, id] : prev.filter((n: number) => n !== id),
     );
+  };
 
   const goToBack = () => {
     routePage(-1);
