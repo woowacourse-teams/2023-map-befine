@@ -28,7 +28,7 @@ public class TestAuthHeaderProvider {
         return generateToken(id);
     }
 
-    public String createResponseRefreshToken() {
+    public String createRefreshToken() {
         return jwtTokenProvider.createRefreshToken();
     }
 

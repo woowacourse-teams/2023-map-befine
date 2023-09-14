@@ -1,5 +1,9 @@
 package com.mapbefine.mapbefine.auth.infrastructure;
 
+import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.EXPIRED_TOKEN;
+import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.ILLEGAL_TOKEN;
+
+import com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
 
     private static final String EMPTY = "";
+
     private final String secretKey;
     private final long accessExpirationTime;
     private final long refreshExpirationTime;
@@ -55,13 +60,33 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateToken(String token) {
+    public void validateTokensForReissue(String refreshToken, String accessToken) {
+        boolean canReissueAccessToken = !isExpired(refreshToken) && isExpired(accessToken);
+        if (!canReissueAccessToken) {
+            throw new AuthUnauthorizedException(ILLEGAL_TOKEN);
+        }
+    }
+
+    public void validateTokensForRemoval(String refreshToken, String accessToken) {
+        boolean canRemoveRefreshToken = !isExpired(refreshToken) && !isExpired(accessToken);
+        if (!canRemoveRefreshToken) {
+            throw new AuthUnauthorizedException(EXPIRED_TOKEN);
+        }
+    }
+
+    public void validateAccessToken(String accessToken) {
+        if (isExpired(accessToken)) {
+            throw new AuthUnauthorizedException(EXPIRED_TOKEN);
+        }
+    }
+
+    private boolean isExpired(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
-            return !claims.getBody().getExpiration().before(new Date());
+            return claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new AuthUnauthorizedException(ILLEGAL_TOKEN);
         }
     }
 

@@ -44,7 +44,7 @@ class OauthControllerTest extends RestDocsIntegration {
 
         LoginTokens loginTokens = new LoginTokens(
                 testAuthHeaderProvider.createResponseAccessTokenById(Long.MAX_VALUE),
-                testAuthHeaderProvider.createResponseRefreshToken(),
+                testAuthHeaderProvider.createRefreshToken(),
                 new MemberDetailResponse(
                         Long.MAX_VALUE,
                         "모험가03fcb0d",
