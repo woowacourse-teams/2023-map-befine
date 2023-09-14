@@ -5,11 +5,10 @@ import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.exception.MemberErrorCode;
-import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,13 +66,10 @@ public class AuthService {
             return false;
         }
 
-        Member member = findMember(memberId);
+        Optional<Member> member = memberRepository.findById(memberId);
 
-        return member.isAdmin();
+        return member.map(Member::isAdmin)
+                .orElse(false);
     }
 
-    private Member findMember(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND, memberId));
-    }
 }
