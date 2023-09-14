@@ -188,7 +188,7 @@ class PinControllerTest extends RestDocsIntegration {
 
 
     @Test
-    @DisplayName("멤버 Id를 입력하면 해당 멤버가 만든 핀 목록을 조회할 수 있다.")
+    @DisplayName("회원 Id를 입력하면 해당 회원이 만든 핀 목록을 조회할 수 있다.")
     void findAllPinsByMemberId() throws Exception {
         List<PinResponse> pinResponses = List.of(
                 new PinResponse(

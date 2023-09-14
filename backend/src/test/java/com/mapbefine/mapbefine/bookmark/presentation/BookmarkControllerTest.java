@@ -19,7 +19,7 @@ class BookmarkControllerTest extends RestDocsIntegration {
 
 
     @Test
-    @DisplayName("토픽을 유저의 즐겨찾기에 추가")
+    @DisplayName("토픽을 회원의 즐겨찾기에 추가")
     public void addTopicInBookmark() throws Exception {
         given(bookmarkCommandService.addTopicInBookmark(any(), any())).willReturn(1L);
 
@@ -31,7 +31,7 @@ class BookmarkControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("유저의 토픽 즐겨찾기 목록 삭제")
+    @DisplayName("회원의 토픽 즐겨찾기 목록 삭제")
     public void deleteTopicInBookmark() throws Exception {
         doNothing().when(bookmarkCommandService).deleteTopicInBookmark(any(), any());
 

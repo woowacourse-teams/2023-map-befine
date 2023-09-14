@@ -242,7 +242,7 @@ class PinIntegrationTest extends IntegrationTest {
 
 
     @Test
-    @DisplayName("멤버별 Pin 목록을 조회하면 200을 반환한다")
+    @DisplayName("회원별 Pin 목록을 조회하면 200을 반환한다")
     void findAllPinsByMemberId_Success() {
         //given
         createPinAndGetId(createRequestDuplicateLocation);

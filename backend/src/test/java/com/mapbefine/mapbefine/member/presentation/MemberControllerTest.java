@@ -26,7 +26,7 @@ class MemberControllerTest extends RestDocsIntegration {
     private MemberQueryService memberQueryService;
 
     @Test
-    @DisplayName("유저 목록 조회")
+    @DisplayName("회원 목록 조회")
     void findAllMember() throws Exception {
         List<MemberResponse> memberResponses = List.of(
                 new MemberResponse(
@@ -50,7 +50,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("유저 단일 조회")
+    @DisplayName("회원 단일 조회")
     void findMemberById() throws Exception {
         MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
                 1L,
@@ -69,7 +69,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("유저의 모아보기 목록 조회")
+    @DisplayName("회원의 모아보기 목록 조회")
     void findAllTopicsInAtlas() throws Exception {
         List<TopicResponse> responses = List.of(
                 new TopicResponse(
@@ -104,7 +104,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("유저의 즐겨찾기 목록 조회")
+    @DisplayName("회원의 즐겨찾기 목록 조회")
     void findAllTopicsInBookmark() throws Exception {
         List<TopicResponse> responses = List.of(
                 new TopicResponse(
@@ -139,7 +139,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("유저의 지도 목록 조회")
+    @DisplayName("회원의 지도 목록 조회")
     void findMyAllTopics() throws Exception {
         List<TopicResponse> responses = List.of(
                 new TopicResponse(
@@ -174,7 +174,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("유저의 핀 목록 조회")
+    @DisplayName("회원의 핀 목록 조회")
     void findMyAllPins() throws Exception {
         List<PinResponse> responses = List.of(
                 new PinResponse(
@@ -205,7 +205,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("유저의 정보 수정")
+    @DisplayName("회원의 정보 수정")
     void updateMyInfo() throws Exception {
         MemberUpdateRequest request = new MemberUpdateRequest("새로운 닉네임");
 

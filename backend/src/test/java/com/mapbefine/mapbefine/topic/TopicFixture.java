@@ -16,8 +16,8 @@ public class TopicFixture {
 
     public static Topic createPrivateAndGroupOnlyTopic(Member member) {
         return Topic.createTopicAssociatedWithCreator(
-                "토픽 멤버만 읽을 수 있는 토픽",
-                "토픽 멤버만 읽을 수 있습니다.",
+                "토픽 회원만 읽을 수 있는 토픽",
+                "토픽 회원만 읽을 수 있습니다.",
                 IMAGE_URL,
                 Publicity.PRIVATE,
                 PermissionType.GROUP_ONLY,

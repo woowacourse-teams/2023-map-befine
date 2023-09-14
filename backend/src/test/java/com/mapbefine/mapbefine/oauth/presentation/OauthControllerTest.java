@@ -37,7 +37,7 @@ class OauthControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("소셜 로그인 성공시 로그인한 유저 정보 반환")
+    @DisplayName("소셜 로그인 성공시 로그인한 회원 정보 반환")
     void login() throws Exception {
         // given
         String code = "auth_code";

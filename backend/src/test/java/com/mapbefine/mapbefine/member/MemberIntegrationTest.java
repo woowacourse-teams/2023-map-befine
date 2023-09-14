@@ -69,7 +69,7 @@ class MemberIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("유저 목록을 조회한다.")
+    @DisplayName("회원 목록을 조회한다.")
     void findAllMember() {
         // given, when
         ExtractableResponse<Response> response = given().log().all()
@@ -94,7 +94,7 @@ class MemberIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("유저를 단일 조회한다.")
+    @DisplayName("회원을 단일 조회한다.")
     void findMemberById() {
         // given, when
         ExtractableResponse<Response> response = given().log().all()
@@ -115,7 +115,7 @@ class MemberIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("로그인 유저가 내 지도 목록을 조회하면, 200을 반환한다.")
+    @DisplayName("로그인 회원이 내 지도 목록을 조회하면, 200을 반환한다.")
     void findMyAllTopics_Success() {
         //when
         ExtractableResponse<Response> response = given().log().all()
@@ -131,7 +131,7 @@ class MemberIntegrationTest extends IntegrationTest {
 
 
     @Test
-    @DisplayName("로그인 유저가 내 지도 목록을 조회하면, 200을 반환한다.")
+    @DisplayName("로그인 회원이 내 지도 목록을 조회하면, 200을 반환한다.")
     void findMyAllPins_Success() {
         //when
         ExtractableResponse<Response> response = given().log().all()
@@ -147,7 +147,7 @@ class MemberIntegrationTest extends IntegrationTest {
 
     @Test
 
-    @DisplayName("유저의 즐겨찾기 토픽 목록을 조회하면, 200을 반환한다.")
+    @DisplayName("회원의 즐겨찾기 토픽 목록을 조회하면, 200을 반환한다.")
     void findTopicsInBookmarks_Success() {
         //when
         ExtractableResponse<Response> response = given().log().all()

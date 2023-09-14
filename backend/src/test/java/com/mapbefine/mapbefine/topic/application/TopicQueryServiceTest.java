@@ -80,8 +80,8 @@ class TopicQueryServiceTest {
         assertThat(topics).extractingResultOf("name")
                 .containsExactlyInAnyOrder(
                         "아무나 읽을 수 있는 토픽",
-                        "토픽 멤버만 읽을 수 있는 토픽",
-                        "토픽 멤버만 읽을 수 있는 토픽"
+                        "토픽 회원만 읽을 수 있는 토픽",
+                        "토픽 회원만 읽을 수 있는 토픽"
                 );
     }
 
@@ -194,7 +194,7 @@ class TopicQueryServiceTest {
         //then
         assertThat(details).hasSize(2);
         assertThat(details).extractingResultOf("name")
-                .containsExactlyInAnyOrder("아무나 읽을 수 있는 토픽", "토픽 멤버만 읽을 수 있는 토픽");
+                .containsExactlyInAnyOrder("아무나 읽을 수 있는 토픽", "토픽 회원만 읽을 수 있는 토픽");
     }
 
     @Test
@@ -257,7 +257,7 @@ class TopicQueryServiceTest {
     }
 
     @Test
-    @DisplayName("모든 토픽을 조회할 때, 로그인 유저가 아니면 즐겨찾기 여부가 항상 False다")
+    @DisplayName("모든 토픽을 조회할 때, 로그인 회원이 아니면 즐겨찾기 여부가 항상 False다")
     void findAllReadableWithoutBookmark_Success() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -300,7 +300,7 @@ class TopicQueryServiceTest {
     }
 
     @Test
-    @DisplayName("토픽 상세조회시, 로그인 유저가 아니라면 즐겨찾기 여부, 모아보기 여부, 수정 권한 여부가 항상 False다.")
+    @DisplayName("토픽 상세조회시, 로그인 회원이 아니라면 즐겨찾기 여부, 모아보기 여부, 수정 권한 여부가 항상 False다.")
     void findWithoutBookmarkStatus_Success() {
         //given
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -344,7 +344,7 @@ class TopicQueryServiceTest {
     }
 
     @Test
-    @DisplayName("여러 토픽 조회시, 로그인 유저가 아니라면 즐겨 찾기 여부가 항상 False다.")
+    @DisplayName("여러 토픽 조회시, 로그인 회원이 아니라면 즐겨 찾기 여부가 항상 False다.")
     void findDetailsWithoutBookmarkStatus_Success() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -368,7 +368,7 @@ class TopicQueryServiceTest {
     }
 
     @Test
-    @DisplayName("멤버 Id를 이용하여 그 멤버가 만든 모든 Topic을 확인할 수 있다.")
+    @DisplayName("회원 Id를 이용하여 그 회원이 만든 모든 Topic을 확인할 수 있다.")
     void findAllTopicsByMemberId_Success() {
         //given
         AuthMember authMember = new Admin(member.getId());

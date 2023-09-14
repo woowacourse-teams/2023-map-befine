@@ -131,7 +131,7 @@ class PinQueryServiceTest {
     }
 
     @Test
-    @DisplayName("멤버 Id를 이용하여 그 멤버가 만든 모든 Pin을 확인할 수 있다.")
+    @DisplayName("회원 Id를 이용하여 그 회원이 만든 모든 Pin을 확인할 수 있다.")
     void findAllPinsByMemberId_success() {
         // given
         List<Pin> expected = pinRepository.saveAll(List.of(

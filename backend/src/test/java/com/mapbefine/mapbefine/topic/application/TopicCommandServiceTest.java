@@ -303,8 +303,8 @@ class TopicCommandServiceTest {
         topicRepository.save(topic);
 
         //when
-        assertThat(topic.getTopicInfo().getName()).isEqualTo("토픽 멤버만 읽을 수 있는 토픽");
-        assertThat(topic.getTopicInfo().getDescription()).isEqualTo("토픽 멤버만 읽을 수 있습니다.");
+        assertThat(topic.getTopicInfo().getName()).isEqualTo("토픽 회원만 읽을 수 있는 토픽");
+        assertThat(topic.getTopicInfo().getDescription()).isEqualTo("토픽 회원만 읽을 수 있습니다.");
 
         AuthMember user = MemberFixture.createUser(member);
         TopicUpdateRequest request = new TopicUpdateRequest(

@@ -104,7 +104,7 @@ class TopicStatusTest {
     class Update {
 
         @Test
-        @DisplayName("권한 범위가 모든 멤버이면, 공개 범위를 혼자 볼 지도로 설정할 때 예외가 발생한다")
+        @DisplayName("권한 범위가 모든 회원이면, 공개 범위를 혼자 볼 지도로 설정할 때 예외가 발생한다")
         void whenAllMembersAndPrivate_thenFail() {
             //given
             TopicStatus topicStatus = TopicStatus.of(Publicity.PUBLIC, PermissionType.ALL_MEMBERS);

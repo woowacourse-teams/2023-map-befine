@@ -79,7 +79,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Topic 을 만든자가 특정 유저에게 권한을 준다.")
+    @DisplayName("Topic 을 만든자가 특정 회원에게 권한을 준다.")
     void addPermission() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
@@ -100,7 +100,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Topic 을 만든자가 특정 유저에게 권한을 삭제한다.")
+    @DisplayName("Topic 을 만든자가 특정 회원에게 권한을 삭제한다.")
     void deletePermission() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
