@@ -326,7 +326,6 @@ class TopicIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responses).hasSize(2);
-        assertThat(responses).hasSize(2);
     }
 
     @Test

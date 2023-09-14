@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-public class AtlasIntegrationTest extends IntegrationTest {
+class AtlasIntegrationTest extends IntegrationTest {
 
     @Autowired
     TopicRepository topicRepository;

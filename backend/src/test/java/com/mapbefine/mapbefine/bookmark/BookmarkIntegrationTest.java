@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-public class BookmarkIntegrationTest extends IntegrationTest {
+class BookmarkIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
