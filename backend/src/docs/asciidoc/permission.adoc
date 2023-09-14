@@ -8,7 +8,7 @@ operation::permission-controller-test/add-permission[snippets='http-request,http
 
 operation::permission-controller-test/delete-permission[snippets='http-request,http-response']
 
-=== 토픽에 권한을 가진 회원 목록 조회
+=== 토픽 접근 정보(권한 회원 목록 및 공개 여부) 조회
 
 operation::permission-controller-test/find-topic-access-detail-by-topic-id[snippets='http-request,http-response']
 
