@@ -210,7 +210,7 @@ class MemberControllerTest extends RestDocsIntegration {
         MemberUpdateRequest request = new MemberUpdateRequest("새로운 닉네임");
 
         mockMvc.perform(
-                MockMvcRequestBuilders.patch("/members/my")
+                MockMvcRequestBuilders.patch("/members/my/profiles")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))

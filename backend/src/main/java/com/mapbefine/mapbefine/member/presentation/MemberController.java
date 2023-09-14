@@ -79,7 +79,7 @@ public class MemberController {
     }
 
     @LoginRequired
-    @PatchMapping("/my")
+    @PatchMapping("/my/profiles")
     public ResponseEntity<Void> updateMyInfo(AuthMember authMember, @RequestBody MemberUpdateRequest request) {
         memberCommandService.updateInfoById(authMember, request);
 

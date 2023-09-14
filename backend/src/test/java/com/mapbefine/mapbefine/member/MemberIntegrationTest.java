@@ -185,7 +185,7 @@ class MemberIntegrationTest extends IntegrationTest {
                 .header(HttpHeaders.AUTHORIZATION, creatorAuthHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new MemberUpdateRequest("new nickname"))
-                .when().patch("/members/my")
+                .when().patch("/members/my/profiles")
                 .then().log().all()
                 .extract();
 
