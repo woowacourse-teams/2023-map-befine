@@ -15,6 +15,8 @@ import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
+import { postFormApi } from '../apis/postApi';
+import PinImageBox from '../components/PinImageBox';
 
 interface PinDetailProps {
   topicId: string;
@@ -33,7 +35,6 @@ const PinDetail = ({
 }: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinProps | null>(null);
-  const [selectedTopic, setSelectedTopic] = useState<any>(null); //토픽이 없을 때 사용하는 변수
   const { showToast } = useToast();
   const {
     formValues,
@@ -43,7 +44,6 @@ const PinDetail = ({
     onChangeInput,
   } = useFormValues<ModifyPinFormProps>({
     name: '',
-    images: [],
     description: '',
   });
   const { openModal } = useContext(ModalContext);
@@ -63,13 +63,12 @@ const PinDetail = ({
       setPin(pinData);
       setFormValues({
         name: pinData.name,
-        images: pinData.images,
         description: pinData.description,
       });
     };
 
     getPinData();
-  }, [pinId, searchParams]);
+  }, [pinId, searchParams, pin]);
 
   const updateQueryString = (key: string, value: string) => {
     setSearchParams({ ...Object.fromEntries(searchParams), [key]: value });
@@ -79,7 +78,6 @@ const PinDetail = ({
     setIsEditPinDetail(true);
     setErrorMessages({
       name: '',
-      images: '',
       description: '',
     });
     updateQueryString('edit', 'true');
@@ -92,6 +90,27 @@ const PinDetail = ({
     } catch (err) {
       showToast('error', '핀 링크를 복사하는데 실패했습니다.');
     }
+  };
+
+  const handlePinImageFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files && event.target.files[0];
+    const formData = new FormData();
+
+    if (!file) {
+      showToast('error', 'No file selected');
+      return;
+    }
+
+    formData.append('image', file);
+
+    const data = JSON.stringify(pinId);
+    const jsonBlob = new Blob([data], { type: 'application/json' });
+
+    formData.append('pinId', jsonBlob);
+
+    await postFormApi('/pins/images', formData);
   };
 
   if (!pin) return <></>;
@@ -142,25 +161,16 @@ const PinDetail = ({
 
       <Space size={2} />
 
-      <PinDetailImgContainer
-        width="100%"
-        height="180px"
-        $backgroundColor="whiteGray"
-        $alignItems="center"
-        $justifyContent="center"
-        $flexDirection="column"
-        padding={7}
-        $borderRadius="small"
-      >
-        <Text
-          color="darkGray"
-          $fontSize="default"
-          $fontWeight="normal"
-          $textAlign="center"
-        >
-          + 사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
-        </Text>
-      </PinDetailImgContainer>
+      <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+      <input
+        id="file"
+        type="file"
+        name="image"
+        onChange={handlePinImageFileChange}
+        style={{ display: 'none' }}
+      />
+
+      <PinImageBox images={pin.images} />
 
       <Space size={6} />
 
@@ -217,9 +227,6 @@ const PinDetail = ({
   );
 };
 
-const PinDetailImgContainer = styled(Flex)`
-  box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
-`;
 
 const SaveToMyMapButton = styled(Button)`
   font-size: ${({ theme }) => theme.fontSize.default};
@@ -254,5 +261,21 @@ const ButtonsWrapper = styled.div`
   position: fixed;
   bottom: 24px;
 `;
+
+const ImageInputLabel = styled.label`
+  width:80px;
+  height: 40px;
+  margin-bottom: 10px;
+  padding: 10px 10px;
+
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  text-align: center;
+
+  cursor: pointer;
+`;
+
 
 export default PinDetail;
