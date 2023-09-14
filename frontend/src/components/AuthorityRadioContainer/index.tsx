@@ -3,7 +3,7 @@ import Text from '../common/Text';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import { useContext, useEffect, useState } from 'react';
-import { TopicAuthorMember, TopicAuthorInfo } from '../../types/Topic';
+import { TopicAuthorMember, TopicAuthorMemberWithId } from '../../types/Topic';
 import { ModalContext } from '../../context/ModalContext';
 import Box from '../common/Box';
 import Modal from '../Modal';
@@ -18,7 +18,7 @@ interface AuthorityRadioContainer {
   setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAll: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthorizedMemberIds: React.Dispatch<React.SetStateAction<number[]>>;
-  topicAuthorInfo?: TopicAuthorInfo | null;
+  permissionedMembers?: TopicAuthorMemberWithId[];
 }
 
 const AuthorityRadioContainer = ({
@@ -28,7 +28,7 @@ const AuthorityRadioContainer = ({
   setIsPrivate,
   setIsAll,
   setAuthorizedMemberIds,
-  topicAuthorInfo,
+  permissionedMembers,
 }: AuthorityRadioContainer) => {
   const { openModal, closeModal } = useContext(ModalContext);
   const { fetchGet } = useGet();
@@ -163,7 +163,7 @@ const AuthorityRadioContainer = ({
           </>
         )}
 
-        {authorizedMemberIds.length === 0 && topicAuthorInfo && (
+        {authorizedMemberIds.length === 0 && permissionedMembers && (
           <>
             <Space size={5} />
             <Space size={0} />
@@ -172,7 +172,7 @@ const AuthorityRadioContainer = ({
                 기존에 선택한 친구들
               </Text>
               <Space size={1} />
-              {topicAuthorInfo.permissionMembers.map((member) => (
+              {permissionedMembers.map((member) => (
                 <Text
                   color="black"
                   $fontSize="default"

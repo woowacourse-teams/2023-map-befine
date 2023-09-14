@@ -52,6 +52,11 @@ const UpdatedTopicInfo = ({
       '지도 권한 설정 정보를 가져오는데 실패했습니다.',
       (response) => {
         setTopicAuthorInfo(response);
+        setIsPrivate(response.publicity === 'PRIVATE');
+
+        if (topicAuthorInfo) {
+          setIsAll(topicAuthorInfo?.permissionMembers.length === 0);
+        }
       },
     );
   }, []);
@@ -93,7 +98,7 @@ const UpdatedTopicInfo = ({
         setIsPrivate={setIsPrivate}
         setIsAll={setIsAll}
         setAuthorizedMemberIds={setAuthorizedMemberIds}
-        topicAuthorInfo={topicAuthorInfo}
+        permissionedMembers={topicAuthorInfo?.permissionMembers}
       />
 
       <Space size={6} />
