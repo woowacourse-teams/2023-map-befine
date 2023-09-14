@@ -4,14 +4,14 @@ import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import java.time.LocalDateTime;
 
-public record PermissionDetailResponse(
+public record PermissionMemberDetailResponse(
         Long id,
         LocalDateTime updatedAt,
         MemberDetailResponse memberDetailResponse
 ) {
 
-    public static PermissionDetailResponse from(Permission permission) {
-        return new PermissionDetailResponse(
+    public static PermissionMemberDetailResponse from(Permission permission) {
+        return new PermissionMemberDetailResponse(
                 permission.getId(),
                 permission.getUpdatedAt(),
                 MemberDetailResponse.from(permission.getMember())

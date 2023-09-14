@@ -10,7 +10,7 @@ operation::permission-controller-test/delete-permission[snippets='http-request,h
 
 === 토픽에 권한을 가진 회원 목록 조회
 
-operation::permission-controller-test/find-all-topic-permissions[snippets='http-request,http-response']
+operation::permission-controller-test/find-topic-access-detail-by-topic-id[snippets='http-request,http-response']
 
 === 토픽에 권한을 가진 회원 단일 조회
 

@@ -12,13 +12,16 @@ import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
-import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionMemberDetailResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionedMemberResponse;
+import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionNotFoundException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.List;
+import org.assertj.core.api.AbstractListAssert;
+import org.assertj.core.api.ObjectAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +39,9 @@ class PermissionQueryServiceTest {
     private PermissionQueryService permissionQueryService;
 
     @Test
-    @DisplayName("Topic 에 권한이 있는자들을 모두 조회한다.")
-        // creator 는 권한이 있는자들을 조회할 때 조회되어야 할 것인가??
-    void findAllWithPermission() {
+    @DisplayName("특정 지도에 대한 접근 정보(권한 회원 목록 및 공개 여부)를 모두 조회한다. 권한 회원 중 생성자는 제외한다.")
+    void findTopicAccessDetailById() {
+        /// TODO: 2023/09/15  리팩터링
         // given
         Member member1InTopic1 = memberRepository.save(
                 MemberFixture.create("member", "member@naver.com", Role.USER)
@@ -62,15 +65,21 @@ class PermissionQueryServiceTest {
         );
 
         // when
-        List<PermissionResponse> permissionRespons = permissionQueryService.findAllTopicPermissions(topic1.getId());
-        MemberResponse memberResponse1 = MemberResponse.from(member1InTopic1);
-        MemberResponse memberResponse2 = MemberResponse.from(member2InTopic1);
+        TopicAccessDetailResponse accessDetailResponse = permissionQueryService.findTopicAccessDetailById(topic1.getId());
+        MemberResponse member1Response = MemberResponse.from(member1InTopic1);
+        MemberResponse member2Response = MemberResponse.from(member2InTopic1);
 
         // then
-        assertThat(permissionRespons).hasSize(2)
-                .extracting(PermissionResponse::memberResponse)
+        assertThat(accessDetailResponse.publicity()).isEqualTo(topic1.getPublicity());
+        List<PermissionedMemberResponse> permissionedMembers = accessDetailResponse.permissionedMembers();
+        assertThat(permissionedMembers).hasSize(2)
+                .extracting(PermissionedMemberResponse::memberResponse)
                 .usingRecursiveComparison()
-                .isEqualTo(List.of(memberResponse1, memberResponse2));
+                .isEqualTo(List.of(member1Response, member2Response));
+        assertThat(permissionedMembers)
+                .extracting(PermissionedMemberResponse::memberResponse)
+                .map(MemberResponse::id)
+                .doesNotContain(topic1.getCreator().getId());
     }
 
     @Test
@@ -89,13 +98,13 @@ class PermissionQueryServiceTest {
         ).getId();
 
         // when
-        PermissionDetailResponse permissionDetailResponse =
+        PermissionMemberDetailResponse permissionMemberDetailResponse =
                 permissionQueryService.findPermissionById(savedId);
         MemberDetailResponse permissionUserResponse = MemberDetailResponse.from(permissionUser);
 
         // then
-        assertThat(permissionDetailResponse)
-                .extracting(PermissionDetailResponse::memberDetailResponse)
+        assertThat(permissionMemberDetailResponse)
+                .extracting(PermissionMemberDetailResponse::memberDetailResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(permissionUserResponse);
     }

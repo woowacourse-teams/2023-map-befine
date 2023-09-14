@@ -114,4 +114,7 @@ public class Topic extends BaseTimeEntity {
         return bookmarks.size();
     }
 
+    public Publicity getPublicity() {
+        return topicStatus.getPublicity();
+    }
 }
