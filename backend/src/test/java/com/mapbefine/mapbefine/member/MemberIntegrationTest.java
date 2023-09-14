@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.member;
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,12 +10,12 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.member.dto.request.MemberUpdateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import io.restassured.RestAssured;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.*;
+import io.restassured.common.mapper.*;
+import io.restassured.response.*;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -154,7 +154,6 @@ class MemberIntegrationTest extends IntegrationTest {
                 .header(AUTHORIZATION, creatorAuthHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/my/bookmarks")
-
                 .then().log().all()
                 .extract();
 
@@ -170,7 +169,6 @@ class MemberIntegrationTest extends IntegrationTest {
                 .log().all()
                 .header(HttpHeaders.AUTHORIZATION, creatorAuthHeader)
                 .when().get("/members/my/atlas")
-
                 .then().log().all()
                 .extract();
 
@@ -178,5 +176,21 @@ class MemberIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @Test
+    @DisplayName("회원 정보를 정상적으로 수정하면, 200을 반환한다")
+    void updateMemberInfo_Success() {
+        // when
+        ExtractableResponse<Response> response = RestAssured.given()
+                .log().all()
+                .header(HttpHeaders.AUTHORIZATION, creatorAuthHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new MemberUpdateRequest("new nickname"))
+                .when().patch("/members/my")
+                .then().log().all()
+                .extract();
 
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+    
 }

@@ -52,7 +52,6 @@ class MemberQueryServiceTest {
     @Autowired
     private LocationRepository locationRepository;
 
-
     private AuthMember authMember;
     private Member member;
     private List<Topic> topics;
@@ -127,7 +126,7 @@ class MemberQueryServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 목록에 추가 된 토픽을 조회할 수 있다")
-    public void findAllTopicsInBookmark_success() {
+    void findAllTopicsInBookmark_success() {
         // when
         List<TopicResponse> allTopicsInBookmark = memberQueryService.findAllTopicsInBookmark(authMember);
 
@@ -199,4 +198,5 @@ class MemberQueryServiceTest {
                 .isEqualTo(pinIds);
 
     }
+    
 }
