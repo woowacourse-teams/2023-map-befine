@@ -1,8 +1,11 @@
 package com.mapbefine.mapbefine.auth.application;
 
+import static com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
+
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.User;
+import com.mapbefine.mapbefine.auth.exception.AuthErrorCode;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -21,11 +24,10 @@ public class AuthService {
         this.memberRepository = memberRepository;
     }
 
-    public boolean isMember(Long memberId) {
-        if (Objects.isNull(memberId)) {
-            return false;
+    public void validateMember(Long memberId) {
+        if (Objects.isNull(memberId) || !memberRepository.existsById(memberId)) {
+            throw new AuthUnauthorizedException(AuthErrorCode.ILLEGAL_MEMBER_ID);
         }
-        return memberRepository.existsById(memberId);
     }
 
     public AuthMember findAuthMemberByMemberId(Long memberId) {
