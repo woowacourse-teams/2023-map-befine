@@ -84,7 +84,7 @@ class PermissionQueryServiceTest {
 
     @Test
     @DisplayName("ID 를 통해서 토픽에 권한이 있는자를 조회한다.")
-    void findMemberTopicPermissionById() {
+    void findPermissionById() {
         // given
         Member creator = memberRepository.save(
                 MemberFixture.create("member", "member@naver.com", Role.USER)
@@ -111,7 +111,7 @@ class PermissionQueryServiceTest {
 
     @Test
     @DisplayName("ID 를 통해서 토픽에 권한이 있는자를 조회하려 할 때, 결과가 존재하지 않을 때 예외가 발생한다.")
-    void findMemberTopicPermissionById_whenNoneExistsPermission_thenFail() {
+    void findPermissionById_whenNoneExistsPermission_thenFail() {
         // given when then
         assertThatThrownBy(() -> permissionQueryService.findPermissionById(Long.MAX_VALUE))
                 .isInstanceOf(PermissionNotFoundException.class);

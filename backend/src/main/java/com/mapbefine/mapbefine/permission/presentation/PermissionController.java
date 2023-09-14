@@ -60,7 +60,7 @@ public class PermissionController {
     //  회원 정보 조회는 /members 에서 하는 걸로 충분하지 않나? 재사용성이 떨어진다. 테스트의 DisplayName도 매칭이 안된다.
     @LoginRequired
     @GetMapping("/{permissionId}")
-    public ResponseEntity<PermissionMemberDetailResponse> findMemberTopicPermissionById(@PathVariable Long permissionId) {
+    public ResponseEntity<PermissionMemberDetailResponse> findPermissionById(@PathVariable Long permissionId) {
         PermissionMemberDetailResponse response = permissionQueryService.findPermissionById(permissionId);
 
         return ResponseEntity.ok(response);

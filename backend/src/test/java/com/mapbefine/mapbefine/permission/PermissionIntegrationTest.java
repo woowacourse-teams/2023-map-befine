@@ -154,7 +154,7 @@ class PermissionIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("Topic 에 권한을 가진 자를 조회한다.")
-    void findMemberTopicPermissionById() {
+    void findPermissionById() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
         Permission permission =

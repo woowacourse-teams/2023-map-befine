@@ -71,7 +71,7 @@ class PermissionControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("권한이 있는 자들 모두 조회")
-    void findMemberTopicPermissionById() throws Exception {
+    void findPermissionById() throws Exception {
         PermissionMemberDetailResponse permissionMemberDetailResponse = new PermissionMemberDetailResponse(
                 1L,
                 LocalDateTime.now(),
