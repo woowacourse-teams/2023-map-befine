@@ -3,10 +3,11 @@ package com.mapbefine.mapbefine.common.interceptor;
 import com.mapbefine.mapbefine.auth.application.AuthService;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.dto.AuthInfo;
+import com.mapbefine.mapbefine.auth.exception.AuthErrorCode;
+import com.mapbefine.mapbefine.auth.exception.AuthException;
+import com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
 import com.mapbefine.mapbefine.auth.infrastructure.AuthorizationExtractor;
 import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
-import com.mapbefine.mapbefine.common.exception.ErrorCode;
-import com.mapbefine.mapbefine.common.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
@@ -17,10 +18,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
-
-    private static final String UNAUTHORIZED_ERROR_MESSAGE = "로그인에 실패하였습니다.";
-    private static final ErrorCode ILLEGAL_MEMBER_ID = new ErrorCode("03100", UNAUTHORIZED_ERROR_MESSAGE);
-    private static final ErrorCode ILLEGAL_TOKEN = new ErrorCode("03101", UNAUTHORIZED_ERROR_MESSAGE);
 
     private final AuthorizationExtractor<AuthInfo> authorizationExtractor;
     private final AuthService authService;
@@ -65,7 +62,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return;
         }
 
-        throw new UnauthorizedException(ILLEGAL_MEMBER_ID);
+        throw new AuthUnauthorizedException(AuthErrorCode.ILLEGAL_MEMBER_ID);
     }
 
     private boolean isAuthMemberNotRequired(HandlerMethod handlerMethod) {
@@ -86,7 +83,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         String accessToken = authInfo.accessToken();
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new UnauthorizedException(ILLEGAL_TOKEN);
+            throw new AuthException.AuthUnauthorizedException(AuthErrorCode.ILLEGAL_TOKEN);
         }
         return Long.parseLong(jwtTokenProvider.getPayload(accessToken));
     }

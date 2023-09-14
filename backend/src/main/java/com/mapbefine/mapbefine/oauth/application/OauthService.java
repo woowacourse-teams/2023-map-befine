@@ -1,10 +1,10 @@
 package com.mapbefine.mapbefine.oauth.application;
 
+import com.mapbefine.mapbefine.auth.exception.AuthErrorCode;
+import com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
 import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.exception.MemberErrorCode;
-import com.mapbefine.mapbefine.member.exception.MemberException.MemberForbiddenException;
 import com.mapbefine.mapbefine.oauth.domain.AuthCodeRequestUrlProviderComposite;
 import com.mapbefine.mapbefine.oauth.domain.OauthMember;
 import com.mapbefine.mapbefine.oauth.domain.OauthMemberClientComposite;
@@ -58,7 +58,7 @@ public class OauthService {
             return;
         }
 
-        throw new MemberForbiddenException(MemberErrorCode.FORBIDDEN_MEMBER_STATUS, member.getId());
+        throw new AuthUnauthorizedException(AuthErrorCode.BLOCKING_MEMBER_ACCESS);
     }
 
 }
