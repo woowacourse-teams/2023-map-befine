@@ -37,17 +37,17 @@ export interface ModalTopicCardProps {
   updatedAt: string;
 }
 
-export interface TopicAuthor {
+export interface TopicAuthorInfo {
   publicity: 'PUBLIC' | 'PRIVATE';
-  permissionMembers: PermissionMember[];
+  permissionMembers: TopicAuthorMemberWithId[];
 }
 
-interface PermissionMember {
+export interface TopicAuthorMemberWithId {
   id: number;
-  memberResponse: Member;
+  memberResponse: TopicAuthorMember;
 }
 
-export interface Member {
+export interface TopicAuthorMember {
   id: number;
   nickName: string;
   email: string;

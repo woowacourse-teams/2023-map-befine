@@ -15,6 +15,9 @@ import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 import { styled } from 'styled-components';
+import Box from '../common/Box';
+import { useState } from 'react';
+import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
   fullUrl?: string;
@@ -47,11 +50,16 @@ const TopicInfo = ({
   isBookmarked,
   setTopicsFromServer,
 }: TopicInfoProps) => {
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const { routePage } = useNavigator();
   const { showToast } = useToast();
 
   const goToNewPin = () => {
     routePage(`/new-pin?topic-id=${topicId}`, fullUrl);
+  };
+
+  const updateTopicInfo = () => {
+    setIsUpdate(true);
   };
 
   const copyContent = async () => {
@@ -63,6 +71,17 @@ const TopicInfo = ({
       showToast('error', '토픽 링크를 복사하는데 실패했습니다.');
     }
   };
+
+  if (isUpdate)
+    return (
+      <UpdatedTopicInfo
+        id={Number(topicId)}
+        image={topicImage}
+        name={topicTitle}
+        description={topicDescription}
+        setIsUpdate={setIsUpdate}
+      />
+    );
 
   return (
     <Flex
@@ -86,21 +105,28 @@ const TopicInfo = ({
 
       <Space size={1} />
 
-      <Flex>
-        <Flex $alignItems="center" width="72px">
-          <SmallTopicPin />
-          <Space size={0} />
-          <Text color="black" $fontSize="small" $fontWeight="normal">
-            {topicPinCount > 999 ? '+999' : topicPinCount}개
-          </Text>
+      <Flex $justifyContent="space-between">
+        <Flex>
+          <Flex $alignItems="center" width="72px">
+            <SmallTopicPin />
+            <Space size={0} />
+            <Text color="black" $fontSize="small" $fontWeight="normal">
+              {topicPinCount > 999 ? '+999' : topicPinCount}개
+            </Text>
+          </Flex>
+          <Flex $alignItems="center" width="72px">
+            <SmallTopicStar />
+            <Space size={0} />
+            <Text color="black" $fontSize="small" $fontWeight="normal">
+              {topicBookmarkCount > 999 ? '+999' : topicBookmarkCount}명
+            </Text>
+          </Flex>
         </Flex>
-        <Flex $alignItems="center" width="72px">
-          <SmallTopicStar />
-          <Space size={0} />
-          <Text color="black" $fontSize="small" $fontWeight="normal">
-            {topicBookmarkCount > 999 ? '+999' : topicBookmarkCount}명
+        <Box cursor="pointer" onClick={updateTopicInfo}>
+          <Text color="primary" $fontSize="default" $fontWeight="normal">
+            수정하기
           </Text>
-        </Flex>
+        </Box>
       </Flex>
 
       <Space size={0} />

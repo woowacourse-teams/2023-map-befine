@@ -3,7 +3,7 @@ import Text from '../common/Text';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import { useContext, useEffect, useState } from 'react';
-import { Member } from '../../types/Topic';
+import { TopicAuthorMember, TopicAuthorInfo } from '../../types/Topic';
 import { ModalContext } from '../../context/ModalContext';
 import Box from '../common/Box';
 import Modal from '../Modal';
@@ -18,6 +18,7 @@ interface AuthorityRadioContainer {
   setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAll: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthorizedMemberIds: React.Dispatch<React.SetStateAction<number[]>>;
+  topicAuthorInfo?: TopicAuthorInfo | null;
 }
 
 const AuthorityRadioContainer = ({
@@ -27,14 +28,15 @@ const AuthorityRadioContainer = ({
   setIsPrivate,
   setIsAll,
   setAuthorizedMemberIds,
+  topicAuthorInfo,
 }: AuthorityRadioContainer) => {
   const { openModal, closeModal } = useContext(ModalContext);
   const { fetchGet } = useGet();
 
-  const [members, setMembers] = useState<Member[]>([]);
+  const [members, setMembers] = useState<TopicAuthorMember[]>([]);
 
   useEffect(() => {
-    fetchGet<Member[]>(
+    fetchGet<TopicAuthorMember[]>(
       '/members',
       '사용자 목록을 가져오는데 실패했습니다.',
       (response) => {
@@ -55,7 +57,7 @@ const AuthorityRadioContainer = ({
   };
 
   const onChangeMemberChecked = (isChecked: boolean, id: number) => {
-    setAuthorizedMemberIds((prev: Member['id'][]) =>
+    setAuthorizedMemberIds((prev: TopicAuthorMember['id'][]) =>
       isChecked ? [...prev, id] : prev.filter((n: number) => n !== id),
     );
   };
@@ -157,6 +159,29 @@ const AuthorityRadioContainer = ({
                     </Text>
                   );
               })}
+            </Box>
+          </>
+        )}
+
+        {authorizedMemberIds.length === 0 && topicAuthorInfo && (
+          <>
+            <Space size={5} />
+            <Space size={0} />
+            <Box>
+              <Text color="black" $fontSize="default" $fontWeight="normal">
+                기존에 선택한 친구들
+              </Text>
+              <Space size={1} />
+              {topicAuthorInfo.permissionMembers.map((member) => (
+                <Text
+                  color="black"
+                  $fontSize="default"
+                  $fontWeight="normal"
+                  key={member.id}
+                >
+                  • {member.memberResponse.nickName}
+                </Text>
+              ))}
             </Box>
           </>
         )}
