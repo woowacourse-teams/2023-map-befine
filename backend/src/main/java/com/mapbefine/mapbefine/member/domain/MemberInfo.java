@@ -28,7 +28,6 @@ public class MemberInfo {
     @Column(nullable = false, length = 20, unique = true)
     private String nickName;
 
-    // TODO 카카오에서 email 선택 동의라 체크 안하고 가입하면 DB에서 터질듯
     @Column(nullable = false, unique = true)
     private String email;
 

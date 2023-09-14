@@ -9,9 +9,11 @@ import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
+import com.mapbefine.mapbefine.member.domain.MemberInfo;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.request.MemberUpdateRequest;
+import com.mapbefine.mapbefine.member.exception.MemberException.MemberConflictException;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +72,18 @@ class MemberCommandServiceTest {
         // when, then
         assertThatThrownBy(() -> memberCommandService.updateInfoById(notExistingMember, request))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 시, 이미 존재하는 닉네임을 설정하면 예외가 발생한다.")
+    void updateInfoById_FailByDuplicatedNickName() {
+        // given
+        MemberInfo memberInfo = member.getMemberInfo();
+        MemberUpdateRequest request = new MemberUpdateRequest(memberInfo.getNickName());
+
+        // when, then
+        assertThatThrownBy(() -> memberCommandService.updateInfoById(authMember, request))
+                .isInstanceOf(MemberConflictException.class);
     }
 
 }

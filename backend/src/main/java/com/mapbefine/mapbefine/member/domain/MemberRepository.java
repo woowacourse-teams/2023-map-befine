@@ -9,4 +9,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByOauthId(OauthId oauthId);
 
+    boolean existsByMemberInfoNickName(String nickName);
+
 }

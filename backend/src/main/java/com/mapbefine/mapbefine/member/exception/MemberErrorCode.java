@@ -10,6 +10,7 @@ public enum MemberErrorCode {
     ILLEGAL_EMAIL_NULL("05002", "이메일은 필수로 입력해야합니다."),
     ILLEGAL_EMAIL_PATTERN("05003", "올바르지 않은 이메일 형식입니다."),
     MEMBER_NOT_FOUND("05400", "존재하지 않는 회원입니다."),
+    ILLEGAL_NICKNAME_ALREADY_EXISTS("05900", "이미 존재하는 닉네임입니다."),
     ;
 
     private final String code;
