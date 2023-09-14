@@ -13,7 +13,6 @@ export interface NewTopicFormProps {
 
 export interface ModifyPinFormProps {
   name: string;
-  images: string[];
   description: string;
 }
 
