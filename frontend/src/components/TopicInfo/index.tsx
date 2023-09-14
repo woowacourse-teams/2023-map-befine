@@ -30,6 +30,7 @@ export interface TopicInfoProps {
   topicPinCount: number;
   topicBookmarkCount: number;
   topicDescription: string;
+  canUpdate: boolean;
   isInAtlas: boolean;
   isBookmarked: boolean;
   setTopicsFromServer: () => void;
@@ -46,6 +47,7 @@ const TopicInfo = ({
   topicPinCount,
   topicBookmarkCount,
   topicDescription,
+  canUpdate,
   isInAtlas,
   isBookmarked,
   setTopicsFromServer,
@@ -122,11 +124,13 @@ const TopicInfo = ({
             </Text>
           </Flex>
         </Flex>
-        <Box cursor="pointer" onClick={updateTopicInfo}>
-          <Text color="primary" $fontSize="default" $fontWeight="normal">
-            수정하기
-          </Text>
-        </Box>
+        {canUpdate && (
+          <Box cursor="pointer" onClick={updateTopicInfo}>
+            <Text color="primary" $fontSize="default" $fontWeight="normal">
+              수정하기
+            </Text>
+          </Box>
+        )}
       </Flex>
 
       <Space size={0} />

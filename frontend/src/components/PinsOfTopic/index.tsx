@@ -34,6 +34,7 @@ const PinsOfTopic = ({
         topicPinCount={topicDetail.pinCount}
         topicBookmarkCount={topicDetail.bookmarkCount}
         topicDescription={topicDetail.description}
+        canUpdate={topicDetail.canUpdate}
         isInAtlas={topicDetail.isInAtlas}
         isBookmarked={topicDetail.isBookmarked}
         setTopicsFromServer={setTopicsFromServer}

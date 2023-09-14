@@ -18,6 +18,7 @@ export interface TopicDetailProps {
   name: string;
   creator: string;
   description: string;
+  canUpdate: boolean;
   pinCount: number;
   bookmarkCount: number;
   updatedAt: string;
