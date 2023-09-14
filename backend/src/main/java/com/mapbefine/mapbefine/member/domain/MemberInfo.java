@@ -28,7 +28,7 @@ public class MemberInfo {
     @Column(nullable = false, length = 20, unique = true)
     private String nickName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
