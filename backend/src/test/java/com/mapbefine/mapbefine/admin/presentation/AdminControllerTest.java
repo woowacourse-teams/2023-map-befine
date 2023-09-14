@@ -10,17 +10,11 @@ import com.mapbefine.mapbefine.admin.application.AdminQueryService;
 import com.mapbefine.mapbefine.admin.dto.AdminMemberDetailResponse;
 import com.mapbefine.mapbefine.admin.dto.AdminMemberResponse;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
-import com.mapbefine.mapbefine.member.MemberFixture;
-import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.common.interceptor.AdminAuthInterceptor;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import javax.swing.text.html.Option;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,8 +64,6 @@ class AdminControllerTest extends RestDocsIntegration {
             )
     );
 
-    private static final Member ADMIN = MemberFixture.create("Admin", "admin@naver.com", Role.ADMIN);
-
     @MockBean
     private AdminCommandService adminCommandService;
 
@@ -79,11 +71,11 @@ class AdminControllerTest extends RestDocsIntegration {
     private AdminQueryService adminQueryService;
 
     @MockBean
-    private MemberRepository memberRepository;
+    private AdminAuthInterceptor adminAuthInterceptor;
 
     @BeforeEach
-    void setAll(){
-        given(memberRepository.findById(any())).willReturn(Optional.of(ADMIN));
+    void setAll() throws Exception {
+        given(adminAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
     }
 
     @DisplayName("멤버 목록 조회")
