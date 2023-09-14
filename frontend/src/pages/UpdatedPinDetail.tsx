@@ -9,6 +9,7 @@ import { hasErrorMessage, hasNullValue } from '../validations';
 import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
 import styled from 'styled-components';
+import usePut from '../apiHooks/usePut';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
@@ -36,6 +37,7 @@ const UpdatedPinDetail = ({
   onChangeInput,
 }: UpdatedPinDetailProps) => {
   const { showToast } = useToast();
+  const { fetchPut } = usePut();
 
   const removeQueryString = (key: string) => {
     const updatedSearchParams = { ...Object.fromEntries(searchParams) };
@@ -48,16 +50,18 @@ const UpdatedPinDetail = ({
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }
-    try {
-      await putApi(`/pins/${pinId}`, formValues);
-      setIsEditing(false);
-      removeQueryString('edit');
-      updatePinDetailAfterEditing();
 
-      showToast('info', '핀 수정을 완료하였습니다.');
-    } catch (error) {
-      showToast('error', '해당 지도에 대해 수정 권한이 없습니다. ');
-    }
+    fetchPut(
+      { url: `/pins/${pinId}`, payload: formValues },
+      '입력하신 항목들을 다시 한 번 확인해주세요.',
+      () => {
+        setIsEditing(false);
+        removeQueryString('edit');
+        updatePinDetailAfterEditing();
+
+        showToast('info', '핀 수정을 완료하였습니다.');
+      },
+    );
   };
 
   const onClickCancelPinUpdate = () => {
