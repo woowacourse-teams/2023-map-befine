@@ -16,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)
@@ -38,33 +39,43 @@ public class MemberInfo {
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault(value = "NORMAL")
+    @Column(nullable = false)
+    private Status status;
+
     private MemberInfo(
             String nickName,
             String email,
             Image imageUrl,
-            Role role
+            Role role,
+            Status status
     ) {
         this.nickName = nickName;
         this.email = email;
         this.imageUrl = imageUrl;
         this.role = role;
+        this.status = status;
     }
 
     public static MemberInfo of(
             String nickName,
             String email,
             String imageUrl,
-            Role role
+            Role role,
+            Status status
     ) {
         validateNickName(nickName);
         validateEmail(email);
         validateRole(role);
+        validateStatus(status);
 
         return new MemberInfo(
                 nickName,
                 email,
                 Image.from(imageUrl),
-                role
+                role,
+                status
         );
     }
 
@@ -90,6 +101,12 @@ public class MemberInfo {
     private static void validateRole(Role role) {
         if (Objects.isNull(role)) {
             throw new IllegalArgumentException("validateRole; member role is null;");
+        }
+    }
+
+    private static void validateStatus(Status status) {
+        if (Objects.isNull(status)) {
+            throw new IllegalArgumentException("validateStatus; member status is null;");
         }
     }
 

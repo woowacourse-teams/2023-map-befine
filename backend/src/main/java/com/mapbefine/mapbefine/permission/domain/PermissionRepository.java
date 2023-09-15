@@ -9,4 +9,5 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     boolean existsByTopicIdAndMemberId(Long topicId, Long memberId);
 
+    void deleteAllByMemberId(Long memberId);
 }
