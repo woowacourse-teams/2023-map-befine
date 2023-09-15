@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { ImagesType } from '../../types/Pin';
+import { ImageProps } from '../../types/Pin';
 import Image from '../common/Image';
 
 interface PinImageContainerProps {
-  images: ImagesType[];
+  images: ImageProps[];
 }
 
 const PinImageContainer = ({ images }: PinImageContainerProps) => {

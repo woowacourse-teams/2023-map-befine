@@ -7,10 +7,10 @@ export interface PinProps {
   latitude: number;
   longitude: number;
   updatedAt: string;
-  images: ImagesType[];
+  images: ImageProps[];
 }
 
-export interface ImagesType {
+export interface ImageProps {
   id: number;
   imageUrl: string;
 }
