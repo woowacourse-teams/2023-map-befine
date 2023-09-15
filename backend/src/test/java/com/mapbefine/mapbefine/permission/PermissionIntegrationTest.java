@@ -100,7 +100,7 @@ class PermissionIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Topic 을 만든 회원이 특정 회원이 해당 Topic 에 가진 권한을 삭제한다.")
+    @DisplayName("Topic 을 만든 회원이 특정 회원이 가진 해당 Topic 에 대한 권한을 삭제한다.")
     void deletePermission() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
