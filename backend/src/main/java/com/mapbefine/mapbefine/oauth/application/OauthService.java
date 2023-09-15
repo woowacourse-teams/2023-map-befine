@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.oauth.application;
 
+import com.mapbefine.mapbefine.auth.exception.AuthErrorCode;
+import com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
 import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -39,6 +41,8 @@ public class OauthService {
         Member savedMember = memberRepository.findByOauthId(oauthMember.getOauthId())
                 .orElseGet(() -> register(oauthMember));
 
+        validateMemberStatus(savedMember);
+
         String accessToken = jwtTokenProvider.createToken(String.valueOf(savedMember.getId()));
 
         return LoginInfoResponse.of(accessToken, savedMember);
@@ -47,6 +51,14 @@ public class OauthService {
     private Member register(OauthMember oauthMember) {
 
         return memberRepository.save(oauthMember.toRegisterMember());
+    }
+
+    private void validateMemberStatus(Member member) {
+        if (member.isNormalStatus()) {
+            return;
+        }
+
+        throw new AuthUnauthorizedException(AuthErrorCode.BLOCKING_MEMBER_ACCESS);
     }
 
 }

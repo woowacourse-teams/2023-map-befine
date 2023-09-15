@@ -10,4 +10,5 @@ public interface AtlasRepository extends JpaRepository<Atlas, Long> {
 
     void deleteByMemberIdAndTopicId(Long memberId, Long topicId);
 
+    void deleteAllByMemberId(Long memberId);
 }
