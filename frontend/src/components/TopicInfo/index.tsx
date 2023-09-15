@@ -52,8 +52,6 @@ const TopicInfo = ({
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const { showToast } = useToast();
 
-  console.log(canUpdate);
-
   const updateTopicInfo = () => {
     setIsUpdate(true);
   };

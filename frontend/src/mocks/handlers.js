@@ -78,7 +78,6 @@ export const handlers = [
       data = detailTopic.filter((topic) => Number(topic.id) === topicId);
     }
 
-    console.log(data);
     if (!data) {
       return res(ctx.status(403), ctx.json(data));
     }
