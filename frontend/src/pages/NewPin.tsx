@@ -179,7 +179,7 @@ const NewPin = () => {
     });
   };
 
-  const handlePinImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onPinImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const imageLists = event.target.files;
     let imageUrlLists = [...showImages];
 
@@ -279,7 +279,7 @@ const NewPin = () => {
               id="file"
               type="file"
               name="images"
-              onChange={handlePinImageChange}
+              onChange={onPinImageChange}
               style={{ display: 'none' }}
               multiple
             />

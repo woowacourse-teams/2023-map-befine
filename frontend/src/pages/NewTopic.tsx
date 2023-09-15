@@ -168,7 +168,7 @@ const NewTopic = () => {
     }
   };
 
-  const handleTopicImageFileChange = (
+  const onTopicImageFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files && event.target.files[0];
@@ -199,7 +199,7 @@ const NewTopic = () => {
             id="file"
             type="file"
             name="image"
-            onChange={handleTopicImageFileChange}
+            onChange={onTopicImageFileChange}
             style={{ display: 'none' }}
           />
         </Flex>

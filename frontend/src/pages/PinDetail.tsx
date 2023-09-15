@@ -57,14 +57,14 @@ const PinDetail = ({
     showToast('error', '로그인 후 사용해주세요.');
   };
 
-    const getPinData = async () => {
-      const pinData = await getApi<PinProps>(`/pins/${pinId}`);
-      setPin(pinData);
-      setFormValues({
-        name: pinData.name,
-        description: pinData.description,
-      });
-    };
+  const getPinData = async () => {
+    const pinData = await getApi<PinProps>(`/pins/${pinId}`);
+    setPin(pinData);
+    setFormValues({
+      name: pinData.name,
+      description: pinData.description,
+    });
+  };
 
   useEffect(() => {
     getPinData();
@@ -87,7 +87,7 @@ const PinDetail = ({
     }
   };
 
-  const handlePinImageFileChange = async (
+  const onPinImageFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files && event.target.files[0];
@@ -164,7 +164,7 @@ const PinDetail = ({
         id="file"
         type="file"
         name="image"
-        onChange={handlePinImageFileChange}
+        onChange={onPinImageFileChange}
         style={{ display: 'none' }}
       />
 
