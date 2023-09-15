@@ -61,7 +61,7 @@ const UpdatedTopicInfo = ({
           publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
           permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
         },
-        errorMessage: `'공개지도 ➡️ 비공개지도', '친구들 ➡️ 혼자' 로 변경할 수 없습니다.`,
+        errorMessage: `'공개 ➡️ 비공개', '모두 ➡️ 친구들', '친구들 ➡️ 혼자' 로 변경할 수 없습니다.`,
         isThrow: true,
       });
 
@@ -69,15 +69,17 @@ const UpdatedTopicInfo = ({
 
       showToast('info', '지도를 수정하였습니다.');
       setIsUpdate(false);
-    } catch (e) {}
+    } catch {}
   };
 
   const updateTopicAuthority = async () => {
+    // topicAuthorInfo api 구조 이상으로 권한 설정 자체에 대한 id를 사용 (topicId 아님)
     await fetchDelete({
-      url: `/permissions/${id}`,
+      url: `/permissions/${topicAuthorInfo?.permissionMembers[0].id}`,
       errorMessage: '권한 삭제에 실패했습니다.',
       isThrow: true,
     });
+
     await fetchPost({
       url: '/permissions',
       payload: {
