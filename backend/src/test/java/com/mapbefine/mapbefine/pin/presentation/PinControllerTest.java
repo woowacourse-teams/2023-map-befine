@@ -40,7 +40,10 @@ class PinControllerTest extends RestDocsIntegration {
     @DisplayName("핀 추가")
     void add() throws Exception {
         given(pinCommandService.save(any(), any(), any())).willReturn(1L);
-        File mockFile = new File(getClass().getClassLoader().getResource("test.png").getPath());
+        File mockFile = new File(getClass()
+                .getClassLoader()
+                .getResource("test.png")
+                .getPath());
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
 
         PinCreateRequest pinCreateRequest = new PinCreateRequest(
@@ -158,11 +161,6 @@ class PinControllerTest extends RestDocsIntegration {
                 .getResource("test.png")
                 .getPath();
         File mockFile = new File(imageFilePath);
-
-//        PinImageCreateRequest pinImageCreateRequest = new PinImageCreateRequest(
-//                1L,
-//                FileFixture.createFile()
-//        );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/pins/images")
