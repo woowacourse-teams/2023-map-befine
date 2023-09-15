@@ -173,7 +173,10 @@ const NewTopic = () => {
   ) => {
     const file = event.target.files && event.target.files[0];
     if (!file) {
-      showToast('error', '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.');
+      showToast(
+        'error',
+        '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
       return;
     }
 
@@ -195,12 +198,11 @@ const NewTopic = () => {
         <Flex>
           {showImage && <ShowImage src={showImage} alt={`사진 이미지`} />}
           <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
-          <input
+          <ImageInputButton
             id="file"
             type="file"
             name="image"
             onChange={onTopicImageFileChange}
-            style={{ display: 'none' }}
           />
         </Flex>
 
@@ -455,6 +457,10 @@ const ImageInputLabel = styled.label`
 const ShowImage = styled.img`
   width: 80px;
   height: 80px;
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
 `;
 
 export default NewTopic;

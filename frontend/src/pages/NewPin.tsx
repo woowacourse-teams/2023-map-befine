@@ -186,7 +186,10 @@ const NewPin = () => {
     const file = event.target.files && event.target.files[0];
 
     if (!file) {
-      showToast('error', '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.');
+      showToast(
+        'error',
+        '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
       return;
     }
 
@@ -275,12 +278,11 @@ const NewPin = () => {
           <Space size={0} />
           <Flex>
             <ImageInputLabel htmlFor="file">파일찾기</ImageInputLabel>
-            <input
+            <ImageInputButton
               id="file"
               type="file"
               name="images"
               onChange={onPinImageChange}
-              style={{ display: 'none' }}
               multiple
             />
           </Flex>
@@ -427,6 +429,10 @@ const ImageInputLabel = styled.label`
 const ShowImage = styled.img`
   width: 80px;
   height: 80px;
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
 `;
 
 export default NewPin;

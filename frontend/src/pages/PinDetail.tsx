@@ -94,7 +94,10 @@ const PinDetail = ({
     const formData = new FormData();
 
     if (!file) {
-      showToast('error', '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.');
+      showToast(
+        'error',
+        '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
       return;
     }
 
@@ -160,12 +163,11 @@ const PinDetail = ({
       <Space size={2} />
 
       <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
-      <input
+      <ImageInputButton
         id="file"
         type="file"
         name="image"
         onChange={onPinImageFileChange}
-        style={{ display: 'none' }}
       />
 
       <PinImageContainer images={pin.images} />
@@ -310,6 +312,10 @@ const ImageInputLabel = styled.label`
   text-align: center;
 
   cursor: pointer;
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
 `;
 
 export default PinDetail;
