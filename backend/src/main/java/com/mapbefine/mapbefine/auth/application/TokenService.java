@@ -1,8 +1,12 @@
 package com.mapbefine.mapbefine.auth.application;
 
-import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
+import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.ILLEGAL_TOKEN;
+
+import com.mapbefine.mapbefine.auth.domain.token.RefreshToken;
 import com.mapbefine.mapbefine.auth.domain.token.RefreshTokenRepository;
 import com.mapbefine.mapbefine.auth.dto.AccessToken;
+import com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
+import com.mapbefine.mapbefine.auth.infrastructure.TokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,27 +14,34 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TokenService {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenService(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public TokenService(TokenProvider tokenProvider, RefreshTokenRepository refreshTokenRepository) {
+        this.tokenProvider = tokenProvider;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
     public AccessToken reissueAccessToken(String refreshToken, String accessToken) {
-        jwtTokenProvider.validateTokensForReissue(refreshToken, accessToken);
+        tokenProvider.validateTokensForReissue(refreshToken, accessToken);
 
-        Long memberId = refreshTokenRepository.findMemberIdByToken(refreshToken);
-        String reissuedToken = jwtTokenProvider.createAccessToken(String.valueOf(memberId));
+        Long memberId = findMemberIdByRefreshToken(refreshToken);
+        String reissuedToken = tokenProvider.createAccessToken(String.valueOf(memberId));
 
         return new AccessToken(reissuedToken);
     }
 
-    public void removeRefreshToken(String refreshToken, String accessToken) {
-        jwtTokenProvider.validateTokensForRemoval(refreshToken, accessToken);
+    private Long findMemberIdByRefreshToken(String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findById(token)
+                .orElseThrow(() -> new AuthUnauthorizedException(ILLEGAL_TOKEN));
 
-        String payload = jwtTokenProvider.getPayload(accessToken);
+        return refreshToken.getMemberId();
+    }
+
+    public void removeRefreshToken(String refreshToken, String accessToken) {
+        tokenProvider.validateTokensForRemoval(refreshToken, accessToken);
+
+        String payload = tokenProvider.getPayload(accessToken);
         Long memberId = Long.valueOf(payload);
 
         refreshTokenRepository.deleteByMemberId(memberId);

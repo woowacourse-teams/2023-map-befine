@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.oauth.application;
 
 import com.mapbefine.mapbefine.auth.domain.token.RefreshToken;
 import com.mapbefine.mapbefine.auth.domain.token.RefreshTokenRepository;
-import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
+import com.mapbefine.mapbefine.auth.infrastructure.TokenProvider;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
@@ -18,20 +18,20 @@ import org.springframework.stereotype.Service;
 public class OauthService {
 
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
     private final OauthMemberClientComposite oauthMemberClientComposite;
     private final RefreshTokenRepository refreshTokenRepository;
 
     public OauthService(
             MemberRepository memberRepository,
-            JwtTokenProvider jwtTokenProvider,
+            TokenProvider tokenProvider,
             AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite,
             OauthMemberClientComposite oauthMemberClientComposite,
             RefreshTokenRepository refreshTokenRepository
     ) {
         this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
         this.authCodeRequestUrlProviderComposite = authCodeRequestUrlProviderComposite;
         this.oauthMemberClientComposite = oauthMemberClientComposite;
         this.refreshTokenRepository = refreshTokenRepository;
@@ -48,8 +48,8 @@ public class OauthService {
                 .orElseGet(() -> register(oauthMember));
         Long savedMemberId = savedMember.getId();
 
-        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMemberId));
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        String accessToken = tokenProvider.createAccessToken(String.valueOf(savedMemberId));
+        String refreshToken = tokenProvider.createRefreshToken();
 
         refreshTokenRepository.save(new RefreshToken(refreshToken, savedMemberId));
 

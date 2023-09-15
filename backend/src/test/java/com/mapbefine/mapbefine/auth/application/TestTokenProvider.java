@@ -1,9 +1,10 @@
-package com.mapbefine.mapbefine.auth.infrastructure;
+package com.mapbefine.mapbefine.auth.application;
 
 import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.EXPIRED_TOKEN;
 import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.ILLEGAL_TOKEN;
 
 import com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
+import com.mapbefine.mapbefine.auth.infrastructure.TokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -11,56 +12,60 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
-public class JwtTokenProvider implements TokenProvider {
+public class TestTokenProvider implements TokenProvider {
 
     private static final String EMPTY = "";
 
     private final String secretKey;
+    private final Date issuedAt;
     private final long accessExpirationTime;
     private final long refreshExpirationTime;
 
-    public JwtTokenProvider(
-            @Value("${security.jwt.token.secret-key}")
+    public TestTokenProvider(
             String secretKey,
-            @Value("${security.jwt.token.access-expire-length}")
+            Date issuedAt,
             long accessExpirationTime,
-            @Value("${security.jwt.token.refresh-expire-length}")
             long refreshExpirationTime
     ) {
         this.secretKey = secretKey;
+        this.issuedAt = issuedAt;
         this.accessExpirationTime = accessExpirationTime;
         this.refreshExpirationTime = refreshExpirationTime;
     }
 
+    @Override
     public String createAccessToken(String payload) {
-        return createToken(payload, accessExpirationTime);
+        return createToken(payload, new Date(), accessExpirationTime);
     }
 
+    @Override
     public String createRefreshToken() {
-        return createToken(EMPTY, refreshExpirationTime);
+        return createToken(EMPTY, new Date(), refreshExpirationTime);
     }
 
-    private String createToken(String payload, Long validityInMilliseconds) {
+    public String createExpiredAccessToken(String payload) {
+        return createToken(payload, issuedAt, accessExpirationTime);
+    }
+
+    private String createToken(String payload, Date issuedAt, Long validityInMilliseconds) {
         Claims claims = Jwts.claims().setSubject(payload);
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(issuedAt.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
+                .setIssuedAt(issuedAt)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
+    @Override
     public String getPayload(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
+    @Override
     public void validateTokensForReissue(String refreshToken, String accessToken) {
         boolean canReissueAccessToken = !isExpired(refreshToken) && isExpired(accessToken);
         if (!canReissueAccessToken) {
@@ -68,6 +73,7 @@ public class JwtTokenProvider implements TokenProvider {
         }
     }
 
+    @Override
     public void validateTokensForRemoval(String refreshToken, String accessToken) {
         boolean canRemoveRefreshToken = !isExpired(refreshToken) && !isExpired(accessToken);
         if (!canRemoveRefreshToken) {
@@ -75,6 +81,7 @@ public class JwtTokenProvider implements TokenProvider {
         }
     }
 
+    @Override
     public void validateAccessToken(String accessToken) {
         if (isExpired(accessToken)) {
             throw new AuthUnauthorizedException(EXPIRED_TOKEN);
@@ -93,6 +100,4 @@ public class JwtTokenProvider implements TokenProvider {
             throw new AuthUnauthorizedException(ILLEGAL_TOKEN);
         }
     }
-
 }
-

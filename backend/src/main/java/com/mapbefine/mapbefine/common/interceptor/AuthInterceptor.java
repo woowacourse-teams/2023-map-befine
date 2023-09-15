@@ -4,7 +4,7 @@ import com.mapbefine.mapbefine.auth.application.AuthService;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.dto.AuthInfo;
 import com.mapbefine.mapbefine.auth.infrastructure.AuthorizationExtractor;
-import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
+import com.mapbefine.mapbefine.auth.infrastructure.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
@@ -19,16 +19,16 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private final AuthorizationExtractor<AuthInfo> authorizationExtractor;
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
 
     public AuthInterceptor(
             AuthorizationExtractor<AuthInfo> authorizationExtractor,
             AuthService authService,
-            JwtTokenProvider jwtTokenProvider
+            TokenProvider tokenProvider
     ) {
         this.authorizationExtractor = authorizationExtractor;
         this.authService = authService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
@@ -71,9 +71,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (Objects.isNull(authInfo)) {
             return null;
         }
-        jwtTokenProvider.validateAccessToken(authInfo.accessToken());
+        tokenProvider.validateAccessToken(authInfo.accessToken());
 
-        return Long.parseLong(jwtTokenProvider.getPayload(authInfo.accessToken()));
+        return Long.parseLong(tokenProvider.getPayload(authInfo.accessToken()));
     }
 
 }
