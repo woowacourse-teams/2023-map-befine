@@ -10,6 +10,7 @@ public class S3Exception {
         public S3BadRequestException(S3ErrorCode errorCode) {
             super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
+
     }
 
 }
