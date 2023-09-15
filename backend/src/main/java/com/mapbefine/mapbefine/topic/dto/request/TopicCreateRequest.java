@@ -27,4 +27,5 @@ public record TopicCreateRequest(
                 request.pins()
         );
     }
+
 }

@@ -93,6 +93,28 @@ class TopicCommandServiceTest {
     }
 
     @Test
+    @DisplayName("이미지 없이 토픽을 생성하면 기본 이미지를 반환한다.")
+    void saveEmptyTopicAndEmptyImage_Success() {
+        //given
+        TopicCreateRequest request =
+                TopicFixture.createPublicAndAllMembersAndEmptyImageCreateRequestWithPins(
+                        Collections.emptyList()
+                );
+
+        //when
+        Long topicId = topicCommandService.saveTopic(user, request);
+
+        //then
+        TopicDetailResponse detail = topicQueryService.findDetailById(user, topicId);
+
+        assertThat(detail.id()).isEqualTo(topicId);
+        assertThat(detail.name()).isEqualTo(request.name());
+        assertThat(detail.description()).isEqualTo(request.description());
+        assertThat(detail.pinCount()).isEqualTo(request.pins().size());
+        assertThat(detail.image()).isEqualTo("https://map-befine-official.github.io/favicon.png");
+    }
+
+    @Test
     @DisplayName("Guest는 비어있는 토픽을 생성할 수 없다.")
     void saveEmptyTopic_Fail() {
         //given

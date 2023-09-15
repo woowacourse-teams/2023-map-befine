@@ -25,8 +25,9 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -103,10 +104,19 @@ class TopicIntegrationTest extends IntegrationTest {
                 .extract();
     }
 
+    private ExtractableResponse<Response> createNewTopicExcludeImage(TopicCreateRequestWithOutImage request, String authHeader) {
+        return RestAssured.given()
+                .log().all()
+                .header(AUTHORIZATION, authHeader)
+                .multiPart("request", request, MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/topics/new")
+                .then().log().all()
+                .extract();
+    }
+
     @Test
     @DisplayName("Pin 목록과 함께 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithPins_Success() {
-
         PinFixture.create(location, topic, member);
 
         List<Pin> pins = pinRepository.findAll();
@@ -124,6 +134,32 @@ class TopicIntegrationTest extends IntegrationTest {
 
         // when
         ExtractableResponse<Response> response = createNewTopic(준팍의_또간집, authHeader);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("Image 없이 Topic 을 생성하더라도 201을 반환한다")
+    void createNewTopicNonExistsImage_Success() {
+        PinFixture.create(location, topic, member);
+
+        List<Pin> pins = pinRepository.findAll();
+        List<Long> pinIds = pins.stream()
+                .map(Pin::getId)
+                .toList();
+
+        TopicCreateRequestWithOutImage 준팍의_또간집 = new TopicCreateRequestWithOutImage(
+                "준팍의 또간집",
+                "준팍이 2번 이상 간집 ",
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                pinIds
+        );
+
+        // when
+        ExtractableResponse<Response> response = createNewTopicExcludeImage(준팍의_또간집, authHeader);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
