@@ -51,7 +51,6 @@ const NewPin = () => {
   const { openModal, closeModal } = useContext(ModalContext);
 
   const [formImages, setFormImages] = useState<File[]>([]);
-  const formData = new FormData();
 
   const goToBack = () => {
     routePage(-1);
@@ -183,17 +182,13 @@ const NewPin = () => {
     const imageLists = event.target.files;
     let imageUrlLists = [...showedImages];
 
-    const file = event.target.files && event.target.files[0];
-
-    if (!file) {
+    if (!imageLists) {
       showToast(
         'error',
         '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
       );
       return;
     }
-
-    if (!imageLists) return;
 
     for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
@@ -209,7 +204,7 @@ const NewPin = () => {
       return;
     }
 
-    setFormImages([...formImages, file]);
+    setFormImages([...formImages, ...imageLists]);
     setShowedImages(imageUrlLists);
   };
 
