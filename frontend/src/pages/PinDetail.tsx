@@ -68,7 +68,7 @@ const PinDetail = ({
 
   useEffect(() => {
     getPinData();
-  }, [pinId, searchParams, pin]);
+  }, [pinId, searchParams]);
 
   const onClickEditPin = () => {
     setIsEditPinDetail(true);
@@ -96,7 +96,7 @@ const PinDetail = ({
     if (!file) {
       showToast(
         'error',
-        '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+        '이미지를 선택하지 않았거나 추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
       );
       return;
     }
@@ -109,6 +109,8 @@ const PinDetail = ({
     formData.append('pinId', jsonBlob);
 
     await postFormApi('/pins/images', formData);
+
+    getPinData();
   };
 
   if (!pin) return <></>;
