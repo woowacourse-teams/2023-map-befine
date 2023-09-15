@@ -137,9 +137,20 @@ const NewTopic = () => {
   const createTopic = async () => {
     try {
       const formData = new FormData();
-      if (!formImage) return;
 
-      formData.append('image', formImage);
+      if (!formImage) {
+        const imageBlob = new Blob([DEFAULT_TOPIC_IMAGE], {
+          type: 'image/svg+xml',
+        });
+        const imageFile = new File([imageBlob], 'image.svg', {
+          type: 'image/svg+xml',
+        });
+        formData.append('image', imageFile);
+      }
+
+      if (formImage) {
+        formData.append('image', formImage);
+      }
 
       const objectData = {
         name: formValues.name,
