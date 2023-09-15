@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class TopicCommandService {
 
-    private static final String BASE_IMAGE_URL = "https://mapbefine.github.io/favicon.png";
+    private static final String BASE_IMAGE_URL = "https://map-befine-official.github.io/favicon.png";
 
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
