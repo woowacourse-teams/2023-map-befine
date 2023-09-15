@@ -61,7 +61,7 @@ const UpdatedTopicInfo = ({
           publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
           permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
         },
-        errorMessage: `권한은 '공개 ➡️ 비공개', '모두 ➡️ 친구들', '친구들 ➡️ 혼자' 로 변경할 수 없습니다.`,
+        errorMessage: `권한은 '공개 ➡️ 비공개', '모두 ➡️ 친구', '친구 ➡️ 혼자' 로 변경할 수 없습니다.`,
         isThrow: true,
       });
 
@@ -75,7 +75,7 @@ const UpdatedTopicInfo = ({
   const updateTopicAuthority = async () => {
     // topicAuthorInfo api 구조 이상으로 권한 설정 자체에 대한 id를 사용 (topicId 아님)
     await fetchDelete({
-      url: `/permissions/${topicAuthorInfo?.permissionMembers[0].id}`,
+      url: `/permissions/${topicAuthorInfo?.permissionedMembers[0].id}`,
       errorMessage: '권한 삭제에 실패했습니다.',
       isThrow: true,
     });
@@ -103,9 +103,7 @@ const UpdatedTopicInfo = ({
         setTopicAuthorInfo(response);
         setIsPrivate(response.publicity === 'PRIVATE');
 
-        if (topicAuthorInfo) {
-          setIsAll(topicAuthorInfo?.permissionMembers.length === 0);
-        }
+        setIsAll(response.permissionedMembers.length === 0);
       },
     );
   }, []);
@@ -147,7 +145,7 @@ const UpdatedTopicInfo = ({
         setIsPrivate={setIsPrivate}
         setIsAll={setIsAll}
         setAuthorizedMemberIds={setAuthorizedMemberIds}
-        permissionedMembers={topicAuthorInfo?.permissionMembers}
+        permissionedMembers={topicAuthorInfo?.permissionedMembers}
       />
 
       <Space size={6} />

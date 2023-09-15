@@ -3,7 +3,10 @@ import Text from '../common/Text';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import { useContext, useEffect, useState } from 'react';
-import { TopicAuthorMember, TopicAuthorMemberWithId } from '../../types/Topic';
+import {
+  TopicAuthorMember,
+  TopicAuthorMemberWithAuthorId,
+} from '../../types/Topic';
 import { ModalContext } from '../../context/ModalContext';
 import Box from '../common/Box';
 import Modal from '../Modal';
@@ -18,7 +21,7 @@ interface AuthorityRadioContainer {
   setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAll: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthorizedMemberIds: React.Dispatch<React.SetStateAction<number[]>>;
-  permissionedMembers?: TopicAuthorMemberWithId[];
+  permissionedMembers?: TopicAuthorMemberWithAuthorId[];
 }
 
 const AuthorityRadioContainer = ({
@@ -60,6 +63,10 @@ const AuthorityRadioContainer = ({
     setAuthorizedMemberIds((prev: TopicAuthorMember['id'][]) =>
       isChecked ? [...prev, id] : prev.filter((n: number) => n !== id),
     );
+  };
+
+  const whenViewingPreviousAuthorMember = () => {
+    return authorizedMemberIds.length === 0 && !isAll;
   };
 
   return (
@@ -162,7 +169,7 @@ const AuthorityRadioContainer = ({
         </>
       )}
 
-      {authorizedMemberIds.length === 0 && permissionedMembers && (
+      {permissionedMembers && whenViewingPreviousAuthorMember() && (
         <>
           <Space size={5} />
           <Space size={0} />

@@ -40,10 +40,10 @@ export interface ModalTopicCardProps {
 
 export interface TopicAuthorInfo {
   publicity: 'PUBLIC' | 'PRIVATE';
-  permissionMembers: TopicAuthorMemberWithId[];
+  permissionedMembers: TopicAuthorMemberWithAuthorId[];
 }
 
-export interface TopicAuthorMemberWithId {
+export interface TopicAuthorMemberWithAuthorId {
   id: number;
   memberResponse: TopicAuthorMember;
 }
