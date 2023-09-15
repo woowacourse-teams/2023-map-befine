@@ -114,4 +114,8 @@ public class Topic extends BaseTimeEntity {
         return bookmarks.size();
     }
 
+    public void removeImage() {
+        this.topicInfo = topicInfo.removeImage();
+    }
+
 }

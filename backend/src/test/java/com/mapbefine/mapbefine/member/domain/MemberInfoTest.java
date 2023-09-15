@@ -23,6 +23,7 @@ public class MemberInfoTest {
         private final String VALID_EMAIL = "member@naver.com";
         private final String VALID_IMAGE_URL = "https://map-befine-official.github.io/favicon.png";
         private final Role VALID_ROLE = Role.ADMIN;
+        private final Status VALID_STATUS = Status.NORMAL;
 
         @Test
         @DisplayName("유효한 정보를 입력했을 때 객체를 생성할 수 있다.")
@@ -32,7 +33,8 @@ public class MemberInfoTest {
                     VALID_NICK_NAME,
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
-                    VALID_ROLE
+                    VALID_ROLE,
+                    VALID_STATUS
             );
 
             //then
@@ -51,7 +53,8 @@ public class MemberInfoTest {
                     "member",
                     "member@naver.com",
                     "https://map-befine-official.github.io/favicon.png",
-                    Role.ADMIN);
+                    Role.ADMIN,
+                    Status.NORMAL);
 
             // when
             String expected = "newNickName";
@@ -76,7 +79,8 @@ public class MemberInfoTest {
                     invalidNickName,
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
-                    VALID_ROLE
+                    VALID_ROLE,
+                    VALID_STATUS
             )).isInstanceOf(MemberBadRequestException.class);
         }
 
@@ -91,7 +95,8 @@ public class MemberInfoTest {
                     VALID_NICK_NAME,
                     invalidEmail,
                     VALID_IMAGE_URL,
-                    VALID_ROLE
+                    VALID_ROLE,
+                    VALID_STATUS
             )).isInstanceOf(MemberBadRequestException.class);
         }
 
@@ -105,7 +110,8 @@ public class MemberInfoTest {
                     VALID_NICK_NAME,
                     VALID_EMAIL,
                     invalidImageUrl,
-                    VALID_ROLE
+                    VALID_ROLE,
+                    VALID_STATUS
             )).isInstanceOf(ImageBadRequestException.class);
         }
 
@@ -118,6 +124,7 @@ public class MemberInfoTest {
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
                     null
+                    ,VALID_STATUS
             )).isInstanceOf(IllegalArgumentException.class);
         }
 

@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.pin.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.location.LocationFixture;
-import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -24,10 +23,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 class PinRepositoryTest {
-    private static final Coordinate DEFAULT_COORDINATE = Coordinate.of(
-            37.5152933,
-            127.1029866
-    );
 
     @Autowired
     private TopicRepository topicRepository;
@@ -84,6 +79,51 @@ class PinRepositoryTest {
 
         // then
         List<Pin> deletedPins = pinRepository.findAllByTopicId(topic.getId());
+        assertThat(deletedPins).extractingResultOf("isDeleted")
+                .containsOnly(true);
+    }
+
+
+    @Test
+    @DisplayName("Member ID로 모든 핀을 soft-delete 할 수 있다.")
+    void deleteAllByMemberId_Success() {
+        //given
+        for (int i = 0; i < 10; i++) {
+            pinRepository.save(PinFixture.create(location, topic, member));
+        }
+
+        //when
+        assertThat(member.getCreatedPins()).hasSize(10)
+                .extractingResultOf("isDeleted")
+                .containsOnly(false);
+        pinRepository.deleteAllByMemberId(member.getId());
+
+        //then
+        List<Pin> deletedPins = pinRepository.findAllByCreatorId(member.getId());
+        assertThat(deletedPins).extractingResultOf("isDeleted")
+                .containsOnly(true);
+    }
+
+    @Test
+    @DisplayName("다른 토픽에 존재하는 핀들이여도, Member ID로 모든 핀을 soft-delete 할 수 있다.")
+    void deleteAllByMemberIdInOtherTopics_Success() {
+        //given
+        Topic otherTopic = TopicFixture.createByName("otherTopic", member);
+        topicRepository.save(otherTopic);
+
+        for (int i = 0; i < 10; i++) {
+            pinRepository.save(PinFixture.create(location, topic, member));
+            pinRepository.save(PinFixture.create(location, otherTopic, member));
+        }
+
+        //when
+        assertThat(member.getCreatedPins()).hasSize(20)
+                .extractingResultOf("isDeleted")
+                .containsOnly(false);
+        pinRepository.deleteAllByMemberId(member.getId());
+
+        //then
+        List<Pin> deletedPins = pinRepository.findAllByCreatorId(member.getId());
         assertThat(deletedPins).extractingResultOf("isDeleted")
                 .containsOnly(true);
     }

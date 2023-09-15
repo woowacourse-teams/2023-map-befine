@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +59,17 @@ public class AuthService {
                 .stream()
                 .map(Topic::getId)
                 .toList();
+    }
+
+    public boolean isAdmin(Long memberId) {
+        if (Objects.isNull(memberId)) {
+            return false;
+        }
+
+        Optional<Member> member = memberRepository.findById(memberId);
+
+        return member.map(Member::isAdmin)
+                .orElse(false);
     }
 
 }
