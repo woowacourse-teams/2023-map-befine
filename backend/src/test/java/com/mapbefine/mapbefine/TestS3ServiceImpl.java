@@ -11,7 +11,6 @@ public class TestS3ServiceImpl implements S3Service {
 
     @Override
     public String upload(MultipartFile multipartFile) {
-        System.out.println("TestS3ServiceImple Upload Method Called !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         return "https://mapbefine.github.io/favicon.png";
     }
 

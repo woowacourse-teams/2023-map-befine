@@ -160,7 +160,6 @@ class PinIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = findById(pinId);
 
         PinDetailResponse as = response.as(PinDetailResponse.class);
-        System.out.println(as);
 
         // then
         assertThat(response.jsonPath().getString("name"))
@@ -194,8 +193,6 @@ class PinIntegrationTest extends IntegrationTest {
 
         // when
         ExtractableResponse<Response> response = createPinImage(pinId);
-
-        System.out.println(response);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

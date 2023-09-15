@@ -92,13 +92,6 @@ class TopicIntegrationTest extends IntegrationTest {
                 .getResource("test.png")
                 .getPath();
         File mockFile = new File(imageFilePath);
-        
-//        MockMultipartFile mockFile = new MockMultipartFile( // 이것은 왜 그런 것일까??
-//                "test",
-//                "test.png",
-//                "image/png",
-//                "byteCode".getBytes()
-//        );
 
         return RestAssured.given()
                 .log().all()
