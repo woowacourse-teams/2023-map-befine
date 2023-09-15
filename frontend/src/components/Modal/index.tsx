@@ -133,6 +133,7 @@ const Wrapper = styled.div<ModalWrapperType>`
   @media (max-width: 744px) {
     ${getModalPosition('bottom')};
     width: 100%;
+    height: inherit;
   }
 `;
 

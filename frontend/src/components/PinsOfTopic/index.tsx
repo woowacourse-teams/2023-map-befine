@@ -1,5 +1,4 @@
 import { styled } from 'styled-components';
-import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import { TopicDetailProps } from '../../types/Topic';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
@@ -24,7 +23,6 @@ const PinsOfTopic = ({
   return (
     <Wrapper>
       <TopicInfo
-        fullUrl={String(topicId)}
         topicId={topicId}
         idx={idx}
         topicImage={topicDetail.image}
@@ -34,6 +32,7 @@ const PinsOfTopic = ({
         topicPinCount={topicDetail.pinCount}
         topicBookmarkCount={topicDetail.bookmarkCount}
         topicDescription={topicDetail.description}
+        canUpdate={topicDetail.canUpdate}
         isInAtlas={topicDetail.isInAtlas}
         isBookmarked={topicDetail.isBookmarked}
         setTopicsFromServer={setTopicsFromServer}
