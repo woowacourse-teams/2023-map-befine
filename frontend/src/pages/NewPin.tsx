@@ -71,7 +71,6 @@ const NewPin = () => {
       postTopicId = selectedTopic.topicId;
     }
 
-    if (!formImages) return;
     formImages.forEach((file) => {
       formData.append('images', file);
     });

@@ -45,7 +45,6 @@ const NewTopic = () => {
 
   const [showImage, setShowImage] = useState<string>('');
   const [formImage, setFormImage] = useState<File | null>(null);
-  const formData = new FormData();
 
   useEffect(() => {
     const getMemberData = async () => {
@@ -137,16 +136,6 @@ const NewTopic = () => {
   const createTopic = async () => {
     try {
       const formData = new FormData();
-
-      if (!formImage) {
-        const imageBlob = new Blob([DEFAULT_TOPIC_IMAGE], {
-          type: 'image/svg+xml',
-        });
-        const imageFile = new File([imageBlob], 'image.svg', {
-          type: 'image/svg+xml',
-        });
-        formData.append('image', imageFile);
-      }
 
       if (formImage) {
         formData.append('image', formImage);
