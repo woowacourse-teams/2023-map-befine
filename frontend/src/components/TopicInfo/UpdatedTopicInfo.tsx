@@ -8,6 +8,10 @@ import { useEffect, useState } from 'react';
 import useGet from '../../apiHooks/useGet';
 import { TopicAuthorInfo } from '../../types/Topic';
 import AuthorityRadioContainer from '../AuthorityRadioContainer';
+import usePost from '../../apiHooks/usePost';
+import useDelete from '../../apiHooks/useDelete';
+import usePut from '../../apiHooks/usePut';
+import useToast from '../../hooks/useToast';
 
 interface UpdatedTopicInfoProp {
   id: number;
@@ -29,7 +33,11 @@ const UpdatedTopicInfo = ({
   description,
   setIsUpdate,
 }: UpdatedTopicInfoProp) => {
+  const { fetchPost } = usePost();
   const { fetchGet } = useGet();
+  const { fetchDelete } = useDelete();
+  const { fetchPut } = usePut();
+  const { showToast } = useToast();
   const { formValues, errorMessages, onChangeInput } =
     useFormValues<FormValues>({
       name,
@@ -41,6 +49,45 @@ const UpdatedTopicInfo = ({
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
   const [isAll, setIsAll] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
+
+  const updateTopicInfo = async () => {
+    try {
+      await fetchPut({
+        url: `/topics/${id}`,
+        payload: {
+          name: formValues.name,
+          image,
+          description: formValues.description,
+          publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
+          permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+        },
+        errorMessage: `'공개지도 ➡️ 비공개지도', '친구들 ➡️ 혼자' 로 변경할 수 없습니다.`,
+        isThrow: true,
+      });
+
+      if (authorizedMemberIds.length > 0) await updateTopicAuthority();
+
+      showToast('info', '지도를 수정하였습니다.');
+      setIsUpdate(false);
+    } catch (e) {}
+  };
+
+  const updateTopicAuthority = async () => {
+    await fetchDelete({
+      url: `/permissions/${id}`,
+      errorMessage: '권한 삭제에 실패했습니다.',
+      isThrow: true,
+    });
+    await fetchPost({
+      url: '/permissions',
+      payload: {
+        topicId: id,
+        memberIds: authorizedMemberIds,
+      },
+      errorMessage: '권한 설정에 실패했습니다.',
+      isThrow: true,
+    });
+  };
 
   const cancelUpdateTopicInfo = () => {
     setIsUpdate(false);
@@ -113,7 +160,7 @@ const UpdatedTopicInfo = ({
           취소하기
         </Button>
         <Space size={3} />
-        <Button tabIndex={7} variant="primary">
+        <Button tabIndex={7} variant="primary" onClick={updateTopicInfo}>
           수정하기
         </Button>
       </Flex>

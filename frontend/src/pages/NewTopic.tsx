@@ -69,38 +69,35 @@ const NewTopic = () => {
   };
 
   const postToServer = async () => {
-    return fetchPost(
-      {
-        url: '/topics/new',
-        payload: {
-          image: formValues.image || DEFAULT_TOPIC_IMAGE,
-          name: formValues.name,
-          description: formValues.description,
-          pins: pulledPinIds ? pulledPinIds.split(',') : [],
-          publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-          permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
-        },
+    return fetchPost({
+      url: '/topics/new',
+      payload: {
+        image: formValues.image || DEFAULT_TOPIC_IMAGE,
+        name: formValues.name,
+        description: formValues.description,
+        pins: pulledPinIds ? pulledPinIds.split(',') : [],
+        publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
+        permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
       },
-      '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
-      () => {
+      errorMessage:
+        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
+      onSuccess: () => {
         showToast('info', `${formValues.name} 지도를 생성하였습니다.`);
       },
-    );
+    });
   };
 
   const addAuthorityToTopicWithGroupPermission = async (topicId: number) => {
     if (isAll) return;
 
-    fetchPost(
-      {
-        url: '/permissions',
-        payload: {
-          topicId,
-          memberIds: isPrivate ? [] : authorizedMemberIds,
-        },
+    fetchPost({
+      url: '/permissions',
+      payload: {
+        topicId,
+        memberIds: isPrivate ? [] : authorizedMemberIds,
       },
-      `${formValues.name} 지도의 권한 설정에 실패했습니다.`,
-    );
+      errorMessage: `${formValues.name} 지도의 권한 설정에 실패했습니다.`,
+    });
   };
 
   return (

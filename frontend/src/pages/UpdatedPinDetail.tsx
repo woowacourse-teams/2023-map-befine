@@ -51,17 +51,18 @@ const UpdatedPinDetail = ({
       return;
     }
 
-    fetchPut(
-      { url: `/pins/${pinId}`, payload: formValues },
-      '입력하신 항목들을 다시 한 번 확인해주세요.',
-      () => {
+    fetchPut({
+      url: `/pins/${pinId}`,
+      payload: formValues,
+      errorMessage: '입력하신 항목들을 다시 한 번 확인해주세요.',
+      onSuccess: () => {
         setIsEditing(false);
         removeQueryString('edit');
         updatePinDetailAfterEditing();
 
         showToast('info', '핀 수정을 완료하였습니다.');
       },
-    );
+    });
   };
 
   const onClickCancelPinUpdate = () => {
