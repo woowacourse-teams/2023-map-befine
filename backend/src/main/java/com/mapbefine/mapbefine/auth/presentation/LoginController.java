@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
+    public static final int TWO_WEEKS = 14 * 24 * 60 * 60;
     private final TokenService tokenService;
     private final OauthService oauthService;
 
@@ -59,7 +60,7 @@ public class LoginController {
     private Cookie createCookie(String refreshToken) {
         Cookie cookie = new Cookie("refresh-token", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(14 * 24 * 60 * 60);
+        cookie.setMaxAge(TWO_WEEKS);
         return cookie;
     }
 
