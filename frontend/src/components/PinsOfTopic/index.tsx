@@ -1,5 +1,4 @@
 import { styled } from 'styled-components';
-import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import { TopicDetailProps } from '../../types/Topic';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';

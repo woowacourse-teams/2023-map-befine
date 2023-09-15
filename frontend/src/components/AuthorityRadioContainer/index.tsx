@@ -64,128 +64,126 @@ const AuthorityRadioContainer = ({
 
   return (
     <>
-      <Wrapper>
-        <Text color="black" $fontSize="default" $fontWeight="normal">
-          지도 종류
-        </Text>
-        <Space size={1} />
-        <Flex $alignItems="flex-start">
-          <Flex width="108px" $alignItems="flex-start">
-            <input
-              type="radio"
-              id="publicity-public"
-              checked={!isPrivate}
-              onChange={() => setIsPrivate(false)}
-              tabIndex={4}
-            />
-            <Space size={1} />
-            <label htmlFor="publicity-public">공개 지도</label>
-          </Flex>
-
-          <Space size={2} />
-
+      <Text color="black" $fontSize="default" $fontWeight="normal">
+        지도 종류
+      </Text>
+      <Space size={1} />
+      <Flex $alignItems="flex-start">
+        <Flex width="108px" $alignItems="flex-start">
           <input
             type="radio"
-            id="publicity-private"
-            checked={isPrivate}
-            onChange={() => setIsPrivate(true)}
+            id="publicity-public"
+            checked={!isPrivate}
+            onChange={() => setIsPrivate(false)}
             tabIndex={4}
           />
           <Space size={1} />
-          <label htmlFor="publicity-private">비공개 지도</label>
+          <label htmlFor="publicity-public">공개 지도</label>
         </Flex>
 
-        <Space size={5} />
-        <Space size={0} />
+        <Space size={2} />
 
-        <Text color="black" $fontSize="default" $fontWeight="normal">
-          핀 생성 및 수정 권한 부여
-        </Text>
-
+        <input
+          type="radio"
+          id="publicity-private"
+          checked={isPrivate}
+          onChange={() => setIsPrivate(true)}
+          tabIndex={4}
+        />
         <Space size={1} />
+        <label htmlFor="publicity-private">비공개 지도</label>
+      </Flex>
 
-        <Flex $alignItems="flex-start">
-          <Flex width="108px" $alignItems="flex-start">
-            <input
-              type="radio"
-              id="permission-all"
-              checked={isAll}
-              onChange={onChangeInitAuthMembersWithSetIsAll}
-              tabIndex={5}
-            />
-            <Space size={1} />
-            {isPrivate ? (
-              <label htmlFor="permission-all">혼자만</label>
-            ) : (
-              <label htmlFor="permission-all">모두에게</label>
-            )}
-          </Flex>
+      <Space size={5} />
+      <Space size={0} />
 
-          <Space size={2} />
+      <Text color="black" $fontSize="default" $fontWeight="normal">
+        핀 생성 및 수정 권한 부여
+      </Text>
 
+      <Space size={1} />
+
+      <Flex $alignItems="flex-start">
+        <Flex width="108px" $alignItems="flex-start">
           <input
             type="radio"
-            id="permission-group"
-            checked={!isAll}
-            onChange={onChangeInitAuthMembers}
-            onClick={() => {
-              isAll === false && openModal('newTopic');
-            }}
+            id="permission-all"
+            checked={isAll}
+            onChange={onChangeInitAuthMembersWithSetIsAll}
             tabIndex={5}
           />
           <Space size={1} />
-          <label htmlFor="permission-group">친구들에게</label>
+          {isPrivate ? (
+            <label htmlFor="permission-all">혼자만</label>
+          ) : (
+            <label htmlFor="permission-all">모두에게</label>
+          )}
         </Flex>
 
-        {authorizedMemberIds.length > 0 && (
-          <>
-            <Space size={5} />
-            <Space size={0} />
-            <Box>
-              <Text color="black" $fontSize="default" $fontWeight="normal">
-                선택한 친구들
-              </Text>
-              <Space size={1} />
-              {members.map((member) => {
-                if (authorizedMemberIds.includes(member.id))
-                  return (
-                    <Text
-                      color="black"
-                      $fontSize="default"
-                      $fontWeight="normal"
-                      key={member.id}
-                    >
-                      • {member.nickName}
-                    </Text>
-                  );
-              })}
-            </Box>
-          </>
-        )}
+        <Space size={2} />
 
-        {authorizedMemberIds.length === 0 && permissionedMembers && (
-          <>
-            <Space size={5} />
-            <Space size={0} />
-            <Box>
-              <Text color="black" $fontSize="default" $fontWeight="normal">
-                기존에 선택한 친구들
+        <input
+          type="radio"
+          id="permission-group"
+          checked={!isAll}
+          onChange={onChangeInitAuthMembers}
+          onClick={() => {
+            isAll === false && openModal('newTopic');
+          }}
+          tabIndex={5}
+        />
+        <Space size={1} />
+        <label htmlFor="permission-group">친구들에게</label>
+      </Flex>
+
+      {authorizedMemberIds.length > 0 && (
+        <>
+          <Space size={5} />
+          <Space size={0} />
+          <Box>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              선택한 친구들
+            </Text>
+            <Space size={1} />
+            {members.map((member) => {
+              if (authorizedMemberIds.includes(member.id))
+                return (
+                  <Text
+                    color="black"
+                    $fontSize="default"
+                    $fontWeight="normal"
+                    key={member.id}
+                  >
+                    • {member.nickName}
+                  </Text>
+                );
+            })}
+          </Box>
+        </>
+      )}
+
+      {authorizedMemberIds.length === 0 && permissionedMembers && (
+        <>
+          <Space size={5} />
+          <Space size={0} />
+          <Box>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              기존에 선택한 친구들
+            </Text>
+            <Space size={1} />
+            {permissionedMembers.map((member) => (
+              <Text
+                color="black"
+                $fontSize="default"
+                $fontWeight="normal"
+                key={member.id}
+              >
+                • {member.memberResponse.nickName}
               </Text>
-              <Space size={1} />
-              {permissionedMembers.map((member) => (
-                <Text
-                  color="black"
-                  $fontSize="default"
-                  $fontWeight="normal"
-                  key={member.id}
-                >
-                  • {member.memberResponse.nickName}
-                </Text>
-              ))}
-            </Box>
-          </>
-        )}
-      </Wrapper>
+            ))}
+          </Box>
+        </>
+      )}
 
       <Modal
         modalKey="newTopic"
@@ -258,8 +256,6 @@ const AuthorityRadioContainer = ({
     </>
   );
 };
-
-const Wrapper = styled.div``;
 
 const ModalContentsWrapper = styled.div`
   width: 100%;
