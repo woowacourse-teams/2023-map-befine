@@ -15,7 +15,7 @@ import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 import { styled } from 'styled-components';
 import Box from '../common/Box';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
@@ -52,6 +52,8 @@ const TopicInfo = ({
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const { showToast } = useToast();
 
+  console.log(canUpdate);
+
   const updateTopicInfo = () => {
     setIsUpdate(true);
   };
@@ -65,6 +67,10 @@ const TopicInfo = ({
       showToast('error', '토픽 링크를 복사하는데 실패했습니다.');
     }
   };
+
+  useEffect(() => {
+    if (!isUpdate) setTopicsFromServer();
+  }, [isUpdate]);
 
   if (isUpdate) {
     return (
