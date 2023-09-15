@@ -3,7 +3,7 @@ import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
-import { postApi, postFormApi } from '../apis/postApi';
+import { postApi } from '../apis/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
@@ -169,7 +169,7 @@ const NewTopic = () => {
 
       formData.append('request', jsonBlob);
 
-      return await postFormApi('/topics/new', formData);
+      return await postApi('/topics/new', formData);
     } catch {
       showToast(
         'error',

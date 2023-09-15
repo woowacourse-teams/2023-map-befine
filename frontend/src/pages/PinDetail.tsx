@@ -15,7 +15,7 @@ import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
-import { postFormApi } from '../apis/postApi';
+import { postApi } from '../apis/postApi';
 import PinImageContainer from '../components/PinImageContainer';
 
 interface PinDetailProps {
@@ -108,7 +108,7 @@ const PinDetail = ({
 
     formData.append('pinId', jsonBlob);
 
-    await postFormApi('/pins/images', formData);
+    await postApi('/pins/images', formData);
 
     getPinData();
   };

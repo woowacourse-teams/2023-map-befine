@@ -1,14 +1,4 @@
-// const API_URL =
-//   process.env.NODE_ENV === 'production'
-//     ? process.env.REACT_APP_API_DEFAULT_PROD
-//     : process.env.REACT_APP_API_DEFAULT_DEV;
-
 import { DEFAULT_PROD_URL } from '../constants';
-
-const API_URL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000'
-    : DEFAULT_PROD_URL;
 
 interface Headers {
   'content-type': string;

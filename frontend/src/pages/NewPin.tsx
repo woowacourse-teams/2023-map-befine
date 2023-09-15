@@ -3,7 +3,7 @@ import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
-import { postApi, postFormApi } from '../apis/postApi';
+import { postApi } from '../apis/postApi';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../apis/getApi';
 import { TopicCardProps } from '../types/Topic';
@@ -92,7 +92,7 @@ const NewPin = () => {
 
     formData.append('request', jsonBlob);
 
-    await postFormApi('/pins', formData);
+    await postApi('/pins', formData);
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
