@@ -22,7 +22,6 @@ public class MemberInfoTest {
         private final String VALID_EMAIL = "member@naver.com";
         private final String VALID_IMAGE_URL = "https://map-befine-official.github.io/favicon.png";
         private final Role VALID_ROLE = Role.ADMIN;
-        private final Status VALID_STATUS = Status.NORMAL;
 
         @Test
         @DisplayName("정확한 값을 입력하면 객체가 생성된다")
@@ -32,8 +31,7 @@ public class MemberInfoTest {
                     VALID_NICK_NAME,
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
-                    VALID_ROLE,
-                    VALID_STATUS
+                    VALID_ROLE
             );
 
             //then
@@ -54,8 +52,7 @@ public class MemberInfoTest {
                     invalidNickName,
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
-                    VALID_ROLE,
-                    VALID_STATUS
+                    VALID_ROLE
             )).isInstanceOf(MemberBadRequestException.class);
         }
 
@@ -70,8 +67,7 @@ public class MemberInfoTest {
                     VALID_NICK_NAME,
                     invalidEmail,
                     VALID_IMAGE_URL,
-                    VALID_ROLE,
-                    VALID_STATUS
+                    VALID_ROLE
             )).isInstanceOf(MemberBadRequestException.class);
         }
 
@@ -85,8 +81,7 @@ public class MemberInfoTest {
                     VALID_NICK_NAME,
                     VALID_EMAIL,
                     invalidImageUrl,
-                    VALID_ROLE,
-                    VALID_STATUS
+                    VALID_ROLE
             )).isInstanceOf(ImageBadRequestException.class);
         }
 
@@ -99,7 +94,6 @@ public class MemberInfoTest {
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
                     null
-                    ,VALID_STATUS
             )).isInstanceOf(IllegalArgumentException.class);
         }
 

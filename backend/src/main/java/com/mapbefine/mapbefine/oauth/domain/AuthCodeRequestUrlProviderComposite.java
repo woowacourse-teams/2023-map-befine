@@ -4,7 +4,7 @@ import static com.mapbefine.mapbefine.oauth.exception.OauthErrorCode.OAUTH_SERVE
 import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toMap;
 
-import com.mapbefine.mapbefine.oauth.exception.OauthException.OauthNotFoundException;
+import com.mapbefine.mapbefine.oauth.exception.OathException.OauthNotFoundException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;

@@ -52,7 +52,7 @@ public class PinQueryService {
     }
 
     public List<PinResponse> findAllPinsByMemberId(AuthMember authMember, Long memberId) {
-        return pinRepository.findAllByCreatorId(memberId)
+        return pinRepository.findByCreatorId(memberId)
                 .stream()
                 .filter(pin -> authMember.canRead(pin.getTopic()))
                 .map(PinResponse::from)

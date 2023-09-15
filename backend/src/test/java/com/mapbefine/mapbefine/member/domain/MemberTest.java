@@ -16,7 +16,6 @@ class MemberTest {
         String email = "member@naver.com";
         String imageUrl = "https://map-befine-official.github.io/favicon.png";
         Role role = Role.ADMIN;
-        Status status = Status.NORMAL;
 
         // when
         Member member = Member.of(
@@ -24,9 +23,7 @@ class MemberTest {
                 email,
                 imageUrl,
                 role,
-                status,
-                new OauthId(1L, OauthServerType.KAKAO)
-        );
+                new OauthId(1L, OauthServerType.KAKAO));
 
         // then
         assertThat(member).isNotNull();
