@@ -186,7 +186,7 @@ const NewPin = () => {
     const file = event.target.files && event.target.files[0];
 
     if (!file) {
-      showToast('error', 'No file selected');
+      showToast('error', '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.');
       return;
     }
 
@@ -199,7 +199,7 @@ const NewPin = () => {
 
     if (imageUrlLists.length > 8) {
       showToast(
-        'error',
+        'info',
         '이미지 개수는 최대 8개까지만 선택 가능합니다. 다시 선택해 주세요.',
       );
       imageUrlLists = imageUrlLists.slice(0, 8);

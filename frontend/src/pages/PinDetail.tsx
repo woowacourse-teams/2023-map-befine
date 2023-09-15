@@ -94,7 +94,7 @@ const PinDetail = ({
     const formData = new FormData();
 
     if (!file) {
-      showToast('error', 'No file selected');
+      showToast('error', '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.');
       return;
     }
 

@@ -173,7 +173,7 @@ const NewTopic = () => {
   ) => {
     const file = event.target.files && event.target.files[0];
     if (!file) {
-      showToast('error', 'No file selected');
+      showToast('error', '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.');
       return;
     }
 
@@ -193,7 +193,7 @@ const NewTopic = () => {
         </Text>
         <Space size={2} />
         <Flex>
-          {showImage && <ShowImage src={showImage} alt={`토픽 사진 대체`} />}
+          {showImage && <ShowImage src={showImage} alt={`사진 이미지`} />}
           <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
           <input
             id="file"
