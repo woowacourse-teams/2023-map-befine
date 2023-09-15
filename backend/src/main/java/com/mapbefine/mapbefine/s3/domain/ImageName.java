@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 public class ImageName {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS");
-    private static final String EXTENSION_DELIMITER = ".";
 
     private final String fileName;
 
@@ -16,15 +15,13 @@ public class ImageName {
 
     public static ImageName from(String originalFileName) {
         String fileName = FORMATTER.format(LocalDateTime.now());
-        String extension = getExtension(originalFileName);
+        String extension = getExtension(originalFileName).getExtension();
 
         return new ImageName(fileName + extension);
     }
 
-    private static String getExtension(String originalFileName) {
-        return originalFileName.substring(
-                originalFileName.lastIndexOf(EXTENSION_DELIMITER)
-        );
+    private static ImageExtension getExtension(String originalFileName) {
+        return ImageExtension.fromByImageFileName(originalFileName);
     }
 
     public String getFileName() {
