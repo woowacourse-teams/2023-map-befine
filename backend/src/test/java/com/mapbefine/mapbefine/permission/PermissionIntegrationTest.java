@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.permission;
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,14 +16,14 @@ import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
-import com.mapbefine.mapbefine.permission.dto.response.PermissionDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.PermissionResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionMemberDetailResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermissionedMemberResponse;
+import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.common.mapper.*;
+import io.restassured.response.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class PermissionIntegrationTest extends IntegrationTest {
+class PermissionIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -79,7 +79,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Topic 을 만든자가 특정 회원에게 권한을 준다.")
+    @DisplayName("Topic 을 만든 회원이 특정 회원에게 해당 Topic 에 대한 권한을 준다.")
     void addPermission() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
@@ -100,7 +100,7 @@ public class PermissionIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Topic 을 만든자가 특정 회원에게 권한을 삭제한다.")
+    @DisplayName("Topic 을 만든 회원이 특정 회원이 가진 해당 Topic 에 대한 권한을 삭제한다.")
     void deletePermission() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
@@ -121,8 +121,8 @@ public class PermissionIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Topic 에 권한을 가진 자들을 모두 조회한다.")
-    void findMemberTopicPermissionAll() {
+    @DisplayName("Topic 의 접근 정보(권한 회원 목록 및 공개 여부)를 조회한다.")
+    void findTopicAccessDetailById() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
         Permission permission1 =
@@ -138,22 +138,22 @@ public class PermissionIntegrationTest extends IntegrationTest {
                 .when().get("/permissions/topics/" + topic.getId())
                 .then().log().all()
                 .extract();
+        TopicAccessDetailResponse actual = response.as(new TypeRef<>() {});
 
         // then
-        List<PermissionResponse> permissionResponse = response.as(new TypeRef<>() {
-        });
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(permissionResponse)
+        assertThat(actual.publicity()).isEqualTo(topic.getPublicity());
+        assertThat(actual.permissionedMembers())
                 .hasSize(2)
-                .extracting(PermissionResponse::memberResponse)
+                .extracting(PermissionedMemberResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(user1), MemberResponse.from(user2)));
     }
 
     @Test
     @DisplayName("Topic 에 권한을 가진 자를 조회한다.")
-    void findMemberTopicPermissionById() {
+    void findPermissionById() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
         Permission permission =
@@ -166,14 +166,13 @@ public class PermissionIntegrationTest extends IntegrationTest {
                 .when().get("/permissions/" + permission.getId())
                 .then().log().all()
                 .extract();
+        PermissionMemberDetailResponse actual = response.as(new TypeRef<>() {});
 
         // then
-        PermissionDetailResponse permissionDetailResponse = response.as(
-                PermissionDetailResponse.class);
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
-        assertThat(permissionDetailResponse)
-                .extracting(PermissionDetailResponse::memberDetailResponse)
+        assertThat(actual)
+                .extracting(PermissionMemberDetailResponse::memberDetailResponse)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(MemberDetailResponse.from(user1));

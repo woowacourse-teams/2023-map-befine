@@ -23,3 +23,7 @@ operation::member-controller-test/find-all-topics-in-atlas[snippets='http-reques
 === 회원의 즐겨찾기 조회
 
 operation::member-controller-test/find-all-topics-in-bookmark[snippets='http-request,http-response']
+
+=== 회원의 내 정보 수정
+
+operation::member-controller-test/update-my-info[snippets='http-request,http-response']
