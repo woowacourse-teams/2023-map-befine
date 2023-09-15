@@ -42,7 +42,7 @@ public class PinController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> add(
             AuthMember member,
-            @RequestPart List<MultipartFile> images,
+            @RequestPart(required = false) List<MultipartFile> images,
             @RequestPart PinCreateRequest request
     ) {
         long savedId = pinCommandService.save(member, images, request);
@@ -106,7 +106,7 @@ public class PinController {
     public ResponseEntity<Void> addImage(
             AuthMember member,
             @RequestPart Long pinId,
-            @RequestPart MultipartFile image
+            @RequestPart(required = false) MultipartFile image
     ) {
         pinCommandService.addImage(member, new PinImageCreateRequest(pinId, image));
 
