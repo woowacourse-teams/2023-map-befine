@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum S3ErrorCode {
 
-    ILLEGAL_IMAGE_FILE_EXTENSION("09000", "이미지 파일이 아닙니다.."),
+    ILLEGAL_IMAGE_FILE_EXTENSION("09000", "이미지 파일이 아닙니다."),
     ;
 
     private final String code;
