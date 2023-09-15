@@ -89,6 +89,7 @@ class TokenServiceTest {
     class RemoveRefreshToken {
 
         @Test
+        @DisplayName("Refresh Token과 AccessToken 모두 유효하다면 성공한다")
         void removeRefreshToken_success() {
             // given
             String refreshToken = createRefreshToken();
