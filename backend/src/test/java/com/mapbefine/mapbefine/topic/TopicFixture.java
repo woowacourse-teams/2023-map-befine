@@ -40,7 +40,7 @@ public class TopicFixture {
         return Topic.createTopicAssociatedWithCreator(
                 name,
                 "설명",
-                null,
+                IMAGE_URL,
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
                 member
@@ -51,7 +51,7 @@ public class TopicFixture {
         return Topic.createTopicAssociatedWithCreator(
                 name,
                 "설명",
-                null,
+                IMAGE_URL,
                 Publicity.PRIVATE,
                 PermissionType.GROUP_ONLY,
                 member
@@ -64,7 +64,19 @@ public class TopicFixture {
         return new TopicCreateRequest(
                 "아무나 읽을 수 있는 토픽",
                 FileFixture.createFile(),
-//                IMAGE_URL,
+                "아무나 읽을 수 있는 토픽입니다.",
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                pinIds
+        );
+    }
+
+    public static TopicCreateRequest createPublicAndAllMembersAndEmptyImageCreateRequestWithPins(
+            List<Long> pinIds
+    ) {
+        return new TopicCreateRequest(
+                "아무나 읽을 수 있는 토픽",
+                null,
                 "아무나 읽을 수 있는 토픽입니다.",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,

@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.pin.application;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -25,6 +26,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
+import com.mapbefine.mapbefine.s3.exception.S3Exception.S3BadRequestException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -197,6 +199,19 @@ class PinCommandServiceTest {
                         found -> assertThat(found.getImageUrl()).isNotNull(),
                         Assertions::fail
                 );
+    }
+
+    @Test
+    @DisplayName("이미지가 null 인 경우 예외를 발생시킨다.")
+    void addImage_FailByNull() {
+        // given
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+
+        PinImageCreateRequest imageNullRequest = new PinImageCreateRequest(pinId, null);
+
+        // when then
+        assertThatThrownBy(() -> pinCommandService.addImage(authMember, imageNullRequest))
+                .isInstanceOf(S3BadRequestException.class);
     }
 
     @Test

@@ -11,7 +11,7 @@ public class TestS3ServiceImpl implements S3Service {
 
     @Override
     public String upload(MultipartFile multipartFile) {
-        return "https://mapbefine.github.io/favicon.png";
+        return "https://map-befine-official.github.io/favicon.png";
     }
 
 }
