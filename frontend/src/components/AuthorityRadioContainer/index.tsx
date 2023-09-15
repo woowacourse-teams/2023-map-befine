@@ -175,19 +175,25 @@ const AuthorityRadioContainer = ({
           <Space size={0} />
           <Box>
             <Text color="black" $fontSize="default" $fontWeight="normal">
-              기존에 선택한 친구들
+              이전에 권한을 부여한 친구들
             </Text>
             <Space size={1} />
-            {permissionedMembers.map((member) => (
-              <Text
-                color="black"
-                $fontSize="default"
-                $fontWeight="normal"
-                key={member.id}
-              >
-                • {member.memberResponse.nickName}
+            {permissionedMembers.length > 0 ? (
+              permissionedMembers.map((member) => (
+                <Text
+                  color="black"
+                  $fontSize="default"
+                  $fontWeight="normal"
+                  key={member.id}
+                >
+                  • {member.memberResponse.nickName}
+                </Text>
+              ))
+            ) : (
+              <Text color="black" $fontSize="default" $fontWeight="normal">
+                • 없음
               </Text>
-            ))}
+            )}
           </Box>
         </>
       )}
