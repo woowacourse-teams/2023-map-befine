@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.mapbefine.mapbefine.atlas.domain.Atlas;
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -14,6 +18,8 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.domain.Status;
+import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.PinImageFixture;
@@ -50,6 +56,16 @@ class AdminCommandServiceTest {
 
     @Autowired
     private PinImageRepository pinImageRepository;
+
+    @Autowired
+    private AtlasRepository atlasRepository;
+
+    @Autowired
+    private PermissionRepository permissionRepository;
+
+    @Autowired
+    private BookmarkRepository bookmarkRepository;
+
     private Location location;
     private Member admin;
     private Member member;
@@ -72,12 +88,22 @@ class AdminCommandServiceTest {
     void blockMember_Success() {
         //given
         AuthMember adminAuthMember = MemberFixture.createUser(admin);
+        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
+        Atlas atlas = Atlas.createWithAssociatedMember(topic, member);
+        Permission permission = Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
+
+        bookmarkRepository.save(bookmark);
+        atlasRepository.save(atlas);
+        permissionRepository.save(permission);
 
         assertAll(() -> {
             assertThat(member.getMemberInfo().getStatus()).isEqualTo(Status.NORMAL);
             assertThat(topic.isDeleted()).isFalse();
             assertThat(pin.isDeleted()).isFalse();
             assertThat(pinImage.isDeleted()).isFalse();
+            assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
+            assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
+            assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId())).isTrue();
         });
 
         //when
@@ -93,6 +119,9 @@ class AdminCommandServiceTest {
             assertThat(deletedTopic.isDeleted()).isTrue();
             assertThat(deletedPin.isDeleted()).isTrue();
             assertThat(deletedPinImage.isDeleted()).isTrue();
+            assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
+            assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
+            assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId())).isFalse();
         });
     }
 

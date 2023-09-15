@@ -3,11 +3,14 @@ package com.mapbefine.mapbefine.admin.application;
 import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.PERMISSION_FORBIDDEN_BY_NOT_ADMIN;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
 
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.domain.Status;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
@@ -28,17 +31,26 @@ public class AdminCommandService {
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
     private final PinImageRepository pinImageRepository;
+    private final PermissionRepository permissionRepository;
+    private final AtlasRepository atlasRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     public AdminCommandService(
             MemberRepository memberRepository,
             TopicRepository topicRepository,
             PinRepository pinRepository,
-            PinImageRepository pinImageRepository
+            PinImageRepository pinImageRepository,
+            PermissionRepository permissionRepository,
+            AtlasRepository atlasRepository,
+            BookmarkRepository bookmarkRepository
     ) {
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
         this.pinImageRepository = pinImageRepository;
+        this.permissionRepository = permissionRepository;
+        this.atlasRepository = atlasRepository;
+        this.bookmarkRepository = bookmarkRepository;
     }
 
     public void blockMember(AuthMember authMember, Long memberId) {
@@ -46,11 +58,20 @@ public class AdminCommandService {
 
         Member member = findMemberById(memberId);
         member.updateStatus(Status.BLOCKED);
-        List<Long> pinIds = extractPinIdsByMember(member);
 
+        deleteAllRelatedMember(member);
+    }
+
+    private void deleteAllRelatedMember(Member member) {
+        List<Long> pinIds = extractPinIdsByMember(member);
+        Long memberId = member.getId();
+
+        pinImageRepository.deleteAllByPinIds(pinIds);
         topicRepository.deleteAllByMemberId(memberId);
         pinRepository.deleteAllByMemberId(memberId);
-        pinImageRepository.deleteAllByPinIds(pinIds);
+        permissionRepository.deleteAllByMemberId(memberId);
+        atlasRepository.deleteAllByMemberId(memberId);
+        bookmarkRepository.deleteAllByMemberId(memberId);
     }
 
     private Member findMemberById(Long id) {
