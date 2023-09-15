@@ -4,7 +4,7 @@ import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import java.util.List;
 
-public record TopicCreateRequestWithOutImage(
+public record TopicCreateRequestWithoutImage(
         String name,
         String description,
         Publicity publicity,

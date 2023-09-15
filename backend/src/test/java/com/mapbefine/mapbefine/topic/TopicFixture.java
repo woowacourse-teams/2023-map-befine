@@ -89,7 +89,7 @@ public class TopicFixture {
     ) {
         return new TopicMergeRequest(
                 "아무나 읽을 수 있는 토픽",
-                IMAGE_URL,
+                FileFixture.createFile(),
                 "아무나 읽을 수 있는 토픽입니다.",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,

@@ -148,11 +148,12 @@ public class TopicCommandService {
 
     private Topic convertToTopic(AuthMember member, TopicMergeRequest request) {
         Member creator = findCreatorByAuthMember(member);
+        String imageUrl = createImageUrl(request.image());
 
         return Topic.createTopicAssociatedWithCreator(
                 request.name(),
                 request.description(),
-                request.image(),
+                imageUrl,
                 request.publicity(),
                 request.permissionType(),
                 creator
