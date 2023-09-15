@@ -76,7 +76,7 @@ class TopicStatusTest {
 
         @Test
         @DisplayName("공개 범위가 null인 경우, 예외가 발생한다.")
-        public void whenPublicityIsNull_Fail() {
+        void whenPublicityIsNull_Fail() {
             //given
             Publicity publicity = null;
             PermissionType permissionType = PermissionType.ALL_MEMBERS;
@@ -88,7 +88,7 @@ class TopicStatusTest {
 
         @Test
         @DisplayName("권한 설정이 null인 경우, 예외가 발생한다.")
-        public void whenPermissionIsNull_Fail() {
+        void whenPermissionIsNull_Fail() {
             //given
             Publicity publicity = Publicity.PUBLIC;
             PermissionType permissionType = null;
@@ -104,7 +104,7 @@ class TopicStatusTest {
     class Update {
 
         @Test
-        @DisplayName("권한 범위가 모든 멤버이면, 공개 범위를 혼자 볼 지도로 설정할 때 예외가 발생한다")
+        @DisplayName("권한 범위가 모든 회원이면, 공개 범위를 혼자 볼 지도로 설정할 때 예외가 발생한다")
         void whenAllMembersAndPrivate_thenFail() {
             //given
             TopicStatus topicStatus = TopicStatus.of(Publicity.PUBLIC, PermissionType.ALL_MEMBERS);

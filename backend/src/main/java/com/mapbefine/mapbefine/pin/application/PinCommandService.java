@@ -25,10 +25,12 @@ import com.mapbefine.mapbefine.s3.application.S3Service;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
@@ -59,7 +61,11 @@ public class PinCommandService {
         this.s3Service = s3Service;
     }
 
-    public long save(AuthMember authMember, PinCreateRequest request) {
+    public long save(
+            AuthMember authMember,
+            List<MultipartFile> images,
+            PinCreateRequest request
+    ) {
         Topic topic = findTopic(request.topicId());
         validatePinCreateOrUpdate(authMember, topic);
 
@@ -71,6 +77,8 @@ public class PinCommandService {
                 topic,
                 member
         );
+
+        images.forEach(image -> addImageToPin(image, pin));
         pinRepository.save(pin);
 
         return pin.getId();
@@ -141,10 +149,12 @@ public class PinCommandService {
     public void addImage(AuthMember authMember, PinImageCreateRequest request) {
         Pin pin = findPin(request.pinId());
         validatePinCreateOrUpdate(authMember, pin.getTopic());
-        String image = s3Service.upload(request.image());
+        addImageToPin(request.image(), pin);
+    }
 
-        PinImage pinImage = PinImage.createPinImageAssociatedWithPin(image, pin);
-        pinImageRepository.save(pinImage);
+    private void addImageToPin(MultipartFile image, Pin pin) {
+        String imageUrl = s3Service.upload(image);
+        PinImage.createPinImageAssociatedWithPin(imageUrl, pin);
     }
 
     public void removeImageById(AuthMember authMember, Long pinImageId) {

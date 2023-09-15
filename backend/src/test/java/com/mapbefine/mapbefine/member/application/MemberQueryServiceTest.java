@@ -52,7 +52,6 @@ class MemberQueryServiceTest {
     @Autowired
     private LocationRepository locationRepository;
 
-
     private AuthMember authMember;
     private Member member;
     private List<Topic> topics;
@@ -78,7 +77,7 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("유저 목록을 조회한다.")
+    @DisplayName("회원 목록을 조회한다.")
     void findAllMember() {
         // given
         Member member2 = memberRepository.save(
@@ -101,7 +100,7 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("유저를 단일 조회한다.")
+    @DisplayName("회원을 단일 조회한다.")
     void findMemberById() {
         // given
         Member member = memberRepository.save(
@@ -117,7 +116,7 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("조회하려는 유저가 없는 경우 예외를 반환한다.")
+    @DisplayName("조회하려는 회원이 없는 경우 예외를 반환한다.")
     void findMemberById_whenNoneExists_thenFail() {
         // given when then
         assertThatThrownBy(() -> memberQueryService.findById(Long.MAX_VALUE))
@@ -127,7 +126,7 @@ class MemberQueryServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 목록에 추가 된 토픽을 조회할 수 있다")
-    public void findAllTopicsInBookmark_success() {
+    void findAllTopicsInBookmark_success() {
         // when
         List<TopicResponse> allTopicsInBookmark = memberQueryService.findAllTopicsInBookmark(authMember);
 
@@ -143,7 +142,7 @@ class MemberQueryServiceTest {
 
 
     @Test
-    @DisplayName("멤버 ID를 이용해 모아보기할 모든 Topic들을 가져올 수 있다.")
+    @DisplayName("회원 ID를 이용해 모아보기할 모든 Topic들을 가져올 수 있다.")
     void findAtlasByMember_Success() {
         // when
         List<TopicResponse> allTopicsInAtlas = memberQueryService.findAllTopicsInAtlas(authMember);
@@ -175,7 +174,7 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("로그인한 유저가 생성한 모든 핀을 가져올 수 있다.")
+    @DisplayName("로그인한 회원이 생성한 모든 핀을 가져올 수 있다.")
     void findMyAllPins_Success() {
         // given
         Location location = locationRepository.save(LocationFixture.create());
@@ -199,4 +198,5 @@ class MemberQueryServiceTest {
                 .isEqualTo(pinIds);
 
     }
+    
 }

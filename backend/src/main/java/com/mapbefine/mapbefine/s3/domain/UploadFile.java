@@ -21,7 +21,7 @@ public class UploadFile implements MultipartFile {
         this.bytes = bytes;
     }
 
-    public static UploadFile of(
+    public static UploadFile from(
             MultipartFile multipartFile
     ) throws IOException {
         ImageName imageName = ImageName.from(multipartFile.getOriginalFilename());
@@ -56,12 +56,12 @@ public class UploadFile implements MultipartFile {
     }
 
     @Override
-    public byte[] getBytes() throws IOException {
+    public byte[] getBytes() {
         return bytes;
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() {
         return new ByteArrayInputStream(bytes);
     }
 

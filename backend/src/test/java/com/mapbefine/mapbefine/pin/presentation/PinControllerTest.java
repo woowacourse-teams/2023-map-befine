@@ -3,16 +3,13 @@ package com.mapbefine.mapbefine.pin.presentation;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 
-import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
-import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
@@ -25,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 
 class PinControllerTest extends RestDocsIntegration {
@@ -40,7 +39,9 @@ class PinControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("핀 추가")
     void add() throws Exception {
-        given(pinCommandService.save(any(), any())).willReturn(1L);
+        given(pinCommandService.save(any(), any(), any())).willReturn(1L);
+        File mockFile = new File(getClass().getClassLoader().getResource("test.png").getPath());
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
 
         PinCreateRequest pinCreateRequest = new PinCreateRequest(
                 1L,
@@ -52,11 +53,14 @@ class PinControllerTest extends RestDocsIntegration {
                 127
         );
 
+        param.add("images", List.of(mockFile));
+        param.add("request", pinCreateRequest);
+
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/pins")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(pinCreateRequest))
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        .content(objectMapper.writeValueAsString(param))
         ).andDo(restDocs.document());
     }
 
@@ -181,7 +185,7 @@ class PinControllerTest extends RestDocsIntegration {
 
 
     @Test
-    @DisplayName("멤버 Id를 입력하면 해당 멤버가 만든 핀 목록을 조회할 수 있다.")
+    @DisplayName("회원 Id를 입력하면 해당 회원이 만든 핀 목록을 조회할 수 있다.")
     void findAllPinsByMemberId() throws Exception {
         List<PinResponse> pinResponses = List.of(
                 new PinResponse(

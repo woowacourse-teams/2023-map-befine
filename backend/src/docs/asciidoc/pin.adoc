@@ -8,7 +8,7 @@ operation::pin-controller-test/find-all[snippets='http-request,http-response']
 
 operation::pin-controller-test/find-by-id[snippets='http-request,http-response']
 
-=== 멤버별 핀 목록 조회
+=== 회원별 핀 목록 조회
 
 operation::pin-controller-test/find-all-pins-by-member-id[snippets='http-request,http-response']
 

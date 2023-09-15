@@ -99,7 +99,7 @@ class PermissionCommandServiceTest {
     }
 
     @Test
-    @DisplayName("Creator 가 아닌 유저가 권한을 주려는 경우 예외가 발생한다.")
+    @DisplayName("Creator 가 아닌 회원이 권한을 주려는 경우 예외가 발생한다.")
     void saveMemberTopicPermissionByUser() {
         // given
         Member creator = memberRepository.save(
@@ -127,7 +127,7 @@ class PermissionCommandServiceTest {
     }
 
     @Test
-    @DisplayName("Guest 가 유저에게 권한을 주려는 경우 예외가 발생한다.")
+    @DisplayName("Guest 가 회원에게 권한을 주려는 경우 예외가 발생한다.")
     void saveMemberTopicPermissionByGuest() {
         // given
         Member creator = memberRepository.save(
@@ -262,7 +262,7 @@ class PermissionCommandServiceTest {
     }
 
     @Test
-    @DisplayName("creator 가 아닌 유저가 권한을 삭제하는 경우 예외가 발생한다.")
+    @DisplayName("creator 가 아닌 회원이 권한을 삭제하는 경우 예외가 발생한다.")
     void deleteMemberTopicPermissionByUser() {
         // given
         Member creator = memberRepository.save(
@@ -289,7 +289,7 @@ class PermissionCommandServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 유저의 권한을 삭제하려 하려는 경우 예외가 발생한다.")
+    @DisplayName("존재하지 않는 회원의 권한을 삭제하려 하려는 경우 예외가 발생한다.")
     void deleteMemberTopicPermissionByCreator_whenNoneExistsPermission_thenFail() {
         // given
         Member creator = memberRepository.save(

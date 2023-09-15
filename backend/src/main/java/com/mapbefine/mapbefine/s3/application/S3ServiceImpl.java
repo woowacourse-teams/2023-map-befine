@@ -23,7 +23,7 @@ public class S3ServiceImpl implements S3Service {
     @Override
     public String upload(MultipartFile multipartFile) {
         try {
-            UploadFile uploadFile = UploadFile.of(multipartFile);
+            UploadFile uploadFile = UploadFile.from(multipartFile);
             s3Client.upload(uploadFile);
             return getUploadPath(uploadFile);
         } catch (IOException exception) {

@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.topic;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.IntegrationTest;
@@ -21,7 +20,6 @@ import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithOutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
@@ -38,7 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 
 class TopicIntegrationTest extends IntegrationTest {
 
@@ -329,7 +326,6 @@ class TopicIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(responses).hasSize(2);
-        assertThat(responses).hasSize(2);
     }
 
     @Test
@@ -404,7 +400,7 @@ class TopicIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("멤버별 Topic 목록을 조회하면 200을 반환한다")
+    @DisplayName("회원별 Topic 목록을 조회하면 200을 반환한다")
     void findAllTopicsByMemberId_Success() {
         // when
         ExtractableResponse<Response> response = RestAssured

@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.oauth.application;
 
+import com.mapbefine.mapbefine.auth.exception.AuthErrorCode;
+import com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
@@ -35,12 +37,21 @@ public class OauthService {
         Member savedMember = memberRepository.findByOauthId(oauthMember.getOauthId())
                 .orElseGet(() -> register(oauthMember));
 
+        validateMemberStatus(savedMember);
+
         return MemberDetailResponse.from(savedMember);
     }
 
     private Member register(OauthMember oauthMember) {
 
         return memberRepository.save(oauthMember.toRegisterMember());
+    }
+
+    private void validateMemberStatus(Member member) {
+        if (member.isNormalStatus()) {
+            return;
+        }
+        throw new AuthUnauthorizedException(AuthErrorCode.BLOCKING_MEMBER_ACCESS);
     }
 
 }

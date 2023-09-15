@@ -97,7 +97,7 @@ class OauthServiceTest {
     void loginAndRegister_success() {
         // when
         MemberDetailResponse memberDetailResponse = oauthService.login(KAKAO, "auth");
-        Member savedMember = memberRepository.findByMemberInfoEmail("yshert@naver.com")
+        Member savedMember = memberRepository.findById(memberDetailResponse.id())
                 .orElseThrow(NoSuchElementException::new);
 
         // then
@@ -113,7 +113,7 @@ class OauthServiceTest {
     void login() {
         // given
         MemberDetailResponse firstLogin = oauthService.login(KAKAO, "auth");
-        Member savedMember = memberRepository.findByMemberInfoEmail(firstLogin.email())
+        Member savedMember = memberRepository.findById(firstLogin.id())
                 .orElseThrow(NoSuchElementException::new);
 
         // when
