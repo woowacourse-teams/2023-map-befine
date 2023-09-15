@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.member;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.OauthId;
@@ -34,6 +35,10 @@ public class MemberFixture {
     }
 
     public static AuthMember createUser(Member member) {
+        if (member.isAdmin()) {
+            return new Admin(member.getId());
+        }
+
         return new User(
                 member.getId(),
                 member.getCreatedTopics().stream().map(Topic::getId).toList(),

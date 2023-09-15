@@ -26,8 +26,7 @@ public class AdminQueryService {
     }
 
     public List<AdminMemberResponse> findAllMemberDetails(AuthMember authMember) {
-        Member admin = findMemberById(authMember.getMemberId());
-        validateAdminPermission(admin);
+        validateAdminPermission(authMember);
 
         List<Member> members = memberRepository.findAllByMemberInfoRole(Role.USER);
 
@@ -41,8 +40,8 @@ public class AdminQueryService {
                 .orElseThrow(() -> new NoSuchElementException("findMemberByAuthMember; member not found; id=" + id));
     }
 
-    private void validateAdminPermission(Member member) {
-        if (member.isAdmin()) {
+    private void validateAdminPermission(AuthMember authMember) {
+        if (authMember.isRole(Role.ADMIN)) {
             return;
         }
 
@@ -50,9 +49,7 @@ public class AdminQueryService {
     }
 
     public AdminMemberDetailResponse findMemberDetail(AuthMember authMember, Long memberId) {
-        Member admin = findMemberById(authMember.getMemberId());
-
-        validateAdminPermission(admin);
+        validateAdminPermission(authMember);
 
         Member findMember = findMemberById(memberId);
         List<Topic> topics = findMember.getCreatedTopics();
@@ -60,4 +57,5 @@ public class AdminQueryService {
 
         return AdminMemberDetailResponse.of(findMember, topics, pins);
     }
+
 }

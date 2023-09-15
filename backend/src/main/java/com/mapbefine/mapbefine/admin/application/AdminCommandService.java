@@ -6,6 +6,7 @@ import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_F
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.domain.Status;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.pin.domain.Pin;
@@ -41,9 +42,7 @@ public class AdminCommandService {
     }
 
     public void blockMember(AuthMember authMember, Long memberId) {
-        Member admin = findMemberById(authMember.getMemberId());
-
-        validateAdminPermission(admin);
+        validateAdminPermission(authMember);
 
         Member member = findMemberById(memberId);
         member.updateStatus(Status.BLOCKED);
@@ -59,8 +58,8 @@ public class AdminCommandService {
                 .orElseThrow(() -> new NoSuchElementException("findMemberByAuthMember; member not found; id=" + id));
     }
 
-    private void validateAdminPermission(Member member) {
-        if (member.isAdmin()) {
+    private void validateAdminPermission(AuthMember authMember) {
+        if (authMember.isRole(Role.ADMIN)) {
             return;
         }
 
@@ -75,17 +74,13 @@ public class AdminCommandService {
     }
 
     public void deleteTopic(AuthMember authMember, Long topicId) {
-        Member member = findMemberById(authMember.getMemberId());
-
-        validateAdminPermission(member);
+        validateAdminPermission(authMember);
 
         topicRepository.deleteById(topicId);
     }
 
     public void deleteTopicImage(AuthMember authMember, Long topicId) {
-        Member member = findMemberById(authMember.getMemberId());
-
-        validateAdminPermission(member);
+        validateAdminPermission(authMember);
 
         Topic topic = findTopicById(topicId);
         topic.removeImage();
@@ -97,17 +92,13 @@ public class AdminCommandService {
     }
 
     public void deletePin(AuthMember authMember, Long pinId) {
-        Member member = findMemberById(authMember.getMemberId());
-
-        validateAdminPermission(member);
+        validateAdminPermission(authMember);
 
         pinRepository.deleteById(pinId);
     }
 
     public void deletePinImage(AuthMember authMember, Long pinImageId) {
-        Member member = findMemberById(authMember.getMemberId());
-
-        validateAdminPermission(member);
+        validateAdminPermission(authMember);
 
         pinImageRepository.deleteById(pinImageId);
     }
