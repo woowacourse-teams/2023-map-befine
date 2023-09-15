@@ -6,39 +6,39 @@ import {
   useState,
 } from 'react';
 
-interface NavbarHighlightsProps {
-  home: boolean;
-  seeTogether: boolean;
-  addMapOrPin: boolean;
-  favorite: boolean;
-  profile: boolean;
-}
+export type NavbarHighlightKeys =
+  | 'home'
+  | 'seeTogether'
+  | 'addMapOrPin'
+  | 'favorite'
+  | 'profile';
 
-interface NavbarHighlightsContextProps {
-  navbarHighlights: NavbarHighlightsProps;
-  setNavbarHighlights: Dispatch<SetStateAction<NavbarHighlightsProps>>;
-}
+export type NavbarHighlights = {
+  [key in NavbarHighlightKeys]: boolean;
+};
 
 interface NavbarHighlightsProviderProps {
   children: ReactNode;
 }
 
-export const NavbarHighlightsContext =
-  createContext<NavbarHighlightsContextProps>({
-    navbarHighlights: {
-      home: true,
-      seeTogether: false,
-      addMapOrPin: false,
-      favorite: false,
-      profile: false,
-    },
-    setNavbarHighlights: () => {},
-  });
+export const NavbarHighlightsContext = createContext<{
+  navbarHighlights: NavbarHighlights;
+  setNavbarHighlights: Dispatch<SetStateAction<NavbarHighlights>>;
+}>({
+  navbarHighlights: {
+    home: true,
+    seeTogether: false,
+    addMapOrPin: false,
+    favorite: false,
+    profile: false,
+  },
+  setNavbarHighlights: () => {},
+});
 
 const NavbarHighlightsProvider = ({
   children,
 }: NavbarHighlightsProviderProps) => {
-  const [navbarHighlights, setNavbarHighlights] = useState({
+  const [navbarHighlights, setNavbarHighlights] = useState<NavbarHighlights>({
     home: true,
     seeTogether: false,
     addMapOrPin: false,
@@ -48,10 +48,7 @@ const NavbarHighlightsProvider = ({
 
   return (
     <NavbarHighlightsContext.Provider
-      value={{
-        navbarHighlights,
-        setNavbarHighlights,
-      }}
+      value={{ navbarHighlights, setNavbarHighlights }}
     >
       {children}
     </NavbarHighlightsContext.Provider>

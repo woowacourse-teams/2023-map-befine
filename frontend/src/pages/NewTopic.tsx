@@ -4,7 +4,7 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import useNavigator from '../hooks/useNavigator';
-import { NewTopicFormProps } from '../types/FormValues';
+import { NewTopicFormProps } from '../types/tmap';
 import useFormValues from '../hooks/useFormValues';
 import { useLocation } from 'react-router-dom';
 import useToast from '../hooks/useToast';

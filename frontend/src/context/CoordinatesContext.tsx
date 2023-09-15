@@ -7,9 +7,10 @@ import {
 } from 'react';
 
 export interface Coordinate {
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
   address?: string;
+  topicId?: string;
 }
 
 export interface CoordinatesContextType {
@@ -22,7 +23,7 @@ export interface CoordinatesContextType {
 export const CoordinatesContext = createContext<CoordinatesContextType>({
   coordinates: [],
   setCoordinates: () => {},
-  clickedCoordinate: { latitude: '', longitude: '', address: '' },
+  clickedCoordinate: { latitude: 0, longitude: 0, address: '' },
   setClickedCoordinate: () => {},
 });
 
@@ -32,18 +33,18 @@ interface Props {
 
 const CoordinatesProvider = ({ children }: Props): JSX.Element => {
   const [coordinates, setCoordinates] = useState<Coordinate[]>([
-    { latitude: '37.5055', longitude: '127.0509' },
+    { latitude: 37.5055, longitude: 127.0509 },
   ]);
   const [clickedCoordinate, setClickedCoordinate] = useState<Coordinate>({
-    latitude: '',
-    longitude: '',
+    latitude: 0,
+    longitude: 0,
     address: '',
   });
 
   // new-pin페이지가 아닌 경우 address를 =''로 고정
   useEffect(() => {
     if (location.pathname !== '/new-pin') {
-      setClickedCoordinate({ ...clickedCoordinate, address: '' });
+      setClickedCoordinate((prevState) => ({ ...prevState, address: '' }));
     }
   }, [location.pathname]);
 

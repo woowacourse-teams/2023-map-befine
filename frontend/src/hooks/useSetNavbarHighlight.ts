@@ -1,7 +1,11 @@
 import { useContext, useEffect } from 'react';
-import { NavbarHighlightsContext } from '../context/NavbarHighlightsContext';
+import {
+  NavbarHighlightKeys,
+  NavbarHighlights,
+  NavbarHighlightsContext,
+} from '../context/NavbarHighlightsContext';
 
-const navbarPageNames = [
+const navbarPageNames: NavbarHighlightKeys[] = [
   'home',
   'seeTogether',
   'addMapOrPin',
@@ -9,84 +13,19 @@ const navbarPageNames = [
   'profile',
 ];
 
-const useSetNavbarHighlight = (pageName: string) => {
+const useSetNavbarHighlight = (pageName: NavbarHighlightKeys) => {
   const { navbarHighlights, setNavbarHighlights } = useContext(
     NavbarHighlightsContext,
   );
 
   useEffect(() => {
-    if (!navbarPageNames.includes(pageName)) {
-      setNavbarHighlights({
-        home: false,
-        seeTogether: false,
-        addMapOrPin: false,
-        favorite: false,
-        profile: false,
-      });
+    const newNavbarHighlights: NavbarHighlights = navbarPageNames.reduce(
+      (acc, curr) => ({ ...acc, [curr]: curr === pageName }),
+      {} as NavbarHighlights,
+    );
 
-      return;
-    }
-
-    if (pageName === 'home') {
-      setNavbarHighlights({
-        home: true,
-        seeTogether: false,
-        addMapOrPin: false,
-        favorite: false,
-        profile: false,
-      });
-
-      return;
-    }
-
-    if (pageName === 'seeTogether') {
-      setNavbarHighlights({
-        home: false,
-        seeTogether: true,
-        addMapOrPin: false,
-        favorite: false,
-        profile: false,
-      });
-
-      return;
-    }
-
-    if (pageName === 'addMapOrPin') {
-      setNavbarHighlights({
-        home: false,
-        seeTogether: false,
-        addMapOrPin: true,
-        favorite: false,
-        profile: false,
-      });
-
-      return;
-    }
-
-    if (pageName === 'favorite') {
-      setNavbarHighlights({
-        home: false,
-        seeTogether: false,
-        addMapOrPin: false,
-        favorite: true,
-        profile: false,
-      });
-
-      return;
-    }
-
-    if (pageName === 'profile') {
-      setNavbarHighlights({
-        home: false,
-        seeTogether: false,
-        addMapOrPin: false,
-        favorite: false,
-        profile: true,
-      });
-
-      return;
-    }
-  }, []);
+    setNavbarHighlights(newNavbarHighlights);
+  }, [pageName]);
 
   return { navbarHighlights };
 };

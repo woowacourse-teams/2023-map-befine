@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext } from 'react';
 import Map from '../Map';
 import Flex from '../common/Flex';
 import Logo from './Logo';
@@ -20,32 +20,9 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
-declare global {
-  interface Window {
-    Tmapv3: any;
-    daum: any;
-  }
-}
-
 const Layout = ({ children }: LayoutProps) => {
-  const { Tmapv3 } = window;
-  const mapContainer = useRef(null);
   const { width } = useContext(LayoutWidthContext);
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
-
-  const [map, setMap] = useState(null);
-
-  useEffect(() => {
-    const map = new Tmapv3.Map(mapContainer.current, {
-      center: new Tmapv3.LatLng(37.5154, 127.1029),
-    });
-    map.setZoomLimit(7, 18);
-    setMap(map);
-    return () => {
-      map.destroy();
-    };
-  }, []);
-
   return (
     <ToastProvider>
       <ModalProvider>
@@ -79,10 +56,10 @@ const Layout = ({ children }: LayoutProps) => {
                       {children}
                     </Flex>
                     <Navbar $layoutWidth={width} />
+                    <Toast />
                   </LayoutFlex>
-                  <Map ref={mapContainer} map={map} $minWidth={width} />
+                  <Map />
                 </MediaWrapper>
-                <Toast />
               </TagProvider>
             </SeeTogetherProvider>
           </MarkerProvider>
@@ -98,7 +75,6 @@ const LogoWrapper = styled.section<{
   width: 372px;
   display: flex;
   padding: 12px 20px 0 20px;
-
   @media (max-width: 1076px) {
     ${({ $layoutWidth }) =>
       $layoutWidth === '372px' &&
@@ -119,7 +95,6 @@ const MediaWrapper = styled.section<{
   display: flex;
   width: 100vw;
   overflow: hidden;
-
   @media (max-width: 1076px) {
     flex-direction: ${({ $isAddPage, $layoutWidth }) => {
       if ($isAddPage) return 'column';
@@ -130,11 +105,9 @@ const MediaWrapper = styled.section<{
 
 const LayoutFlex = styled(Flex)<{ $layoutWidth: '372px' | '100vw' }>`
   transition: all ease 0.3s;
-
   @media (max-width: 1076px) {
     height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
     transition: none;
   }
 `;
-
 export default Layout;
