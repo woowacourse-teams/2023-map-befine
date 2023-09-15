@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.application;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_IMAGE_ID;
+import static com.mapbefine.mapbefine.s3.exception.S3ErrorCode.IMAGE_FILE_IS_NULL;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_TOPIC_ID;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
@@ -22,6 +23,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.s3.application.S3Service;
+import com.mapbefine.mapbefine.s3.exception.S3Exception.S3BadRequestException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
@@ -78,10 +80,19 @@ public class PinCommandService {
                 member
         );
 
-        images.forEach(image -> addImageToPin(image, pin));
+        addPinImagesToPin(images, pin);
+
         pinRepository.save(pin);
 
         return pin.getId();
+    }
+
+    private void addPinImagesToPin(final List<MultipartFile> images, final Pin pin) {
+        if (Objects.isNull(images)) {
+            return;
+        }
+
+        images.forEach(image -> addImageToPin(image, pin));
     }
 
     private Topic findTopic(Long topicId) {
@@ -153,6 +164,10 @@ public class PinCommandService {
     }
 
     private void addImageToPin(MultipartFile image, Pin pin) {
+        if (Objects.isNull(image)) {
+            throw new S3BadRequestException(IMAGE_FILE_IS_NULL);
+        }
+
         String imageUrl = s3Service.upload(image);
         PinImage.createPinImageAssociatedWithPin(imageUrl, pin);
     }
