@@ -63,16 +63,18 @@ public class JwtTokenProvider implements TokenProvider {
 
     public void validateTokensForReissue(String refreshToken, String accessToken) {
         boolean canReissueAccessToken = !isExpired(refreshToken) && isExpired(accessToken);
-        if (!canReissueAccessToken) {
-            throw new AuthUnauthorizedException(ILLEGAL_TOKEN);
+        if (canReissueAccessToken) {
+            return;
         }
+        throw new AuthUnauthorizedException(ILLEGAL_TOKEN);
     }
 
     public void validateTokensForRemoval(String refreshToken, String accessToken) {
         boolean canRemoveRefreshToken = !isExpired(refreshToken) && !isExpired(accessToken);
-        if (!canRemoveRefreshToken) {
-            throw new AuthUnauthorizedException(EXPIRED_TOKEN);
+        if (canRemoveRefreshToken) {
+            return;
         }
+        throw new AuthUnauthorizedException(EXPIRED_TOKEN);
     }
 
     public void validateAccessToken(String accessToken) {

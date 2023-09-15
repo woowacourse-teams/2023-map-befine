@@ -50,6 +50,7 @@ public class OauthController {
     private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
         Cookie cookie = new Cookie("refresh-token", refreshToken);
         cookie.setHttpOnly(true);
+        cookie.setMaxAge(14 * 24 * 60 * 60);
         response.addCookie(cookie);
     }
 
