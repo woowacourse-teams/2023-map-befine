@@ -76,6 +76,7 @@ class LoginControllerTest extends RestDocsIntegration {
     }
 
     @Test
+    @DisplayName("만료된 Access Token과 유효한 RefreshToken인 경우, 새로운 토큰들을 발행한다.")
     void reissueTokens() throws Exception {
         AccessToken expiredAccessToken = new AccessToken("만료된 액세스 토큰");
         String refreshToken = "리프레시 토큰";
@@ -94,6 +95,7 @@ class LoginControllerTest extends RestDocsIntegration {
     }
 
     @Test
+    @DisplayName("유효한 Access Token과 유효한 RefreshToken인 경우, RefreshTokenRepository에서 RefreshTokend을 삭제한다")
     void logout() throws Exception {
         AccessToken accessToken = new AccessToken("access token");
 

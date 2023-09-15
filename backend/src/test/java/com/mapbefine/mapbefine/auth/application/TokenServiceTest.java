@@ -64,11 +64,11 @@ class TokenServiceTest {
     }
 
     @Nested
-    @DisplayName("")
+    @DisplayName("Token을 발급할 때,")
     class IssueTokens {
 
         @Test
-        @DisplayName("Token을 발급할 때,")
+        @DisplayName("멤버 Id를 입력하면 정상적으로 토큰을 발행한다.")
         void success() {
             // given
             String payload = String.valueOf(memberId);

@@ -2,8 +2,8 @@ package com.mapbefine.mapbefine.auth.presentation;
 
 import com.mapbefine.mapbefine.auth.application.TokenService;
 import com.mapbefine.mapbefine.auth.dto.AccessToken;
-import com.mapbefine.mapbefine.auth.dto.response.LoginInfoResponse;
 import com.mapbefine.mapbefine.auth.dto.LoginTokens;
+import com.mapbefine.mapbefine.auth.dto.response.LoginInfoResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
 import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
@@ -50,16 +50,17 @@ public class LoginController {
         MemberDetailResponse memberDetail = oauthService.login(oauthServerType, code);
 
         LoginTokens loginTokens = tokenService.issueTokens(memberDetail.id());
-        addRefreshTokenToCookie(response, loginTokens.refreshToken());
+        Cookie cookie = createCookie(loginTokens.refreshToken());
+        response.addCookie(cookie);
 
         return ResponseEntity.ok(new LoginInfoResponse(loginTokens.accessToken(), memberDetail));
     }
 
-    private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+    private Cookie createCookie(String refreshToken) {
         Cookie cookie = new Cookie("refresh-token", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(14 * 24 * 60 * 60);
-        response.addCookie(cookie);
+        return cookie;
     }
 
     @PostMapping("/refresh-token")
@@ -69,7 +70,8 @@ public class LoginController {
             HttpServletResponse response
     ) {
         LoginTokens loginTokens = tokenService.reissueToken(refreshToken, request.accessToken());
-        addRefreshTokenToCookie(response, loginTokens.refreshToken());
+        Cookie cookie = createCookie(loginTokens.refreshToken());
+        response.addCookie(cookie);
 
         return ResponseEntity.ok(loginTokens.toAccessToken());
     }
