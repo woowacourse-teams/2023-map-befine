@@ -10,14 +10,15 @@ import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
 import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
-import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithOutImage;
-import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
+import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithoutImage;
+import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -50,10 +51,21 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
             LocalDateTime.now()
     ));
 
+    private File mockFile;
+
     @MockBean
     private TopicCommandService topicCommandService;
     @MockBean
     private TopicQueryService topicQueryService;
+
+    @BeforeEach
+    void setUp() {
+        mockFile = new File(
+                getClass().getClassLoader()
+                        .getResource("test.png")
+                        .getPath()
+        );
+    }
 
 
     @Test
@@ -63,7 +75,7 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         File mockFile = new File(getClass().getClassLoader().getResource("test.png").getPath());
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
 
-        TopicCreateRequestWithOutImage request = new TopicCreateRequestWithOutImage(
+        TopicCreateRequestWithoutImage request = new TopicCreateRequestWithoutImage(
                 "준팍의 안갈집",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
@@ -78,30 +90,34 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 MockMvcRequestBuilders.post("/topics/new")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .content(objectMapper.writeValueAsString(mockFile))
+                        .content(objectMapper.writeValueAsString(param))
         ).andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("토픽 병합 생성")
     void mergeAndCreate() throws Exception {
-
         given(topicCommandService.merge(any(), any())).willReturn(1L);
 
-        TopicMergeRequest topicMergeRequest = new TopicMergeRequest(
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+
+
+        TopicMergeRequestWithoutImage request = new TopicMergeRequestWithoutImage(
                 "준팍의 안갈집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
                 List.of(1L, 2L, 3L)
         );
 
+        param.add("image", mockFile);
+        param.add("request", request);
+
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/topics/merge")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(topicMergeRequest))
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        .content(objectMapper.writeValueAsString(param))
         ).andDo(restDocs.document());
     }
 
