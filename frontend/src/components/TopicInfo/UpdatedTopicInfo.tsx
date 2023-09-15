@@ -61,7 +61,7 @@ const UpdatedTopicInfo = ({
           publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
           permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
         },
-        errorMessage: `'공개 ➡️ 비공개', '모두 ➡️ 친구들', '친구들 ➡️ 혼자' 로 변경할 수 없습니다.`,
+        errorMessage: `권한은 '공개 ➡️ 비공개', '모두 ➡️ 친구들', '친구들 ➡️ 혼자' 로 변경할 수 없습니다.`,
         isThrow: true,
       });
 
