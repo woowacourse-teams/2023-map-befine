@@ -5,7 +5,7 @@ import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import { postApi, postFormApi } from '../apis/postApi';
 import useNavigator from '../hooks/useNavigator';
-import { NewTopicFormProps } from '../types/tmap';
+import { NewTopicFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { useLocation } from 'react-router-dom';
 import useToast from '../hooks/useToast';
@@ -139,7 +139,6 @@ const NewTopic = () => {
       const formData = new FormData();
       if (!formImage) return;
 
-      console.log('1');
       formData.append('image', formImage);
 
       const objectData = {
@@ -174,17 +173,13 @@ const NewTopic = () => {
   ) => {
     const file = event.target.files && event.target.files[0];
     if (!file) {
-      console.log('No file selected');
+      showToast('error', 'No file selected');
       return;
     }
 
     setFormImage(file);
     setShowImage(URL.createObjectURL(file));
   };
-
-  useEffect(() => {
-    console.log(formValues);
-  }, [formValues]);
 
   return (
     <form onSubmit={onSubmit}>
