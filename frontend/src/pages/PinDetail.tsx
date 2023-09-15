@@ -16,7 +16,7 @@ import { styled } from 'styled-components';
 import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 import { postFormApi } from '../apis/postApi';
-import PinImageBox from '../components/PinImageBox';
+import PinImageContainer from '../components/PinImageContainer';
 
 interface PinDetailProps {
   width: '372px' | '100vw';
@@ -168,7 +168,7 @@ const PinDetail = ({
         style={{ display: 'none' }}
       />
 
-      <PinImageBox images={pin.images} />
+      <PinImageContainer images={pin.images} />
 
       <Space size={6} />
 

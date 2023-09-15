@@ -2,23 +2,23 @@ import styled from 'styled-components';
 import { ImagesType } from '../../types/Pin';
 import Image from '../common/Image';
 
-interface PinImageBoxProps {
+interface PinImageContainerProps {
   images: ImagesType[];
 }
 
-const PinImageBox = ({ images }: PinImageBoxProps) => {
+const PinImageContainer = ({ images }: PinImageContainerProps) => {
   return (
     <>
       <FilmList>
         {images.map((image, index) => (
-          <ImageLi>
+          <ImageWrapper>
             <Image
               key={index}
               height="100px"
               width="100px"
               src={image.imageUrl}
             />
-          </ImageLi>
+          </ImageWrapper>
         ))}
       </FilmList>
     </>
@@ -33,8 +33,8 @@ const FilmList = styled.ul`
   overflow: hidden;
 `;
 
-const ImageLi = styled.li`
+const ImageWrapper = styled.li`
   margin-right: 10px;
 `;
 
-export default PinImageBox;
+export default PinImageContainer;

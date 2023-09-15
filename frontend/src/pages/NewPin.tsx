@@ -35,7 +35,7 @@ const NewPin = () => {
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
   const [topic, setTopic] = useState<any>(null);
   const [selectedTopic, setSelectedTopic] = useState<any>(null);
-  const [showImages, setShowImages] = useState<string[]>([]);
+  const [showedImages, setShowedImages] = useState<string[]>([]);
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
@@ -181,7 +181,7 @@ const NewPin = () => {
 
   const onPinImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const imageLists = event.target.files;
-    let imageUrlLists = [...showImages];
+    let imageUrlLists = [...showedImages];
 
     const file = event.target.files && event.target.files[0];
 
@@ -207,7 +207,7 @@ const NewPin = () => {
     }
 
     setFormImages([...formImages, file]);
-    setShowImages(imageUrlLists);
+    setShowedImages(imageUrlLists);
   };
 
   useEffect(() => {
@@ -286,7 +286,7 @@ const NewPin = () => {
           </Flex>
           <Space size={0} />
           <Flex $flexDirection="row" $flexWrap="wrap">
-            {showImages.map((image, id) => (
+            {showedImages.map((image, id) => (
               <div key={id}>
                 <ShowImage src={image} alt={`${image}-${id}`} />
                 <Space size={0} />
