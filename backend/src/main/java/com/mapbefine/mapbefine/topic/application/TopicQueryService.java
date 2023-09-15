@@ -186,7 +186,7 @@ public class TopicQueryService {
     public List<TopicResponse> findAllTopicsByMemberId(AuthMember authMember, Long memberId) {
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return topicRepository.findAllByCreatorId(memberId)
+            return topicRepository.findByCreatorId(memberId)
                     .stream()
                     .filter(authMember::canRead)
                     .map(TopicResponse::fromGuestQuery)
@@ -198,7 +198,7 @@ public class TopicQueryService {
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
         List<Topic> topicsInBookMark = findBookMarkedTopics(member);
 
-        return topicRepository.findAllByCreatorId(memberId)
+        return topicRepository.findByCreatorId(memberId)
                 .stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(

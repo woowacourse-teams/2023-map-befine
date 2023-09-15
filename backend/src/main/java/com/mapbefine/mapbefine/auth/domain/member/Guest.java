@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.auth.domain.member;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicStatus;
 import java.util.Collections;
@@ -37,8 +36,4 @@ public class Guest extends AuthMember {
         return false;
     }
 
-    @Override
-    public boolean isRole(Role role) {
-        return Role.GUEST == role;
-    }
 }
