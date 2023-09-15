@@ -9,7 +9,7 @@
               value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] ${PID} %highlight(%-5level) %cyan(%logger) - %msg%n"/>
 
     <springProfile name="default">
-        <include resource="console-appender.xml"/>
+        <include resource="logback/console-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
@@ -17,10 +17,10 @@
     </springProfile>
 
     <springProfile name="dev">
-        <include resource="file-hibernate-appender.xml"/>
-        <include resource="file-debug-appender.xml"/>
-        <include resource="file-warn-appender.xml"/>
-        <include resource="file-error-appender.xml"/>
+        <include resource="logback/file-hibernate-appender.xml"/>
+        <include resource="logback/file-debug-appender.xml"/>
+        <include resource="logback/file-warn-appender.xml"/>
+        <include resource="logback/file-error-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="FILE_WARN"/>
@@ -36,10 +36,10 @@
     </springProfile>
 
     <springProfile name="prod">
-        <include resource="file-info-appender.xml"/>
-        <include resource="file-warn-appender.xml"/>
-        <include resource="file-error-appender.xml"/>
-        <include resource="slack-error-appender.xml"/>
+        <include resource="logback/file-info-appender.xml"/>
+        <include resource="logback/file-warn-appender.xml"/>
+        <include resource="logback/file-error-appender.xml"/>
+        <include resource="logback/slack-error-appender.xml"/>
 
         <root level="INFO">
             <appender-ref ref="FILE_WARN"/>

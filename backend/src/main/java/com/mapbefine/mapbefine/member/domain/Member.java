@@ -100,22 +100,14 @@ public class Member extends BaseTimeEntity {
     private static String createNicknameSuffix() {
         return randomUUID()
                 .toString()
-                .replaceAll("-", "")
+                .replace("-", "")
                 .substring(0, DEFAULT_NICKNAME_SUFFIX_LENGTH);
     }
 
     public void update(
-            String nickName,
-            String email,
-            String imageUrl
+            String nickName
     ) {
-        memberInfo = MemberInfo.of(
-                nickName,
-                email,
-                imageUrl,
-                memberInfo.getRole(),
-                memberInfo.getStatus()
-        );
+        memberInfo = memberInfo.createUpdatedMemberInfo(nickName);
     }
 
     public void addTopic(Topic topic) {

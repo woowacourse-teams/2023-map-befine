@@ -39,7 +39,7 @@ class BookmarkCommandServiceTest {
     private TestEntityManager testEntityManager;
 
     @Test
-    @DisplayName("다른 유저의 토픽을 즐겨찾기에 추가할 수 있다.")
+    @DisplayName("다른 회원의 토픽을 즐겨찾기에 추가할 수 있다.")
     public void addTopicInBookmark_Success() {
         //given
         Member creator = MemberFixture.create(
@@ -72,7 +72,7 @@ class BookmarkCommandServiceTest {
     }
 
     @Test
-    @DisplayName("권한이 없는 다른 유저의 토픽을 즐겨찾기에 추가할 수 없다.")
+    @DisplayName("권한이 없는 다른 회원의 토픽을 즐겨찾기에 추가할 수 없다.")
     public void addTopicInBookmark_Fail1() {
         //given
         Member creator = MemberFixture.create(

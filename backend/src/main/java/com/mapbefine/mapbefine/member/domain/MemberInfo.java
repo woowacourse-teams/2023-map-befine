@@ -28,7 +28,7 @@ public class MemberInfo {
     @Column(nullable = false, length = 20, unique = true)
     private String nickName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -106,6 +106,11 @@ public class MemberInfo {
         if (Objects.isNull(status)) {
             throw new IllegalArgumentException("validateStatus; member status is null;");
         }
+    }
+
+    public MemberInfo createUpdatedMemberInfo(String nickName) {
+
+        return MemberInfo.of(nickName, this.email, this.imageUrl.getImageUrl(), this.role, this.status);
     }
 
     public String getImageUrl() {

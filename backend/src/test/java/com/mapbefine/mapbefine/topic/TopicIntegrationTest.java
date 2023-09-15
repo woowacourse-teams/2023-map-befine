@@ -404,7 +404,7 @@ class TopicIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("멤버별 Topic 목록을 조회하면 200을 반환한다")
+    @DisplayName("회원별 Topic 목록을 조회하면 200을 반환한다")
     void findAllTopicsByMemberId_Success() {
         // when
         ExtractableResponse<Response> response = RestAssured
