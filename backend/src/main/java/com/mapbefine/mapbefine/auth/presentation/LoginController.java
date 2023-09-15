@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     public static final int TWO_WEEKS = 14 * 24 * 60 * 60;
+
     private final TokenService tokenService;
     private final OauthService oauthService;
 
