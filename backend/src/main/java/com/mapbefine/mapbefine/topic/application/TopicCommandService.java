@@ -34,8 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class TopicCommandService {
 
-    private static final String BASE_IMAGE_URL = "https://velog.velcdn.com/images/semnil5202/post/37f3bcb9-0b07-4100-85f6-f1d5ad037c14/image.svg";
-
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
     private final MemberRepository memberRepository;
@@ -82,7 +80,7 @@ public class TopicCommandService {
 
     private String createImageUrl(MultipartFile image) {
         if (Objects.isNull(image)) {
-            return BASE_IMAGE_URL;
+            return null;
         }
 
         return s3Service.upload(image);
