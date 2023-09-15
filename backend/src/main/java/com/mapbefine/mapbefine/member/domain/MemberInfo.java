@@ -16,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)
@@ -39,6 +40,7 @@ public class MemberInfo {
     private Role role;
 
     @Enumerated(EnumType.STRING)
+    @ColumnDefault(value = "NORMAL")
     @Column(nullable = false)
     private Status status;
 
