@@ -49,7 +49,7 @@ public class TopicController {
     public ResponseEntity<Void> create(
             AuthMember member,
             @RequestPart TopicCreateRequestWithOutImage request,
-            @RequestPart MultipartFile image
+            @RequestPart(required = false) MultipartFile image
     ) {
         TopicCreateRequest topicCreateRequest = TopicCreateRequest.of(request, image);
         Long topicId = topicCommandService.saveTopic(member, topicCreateRequest);

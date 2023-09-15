@@ -28,10 +28,13 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
 public class TopicCommandService {
+
+    private static final String BASE_IMAGE_URL = "https://mapbefine.github.io/favicon.png";
 
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
@@ -54,7 +57,7 @@ public class TopicCommandService {
         Topic topic = convertToTopic(member, request);
         List<Long> pinIds = request.pins();
 
-        if (pinIds.size() > 0) {
+        if (0 < pinIds.size()) {
             copyPinsToTopic(member, topic, pinIds);
         }
 
@@ -65,7 +68,7 @@ public class TopicCommandService {
 
     private Topic convertToTopic(AuthMember member, TopicCreateRequest request) {
         Member creator = findCreatorByAuthMember(member);
-        String image = s3Service.upload(request.image());
+        String image = createImageUrl(request.image());
 
         return Topic.createTopicAssociatedWithCreator(
                 request.name(),
@@ -75,6 +78,14 @@ public class TopicCommandService {
                 request.permissionType(),
                 creator
         );
+    }
+
+    private String createImageUrl(MultipartFile image) {
+        if (Objects.isNull(image)) {
+            return BASE_IMAGE_URL;
+        }
+
+        return s3Service.upload(image);
     }
 
     private Member findCreatorByAuthMember(AuthMember member) {
