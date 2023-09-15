@@ -24,7 +24,6 @@ const PinsOfTopic = ({
   return (
     <Wrapper>
       <TopicInfo
-        fullUrl={String(topicId)}
         topicId={topicId}
         idx={idx}
         topicImage={topicDetail.image}

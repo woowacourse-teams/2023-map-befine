@@ -2,7 +2,6 @@ import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Image from '../common/Image';
 import Space from '../common/Space';
-import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
@@ -20,7 +19,6 @@ import { useState } from 'react';
 import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
-  fullUrl?: string;
   topicId: string;
   idx: number;
   topicImage: string;
@@ -37,7 +35,6 @@ export interface TopicInfoProps {
 }
 
 const TopicInfo = ({
-  fullUrl,
   topicId,
   idx,
   topicImage,
