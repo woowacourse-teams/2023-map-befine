@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.oauth.dto;
+package com.mapbefine.mapbefine.auth.dto.response;
 
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 

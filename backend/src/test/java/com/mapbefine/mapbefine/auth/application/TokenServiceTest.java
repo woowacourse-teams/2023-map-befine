@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.auth.domain.token.RefreshToken;
 import com.mapbefine.mapbefine.auth.domain.token.RefreshTokenRepository;
-import com.mapbefine.mapbefine.auth.dto.AccessToken;
+import com.mapbefine.mapbefine.auth.dto.LoginTokens;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -64,8 +64,33 @@ class TokenServiceTest {
     }
 
     @Nested
-    @DisplayName("Access Token을 재발급할 때,")
-    class ReissueAccessToken {
+    @DisplayName("")
+    class IssueTokens {
+
+        @Test
+        @DisplayName("Token을 발급할 때,")
+        void success() {
+            // given
+            String payload = String.valueOf(memberId);
+
+            // when
+            LoginTokens loginTokens = tokenService.issueTokens(memberId);
+
+            // then
+            String actualAccessToken = loginTokens.accessToken();
+            String actualRefreshToken = loginTokens.refreshToken();
+
+            assertThat(actualAccessToken).isNotNull();
+            assertThat(actualRefreshToken).isNotNull();
+            assertThat(payload).isEqualTo(testTokenProvider.getPayload(actualAccessToken));
+        }
+
+    }
+
+
+    @Nested
+    @DisplayName("Token을 재발급할 때,")
+    class ReissueToken {
 
         @Test
         @DisplayName("Refresh Token이 유효하고, AccessToken이 만료되었다면 성공한다")
@@ -76,10 +101,15 @@ class TokenServiceTest {
             String accessToken = testTokenProvider.createExpiredAccessToken(payload);
 
             // when
-            AccessToken result = tokenService.reissueAccessToken(refreshToken, accessToken);
+            LoginTokens loginTokens = tokenService.reissueToken(refreshToken, accessToken);
 
             // then
-            assertThat(payload).isEqualTo(testTokenProvider.getPayload(result.accessToken()));
+            String actualAccessToken = loginTokens.accessToken();
+            String actualRefreshToken = loginTokens.refreshToken();
+
+            assertThat(actualAccessToken).isNotNull();
+            assertThat(actualRefreshToken).isNotNull();
+            assertThat(payload).isEqualTo(testTokenProvider.getPayload(actualAccessToken));
         }
 
     }

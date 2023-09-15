@@ -4,7 +4,7 @@ import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.ILLEGAL_TOKEN
 
 import com.mapbefine.mapbefine.auth.domain.token.RefreshToken;
 import com.mapbefine.mapbefine.auth.domain.token.RefreshTokenRepository;
-import com.mapbefine.mapbefine.auth.dto.AccessToken;
+import com.mapbefine.mapbefine.auth.dto.LoginTokens;
 import com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
 import com.mapbefine.mapbefine.auth.infrastructure.TokenProvider;
 import org.springframework.stereotype.Service;
@@ -22,13 +22,23 @@ public class TokenService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public AccessToken reissueAccessToken(String refreshToken, String accessToken) {
+    public LoginTokens issueTokens(Long memberId) {
+        String accessToken = tokenProvider.createAccessToken(String.valueOf(memberId));
+        String refreshToken = tokenProvider.createRefreshToken();
+
+        refreshTokenRepository.findByMemberId(memberId)
+                .ifPresent(refreshTokenRepository::delete);
+
+        refreshTokenRepository.save(new RefreshToken(refreshToken, memberId));
+
+        return new LoginTokens(accessToken, refreshToken);
+    }
+
+    public LoginTokens reissueToken(String refreshToken, String accessToken) {
         tokenProvider.validateTokensForReissue(refreshToken, accessToken);
-
         Long memberId = findMemberIdByRefreshToken(refreshToken);
-        String reissuedToken = tokenProvider.createAccessToken(String.valueOf(memberId));
 
-        return new AccessToken(reissuedToken);
+        return issueTokens(memberId);
     }
 
     private Long findMemberIdByRefreshToken(String token) {

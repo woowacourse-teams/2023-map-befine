@@ -15,7 +15,6 @@ import com.mapbefine.mapbefine.oauth.domain.kakao.KakaoApiClient;
 import com.mapbefine.mapbefine.oauth.domain.kakao.KakaoOauthProperties;
 import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoMemberResponse;
 import com.mapbefine.mapbefine.oauth.domain.kakao.dto.KakaoToken;
-import com.mapbefine.mapbefine.oauth.dto.LoginTokens;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,15 +96,11 @@ class OauthServiceTest {
     @DisplayName("Kakao 로 로그인 처음 하는 경우 사용자의 정보를 저장하고 사용자의 로그인 정보를 반환한다.")
     void loginAndRegister_success() {
         // when
-        LoginTokens loginTokens = oauthService.login(KAKAO, "auth");
+        MemberDetailResponse memberDetailResponse = oauthService.login(KAKAO, "auth");
         Member savedMember = memberRepository.findByMemberInfoEmail("yshert@naver.com")
                 .orElseThrow(NoSuchElementException::new);
 
         // then
-        MemberDetailResponse memberDetailResponse = loginTokens.memberDetailResponse();
-
-        assertThat(loginTokens.accessToken()).isNotNull();
-        assertThat(loginTokens.refreshToken()).isNotNull();
         assertThat(memberDetailResponse.email()).isEqualTo("yshert@naver.com");
         assertThat(memberDetailResponse.imageUrl()).isEqualTo(
                 "https://map-befine-official.github.io/favicon.png"
@@ -117,15 +112,15 @@ class OauthServiceTest {
     @DisplayName("Kakao 로 로그인 처음이 아닌 경우 사용자의 정보를 저장하지 않고 사용자의 로그인 정보를 반환한다.")
     void login() {
         // given
-        LoginTokens firstLogin = oauthService.login(KAKAO, "auth");
-        Member savedMember = memberRepository.findByMemberInfoEmail(firstLogin.memberDetailResponse().email())
+        MemberDetailResponse firstLogin = oauthService.login(KAKAO, "auth");
+        Member savedMember = memberRepository.findByMemberInfoEmail(firstLogin.email())
                 .orElseThrow(NoSuchElementException::new);
 
         // when
-        LoginTokens secondLogin = oauthService.login(KAKAO, "auth");
+        MemberDetailResponse secondLogin = oauthService.login(KAKAO, "auth");
 
         // then
-        assertThat(savedMember.getId()).isEqualTo(secondLogin.memberDetailResponse().id());
+        assertThat(savedMember.getId()).isEqualTo(secondLogin.id());
     }
 
 }
