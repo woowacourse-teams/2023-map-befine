@@ -14,18 +14,20 @@ const useNavigator = () => {
   };
 
   return {
-    home: () => routePage('/'),
-    seeTogether: () => routePage('/see-together'),
-    addMapOrPin: () => openModal('addMapOrPin'),
-    favorite: () => routePage('/favorite'),
-    profile: () => routePage('/my-page'),
-    newTopic: () => {
-      routePage('/new-topic');
-      closeModal('addMapOrPin');
-    },
-    newPin: () => {
-      routePage(`/new-pin/${topicId}`);
-      closeModal('addMapOrPin');
+    routingHandlers: {
+      home: () => routePage('/'),
+      seeTogether: () => routePage('/see-together'),
+      addMapOrPin: () => openModal('addMapOrPin'),
+      favorite: () => routePage('/favorite'),
+      profile: () => routePage('/my-page'),
+      newTopic: () => {
+        routePage('/new-topic');
+        closeModal('addMapOrPin');
+      },
+      newPin: () => {
+        routePage(`/new-pin/${topicId}`);
+        closeModal('addMapOrPin');
+      },
     },
   };
 };
