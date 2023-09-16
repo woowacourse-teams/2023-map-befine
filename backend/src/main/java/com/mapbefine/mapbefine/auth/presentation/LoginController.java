@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.auth.presentation;
 
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
 import com.mapbefine.mapbefine.auth.application.TokenService;
 import com.mapbefine.mapbefine.auth.dto.AccessToken;
 import com.mapbefine.mapbefine.auth.dto.LoginTokens;
@@ -7,9 +9,9 @@ import com.mapbefine.mapbefine.auth.dto.response.LoginInfoResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
 import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,17 +54,20 @@ public class LoginController {
         MemberDetailResponse memberDetail = oauthService.login(oauthServerType, code);
 
         LoginTokens loginTokens = tokenService.issueTokens(memberDetail.id());
-        Cookie cookie = createCookie(loginTokens.refreshToken());
-        response.addCookie(cookie);
+        ResponseCookie cookie = createCookie(loginTokens.refreshToken());
+        response.addHeader(SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok(new LoginInfoResponse(loginTokens.accessToken(), memberDetail));
     }
 
-    private Cookie createCookie(String refreshToken) {
-        Cookie cookie = new Cookie("refresh-token", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(TWO_WEEKS);
-        return cookie;
+    private ResponseCookie createCookie(String refreshToken) {
+        return ResponseCookie.from("refresh-token", refreshToken)
+                .httpOnly(true)
+                .maxAge(TWO_WEEKS)
+                .sameSite("Lax")
+                .secure(true)
+                .path("/")
+                .build();
     }
 
     @PostMapping("/refresh-token")
@@ -72,8 +77,8 @@ public class LoginController {
             HttpServletResponse response
     ) {
         LoginTokens loginTokens = tokenService.reissueToken(refreshToken, request.accessToken());
-        Cookie cookie = createCookie(loginTokens.refreshToken());
-        response.addCookie(cookie);
+        ResponseCookie cookie = createCookie(loginTokens.refreshToken());
+        response.addHeader(SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok(loginTokens.toAccessToken());
     }
