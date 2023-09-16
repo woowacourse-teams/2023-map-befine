@@ -29,6 +29,7 @@ const useNavigator = () => {
         closeModal('addMapOrPin');
       },
     },
+    routePage,
   };
 };
 
