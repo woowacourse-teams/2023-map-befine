@@ -7,7 +7,6 @@ const useNavigator = () => {
 
   const { openModal, closeModal } = useContext(ModalContext);
   const { topicId } = useParams();
-
   const routePage = (url: string | -1, value?: string | number | number[]) => {
     if (typeof url === 'string') navigator(url, { state: value });
     if (url === -1) navigator(url);
@@ -25,9 +24,12 @@ const useNavigator = () => {
         closeModal('addMapOrPin');
       },
       newPin: () => {
-        routePage(`/new-pin/${topicId}`);
+        routePage('/new-pin', topicId);
         closeModal('addMapOrPin');
       },
+      goToPopularTopics: () => routePage('see-all/popularity'),
+      goToNearByMeTopics: () => routePage('see-all/near'),
+      goToLatestTopics: () => routePage('see-all/latest'),
     },
     routePage,
   };
