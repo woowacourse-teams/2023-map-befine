@@ -1,12 +1,12 @@
-import { ReactElement } from 'react';
+import { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import useKeyDown from '../../hooks/useKeyDown';
 import Text from '../common/Text';
 
 interface NavbarItemProps {
   label: string;
-  icon: ReactElement;
-  focusIcon: ReactElement;
+  icon: FunctionComponent;
+  focusIcon: FunctionComponent;
   isHighlighted?: boolean;
   onClick: () => void;
   $layoutWidth: '100vw' | '372px';
@@ -30,7 +30,7 @@ const NavbarItem = ({
       onKeyDown={onElementKeyDown}
       $layoutWidth={$layoutWidth}
     >
-      {isHighlighted ? FocusIcon : Icon}
+      {isHighlighted ? <FocusIcon /> : <Icon />}
       <Text
         color={isHighlighted ? 'primary' : 'darkGray'}
         $fontSize="extraSmall"
