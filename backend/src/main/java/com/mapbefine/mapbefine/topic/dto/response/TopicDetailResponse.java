@@ -44,7 +44,7 @@ public record TopicDetailResponse(
                 topic.countBookmarks(),
                 isBookmarked,
                 canUpdate,
-                topic.getUpdatedAt(),
+                topic.getLastPinUpdatedAt(),
                 pinResponses
         );
     }
@@ -67,7 +67,7 @@ public record TopicDetailResponse(
                 topic.countBookmarks(),
                 Boolean.FALSE,
                 Boolean.FALSE,
-                topic.getUpdatedAt(),
+                topic.getLastPinUpdatedAt(),
                 pinResponses
         );
     }

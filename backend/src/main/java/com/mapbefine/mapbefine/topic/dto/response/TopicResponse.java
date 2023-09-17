@@ -28,7 +28,7 @@ public record TopicResponse(
                 isInAtlas,
                 topic.countBookmarks(),
                 isBookmarked,
-                topic.getUpdatedAt()
+                topic.getLastPinUpdatedAt()
         );
     }
 
