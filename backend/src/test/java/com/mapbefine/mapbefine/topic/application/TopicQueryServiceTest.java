@@ -135,6 +135,26 @@ class TopicQueryServiceTest {
     }
 
     @Test
+    @DisplayName("토픽 상세 조회 시 토픽의 변경일자는 핀의 최신 변경 일자이다.")
+    void findDetailById_Success_lastPinUpdatedAt() {
+        //given
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+        Location location = LocationFixture.create();
+        Pin pin = PinFixture.create(location, topic, member);
+        locationRepository.save(location);
+        topicRepository.save(topic);
+        pinRepository.save(pin);
+
+        //when
+        pin.updatePinInfo("updatePin", "updatedAt will be update");
+        pinRepository.flush();
+        TopicDetailResponse response = topicQueryService.findDetailById(new Admin(member.getId()), topic.getId());
+
+        //then
+        assertThat(response.updatedAt()).isEqualTo(pin.getUpdatedAt());
+    }
+
+    @Test
     @DisplayName("권한이 없는 토픽을 ID로 조회하면, 예외가 발생한다.")
     void findDetailById_Fail() {
         //given
