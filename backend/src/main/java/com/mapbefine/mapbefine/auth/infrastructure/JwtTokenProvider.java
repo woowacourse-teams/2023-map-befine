@@ -11,13 +11,12 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider implements TokenProvider {
-
-    private static final String EMPTY = "";
 
     private final String secretKey;
     private final long accessExpirationTime;
@@ -41,7 +40,9 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     public String createRefreshToken() {
-        return createToken(EMPTY, refreshExpirationTime);
+        UUID payload = UUID.randomUUID();
+
+        return createToken(payload.toString(), refreshExpirationTime);
     }
 
     private String createToken(String payload, Long validityInMilliseconds) {
