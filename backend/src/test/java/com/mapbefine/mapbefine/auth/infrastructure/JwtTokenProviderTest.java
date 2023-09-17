@@ -16,11 +16,11 @@ class JwtTokenProviderTest {
     private JwtTokenProvider jwtTokenProvider;
 
     @Test
-    @DisplayName("payload를 받아 JWT 토큰을 생성한다.")
-    void createToken() {
+    @DisplayName("payload를 받아 access token을 생성한다.")
+    void createAccessToken_success() {
         String payload = "1";
 
-        String token = jwtTokenProvider.createToken(payload);
+        String token = jwtTokenProvider.createAccessToken(payload);
 
         assertThat(jwtTokenProvider.getPayload(token))
                 .isEqualTo(payload);

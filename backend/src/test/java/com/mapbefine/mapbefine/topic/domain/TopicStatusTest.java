@@ -76,7 +76,7 @@ class TopicStatusTest {
 
         @Test
         @DisplayName("공개 범위가 null인 경우, 예외가 발생한다.")
-        public void whenPublicityIsNull_Fail() {
+        void whenPublicityIsNull_Fail() {
             //given
             Publicity publicity = null;
             PermissionType permissionType = PermissionType.ALL_MEMBERS;
@@ -88,7 +88,7 @@ class TopicStatusTest {
 
         @Test
         @DisplayName("권한 설정이 null인 경우, 예외가 발생한다.")
-        public void whenPermissionIsNull_Fail() {
+        void whenPermissionIsNull_Fail() {
             //given
             Publicity publicity = Publicity.PUBLIC;
             PermissionType permissionType = null;

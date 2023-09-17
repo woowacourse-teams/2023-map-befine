@@ -5,10 +5,11 @@ import com.mapbefine.mapbefine.auth.dto.AuthInfo;
 import com.mapbefine.mapbefine.auth.exception.AuthErrorCode;
 import com.mapbefine.mapbefine.auth.exception.AuthException;
 import com.mapbefine.mapbefine.auth.infrastructure.AuthorizationExtractor;
-import com.mapbefine.mapbefine.auth.infrastructure.JwtTokenProvider;
+import com.mapbefine.mapbefine.auth.infrastructure.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Objects;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,24 +19,24 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
 
     private final AuthorizationExtractor<AuthInfo> authorizationExtractor;
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
 
     public AdminAuthInterceptor(
             AuthorizationExtractor<AuthInfo> authorizationExtractor,
             AuthService authService,
-            JwtTokenProvider jwtTokenProvider
+            TokenProvider tokenProvider
     ) {
         this.authorizationExtractor = authorizationExtractor;
         this.authService = authService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
     public boolean preHandle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Object handler
-    ) throws Exception {
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull Object handler
+    ) {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
@@ -53,11 +54,9 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         if (Objects.isNull(authInfo)) {
             return null;
         }
-        String accessToken = authInfo.accessToken();
-        if (jwtTokenProvider.validateToken(accessToken)) {
-            return Long.parseLong(jwtTokenProvider.getPayload(accessToken));
-        }
-        throw new AuthException.AuthUnauthorizedException(AuthErrorCode.ILLEGAL_TOKEN);
+        tokenProvider.validateAccessToken(authInfo.accessToken());
+
+        return Long.parseLong(tokenProvider.getPayload(authInfo.accessToken()));
     }
 
     private void validateAdmin(Long memberId) {

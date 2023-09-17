@@ -84,7 +84,7 @@ class AtlasCommandServiceTest {
             List<Atlas> actual = actualMember.getAtlantes();
 
             //then
-            assertThat(actual.size()).isEqualTo(expected.size());
+            assertThat(actual).hasSameSizeAs(expected);
         }
 
         @Test
@@ -124,7 +124,7 @@ class AtlasCommandServiceTest {
         List<Atlas> actual = memberAfter.getAtlantes();
 
         //then
-        assertThat(actual.size()).isEqualTo(expected.size() - 1);
+        assertThat(actual).hasSize(expected.size() - 1);
     }
 
 }

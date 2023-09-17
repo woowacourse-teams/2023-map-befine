@@ -73,7 +73,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("비어있는 토픽을 생성할 수 있다.")
-    public void saveEmptyTopic_Success() {
+    void saveEmptyTopic_Success() {
         //given
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
@@ -94,7 +94,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Guest는 비어있는 토픽을 생성할 수 없다.")
-    public void saveEmptyTopic_Fail() {
+    void saveEmptyTopic_Fail() {
         //given
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
@@ -108,7 +108,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("핀을 통해 새로운 토픽을 생성할 수 있다.")
-    public void saveTopicWithPins_Success() {
+    void saveTopicWithPins_Success() {
         //given
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
 
@@ -139,7 +139,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Guest는 핀을 통해 새로운 토픽을 생성할 수 없다.")
-    public void saveTopicWithPins_Fail1() {
+    void saveTopicWithPins_Fail1() {
         //given
         Topic publicAndAllMembersTopic = TopicFixture.createPublicAndAllMembersTopic(member);
 
@@ -160,7 +160,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("권한이 없는 핀을 통해 토픽을 생성할 수 없다.")
-    public void saveTopicWithPins_Fail2() {
+    void saveTopicWithPins_Fail2() {
         //given
         Member topicOwner = MemberFixture.create(
                 "topicOwner",
@@ -187,7 +187,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("기존의 토픽들을 통해 새로운 토픽을 생성할 수 있다.")
-    public void merge_Success() {
+    void merge_Success() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -224,7 +224,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Guest는 기존의 토픽들을 통해 새로운 토픽을 생성할 수 없다.")
-    public void merge_Fail1() {
+    void merge_Fail1() {
         //given
         Topic privateAndGroupOnlyTopic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
         topicRepository.save(privateAndGroupOnlyTopic);
@@ -241,7 +241,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("권한이 없는 토픽들을 통해 새로운 토픽을 생성할 수 없다.")
-    public void merge_Fail2() {
+    void merge_Fail2() {
         //given
         Member topicOwner = MemberFixture.create(
                 "topicOwner",
@@ -297,7 +297,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("토픽의 정보를 수정할 수 있다.")
-    public void updateTopicInfo_Success() {
+    void updateTopicInfo_Success() {
         //given
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
         topicRepository.save(topic);
@@ -326,7 +326,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("권한이 없는 토픽의 정보를 수정할 수 없다.")
-    public void updateTopicInfo_Fail() {
+    void updateTopicInfo_Fail() {
         //given
         Member topicOwner = MemberFixture.create(
                 "topicOwner",
@@ -353,7 +353,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Admin은 토픽을 삭제할 수 있다.")
-    public void delete_Success() {
+    void delete_Success() {
         //given
         Member admin = MemberFixture.create(
                 "topicOwner",
@@ -380,7 +380,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Admin이 아닌 경우, 토픽을 삭제할 수 없다.")
-    public void delete_Fail() {
+    void delete_Fail() {
         //given
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
