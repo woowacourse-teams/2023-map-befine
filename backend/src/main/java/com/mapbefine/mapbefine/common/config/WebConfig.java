@@ -16,6 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000", "https://mapbefine.kro.kr", "https://mapbefine.com")
+                .allowedHeaders("refresh-token")
                 .allowedMethods("*")
                 .exposedHeaders(LOCATION, SET_COOKIE);
     }
