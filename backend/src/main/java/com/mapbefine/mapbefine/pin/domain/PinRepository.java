@@ -26,5 +26,4 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
 
     List<Pin> findAllByCreatorId(Long creatorId);
 
-    List<Pin> findAllByOrderByUpdatedAtDesc();
 }
