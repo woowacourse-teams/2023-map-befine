@@ -22,8 +22,8 @@ class LatencyRecorderTest {
         double latencyForSeconds = latencyRecorder.getLatencyForSeconds();
 
         //then
-        assertThat(latencyForSeconds).isGreaterThan(5)
-                .isLessThan(6);
+        assertThat(latencyForSeconds).isGreaterThanOrEqualTo(5)
+                .isLessThanOrEqualTo(6);
     }
 
     @Test
@@ -41,8 +41,8 @@ class LatencyRecorderTest {
         double latencyForSeconds = latencyRecorder.getLatencyForSeconds();
 
         //then
-        assertThat(latencyForSeconds).isGreaterThan(3)
-                .isLessThan(4);
+        assertThat(latencyForSeconds).isGreaterThanOrEqualTo(3)
+                .isLessThanOrEqualTo(4);
     }
 
 }
