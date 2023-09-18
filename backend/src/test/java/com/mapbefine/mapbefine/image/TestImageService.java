@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine;
+package com.mapbefine.mapbefine.image;
 
 import com.mapbefine.mapbefine.image.application.ImageService;
 import org.springframework.context.annotation.Profile;
