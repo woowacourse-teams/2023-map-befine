@@ -29,6 +29,8 @@ public class TokenService {
         refreshTokenRepository.findByMemberId(memberId)
                 .ifPresent(refreshTokenRepository::delete);
 
+        refreshTokenRepository.flush();
+
         refreshTokenRepository.save(new RefreshToken(refreshToken, memberId));
 
         return new LoginTokens(accessToken, refreshToken);
