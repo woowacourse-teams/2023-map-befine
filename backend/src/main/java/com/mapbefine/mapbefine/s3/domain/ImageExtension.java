@@ -20,7 +20,7 @@ public enum ImageExtension {
         this.extension = extension;
     }
 
-    public static ImageExtension fromByImageFileName(String imageFileName) {
+    public static ImageExtension from(String imageFileName) {
         return Arrays.stream(values())
                 .filter(imageExtension -> imageFileName.endsWith(imageExtension.getExtension()))
                 .findFirst()

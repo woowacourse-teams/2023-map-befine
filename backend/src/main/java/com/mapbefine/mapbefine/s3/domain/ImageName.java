@@ -21,7 +21,7 @@ public class ImageName {
     }
 
     private static ImageExtension getExtension(String originalFileName) {
-        return ImageExtension.fromByImageFileName(originalFileName);
+        return ImageExtension.from(originalFileName);
     }
 
     public String getFileName() {
