@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.mapbefine.mapbefine.s3.domain.ImageExtension;
 import com.mapbefine.mapbefine.s3.exception.S3Exception.S3BadRequestException;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -17,7 +16,7 @@ class ImageExtensionTest {
     @ValueSource(strings = {"image.jpeg", "image.jpg", "image.jfif", "image.png", "image.svg"})
     void createImageExtensionByFileName_Success(String fileName) {
         // given when
-        String extension = ImageExtension.fromByImageFileName(fileName)
+        String extension = ImageExtension.from(fileName)
                 .getExtension();
 
         // then
@@ -29,7 +28,7 @@ class ImageExtensionTest {
     @ValueSource(strings = {"image.pppng", "image.jpeeg", "image.gi"})
     void createImageExtensionByFileName_Fail(String fileName) {
         // given when then
-        assertThatThrownBy(() -> ImageExtension.fromByImageFileName(fileName))
+        assertThatThrownBy(() -> ImageExtension.from(fileName))
                 .isInstanceOf(S3BadRequestException.class);
     }
 
