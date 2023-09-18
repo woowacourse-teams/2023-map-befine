@@ -30,6 +30,8 @@ public class TokenService {
             refreshTokenRepository.deleteByMemberId(memberId);
         }
 
+        refreshTokenRepository.flush();
+
         refreshTokenRepository.save(new RefreshToken(refreshToken, memberId));
 
         return new LoginTokens(accessToken, refreshToken);
