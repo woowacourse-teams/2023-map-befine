@@ -3,7 +3,7 @@ package com.mapbefine.mapbefine.pin.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.mapbefine.mapbefine.FileFixture;
+import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;

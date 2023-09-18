@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.topic;
 
 
-import com.mapbefine.mapbefine.FileFixture;
+import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
