@@ -26,9 +26,8 @@ public class TokenService {
         String accessToken = tokenProvider.createAccessToken(String.valueOf(memberId));
         String refreshToken = tokenProvider.createRefreshToken();
 
-        if (refreshTokenRepository.existsByMemberId(memberId)) {
-            refreshTokenRepository.deleteByMemberId(memberId);
-        }
+        refreshTokenRepository.findByMemberId(memberId)
+                .ifPresent(refreshTokenRepository::delete);
 
         refreshTokenRepository.save(new RefreshToken(refreshToken, memberId));
 
