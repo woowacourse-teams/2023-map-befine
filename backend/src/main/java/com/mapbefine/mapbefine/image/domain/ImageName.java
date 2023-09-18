@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.s3.domain;
+package com.mapbefine.mapbefine.image.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

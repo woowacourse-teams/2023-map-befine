@@ -14,7 +14,7 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
-import com.mapbefine.mapbefine.s3.application.S3Service;
+import com.mapbefine.mapbefine.image.application.ImageService;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -37,18 +37,18 @@ public class TopicCommandService {
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
     private final MemberRepository memberRepository;
-    private final S3Service s3Service;
+    private final ImageService imageService;
 
     public TopicCommandService(
             TopicRepository topicRepository,
             PinRepository pinRepository,
             MemberRepository memberRepository,
-            S3Service s3Service
+            ImageService imageService
     ) {
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
         this.memberRepository = memberRepository;
-        this.s3Service = s3Service;
+        this.imageService = imageService;
     }
 
     public Long saveTopic(AuthMember member, TopicCreateRequest request) {
@@ -83,7 +83,7 @@ public class TopicCommandService {
             return null;
         }
 
-        return s3Service.upload(image);
+        return imageService.upload(image);
     }
 
     private Member findCreatorByAuthMember(AuthMember member) {

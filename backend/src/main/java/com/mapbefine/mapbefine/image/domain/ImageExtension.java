@@ -1,8 +1,8 @@
-package com.mapbefine.mapbefine.s3.domain;
+package com.mapbefine.mapbefine.image.domain;
 
-import static com.mapbefine.mapbefine.s3.exception.S3ErrorCode.ILLEGAL_IMAGE_FILE_EXTENSION;
+import static com.mapbefine.mapbefine.image.exception.S3ErrorCode.ILLEGAL_IMAGE_FILE_EXTENSION;
 
-import com.mapbefine.mapbefine.s3.exception.S3Exception.S3BadRequestException;
+import com.mapbefine.mapbefine.image.exception.S3Exception.S3BadRequestException;
 import java.util.Arrays;
 
 public enum ImageExtension {
