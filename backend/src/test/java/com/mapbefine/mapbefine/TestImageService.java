@@ -1,13 +1,13 @@
 package com.mapbefine.mapbefine;
 
-import com.mapbefine.mapbefine.s3.application.S3Service;
+import com.mapbefine.mapbefine.image.application.ImageService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Profile("test")
-public class TestS3ServiceImpl implements S3Service {
+public class TestImageService implements ImageService {
 
     @Override
     public String upload(MultipartFile multipartFile) {

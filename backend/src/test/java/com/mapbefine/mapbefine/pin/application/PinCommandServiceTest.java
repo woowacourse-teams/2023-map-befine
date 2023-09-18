@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.pin.application;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -26,7 +25,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
-import com.mapbefine.mapbefine.s3.exception.S3Exception.S3BadRequestException;
+import com.mapbefine.mapbefine.image.exception.S3Exception.S3BadRequestException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;

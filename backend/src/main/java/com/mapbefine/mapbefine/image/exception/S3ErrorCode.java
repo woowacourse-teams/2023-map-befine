@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.s3.exception;
+package com.mapbefine.mapbefine.image.exception;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.s3.domain;
+package com.mapbefine.mapbefine.image.domain;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;

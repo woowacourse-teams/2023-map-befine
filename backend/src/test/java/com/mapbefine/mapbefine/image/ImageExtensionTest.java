@@ -1,10 +1,10 @@
-package com.mapbefine.mapbefine.s3;
+package com.mapbefine.mapbefine.image;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.mapbefine.mapbefine.s3.domain.ImageExtension;
-import com.mapbefine.mapbefine.s3.exception.S3Exception.S3BadRequestException;
+import com.mapbefine.mapbefine.image.domain.ImageExtension;
+import com.mapbefine.mapbefine.image.exception.S3Exception.S3BadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
