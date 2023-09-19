@@ -10,6 +10,7 @@ const decodeToken = (token: string) => {
 };
 
 async function refreshToken(headers: Headers): Promise<string> {
+  console.log('L12 refreshTOken이 호출은 되었는지 확인', headers);
   const parsedToken = JSON.parse(localStorage.getItem('userToken') as string);
   console.log('getAPI Line 14', parsedToken);
   const { userToken } = parsedToken;
