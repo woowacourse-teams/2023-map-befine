@@ -159,22 +159,6 @@ const NewTopic = () => {
 
         <InputContainer
           tagType="input"
-          containerTitle="지도 이미지"
-          isRequired={false}
-          name="image"
-          value={formValues.image}
-          placeholder="이미지 URL을 입력해주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={1}
-          autoFocus
-          errorMessage={errorMessages.image}
-          maxLength={2048}
-        />
-
-        <Space size={1} />
-
-        <InputContainer
-          tagType="input"
           containerTitle="지도 이름"
           isRequired={true}
           name="name"
