@@ -13,11 +13,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public class JwtTokenProvider implements TokenProvider {
 
@@ -96,8 +94,6 @@ public class JwtTokenProvider implements TokenProvider {
         } catch (ExpiredJwtException e) {
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            log.warn("source = {}", e.getStackTrace()[0].toString());
-
             throw new AuthUnauthorizedException(ILLEGAL_TOKEN);
         }
     }
