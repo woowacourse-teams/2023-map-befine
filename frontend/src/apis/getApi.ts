@@ -66,7 +66,7 @@ interface Headers {
 }
 
 export const getApi = async <T>(url: string) => {
-  await withTokenRefresh(async () => {
+  return await withTokenRefresh(async () => {
     const apiUrl = `${DEFAULT_PROD_URL + url}`;
     const userToken = localStorage.getItem('userToken');
     const headers: any = {
