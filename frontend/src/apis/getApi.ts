@@ -36,7 +36,10 @@ async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
     if (decodedPayloadObject.exp * 1000 < Date.now()) {
       console.log('AccessToken 만료되어 재요청합니다');
 
-      const headers: any = { Authorization: `Bearer ${userToken}` };
+      const headers: any = {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${userToken}`,
+      };
       console.log(`Authorization : Bearer ${userToken}`);
       //새로운 토큰 재발급
       userToken = await refreshToken(headers);
