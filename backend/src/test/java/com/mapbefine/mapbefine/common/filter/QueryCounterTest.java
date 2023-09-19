@@ -20,4 +20,5 @@ class QueryCounterTest {
         //then
         assertThat(queryCounter.getCount()).isOne();
     }
+
 }
