@@ -8,5 +8,10 @@ export interface PinProps {
   longitude: number;
   canUpdate: boolean;
   updatedAt: string;
-  images: string[];
+  images: ImageProps[];
+}
+
+export interface ImageProps {
+  id: number;
+  imageUrl: string;
 }

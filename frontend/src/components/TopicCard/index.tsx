@@ -72,7 +72,7 @@ const TopicCard = ({
           height="138px"
           width="138px"
           src={image}
-          alt="토픽 이미지"
+          alt="사진 이미지"
           $objectFit="cover"
           onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
             e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
