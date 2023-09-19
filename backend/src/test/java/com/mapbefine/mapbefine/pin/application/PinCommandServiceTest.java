@@ -134,10 +134,47 @@ class PinCommandServiceTest {
     }
 
     @Test
+    @DisplayName("핀을 추가하면 토픽에 핀의 변경 일시를 새로 반영한다. (모든 일시는 영속화 시점 기준이다.)")
+    void save_Success_UpdateLastPinAddedAt() {
+        // given when
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+        Pin pin = pinRepository.findById(pinId)
+                .orElseGet(Assertions::fail);
+
+        // then
+        topicRepository.findById(createRequest.topicId())
+                .ifPresentOrElse(
+                        topic -> assertThat(topic.getLastPinUpdatedAt()).isEqualTo(pin.getCreatedAt()),
+                        Assertions::fail
+                );
+    }
+
+    @Test
     @DisplayName("권한이 없는 토픽에 핀을 저장하면 예외를 발생시킨다.")
     void save_FailByForbidden() {
         assertThatThrownBy(() -> pinCommandService.save(new Guest(), List.of(BASE_IMAGE_FILE), createRequest))
                 .isInstanceOf(PinForbiddenException.class);
+    }
+
+
+    @Test
+    @DisplayName("핀을 변경하면 토픽에 핀의 변경 일시를 새로 반영한다. (모든 일시는 영속화 시점 기준이다.)")
+    void update_Success_UpdateLastPinsAddedAt() {
+        // given
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+
+        // when
+        pinCommandService.update(authMember, pinId, new PinUpdateRequest("name", "update"));
+        Pin pin = pinRepository.findById(pinId)
+                .orElseGet(Assertions::fail);
+        pinRepository.flush();
+
+        // then
+        topicRepository.findById(createRequest.topicId())
+                .ifPresentOrElse(
+                        topic -> assertThat(topic.getLastPinUpdatedAt()).isEqualTo(pin.getUpdatedAt()),
+                        Assertions::fail
+                );
     }
 
     @Test
@@ -145,10 +182,8 @@ class PinCommandServiceTest {
     void update_FailByForbidden() {
         long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
 
-        assertThatThrownBy(() -> pinCommandService.update(
-                new Guest(), pinId, new PinUpdateRequest("name", "description"))
-        ).isInstanceOf(PinForbiddenException.class);
-
+        assertThatThrownBy(() -> pinCommandService.update(new Guest(), pinId, new PinUpdateRequest("name", "update")))
+                .isInstanceOf(PinForbiddenException.class);
     }
 
     @Test

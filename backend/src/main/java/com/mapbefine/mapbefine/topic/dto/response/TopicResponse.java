@@ -28,7 +28,7 @@ public record TopicResponse(
                 isInAtlas,
                 topic.countBookmarks(),
                 isBookmarked,
-                topic.getUpdatedAt()
+                topic.getLastPinUpdatedAt()
         );
     }
 
@@ -44,7 +44,7 @@ public record TopicResponse(
                 Boolean.FALSE,
                 topic.countBookmarks(),
                 Boolean.FALSE,
-                topic.getUpdatedAt()
+                topic.getLastPinUpdatedAt()
         );
     }
 

@@ -367,6 +367,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("핀이 추가/수정된 일자 기준 내림차순으로 토픽 목록을 조회할 경우, 200을 반환한다")
     void findAllByOrderByUpdatedAtDesc_Success() {
+        topicRepository.deleteAll();
+
         // given
         Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", member));
         Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", member));
@@ -392,6 +394,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
+        // then
         List<TopicResponse> topicResponses = response.jsonPath().getList(".", TopicResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(topicResponses).hasSize(3);
