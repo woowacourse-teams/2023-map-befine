@@ -245,16 +245,12 @@ const NewPin = () => {
 
           <Space size={5} />
 
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              지도 선택
-            </Text>
-            <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
-          </Flex>
-          <Space size={0} />
+          <Text color="black" $fontSize="default" $fontWeight="normal">
+            지도 선택
+          </Text>
+
+          <Space size={2} />
+
           <Button
             type="button"
             variant="primary"
@@ -416,7 +412,6 @@ const ModalContentsWrapper = styled.div`
 
 const ImageInputLabel = styled.label`
   height: 40px;
-  margin-left: 10px;
   padding: 10px 10px;
 
   color: ${({ theme }) => theme.color.black};

@@ -35,7 +35,7 @@ const NewTopic = () => {
       description: '',
       image: '',
     });
-    const { compressImage } = useCompressImage();
+  const { compressImage } = useCompressImage();
 
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
   const [isAll, setIsAll] = useState(true); // 모두 : 지정 인원
@@ -147,7 +147,14 @@ const NewTopic = () => {
           지도 생성
         </Text>
 
+        <Space size={5} />
+
+        <Text color="black" $fontSize="default" $fontWeight="normal">
+          지도 선택
+        </Text>
+
         <Space size={2} />
+
         <Flex>
           {showImage && <ShowImage src={showImage} alt={`사진 이미지`} />}
           <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
@@ -245,7 +252,6 @@ const NewTopic = () => {
 
 const ImageInputLabel = styled.label`
   height: 40px;
-  margin-left: 10px;
   padding: 10px 10px;
   color: ${({ theme }) => theme.color.black};
   background-color: ${({ theme }) => theme.color.lightGray};
