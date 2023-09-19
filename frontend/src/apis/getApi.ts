@@ -13,9 +13,13 @@ async function refreshToken(headers: Headers): Promise<string> {
   const refreshResponse = await fetch(`${DEFAULT_PROD_URL}/refresh-token`, {
     method: 'POST',
     headers,
+    body: JSON.stringify({
+      accessToken: localStorage.getItem('userToken'),
+    }),
   });
 
   if (!refreshResponse.ok) {
+    console.log('refreshResponse.ok하지 못함');
     throw new Error('Failed to refresh access token.');
   }
   console.log('refreshResponse', refreshResponse);
@@ -78,7 +82,7 @@ export const getApi = async <T>(url: string) => {
     }
 
     const responseData: T = await response.json();
-
+    console.log('responseData L84까지 성공', responseData);
     return responseData;
   });
 };
