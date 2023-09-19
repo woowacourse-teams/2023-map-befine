@@ -11,17 +11,15 @@ const decodeToken = (token: string) => {
 
 async function refreshToken(headers: Headers): Promise<string> {
   console.log('L12 refreshTOken이 호출은 되었는지 확인', headers);
-  const parsedToken = JSON.parse(localStorage.getItem('userToken') as string);
-  console.log('getAPI Line 14', parsedToken);
-  const { userToken } = parsedToken;
-  console.log('userToken', userToken);
+  const accessToken = localStorage.getItem('userToken');
+  console.log('getAPI Line 14', accessToken);
   try {
     // 서버에 새로운 엑세스 토큰을 요청하기 위한 네트워크 요청을 보냅니다.
     const refreshResponse = await fetch(`${DEFAULT_PROD_URL}/refresh-token`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        accessToken: userToken,
+        accessToken: accessToken,
       }),
     });
 
@@ -32,7 +30,7 @@ async function refreshToken(headers: Headers): Promise<string> {
     }
 
     console.log('refreshResponse', refreshResponse);
-
+    console.log('refreshResponse.text()', refreshResponse.text());
     // 새로운 엑세스 토큰을 반환합니다.
     return await refreshResponse.text();
   } catch (error) {
@@ -59,6 +57,7 @@ async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
       console.log(`Authorization : Bearer ${userToken}`);
       //새로운 토큰 재발급
       userToken = await refreshToken(headers);
+      console.log('L59 userToken', userToken);
       localStorage.setItem('userToken', userToken);
       console.log('localStorage에 새로운 토큰 적용 성공!');
     }
