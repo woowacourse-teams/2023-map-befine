@@ -1,4 +1,56 @@
+const decodeToken = (token: string) => {
+  const tokenParts = token.split('.');
+  if (tokenParts.length !== 3) {
+    throw new Error('토큰이 잘못되었습니다.');
+  }
+
+  const decodedPayloadString = atob(tokenParts[1]);
+  console.log('decodedPayloadString', decodedPayloadString);
+  return JSON.parse(decodedPayloadString);
+};
+
+async function refreshToken(headers: Headers): Promise<string> {
+  const refreshResponse = await fetch(`${DEFAULT_PROD_URL}/refresh-token`, {
+    method: 'POST',
+    headers,
+  });
+
+  if (!refreshResponse.ok) {
+    throw new Error('Failed to refresh access token.');
+  }
+  console.log('refreshResponse', refreshResponse);
+  return await refreshResponse.text();
+}
+
+async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
+  let userToken = localStorage.getItem('userToken');
+  console.log('userToken', userToken);
+  if (userToken) {
+    const decodedPayloadObject = decodeToken(userToken);
+    console.log('decodedPayloadObject', decodedPayloadObject);
+    // decodeToken의 결과로 만료 여부 판단
+    if (decodedPayloadObject.exp * 1000 < Date.now()) {
+      console.log('AccessToken 만료되어 재요청합니다');
+
+      const headers: any = { Authorization: `Bearer ${userToken}` };
+      //새로운 토큰 재발급
+      userToken = await refreshToken(headers);
+      localStorage.setItem('userToken', userToken);
+      console.log('localStorage에 새로운 토큰 적용 성공!');
+    }
+  }
+
+  //인자로 넘겨준 실제 fetch함수 실행
+  console.log('callback 실행');
+  return callback();
+}
+
 import { DEFAULT_PROD_URL } from '../constants';
+
+const API_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : DEFAULT_PROD_URL;
 
 interface Headers {
   'content-type': string;
@@ -6,26 +58,27 @@ interface Headers {
 }
 
 export const getApi = async <T>(url: string) => {
-  const apiUrl = `${DEFAULT_PROD_URL + url}`;
-  const userToken = localStorage.getItem('userToken');
-  const headers: Headers = {
-    'content-type': 'application/json',
-  };
+  await withTokenRefresh(async () => {
+    const apiUrl = `${DEFAULT_PROD_URL + url}`;
+    const userToken = localStorage.getItem('userToken');
+    const headers: any = {};
 
-  if (userToken) {
-    headers['Authorization'] = `Bearer ${userToken}`;
-  }
+    if (userToken) {
+      headers['Authorization'] = `Bearer ${userToken}`;
+    }
 
-  const response = await fetch(apiUrl, {
-    method: 'GET',
-    headers,
+    console.log('response', DEFAULT_PROD_URL + url);
+
+    const response = await fetch(apiUrl, { method: 'GET', headers });
+
+    console.log(response);
+
+    if (response.status >= 400) {
+      throw new Error('[SERVER] GET 요청에 실패했습니다.');
+    }
+
+    const responseData: T = await response.json();
+
+    return responseData;
   });
-
-  if (response.status >= 400) {
-    throw new Error('[SERVER] GET 요청에 실패했습니다.');
-  }
-
-  const responseData: T = await response.json();
-
-  return responseData;
 };
