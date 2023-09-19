@@ -14,20 +14,31 @@ async function refreshToken(headers: Headers): Promise<string> {
   console.log('getAPI Line 14', parsedToken);
   const { userToken } = parsedToken;
   console.log('userToken', userToken);
-  const refreshResponse = await fetch(`${DEFAULT_PROD_URL}/refresh-token`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      accessToken: userToken,
-    }),
-  });
+  try {
+    // 서버에 새로운 엑세스 토큰을 요청하기 위한 네트워크 요청을 보냅니다.
+    const refreshResponse = await fetch(`${DEFAULT_PROD_URL}/refresh-token`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        accessToken: userToken,
+      }),
+    });
 
-  if (!refreshResponse.ok) {
-    console.log('refreshResponse.ok하지 못함');
-    throw new Error('Failed to refresh access token.');
+    // 서버 응답이 성공적인지 확인합니다.
+    if (!refreshResponse.ok) {
+      console.log('refreshResponse.ok하지 못함');
+      throw new Error('Failed to refresh access token.');
+    }
+
+    console.log('refreshResponse', refreshResponse);
+
+    // 새로운 엑세스 토큰을 반환합니다.
+    return await refreshResponse.text();
+  } catch (error) {
+    // 네트워크 요청 실패 또는 예외 발생 시 예외를 캐치하여 처리합니다.
+    console.error('네트워크 요청 실패 또는 예외 발생:', error);
+    throw error; // 예외를 다시 throw하여 상위 코드로 전파합니다.
   }
-  console.log('refreshResponse', refreshResponse);
-  return await refreshResponse.text();
 }
 
 async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
