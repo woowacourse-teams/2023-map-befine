@@ -37,6 +37,7 @@ async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
       console.log('AccessToken 만료되어 재요청합니다');
 
       const headers: any = { Authorization: `Bearer ${userToken}` };
+      console.log(`Authorization : Bearer ${userToken}`);
       //새로운 토큰 재발급
       userToken = await refreshToken(headers);
       localStorage.setItem('userToken', userToken);
@@ -65,7 +66,9 @@ export const getApi = async <T>(url: string) => {
   await withTokenRefresh(async () => {
     const apiUrl = `${DEFAULT_PROD_URL + url}`;
     const userToken = localStorage.getItem('userToken');
-    const headers: any = {};
+    const headers: any = {
+      'content-type': 'application/json',
+    };
 
     if (userToken) {
       headers['Authorization'] = `Bearer ${userToken}`;
