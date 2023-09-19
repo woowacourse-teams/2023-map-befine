@@ -4,17 +4,22 @@ import { ContentTypeType } from '../types/Api';
 
 interface fetchDeleteProps {
   url: string;
+  errorMessage: string;
   contentType?: ContentTypeType;
+  onSuccess?: () => void;
+  isThrow?: boolean;
 }
 
 const useDelete = () => {
   const { showToast } = useToast();
 
-  const fetchDelete = async (
-    { url, contentType }: fetchDeleteProps,
-    errorMessage: string,
-    onSuccess: () => void,
-  ) => {
+  const fetchDelete = async ({
+    url,
+    contentType,
+    errorMessage,
+    onSuccess,
+    isThrow,
+  }: fetchDeleteProps) => {
     try {
       await deleteApi(url, contentType);
 
@@ -23,6 +28,8 @@ const useDelete = () => {
       }
     } catch (e) {
       showToast('error', errorMessage);
+
+      if (isThrow) throw e;
     }
   };
 

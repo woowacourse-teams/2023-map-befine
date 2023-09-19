@@ -18,6 +18,7 @@ export interface TopicDetailProps {
   name: string;
   creator: string;
   description: string;
+  canUpdate: boolean;
   pinCount: number;
   bookmarkCount: number;
   updatedAt: string;
@@ -35,4 +36,20 @@ export interface ModalTopicCardProps {
   bookmarkCount: number;
   isBookmarked: boolean;
   updatedAt: string;
+}
+
+export interface TopicAuthorInfo {
+  publicity: 'PUBLIC' | 'PRIVATE';
+  permissionMembers: TopicAuthorMemberWithId[];
+}
+
+export interface TopicAuthorMemberWithId {
+  id: number;
+  memberResponse: TopicAuthorMember;
+}
+
+export interface TopicAuthorMember {
+  id: number;
+  nickName: string;
+  email: string;
 }

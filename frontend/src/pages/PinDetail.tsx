@@ -146,16 +146,20 @@ const PinDetail = ({
           {pin.creator}
         </Text>
         <Flex $flexDirection="column" $alignItems="flex-end">
-          <Box cursor="pointer">
-            <Text
-              color="primary"
-              $fontSize="default"
-              $fontWeight="normal"
-              onClick={onClickEditPin}
-            >
-              수정하기
-            </Text>
-          </Box>
+          {pin.canUpdate ? (
+            <Box cursor="pointer">
+              <Text
+                color="primary"
+                $fontSize="default"
+                $fontWeight="normal"
+                onClick={onClickEditPin}
+              >
+                수정하기
+              </Text>
+            </Box>
+          ) : (
+            <Space size={5} />
+          )}
           <Text color="black" $fontSize="small" $fontWeight="normal">
             {pin.updatedAt.split('T')[0].split('-').join('.')}
           </Text>

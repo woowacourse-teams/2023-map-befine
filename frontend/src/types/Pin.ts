@@ -6,6 +6,7 @@ export interface PinProps {
   description: string;
   latitude: number;
   longitude: number;
+  canUpdate: boolean;
   updatedAt: string;
   images: ImageProps[];
 }

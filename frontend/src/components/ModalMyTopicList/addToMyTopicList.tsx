@@ -46,17 +46,16 @@ const AddToMyTopicList = ({ pin }: any) => {
       legalDongCode: '',
     };
 
-    fetchPost(
-      {
-        url,
-        payload,
-      },
-      '내 지도에 핀 추가를 실패하였습니다. 잠시 후 다시 시도해주세요.',
-      () => {
+    fetchPost({
+      url,
+      payload,
+      errorMessage:
+        '내 지도에 핀 추가를 실패하였습니다. 잠시 후 다시 시도해주세요.',
+      onSuccess: () => {
         closeModal('addToMyTopicList');
         showToast('info', '내 지도에 핀이 추가되었습니다.');
       },
-    );
+    });
   };
 
   if (!myTopics) return <></>;

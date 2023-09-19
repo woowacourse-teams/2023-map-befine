@@ -6,16 +6,22 @@ interface fetchPostProps {
   url: string;
   payload: {};
   contentType?: ContentTypeType;
+  errorMessage: string;
+  onSuccess?: () => void;
+  isThrow?: boolean;
 }
 
 const usePost = () => {
   const { showToast } = useToast();
 
-  const fetchPost = async (
-    { url, payload, contentType }: fetchPostProps,
-    errorMessage: string,
-    onSuccess?: () => void,
-  ) => {
+  const fetchPost = async ({
+    url,
+    payload,
+    contentType,
+    errorMessage,
+    onSuccess,
+    isThrow,
+  }: fetchPostProps) => {
     try {
       const responseData = await postApi(url, payload, contentType);
 
@@ -26,6 +32,8 @@ const usePost = () => {
       return responseData;
     } catch (e) {
       showToast('error', errorMessage);
+
+      if (isThrow) throw e;
     }
   };
 

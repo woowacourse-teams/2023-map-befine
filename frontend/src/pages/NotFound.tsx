@@ -5,9 +5,12 @@ import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { FULLSCREEN } from '../constants';
 
 const NotFound = () => {
   const { routePage } = useNavigator();
+  useSetLayoutWidth(FULLSCREEN);
 
   return (
     <NotFoundContainer
