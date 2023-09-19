@@ -68,7 +68,7 @@ public class JwtTokenProvider implements TokenProvider {
         if (canReissueAccessToken) {
             return;
         }
-        throw new AuthUnauthorizedException(ILLEGAL_TOKEN);
+        throw new AuthUnauthorizedException(BAD_REQUEST_TOKEN);
     }
 
     public void validateTokensForRemoval(String refreshToken, String accessToken) {
