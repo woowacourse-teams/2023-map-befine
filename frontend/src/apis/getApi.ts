@@ -10,11 +10,15 @@ const decodeToken = (token: string) => {
 };
 
 async function refreshToken(headers: Headers): Promise<string> {
+  const parsedToken = JSON.parse(localStorage.getItem('userToken') as string);
+  console.log('getAPI Line 14', parsedToken);
+  const { userToken } = parsedToken;
+  console.log('userToken', userToken);
   const refreshResponse = await fetch(`${DEFAULT_PROD_URL}/refresh-token`, {
     method: 'POST',
     headers,
     body: JSON.stringify({
-      accessToken: localStorage.getItem('userToken'),
+      accessToken: userToken,
     }),
   });
 
