@@ -17,7 +17,7 @@ public class LatencyRecorder {
 
         threadLocal.remove();
 
-        return (double) (end - start) / 1000;
+        return (end - start) / 1000d;
     }
 
 }
