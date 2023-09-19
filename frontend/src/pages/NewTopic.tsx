@@ -17,6 +17,7 @@ import { TagContext } from '../context/TagContext';
 import usePost from '../apiHooks/usePost';
 import AuthorityRadioContainer from '../components/AuthorityRadioContainer';
 import styled from 'styled-components';
+import useCompressImage from '../hooks/useCompressImage';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
@@ -34,6 +35,7 @@ const NewTopic = () => {
       description: '',
       image: '',
     });
+    const { compressImage } = useCompressImage();
 
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
   const [isAll, setIsAll] = useState(true); // 모두 : 지정 인원
@@ -116,7 +118,7 @@ const NewTopic = () => {
     });
   };
 
-  const onTopicImageFileChange = (
+  const onTopicImageFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files && event.target.files[0];
@@ -128,7 +130,9 @@ const NewTopic = () => {
       return;
     }
 
-    setFormImage(file);
+    const compressedFile = await compressImage(file);
+
+    setFormImage(compressedFile);
     setShowImage(URL.createObjectURL(file));
   };
 

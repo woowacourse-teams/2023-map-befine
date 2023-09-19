@@ -17,6 +17,7 @@ import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 import { postApi } from '../apis/postApi';
 import PinImageContainer from '../components/PinImageContainer';
+import useCompressImage from '../hooks/useCompressImage';
 
 interface PinDetailProps {
   width: '372px' | '100vw';
@@ -47,6 +48,7 @@ const PinDetail = ({
     description: '',
   });
   const { openModal } = useContext(ModalContext);
+  const { compressImage } = useCompressImage();
 
   const openModalWithToken = () => {
     if (userToken) {
@@ -101,7 +103,9 @@ const PinDetail = ({
       return;
     }
 
-    formData.append('image', file);
+    const compressedFile = await compressImage(file);
+
+    formData.append('image', compressedFile);
 
     const data = JSON.stringify(pinId);
     const jsonBlob = new Blob([data], { type: 'application/json' });

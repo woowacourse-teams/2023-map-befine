@@ -24,6 +24,7 @@ import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import ModalMyTopicList from '../components/ModalMyTopicList';
 import { getMapApi } from '../apis/getMapApi';
+import useCompressImage from '../hooks/useCompressImage';
 
 type NewPinFormValueType = Pick<
   NewPinFormProps,
@@ -49,6 +50,7 @@ const NewPin = () => {
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { openModal, closeModal } = useContext(ModalContext);
+  const { compressImageList } = useCompressImage();
 
   const [formImages, setFormImages] = useState<File[]>([]);
 
@@ -177,7 +179,9 @@ const NewPin = () => {
     });
   };
 
-  const onPinImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onPinImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const imageLists = event.target.files;
     let imageUrlLists = [...showedImages];
 
@@ -189,8 +193,10 @@ const NewPin = () => {
       return;
     }
 
+    const compressedImageList = await compressImageList(imageLists);
+
     for (let i = 0; i < imageLists.length; i++) {
-      const currentImageUrl = URL.createObjectURL(imageLists[i]);
+      const currentImageUrl = URL.createObjectURL(compressedImageList[i]);
       imageUrlLists.push(currentImageUrl);
     }
 
@@ -203,7 +209,7 @@ const NewPin = () => {
       return;
     }
 
-    setFormImages([...formImages, ...imageLists]);
+    setFormImages([...formImages, ...compressedImageList]);
     setShowedImages(imageUrlLists);
   };
 
