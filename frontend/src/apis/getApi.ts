@@ -29,10 +29,9 @@ async function refreshToken(headers: Headers): Promise<string> {
       throw new Error('Failed to refresh access token.');
     }
 
-    console.log('refreshResponse', refreshResponse);
-    console.log('refreshResponse.text()', refreshResponse.text());
     // 새로운 엑세스 토큰을 반환합니다.
-    return await refreshResponse.text();
+    const responseBody = await refreshResponse.json();
+    return responseBody.accessToken;
   } catch (error) {
     // 네트워크 요청 실패 또는 예외 발생 시 예외를 캐치하여 처리합니다.
     console.error('네트워크 요청 실패 또는 예외 발생:', error);
@@ -57,6 +56,7 @@ async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
       console.log(`Authorization : Bearer ${userToken}`);
       //새로운 토큰 재발급
       userToken = await refreshToken(headers);
+
       console.log('L59 userToken', userToken);
       localStorage.setItem('userToken', userToken);
       console.log('localStorage에 새로운 토큰 적용 성공!');
