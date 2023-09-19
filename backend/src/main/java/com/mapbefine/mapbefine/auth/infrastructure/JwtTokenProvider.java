@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.auth.infrastructure;
 
+import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.BAD_REQUEST_TOKEN;
 import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.EXPIRED_TOKEN;
 import static com.mapbefine.mapbefine.auth.exception.AuthErrorCode.ILLEGAL_TOKEN;
 
@@ -75,7 +76,7 @@ public class JwtTokenProvider implements TokenProvider {
         if (canRemoveRefreshToken) {
             return;
         }
-        throw new AuthUnauthorizedException(EXPIRED_TOKEN);
+        throw new AuthUnauthorizedException(BAD_REQUEST_TOKEN);
     }
 
     public void validateAccessToken(String accessToken) {
