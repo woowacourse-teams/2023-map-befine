@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.common.config;
 
-import static org.springframework.http.HttpHeaders.COOKIE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
@@ -17,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000", "https://mapbefine.kro.kr", "https://mapbefine.com")
-                .allowedHeaders(COOKIE)
+                .allowedHeaders("*")
                 .allowedMethods("*")
                 .allowCredentials(true)
                 .exposedHeaders(LOCATION, SET_COOKIE);
