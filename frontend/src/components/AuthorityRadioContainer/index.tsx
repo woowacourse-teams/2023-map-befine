@@ -19,7 +19,7 @@ interface AuthorityRadioContainer {
   isPublic: boolean;
   authorizedMemberIds: number[];
   setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsAll: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPublic: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthorizedMemberIds: React.Dispatch<React.SetStateAction<number[]>>;
   permissionedMembers?: TopicAuthorMemberWithAuthorId[];
 }
@@ -29,7 +29,7 @@ const AuthorityRadioContainer = ({
   isPublic,
   authorizedMemberIds,
   setIsPrivate,
-  setIsAll,
+  setIsPublic,
   setAuthorizedMemberIds,
   permissionedMembers,
 }: AuthorityRadioContainer) => {
@@ -51,13 +51,13 @@ const AuthorityRadioContainer = ({
   }, []);
 
   const onChangeInitAuthMembers = () => {
-    setIsAll(false);
+    setIsPublic(false);
     openModal('newTopic');
     setAuthorizedMemberIds([]);
   };
 
-  const onChangeInitAuthMembersWithSetIsAll = () => {
-    setIsAll(true);
+  const onChangeInitAuthMembersWithSetIsPublic = () => {
+    setIsPublic(true);
     setAuthorizedMemberIds([]);
   };
 
@@ -114,7 +114,7 @@ const AuthorityRadioContainer = ({
             type="radio"
             id="permission-all"
             checked={isPublic}
-            onChange={onChangeInitAuthMembersWithSetIsAll}
+            onChange={onChangeInitAuthMembersWithSetIsPublic}
             tabIndex={5}
           />
           <Space size={1} />
@@ -242,7 +242,7 @@ const AuthorityRadioContainer = ({
               variant="secondary"
               onClick={() => {
                 closeModal('newTopic');
-                setIsAll(true);
+                setIsPublic(true);
                 setAuthorizedMemberIds([]);
               }}
             >
