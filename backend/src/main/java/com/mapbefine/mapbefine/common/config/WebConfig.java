@@ -19,6 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000", "https://mapbefine.kro.kr", "https://mapbefine.com")
                 .allowedHeaders(COOKIE)
                 .allowedMethods("*")
+                .allowCredentials(true)
                 .exposedHeaders(LOCATION, SET_COOKIE);
     }
 
