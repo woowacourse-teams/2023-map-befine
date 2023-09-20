@@ -8,7 +8,7 @@ import { ProfileProps } from '../../types/Profile';
 import UpdateMyInfo from './UpdateMyInfo';
 import Button from '../common/Button';
 import useToast from '../../hooks/useToast';
-import { postApi } from '../../apis/postApi';
+import { DEFAULT_PROD_URL } from '../../constants';
 
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 const accessToken = localStorage.getItem('userToken');
@@ -25,13 +25,16 @@ const MyInfo = () => {
 
   const onClickLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
-      await postApi(
-        `/logout`,
-        {
-          accessToken: accessToken,
+      fetch(`${DEFAULT_PROD_URL}/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
-        'x-www-form-urlencoded',
-      );
+        body: JSON.stringify({
+          accessToken: accessToken,
+        }),
+      });
 
       localStorage.removeItem('user');
       localStorage.removeItem('userToken');
