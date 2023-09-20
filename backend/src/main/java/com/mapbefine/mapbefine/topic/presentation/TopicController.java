@@ -45,7 +45,7 @@ public class TopicController {
     @LoginRequired
     @PostMapping(
             value = "/new",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}
     )
     public ResponseEntity<Void> create(
             AuthMember member,
@@ -62,7 +62,7 @@ public class TopicController {
     @LoginRequired
     @PostMapping(
             value = "/merge",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}
     )
     public ResponseEntity<Void> mergeAndCreate(
             AuthMember member,

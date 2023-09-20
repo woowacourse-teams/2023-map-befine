@@ -39,7 +39,7 @@ public class PinController {
     }
 
     @LoginRequired
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> add(
             AuthMember member,
             @RequestPart(required = false) List<MultipartFile> images,
@@ -101,7 +101,7 @@ public class PinController {
     @LoginRequired
     @PostMapping(
             value = "/images",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}
     )
     public ResponseEntity<Void> addImage(
             AuthMember member,
