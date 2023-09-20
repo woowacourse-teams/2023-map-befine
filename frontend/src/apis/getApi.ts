@@ -55,11 +55,20 @@ const isTokenExpired = (token: string) => {
 
 async function updateToken(headers: Headers) {
   const response = await refreshToken(headers);
-  const newToken = await response.json();
 
-  console.log('newToken:', newToken);
+  console.log('newToken 전 response:', response);
 
-  localStorage.setItem('userToken', newToken.accessToken);
+  try {
+    const newToken = await response.json();
+
+    console.log('newToken:', newToken);
+
+    localStorage.setItem('userToken', newToken.accessToken);
+  } catch (e) {
+    console.error(e);
+
+    return;
+  }
 }
 
 async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
