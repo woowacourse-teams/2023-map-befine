@@ -1,5 +1,3 @@
-const abortController = new AbortController();
-
 const decodeToken = (token: string) => {
   const tokenParts = token.split('.');
   if (tokenParts.length !== 3) {
@@ -11,7 +9,10 @@ const decodeToken = (token: string) => {
   return JSON.parse(decodedPayloadString);
 };
 
-async function refreshToken(headers: Headers): Promise<string> {
+async function refreshToken(
+  headers: Headers,
+  abortController: AbortController,
+): Promise<string> {
   const accessToken = localStorage.getItem('userToken');
   try {
     // 서버에 새로운 엑세스 토큰을 요청하기 위한 네트워크 요청을 보냅니다.
@@ -45,14 +46,15 @@ const isTokenExpired = (token: string) => {
   return decodedPayloadObject.exp * 1000 < Date.now();
 };
 
-async function updateToken(headers: Headers) {
-  const newToken = await refreshToken(headers);
+async function updateToken(headers: Headers, abortController: AbortController) {
+  const newToken = await refreshToken(headers, abortController);
   localStorage.setItem('userToken', newToken);
   abortController.abort();
 }
 
 async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
   const userToken = localStorage.getItem('userToken');
+  const abortController = new AbortController();
 
   if (userToken && isTokenExpired(userToken)) {
     console.log('AccessToken 만료되어 재요청합니다');
@@ -62,7 +64,7 @@ async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
       Authorization: `Bearer ${userToken}`,
     };
 
-    await updateToken(headers);
+    await updateToken(headers, abortController);
   }
 
   return callback();
