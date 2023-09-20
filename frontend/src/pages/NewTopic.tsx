@@ -17,6 +17,7 @@ import { TagContext } from '../context/TagContext';
 import usePost from '../apiHooks/usePost';
 import AuthorityRadioContainer from '../components/AuthorityRadioContainer';
 import styled from 'styled-components';
+import useCompressImage from '../hooks/useCompressImage';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
@@ -34,6 +35,7 @@ const NewTopic = () => {
       description: '',
       image: '',
     });
+  const { compressImage } = useCompressImage();
 
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
   const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
@@ -116,7 +118,7 @@ const NewTopic = () => {
     });
   };
 
-  const onTopicImageFileChange = (
+  const onTopicImageFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files && event.target.files[0];
@@ -128,7 +130,9 @@ const NewTopic = () => {
       return;
     }
 
-    setFormImage(file);
+    const compressedFile = await compressImage(file);
+
+    setFormImage(compressedFile);
     setShowImage(URL.createObjectURL(file));
   };
 
@@ -143,9 +147,17 @@ const NewTopic = () => {
           지도 생성
         </Text>
 
+        <Space size={5} />
+
+        <Text color="black" $fontSize="default" $fontWeight="normal">
+          지도 선택
+        </Text>
+
         <Space size={2} />
+
         <Flex>
           {showImage && <ShowImage src={showImage} alt={`사진 이미지`} />}
+          <Space size={2} />
           <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
           <ImageInputButton
             id="file"
@@ -225,7 +237,6 @@ const NewTopic = () => {
 
 const ImageInputLabel = styled.label`
   height: 40px;
-  margin-left: 10px;
   padding: 10px 10px;
   color: ${({ theme }) => theme.color.black};
   background-color: ${({ theme }) => theme.color.lightGray};
