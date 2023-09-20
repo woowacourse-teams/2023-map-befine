@@ -13,6 +13,7 @@ const decodeToken = (token: string) => {
 
 async function refreshToken(headers: Headers): Promise<Response> {
   if (refreshResponse !== null) {
+    console.log('if 블록 내부에서 refreshResponse : ', refreshResponse);
     return refreshResponse;
   }
 
