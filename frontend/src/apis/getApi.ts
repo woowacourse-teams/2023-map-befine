@@ -16,6 +16,8 @@ async function refreshToken(headers: Headers): Promise<Response> {
     return refreshResponse;
   }
 
+  console.log('refreshResponse:', refreshResponse);
+
   const accessToken = localStorage.getItem('userToken');
   try {
     // 서버에 새로운 엑세스 토큰을 요청하기 위한 네트워크 요청을 보냅니다.
@@ -27,11 +29,17 @@ async function refreshToken(headers: Headers): Promise<Response> {
       }),
     });
 
-    const promiseResponse = refreshResponse;
+    const responseData = await refreshResponse;
     refreshResponse = null;
 
+    // 서버 응답이 성공적인지 확인합니다.
+    if (!responseData.ok) {
+      console.log('refreshResponse.ok하지 못함');
+      throw new Error('Failed to refresh access token.');
+    }
+
     // 새로운 엑세스 토큰을 반환합니다.
-    return promiseResponse;
+    return responseData;
   } catch (error) {
     // 네트워크 요청 실패 또는 예외 발생 시 예외를 캐치하여 처리합니다.
     console.error('네트워크 요청 실패 또는 예외 발생:', error);
@@ -46,18 +54,9 @@ const isTokenExpired = (token: string) => {
 
 async function updateToken(headers: Headers) {
   const response = await refreshToken(headers);
-
-  console.log('50, response : ', response);
-
-  // 서버 응답이 성공적인지 확인합니다.
-  if (!response.ok) {
-    console.log('refreshResponse.ok하지 못함');
-    throw new Error('Failed to refresh access token.');
-  }
-
   const newToken = await response.json();
 
-  console.log(newToken);
+  console.log('newToken:', newToken);
 
   localStorage.setItem('userToken', newToken.accessToken);
 }
