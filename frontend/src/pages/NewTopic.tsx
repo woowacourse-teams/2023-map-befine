@@ -4,18 +4,19 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
 import useNavigator from '../hooks/useNavigator';
-import { NewTopicFormProps } from '../types/tmap';
+import { NewTopicFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { useLocation } from 'react-router-dom';
 import useToast from '../hooks/useToast';
 import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { DEFAULT_TOPIC_IMAGE, LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { TagContext } from '../context/TagContext';
 import usePost from '../apiHooks/usePost';
 import AuthorityRadioContainer from '../components/AuthorityRadioContainer';
+import styled from 'styled-components';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
@@ -37,6 +38,9 @@ const NewTopic = () => {
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
   const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
+
+  const [showImage, setShowImage] = useState<string>('');
+  const [formImage, setFormImage] = useState<File | null>(null);
 
   const goToBack = () => {
     routePage(-1);
@@ -69,16 +73,28 @@ const NewTopic = () => {
   };
 
   const postToServer = async () => {
+    const formData = new FormData();
+
+    if (formImage) {
+      formData.append('image', formImage);
+    }
+
+    const objectData = {
+      name: formValues.name,
+      description: formValues.description,
+      pins: pulledPinIds ? pulledPinIds.split(',') : [],
+      publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
+      permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+    };
+
+    const data = JSON.stringify(objectData);
+    const jsonBlob = new Blob([data], { type: 'application/json' });
+
+    formData.append('request', jsonBlob);
+
     return fetchPost({
       url: '/topics/new',
-      payload: {
-        image: formValues.image || DEFAULT_TOPIC_IMAGE,
-        name: formValues.name,
-        description: formValues.description,
-        pins: pulledPinIds ? pulledPinIds.split(',') : [],
-        publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-        permissionType: isPublic && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
-      },
+      payload: formData,
       errorMessage:
         '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
       onSuccess: () => {
@@ -100,6 +116,22 @@ const NewTopic = () => {
     });
   };
 
+  const onTopicImageFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
+      showToast(
+        'error',
+        '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
+      return;
+    }
+
+    setFormImage(file);
+    setShowImage(URL.createObjectURL(file));
+  };
+
   return (
     <form onSubmit={onSubmit}>
       <Space size={4} />
@@ -111,23 +143,19 @@ const NewTopic = () => {
           지도 생성
         </Text>
 
+        <Space size={2} />
+        <Flex>
+          {showImage && <ShowImage src={showImage} alt={`사진 이미지`} />}
+          <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+          <ImageInputButton
+            id="file"
+            type="file"
+            name="image"
+            onChange={onTopicImageFileChange}
+          />
+        </Flex>
+
         <Space size={5} />
-
-        <InputContainer
-          tagType="input"
-          containerTitle="지도 이미지"
-          isRequired={false}
-          name="image"
-          value={formValues.image}
-          placeholder="이미지 URL을 입력해주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={1}
-          autoFocus
-          errorMessage={errorMessages.image}
-          maxLength={2048}
-        />
-
-        <Space size={1} />
 
         <InputContainer
           tagType="input"
@@ -194,5 +222,24 @@ const NewTopic = () => {
     </form>
   );
 };
+
+const ImageInputLabel = styled.label`
+  height: 40px;
+  margin-left: 10px;
+  padding: 10px 10px;
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  cursor: pointer;
+`;
+
+const ShowImage = styled.img`
+  width: 80px;
+  height: 80px;
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
+`;
 
 export default NewTopic;

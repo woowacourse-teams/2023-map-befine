@@ -95,7 +95,7 @@ const TopicInfo = ({
         height="168px"
         width="100%"
         src={topicImage}
-        alt="토픽 이미지"
+        alt="사진 이미지"
         $objectFit="cover"
         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
           e.currentTarget.src = DEFAULT_TOPIC_IMAGE;

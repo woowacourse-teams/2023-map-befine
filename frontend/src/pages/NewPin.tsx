@@ -8,7 +8,7 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../apis/getApi';
 import { TopicCardProps } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
-import { NewPinFormProps } from '../types/tmap';
+import { NewPinFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
 import { MarkerContext } from '../context/MarkerContext';
 import { CoordinatesContext } from '../context/CoordinatesContext';
@@ -35,6 +35,7 @@ const NewPin = () => {
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
   const [topic, setTopic] = useState<any>(null);
   const [selectedTopic, setSelectedTopic] = useState<any>(null);
+  const [showedImages, setShowedImages] = useState<string[]>([]);
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
@@ -49,6 +50,8 @@ const NewPin = () => {
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { openModal, closeModal } = useContext(ModalContext);
 
+  const [formImages, setFormImages] = useState<File[]>([]);
+
   const goToBack = () => {
     routePage(-1);
   };
@@ -56,6 +59,8 @@ const NewPin = () => {
   const postToServer = async () => {
     let postTopicId = topic?.id;
     let postName = formValues.name;
+
+    const formData = new FormData();
 
     if (!topic) {
       //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
@@ -66,7 +71,11 @@ const NewPin = () => {
       postTopicId = selectedTopic.topicId;
     }
 
-    await postApi('/pins', {
+    formImages.forEach((file) => {
+      formData.append('images', file);
+    });
+
+    const objectData = {
       topicId: postTopicId,
       name: postName,
       address: clickedCoordinate.address,
@@ -74,8 +83,14 @@ const NewPin = () => {
       latitude: clickedCoordinate.latitude,
       longitude: clickedCoordinate.longitude,
       legalDongCode: '',
-      images: [],
-    });
+    };
+
+    const data = JSON.stringify(objectData);
+    const jsonBlob = new Blob([data], { type: 'application/json' });
+
+    formData.append('request', jsonBlob);
+
+    await postApi('/pins', formData);
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -102,8 +117,8 @@ const NewPin = () => {
       }
 
       setClickedCoordinate({
-        latitude: '',
-        longitude: '',
+        latitude: 0,
+        longitude: 0,
         address: '',
       });
 
@@ -162,6 +177,36 @@ const NewPin = () => {
     });
   };
 
+  const onPinImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const imageLists = event.target.files;
+    let imageUrlLists = [...showedImages];
+
+    if (!imageLists) {
+      showToast(
+        'error',
+        '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
+      return;
+    }
+
+    for (let i = 0; i < imageLists.length; i++) {
+      const currentImageUrl = URL.createObjectURL(imageLists[i]);
+      imageUrlLists.push(currentImageUrl);
+    }
+
+    if (imageUrlLists.length > 8) {
+      showToast(
+        'info',
+        '이미지 개수는 최대 8개까지만 선택 가능합니다. 다시 선택해 주세요.',
+      );
+      imageUrlLists = imageUrlLists.slice(0, 8);
+      return;
+    }
+
+    setFormImages([...formImages, ...imageLists]);
+    setShowedImages(imageUrlLists);
+  };
+
   useEffect(() => {
     const getTopicId = async () => {
       if (topicId && topicId.split(',').length === 1) {
@@ -218,6 +263,32 @@ const NewPin = () => {
               ? selectedTopic?.topicName
               : '지도를 선택해주세요.'}
           </Button>
+
+          <Space size={5} />
+
+          <Text color="black" $fontSize="default" $fontWeight="normal">
+            사진 선택
+          </Text>
+          <Space size={0} />
+          <Flex>
+            <ImageInputLabel htmlFor="file">파일찾기</ImageInputLabel>
+            <ImageInputButton
+              id="file"
+              type="file"
+              name="images"
+              onChange={onPinImageChange}
+              multiple
+            />
+          </Flex>
+          <Space size={0} />
+          <Flex $flexDirection="row" $flexWrap="wrap">
+            {showedImages.map((image, id) => (
+              <div key={id}>
+                <ShowImage src={image} alt={`${image}-${id}`} />
+                <Space size={0} />
+              </div>
+            ))}
+          </Flex>
 
           <Space size={5} />
 
@@ -335,6 +406,27 @@ const ModalContentsWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   overflow: scroll;
+`;
+
+const ImageInputLabel = styled.label`
+  height: 40px;
+  margin-left: 10px;
+  padding: 10px 10px;
+
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  cursor: pointer;
+`;
+
+const ShowImage = styled.img`
+  width: 80px;
+  height: 80px;
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
 `;
 
 export default NewPin;

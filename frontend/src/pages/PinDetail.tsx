@@ -8,13 +8,15 @@ import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
 import UpdatedPinDetail from './UpdatedPinDetail';
 import useFormValues from '../hooks/useFormValues';
-import { ModifyPinFormProps } from '../types/tmap';
+import { ModifyPinFormProps } from '../types/FormValues';
 import useToast from '../hooks/useToast';
 import Button from '../components/common/Button';
 import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
+import { postApi } from '../apis/postApi';
+import PinImageContainer from '../components/PinImageContainer';
 
 interface PinDetailProps {
   width: '372px' | '100vw';
@@ -42,7 +44,6 @@ const PinDetail = ({
     onChangeInput,
   } = useFormValues<ModifyPinFormProps>({
     name: '',
-    images: [],
     description: '',
   });
   const { openModal } = useContext(ModalContext);
@@ -61,7 +62,6 @@ const PinDetail = ({
     setPin(pinData);
     setFormValues({
       name: pinData.name,
-      images: pinData.images,
       description: pinData.description,
     });
   };
@@ -74,7 +74,6 @@ const PinDetail = ({
     setIsEditPinDetail(true);
     setErrorMessages({
       name: '',
-      images: '',
       description: '',
     });
   };
@@ -86,6 +85,32 @@ const PinDetail = ({
     } catch (err) {
       showToast('error', '핀 링크를 복사하는데 실패했습니다.');
     }
+  };
+
+  const onPinImageFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files && event.target.files[0];
+    const formData = new FormData();
+
+    if (!file) {
+      showToast(
+        'error',
+        '이미지를 선택하지 않았거나 추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
+      return;
+    }
+
+    formData.append('image', file);
+
+    const data = JSON.stringify(pinId);
+    const jsonBlob = new Blob([data], { type: 'application/json' });
+
+    formData.append('pinId', jsonBlob);
+
+    await postApi('/pins/images', formData);
+
+    getPinData();
   };
 
   if (!pin) return <></>;
@@ -143,25 +168,15 @@ const PinDetail = ({
 
       <Space size={2} />
 
-      <PinDetailImgContainer
-        width="100%"
-        height="180px"
-        $backgroundColor="whiteGray"
-        $alignItems="center"
-        $justifyContent="center"
-        $flexDirection="column"
-        padding={7}
-        $borderRadius="small"
-      >
-        <Text
-          color="darkGray"
-          $fontSize="default"
-          $fontWeight="normal"
-          $textAlign="center"
-        >
-          + 사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
-        </Text>
-      </PinDetailImgContainer>
+      <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+      <ImageInputButton
+        id="file"
+        type="file"
+        name="image"
+        onChange={onPinImageFileChange}
+      />
+
+      <PinImageContainer images={pin.images} />
 
       <Space size={6} />
 
@@ -257,10 +272,6 @@ const Wrapper = styled.section<{
   }
 `;
 
-const PinDetailImgContainer = styled(Flex)`
-  box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
-`;
-
 const SaveToMyMapButton = styled(Button)`
   font-size: ${({ theme }) => theme.fontSize.default};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
@@ -292,6 +303,25 @@ const ButtonsWrapper = styled.div`
   width: 332px;
   height: 48px;
   margin: 0 auto;
+`;
+
+const ImageInputLabel = styled.label`
+  width: 80px;
+  height: 40px;
+  margin-bottom: 10px;
+  padding: 10px 10px;
+
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  text-align: center;
+
+  cursor: pointer;
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
 `;
 
 export default PinDetail;
