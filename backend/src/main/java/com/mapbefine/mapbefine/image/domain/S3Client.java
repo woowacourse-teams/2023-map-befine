@@ -40,13 +40,13 @@ public class S3Client {
     }
 
     private void removeTempFileIfExists(File tempFile) {
-        if (!Objects.isNull(tempFile) && tempFile.exists()) {
+        if (Objects.nonNull(tempFile) && tempFile.exists()) {
             tempFile.delete();
         }
     }
 
     public void delete(String key) {
-        // 현재는 일단 기능만 만들어놓고, API 는 만들어놓지 않았습니다 회의를 통해서 결정해야 할 사항이 있는 것 같아서요!
+        // TODO 현재는 일단 기능만 만들어놓고, API 는 만들어놓지 않았습니다 회의를 통해서 결정해야 할 사항이 있는 것 같아서요!
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, key));
     }
 
