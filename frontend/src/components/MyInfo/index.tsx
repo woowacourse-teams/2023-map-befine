@@ -7,16 +7,40 @@ import { useState } from 'react';
 import { ProfileProps } from '../../types/Profile';
 import UpdateMyInfo from './UpdateMyInfo';
 import Button from '../common/Button';
+import useToast from '../../hooks/useToast';
+import { postApi } from '../../apis/postApi';
 
 const user = JSON.parse(localStorage.getItem('user') || '{}');
+const accessToken = localStorage.getItem('userToken');
 
 const MyInfo = () => {
+  const { showToast } = useToast();
+
   const [isThereImg, setIsThereImg] = useState<boolean>(true);
   const [isModifyMyInfo, setIsModifyMyInfo] = useState<boolean>(false);
   const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<ProfileProps>({
     name: user.nickName,
     email: user.email,
   });
+
+  const clickLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      await postApi(
+        `/logout`,
+        {
+          accessToken: accessToken,
+        },
+        'x-www-form-urlencoded',
+      );
+
+      localStorage.removeItem('user');
+      localStorage.removeItem('userToken');
+      window.location.href = '/';
+      showToast('info', '로그아웃 되었습니다.');
+    } catch {
+      showToast('error', '로그아웃에 실패했습니다');
+    }
+  };
 
   if (isModifyMyInfo) {
     return (
@@ -44,7 +68,9 @@ const MyInfo = () => {
           <Text color="black" $fontSize="medium" $fontWeight="bold">
             {user.nickName}
           </Text>
-          <Button variant="primary">로그아웃</Button>
+          <Button variant="primary" onClick={clickLogout}>
+            로그아웃
+          </Button>
         </Flex>
         <Text color="black" $fontSize="small" $fontWeight="normal">
           {user.email}
