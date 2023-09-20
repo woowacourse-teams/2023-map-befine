@@ -23,7 +23,7 @@ const MyInfo = () => {
     email: user.email,
   });
 
-  const clickLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
       await postApi(
         `/logout`,
@@ -68,7 +68,7 @@ const MyInfo = () => {
           <Text color="black" $fontSize="medium" $fontWeight="bold">
             {user.nickName}
           </Text>
-          <Button variant="primary" onClick={clickLogout}>
+          <Button variant="primary" onClick={onClickLogout}>
             로그아웃
           </Button>
         </Flex>
