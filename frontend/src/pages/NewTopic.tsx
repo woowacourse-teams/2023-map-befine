@@ -36,7 +36,7 @@ const NewTopic = () => {
     });
 
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
-  const [isAll, setIsAll] = useState(true); // 모두 : 지정 인원
+  const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
 
   const [showImage, setShowImage] = useState<string>('');
@@ -104,7 +104,7 @@ const NewTopic = () => {
   };
 
   const addAuthorityToTopicWithGroupPermission = async (topicId: number) => {
-    if (isAll) return;
+    if (isPublic) return;
 
     fetchPost({
       url: '/permissions',
@@ -189,10 +189,10 @@ const NewTopic = () => {
 
         <AuthorityRadioContainer
           isPrivate={isPrivate}
-          isAll={isAll}
+          isPublic={isPublic}
           authorizedMemberIds={authorizedMemberIds}
           setIsPrivate={setIsPrivate}
-          setIsAll={setIsAll}
+          setIsAll={setIsPublic}
           setAuthorizedMemberIds={setAuthorizedMemberIds}
         />
 

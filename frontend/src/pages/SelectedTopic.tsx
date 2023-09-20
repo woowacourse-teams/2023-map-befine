@@ -126,7 +126,7 @@ const SelectedTopic = () => {
         {topicDetails.map((topicDetail, idx) => (
           <Fragment key={topicDetail.id}>
             <PinsOfTopic
-              topicId={topicId}
+              topicId={topicId.split(',')[idx]}
               idx={idx}
               topicDetail={topicDetail}
               setSelectedPinId={setSelectedPinId}

@@ -47,7 +47,7 @@ const UpdatedTopicInfo = ({
   const [topicAuthorInfo, setTopicAuthorInfo] =
     useState<TopicAuthorInfo | null>(null);
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
-  const [isAll, setIsAll] = useState(true); // 모두 : 지정 인원
+  const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
 
   const updateTopicInfo = async () => {
@@ -59,9 +59,9 @@ const UpdatedTopicInfo = ({
           image,
           description: formValues.description,
           publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-          permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+          permissionType: isPublic && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
         },
-        errorMessage: `'공개 ➡️ 비공개', '모두 ➡️ 친구들', '친구들 ➡️ 혼자' 로 변경할 수 없습니다.`,
+        errorMessage: `권한은 '공개 ➡️ 비공개', '모두 ➡️ 친구', '친구 ➡️ 혼자' 로 변경할 수 없습니다.`,
         isThrow: true,
       });
 
@@ -75,7 +75,7 @@ const UpdatedTopicInfo = ({
   const updateTopicAuthority = async () => {
     // topicAuthorInfo api 구조 이상으로 권한 설정 자체에 대한 id를 사용 (topicId 아님)
     await fetchDelete({
-      url: `/permissions/${topicAuthorInfo?.permissionMembers[0].id}`,
+      url: `/permissions/${topicAuthorInfo?.permissionedMembers[0].id}`,
       errorMessage: '권한 삭제에 실패했습니다.',
       isThrow: true,
     });
@@ -103,9 +103,7 @@ const UpdatedTopicInfo = ({
         setTopicAuthorInfo(response);
         setIsPrivate(response.publicity === 'PRIVATE');
 
-        if (topicAuthorInfo) {
-          setIsAll(topicAuthorInfo?.permissionMembers.length === 0);
-        }
+        setIsPublic(response.permissionedMembers.length === 0);
       },
     );
   }, []);
@@ -142,12 +140,12 @@ const UpdatedTopicInfo = ({
 
       <AuthorityRadioContainer
         isPrivate={isPrivate}
-        isAll={isAll}
+        isPublic={isPublic}
         authorizedMemberIds={authorizedMemberIds}
         setIsPrivate={setIsPrivate}
-        setIsAll={setIsAll}
+        setIsAll={setIsPublic}
         setAuthorizedMemberIds={setAuthorizedMemberIds}
-        permissionedMembers={topicAuthorInfo?.permissionMembers}
+        permissionedMembers={topicAuthorInfo?.permissionedMembers}
       />
 
       <Space size={6} />

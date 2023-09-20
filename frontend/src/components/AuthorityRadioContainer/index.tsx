@@ -3,7 +3,10 @@ import Text from '../common/Text';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import { useContext, useEffect, useState } from 'react';
-import { TopicAuthorMember, TopicAuthorMemberWithId } from '../../types/Topic';
+import {
+  TopicAuthorMember,
+  TopicAuthorMemberWithAuthorId,
+} from '../../types/Topic';
 import { ModalContext } from '../../context/ModalContext';
 import Box from '../common/Box';
 import Modal from '../Modal';
@@ -13,17 +16,17 @@ import useGet from '../../apiHooks/useGet';
 
 interface AuthorityRadioContainer {
   isPrivate: boolean;
-  isAll: boolean;
+  isPublic: boolean;
   authorizedMemberIds: number[];
   setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAll: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthorizedMemberIds: React.Dispatch<React.SetStateAction<number[]>>;
-  permissionedMembers?: TopicAuthorMemberWithId[];
+  permissionedMembers?: TopicAuthorMemberWithAuthorId[];
 }
 
 const AuthorityRadioContainer = ({
   isPrivate,
-  isAll,
+  isPublic,
   authorizedMemberIds,
   setIsPrivate,
   setIsAll,
@@ -34,6 +37,8 @@ const AuthorityRadioContainer = ({
   const { fetchGet } = useGet();
 
   const [members, setMembers] = useState<TopicAuthorMember[]>([]);
+  const viewPrevAuthorMembersCondition =
+    authorizedMemberIds.length === 0 && !isPublic;
 
   useEffect(() => {
     fetchGet<TopicAuthorMember[]>(
@@ -108,7 +113,7 @@ const AuthorityRadioContainer = ({
           <input
             type="radio"
             id="permission-all"
-            checked={isAll}
+            checked={isPublic}
             onChange={onChangeInitAuthMembersWithSetIsAll}
             tabIndex={5}
           />
@@ -125,10 +130,10 @@ const AuthorityRadioContainer = ({
         <input
           type="radio"
           id="permission-group"
-          checked={!isAll}
+          checked={!isPublic}
           onChange={onChangeInitAuthMembers}
           onClick={() => {
-            isAll === false && openModal('newTopic');
+            isPublic === false && openModal('newTopic');
           }}
           tabIndex={5}
         />
@@ -162,25 +167,31 @@ const AuthorityRadioContainer = ({
         </>
       )}
 
-      {authorizedMemberIds.length === 0 && permissionedMembers && (
+      {permissionedMembers && viewPrevAuthorMembersCondition && (
         <>
           <Space size={5} />
           <Space size={0} />
           <Box>
             <Text color="black" $fontSize="default" $fontWeight="normal">
-              기존에 선택한 친구들
+              이전에 권한을 부여한 친구들
             </Text>
             <Space size={1} />
-            {permissionedMembers.map((member) => (
-              <Text
-                color="black"
-                $fontSize="default"
-                $fontWeight="normal"
-                key={member.id}
-              >
-                • {member.memberResponse.nickName}
+            {permissionedMembers.length > 0 ? (
+              permissionedMembers.map((member) => (
+                <Text
+                  color="black"
+                  $fontSize="default"
+                  $fontWeight="normal"
+                  key={member.id}
+                >
+                  • {member.memberResponse.nickName}
+                </Text>
+              ))
+            ) : (
+              <Text color="black" $fontSize="default" $fontWeight="normal">
+                • 없음
               </Text>
-            ))}
+            )}
           </Box>
         </>
       )}
