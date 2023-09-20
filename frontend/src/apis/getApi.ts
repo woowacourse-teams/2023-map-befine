@@ -1,4 +1,4 @@
-let isFetchingRefreshToken = false;
+const abortController = new AbortController();
 
 const decodeToken = (token: string) => {
   const tokenParts = token.split('.');
@@ -14,9 +14,6 @@ const decodeToken = (token: string) => {
 async function refreshToken(headers: Headers): Promise<string> {
   const accessToken = localStorage.getItem('userToken');
   try {
-    // refresh token 재발급 요청 중이므로 더 이상 요청을 보내지 않도록 한다.
-    isFetchingRefreshToken = true;
-
     // 서버에 새로운 엑세스 토큰을 요청하기 위한 네트워크 요청을 보냅니다.
     const refreshResponse = await fetch(`${DEFAULT_PROD_URL}/refresh-token`, {
       method: 'POST',
@@ -24,6 +21,7 @@ async function refreshToken(headers: Headers): Promise<string> {
       body: JSON.stringify({
         accessToken: accessToken,
       }),
+      signal: abortController.signal,
     });
 
     // 서버 응답이 성공적인지 확인합니다.
@@ -38,7 +36,8 @@ async function refreshToken(headers: Headers): Promise<string> {
   } catch (error) {
     // 네트워크 요청 실패 또는 예외 발생 시 예외를 캐치하여 처리합니다.
     console.error('네트워크 요청 실패 또는 예외 발생:', error);
-    throw error; // 예외를 다시 throw하여 상위 코드로 전파합니다.
+    // throw error; // 예외를 다시 throw하여 상위 코드로 전파합니다.
+    return 'abort';
   }
 }
 
@@ -48,10 +47,13 @@ const isTokenExpired = (token: string) => {
 };
 
 async function updateToken(headers: Headers) {
-  if (!isFetchingRefreshToken) {
-    const newToken = await refreshToken(headers);
-    localStorage.setItem('userToken', newToken);
+  const newToken = await refreshToken(headers);
+  if (newToken === 'abort') {
+    return;
   }
+
+  localStorage.setItem('userToken', newToken);
+  abortController.abort();
 }
 
 async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
