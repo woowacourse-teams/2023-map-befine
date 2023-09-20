@@ -86,7 +86,7 @@ const NewTopic = () => {
       description: formValues.description,
       pins: pulledPinIds ? pulledPinIds.split(',') : [],
       publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-      permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+      permissionType: isPublic && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
     };
 
     const data = JSON.stringify(objectData);
@@ -204,7 +204,7 @@ const NewTopic = () => {
           isPublic={isPublic}
           authorizedMemberIds={authorizedMemberIds}
           setIsPrivate={setIsPrivate}
-          setIsAll={setIsPublic}
+          setIsPublic={setIsPublic}
           setAuthorizedMemberIds={setAuthorizedMemberIds}
         />
 

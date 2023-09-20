@@ -143,7 +143,7 @@ const UpdatedTopicInfo = ({
         isPublic={isPublic}
         authorizedMemberIds={authorizedMemberIds}
         setIsPrivate={setIsPrivate}
-        setIsAll={setIsPublic}
+        setIsPublic={setIsPublic}
         setAuthorizedMemberIds={setAuthorizedMemberIds}
         permissionedMembers={topicAuthorInfo?.permissionedMembers}
       />
