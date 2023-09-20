@@ -55,11 +55,7 @@ const isTokenExpired = (token: string) => {
 
 async function updateToken(headers: Headers) {
   const response = await refreshToken(headers);
-
-  console.log('newToken 전 response:', response);
-
-  try {
-    const newToken = await response.json();
+  const newToken = await response.json();
 
     console.log('newToken:', newToken);
 
