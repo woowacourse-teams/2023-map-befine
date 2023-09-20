@@ -35,7 +35,7 @@ const NewTopic = () => {
     });
 
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
-  const [isAll, setIsAll] = useState(true); // 모두 : 지정 인원
+  const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
 
   const goToBack = () => {
@@ -77,7 +77,7 @@ const NewTopic = () => {
         description: formValues.description,
         pins: pulledPinIds ? pulledPinIds.split(',') : [],
         publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-        permissionType: isAll && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+        permissionType: isPublic && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
       },
       errorMessage:
         '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
@@ -88,7 +88,7 @@ const NewTopic = () => {
   };
 
   const addAuthorityToTopicWithGroupPermission = async (topicId: number) => {
-    if (isAll) return;
+    if (isPublic) return;
 
     fetchPost({
       url: '/permissions',
@@ -161,10 +161,10 @@ const NewTopic = () => {
 
         <AuthorityRadioContainer
           isPrivate={isPrivate}
-          isAll={isAll}
+          isPublic={isPublic}
           authorizedMemberIds={authorizedMemberIds}
           setIsPrivate={setIsPrivate}
-          setIsAll={setIsAll}
+          setIsAll={setIsPublic}
           setAuthorizedMemberIds={setAuthorizedMemberIds}
         />
 

@@ -16,7 +16,7 @@ import useGet from '../../apiHooks/useGet';
 
 interface AuthorityRadioContainer {
   isPrivate: boolean;
-  isAll: boolean;
+  isPublic: boolean;
   authorizedMemberIds: number[];
   setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAll: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,7 +26,7 @@ interface AuthorityRadioContainer {
 
 const AuthorityRadioContainer = ({
   isPrivate,
-  isAll,
+  isPublic,
   authorizedMemberIds,
   setIsPrivate,
   setIsAll,
@@ -37,6 +37,8 @@ const AuthorityRadioContainer = ({
   const { fetchGet } = useGet();
 
   const [members, setMembers] = useState<TopicAuthorMember[]>([]);
+  const viewPrevAuthorMembersCondition =
+    authorizedMemberIds.length === 0 && !isPublic;
 
   useEffect(() => {
     fetchGet<TopicAuthorMember[]>(
@@ -63,10 +65,6 @@ const AuthorityRadioContainer = ({
     setAuthorizedMemberIds((prev: TopicAuthorMember['id'][]) =>
       isChecked ? [...prev, id] : prev.filter((n: number) => n !== id),
     );
-  };
-
-  const whenViewingPreviousAuthorMember = () => {
-    return authorizedMemberIds.length === 0 && !isAll;
   };
 
   return (
@@ -115,7 +113,7 @@ const AuthorityRadioContainer = ({
           <input
             type="radio"
             id="permission-all"
-            checked={isAll}
+            checked={isPublic}
             onChange={onChangeInitAuthMembersWithSetIsAll}
             tabIndex={5}
           />
@@ -132,10 +130,10 @@ const AuthorityRadioContainer = ({
         <input
           type="radio"
           id="permission-group"
-          checked={!isAll}
+          checked={!isPublic}
           onChange={onChangeInitAuthMembers}
           onClick={() => {
-            isAll === false && openModal('newTopic');
+            isPublic === false && openModal('newTopic');
           }}
           tabIndex={5}
         />
@@ -169,7 +167,7 @@ const AuthorityRadioContainer = ({
         </>
       )}
 
-      {permissionedMembers && whenViewingPreviousAuthorMember() && (
+      {permissionedMembers && viewPrevAuthorMembersCondition && (
         <>
           <Space size={5} />
           <Space size={0} />
