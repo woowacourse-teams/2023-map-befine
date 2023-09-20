@@ -1,8 +1,8 @@
 package com.mapbefine.mapbefine.image.domain;
 
-import static com.mapbefine.mapbefine.image.exception.S3ErrorCode.ILLEGAL_IMAGE_FILE_EXTENSION;
+import static com.mapbefine.mapbefine.image.exception.ImageErrorCode.ILLEGAL_IMAGE_FILE_EXTENSION;
 
-import com.mapbefine.mapbefine.image.exception.S3Exception.S3BadRequestException;
+import com.mapbefine.mapbefine.image.exception.ImageException.ImageBadRequestException;
 import java.util.Arrays;
 
 public enum ImageExtension {
@@ -24,7 +24,7 @@ public enum ImageExtension {
         return Arrays.stream(values())
                 .filter(imageExtension -> imageFileName.endsWith(imageExtension.getExtension()))
                 .findFirst()
-                .orElseThrow(() -> new S3BadRequestException(ILLEGAL_IMAGE_FILE_EXTENSION));
+                .orElseThrow(() -> new ImageBadRequestException(ILLEGAL_IMAGE_FILE_EXTENSION));
     }
 
     public String getExtension() {

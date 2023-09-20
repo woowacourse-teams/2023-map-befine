@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.image.domain.ImageExtension;
-import com.mapbefine.mapbefine.image.exception.S3Exception.S3BadRequestException;
+import com.mapbefine.mapbefine.image.exception.ImageException.ImageBadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -29,7 +29,7 @@ class ImageExtensionTest {
     void createImageExtensionByFileName_Fail(String fileName) {
         // given when then
         assertThatThrownBy(() -> ImageExtension.from(fileName))
-                .isInstanceOf(S3BadRequestException.class);
+                .isInstanceOf(ImageBadRequestException.class);
     }
 
 }
