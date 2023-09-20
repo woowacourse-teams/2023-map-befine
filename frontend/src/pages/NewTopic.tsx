@@ -157,6 +157,7 @@ const NewTopic = () => {
 
         <Flex>
           {showImage && <ShowImage src={showImage} alt={`사진 이미지`} />}
+          <Space size={2} />
           <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
           <ImageInputButton
             id="file"
