@@ -6,6 +6,7 @@ import Space from '../common/Space';
 import { useState } from 'react';
 import { ProfileProps } from '../../types/Profile';
 import UpdateMyInfo from './UpdateMyInfo';
+import Button from '../common/Button';
 
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -39,9 +40,12 @@ const MyInfo = () => {
       <MyInfoImg src={user.imageUrl} />
       <Space size={5} />
       <Box>
-        <Text color="black" $fontSize="medium" $fontWeight="bold">
-          {user.nickName}
-        </Text>
+        <Flex $justifyContent="space-between" $alignItems="center">
+          <Text color="black" $fontSize="medium" $fontWeight="bold">
+            {user.nickName}
+          </Text>
+          <Button variant="primary">로그아웃</Button>
+        </Flex>
         <Text color="black" $fontSize="small" $fontWeight="normal">
           {user.email}
         </Text>
