@@ -15,12 +15,12 @@ public class ImageName {
 
     public static ImageName from(String originalFileName) {
         String fileName = FORMATTER.format(LocalDateTime.now());
-        String extension = findExtension(originalFileName);
+        String extension = extractExtension(originalFileName);
 
         return new ImageName(fileName + extension);
     }
 
-    private static String findExtension(String originalFileName) {
+    private static String extractExtension(String originalFileName) {
         return ImageExtension.from(originalFileName)
                 .getExtension();
     }
