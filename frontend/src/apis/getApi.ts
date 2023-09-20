@@ -58,11 +58,17 @@ async function updateToken(headers: Headers) {
 
   console.log('newToken 전 response:', response);
 
-  const newToken = await response.json();
+  try {
+    const newToken = await response.json();
 
-  console.log('newToken:', newToken);
+    console.log('newToken:', newToken);
 
-  localStorage.setItem('userToken', newToken.accessToken);
+    localStorage.setItem('userToken', newToken.accessToken);
+  } catch (e) {
+    console.error(e);
+
+    return;
+  }
 }
 
 async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
