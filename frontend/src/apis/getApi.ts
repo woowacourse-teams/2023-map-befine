@@ -1,3 +1,5 @@
+const abortController = new AbortController();
+
 const decodeToken = (token: string) => {
   const tokenParts = token.split('.');
   if (tokenParts.length !== 3) {
@@ -5,14 +7,12 @@ const decodeToken = (token: string) => {
   }
 
   const decodedPayloadString = atob(tokenParts[1]);
-  console.log('decodedPayloadString', decodedPayloadString);
+
   return JSON.parse(decodedPayloadString);
 };
 
 async function refreshToken(headers: Headers): Promise<string> {
-  console.log('L12 refreshTOken이 호출은 되었는지 확인', headers);
   const accessToken = localStorage.getItem('userToken');
-  console.log('getAPI Line 14', accessToken);
   try {
     // 서버에 새로운 엑세스 토큰을 요청하기 위한 네트워크 요청을 보냅니다.
     const refreshResponse = await fetch(`${DEFAULT_PROD_URL}/refresh-token`, {
@@ -21,6 +21,7 @@ async function refreshToken(headers: Headers): Promise<string> {
       body: JSON.stringify({
         accessToken: accessToken,
       }),
+      signal: abortController.signal,
     });
 
     // 서버 응답이 성공적인지 확인합니다.
@@ -39,41 +40,35 @@ async function refreshToken(headers: Headers): Promise<string> {
   }
 }
 
+const isTokenExpired = (token: string) => {
+  const decodedPayloadObject = decodeToken(token);
+  return decodedPayloadObject.exp * 1000 < Date.now();
+};
+
+async function updateToken(headers: Headers) {
+  const newToken = await refreshToken(headers);
+  localStorage.setItem('userToken', newToken);
+  abortController.abort();
+}
+
 async function withTokenRefresh<T>(callback: () => Promise<T>): Promise<T> {
-  let userToken = localStorage.getItem('userToken');
-  console.log('userToken', userToken);
-  if (userToken) {
-    const decodedPayloadObject = decodeToken(userToken);
-    console.log('decodedPayloadObject', decodedPayloadObject);
-    // decodeToken의 결과로 만료 여부 판단
-    if (decodedPayloadObject.exp * 1000 < Date.now()) {
-      console.log('AccessToken 만료되어 재요청합니다');
+  const userToken = localStorage.getItem('userToken');
 
-      const headers: any = {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${userToken}`,
-      };
-      console.log(`Authorization : Bearer ${userToken}`);
-      //새로운 토큰 재발급
-      userToken = await refreshToken(headers);
+  if (userToken && isTokenExpired(userToken)) {
+    console.log('AccessToken 만료되어 재요청합니다');
 
-      console.log('L59 userToken', userToken);
-      localStorage.setItem('userToken', userToken);
-      console.log('localStorage에 새로운 토큰 적용 성공!');
-    }
+    const headers: any = {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${userToken}`,
+    };
+
+    await updateToken(headers);
   }
 
-  //인자로 넘겨준 실제 fetch함수 실행
-  console.log('callback 실행');
   return callback();
 }
 
 import { DEFAULT_PROD_URL } from '../constants';
-
-const API_URL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000'
-    : DEFAULT_PROD_URL;
 
 interface Headers {
   'content-type': string;
