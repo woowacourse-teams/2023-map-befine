@@ -4,7 +4,7 @@ import { ContentTypeType } from '../types/Api';
 
 interface fetchPostProps {
   url: string;
-  payload: {};
+  payload?: {} | FormData;
   contentType?: ContentTypeType;
   errorMessage: string;
   onSuccess?: () => void;

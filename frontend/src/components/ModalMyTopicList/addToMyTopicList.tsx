@@ -35,20 +35,10 @@ const AddToMyTopicList = ({ pin }: any) => {
   }, []);
 
   const addPinToTopic = async (topic: OnClickDesignatedProps) => {
-    const url = '/pins';
-    const payload = {
-      topicId: topic.topicId,
-      name: pin.name,
-      description: pin.description,
-      address: pin.address,
-      latitude: pin.latitude,
-      longitude: pin.longitude,
-      legalDongCode: '',
-    };
+    const url = `/topics/${topic.topicId}/copy?pinIds=${pin.id}`;
 
     fetchPost({
       url,
-      payload,
       errorMessage:
         '내 지도에 핀 추가를 실패하였습니다. 잠시 후 다시 시도해주세요.',
       onSuccess: () => {
