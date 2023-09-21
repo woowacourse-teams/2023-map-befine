@@ -64,23 +64,25 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   const { routingHandlers } = useNavigator();
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
   return (
-    <Wrapper
-      $isAddPage={navbarHighlights.addMapOrPin}
-      $layoutWidth={$layoutWidth}
-    >
-      {NAV_ITEMS.map((item) => {
-        return (
-          <NavbarItem
-            key={item.key}
-            label={item.label}
-            icon={item.icon}
-            focusIcon={item.focusIcon}
-            isHighlighted={navbarHighlights[item.key]}
-            onClick={() => routingHandlers[item.key]()}
-            $layoutWidth={$layoutWidth}
-          />
-        );
-      })}
+    <>
+      <Wrapper
+        $isAddPage={navbarHighlights.addMapOrPin}
+        $layoutWidth={$layoutWidth}
+      >
+        {NAV_ITEMS.map((item) => {
+          return (
+            <NavbarItem
+              key={item.key}
+              label={item.label}
+              icon={item.icon}
+              focusIcon={item.focusIcon}
+              isHighlighted={navbarHighlights[item.key]}
+              onClick={() => routingHandlers[item.key]()}
+              $layoutWidth={$layoutWidth}
+            />
+          );
+        })}
+      </Wrapper>
 
       <Modal
         modalKey="addMapOrPin"
