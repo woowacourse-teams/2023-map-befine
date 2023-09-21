@@ -269,11 +269,14 @@ const NewPin = () => {
           <Space size={5} />
 
           <Text color="black" $fontSize="default" $fontWeight="normal">
-            사진 선택
+            장소 사진
+          </Text>
+          <Text color="gray" $fontSize="small" $fontWeight="normal">
+            장소에 대한 사진을 추가해주세요.
           </Text>
           <Space size={0} />
           <Flex>
-            <ImageInputLabel htmlFor="file">파일찾기</ImageInputLabel>
+            <ImageInputLabel htmlFor="file">파일 찾기</ImageInputLabel>
             <ImageInputButton
               id="file"
               type="file"

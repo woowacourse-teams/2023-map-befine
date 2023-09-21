@@ -66,21 +66,32 @@ const UpdatedTopicInfo = ({
         isThrow: true,
       });
 
-      if (authorizedMemberIds.length > 0) await updateTopicAuthority();
+      // // TODO : 수정해야하는 로직
+      // if (authorizedMemberIds.length === 0) {
+      //   await deleteTopicPermissionMembers();
+      // }
+
+      // if (authorizedMemberIds.length > 0) {
+      //   await deleteTopicPermissionMembers();
+      //   await updateTopicPermissionMembers();
+      // }
 
       showToast('info', '지도를 수정하였습니다.');
       setIsUpdate(false);
     } catch {}
   };
 
-  const updateTopicAuthority = async () => {
-    // topicAuthorInfo api 구조 이상으로 권한 설정 자체에 대한 id를 사용 (topicId 아님)
-    await fetchDelete({
-      url: `/permissions/${topicAuthorInfo?.permissionedMembers[0].id}`,
-      errorMessage: '권한 삭제에 실패했습니다.',
-      isThrow: true,
-    });
+  const deleteTopicPermissionMembers = async () => {
+    if (topicAuthorInfo && topicAuthorInfo.permissionedMembers[0]) {
+      await fetchDelete({
+        url: `/permissions/${topicAuthorInfo.permissionedMembers[0].id}`,
+        errorMessage: '권한 삭제에 실패했습니다.',
+        isThrow: true,
+      });
+    }
+  };
 
+  const updateTopicPermissionMembers = async () => {
     await fetchPost({
       url: '/permissions',
       payload: {
@@ -139,7 +150,7 @@ const UpdatedTopicInfo = ({
         maxLength={100}
       />
 
-      <AuthorityRadioContainer
+      {/* <AuthorityRadioContainer
         isPrivate={isPrivate}
         isAllPermissioned={isAllPermissioned}
         authorizedMemberIds={authorizedMemberIds}
@@ -147,7 +158,7 @@ const UpdatedTopicInfo = ({
         setIsAllPermissioned={setIsAllPermissioned}
         setAuthorizedMemberIds={setAuthorizedMemberIds}
         permissionedMembers={topicAuthorInfo?.permissionedMembers}
-      />
+      /> */}
 
       <Space size={6} />
 

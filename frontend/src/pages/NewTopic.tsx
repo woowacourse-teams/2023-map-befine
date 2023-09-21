@@ -151,15 +151,21 @@ const NewTopic = () => {
         <Space size={5} />
 
         <Text color="black" $fontSize="default" $fontWeight="normal">
-          지도 선택
+          지도 사진
         </Text>
-
-        <Space size={2} />
-
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
+          지도를 대표할 수 있는 사진을 추가해주세요.
+        </Text>
+        <Space size={0} />
         <Flex>
-          {showImage && <ShowImage src={showImage} alt={`사진 이미지`} />}
-          <Space size={2} />
-          <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+          {showImage && (
+            <>
+              <ShowImage src={showImage} alt={`사진 이미지`} />{' '}
+              <Space size={2} />{' '}
+            </>
+          )}
+
+          <ImageInputLabel htmlFor="file">파일 찾기</ImageInputLabel>
           <ImageInputButton
             id="file"
             type="file"
