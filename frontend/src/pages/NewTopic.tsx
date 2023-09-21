@@ -113,7 +113,7 @@ const NewTopic = () => {
       url: '/permissions',
       payload: {
         topicId,
-        memberIds: isPrivate ? [] : authorizedMemberIds,
+        memberIds: authorizedMemberIds,
       },
       errorMessage: `${formValues.name} 지도의 권한 설정에 실패했습니다.`,
     });
