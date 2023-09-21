@@ -73,95 +73,105 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   };
 
   return (
-    <Wrapper
-      $isAddPage={navbarHighlights.addMapOrPin}
-      $layoutWidth={$layoutWidth}
-    >
-      <IconWrapper
+    <>
+      <Wrapper
+        $isAddPage={navbarHighlights.addMapOrPin}
         $layoutWidth={$layoutWidth}
-        onClick={goToHome}
-        tabIndex={10}
-        ref={firstElement}
-        onKeyDown={firstKeyDown}
       >
-        {navbarHighlights.home ? <FocusHome /> : <Home />}
-        <Text
-          color={navbarHighlights.home ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
+        <IconWrapper
+          $layoutWidth={$layoutWidth}
+          onClick={goToHome}
+          tabIndex={10}
+          ref={firstElement}
+          onKeyDown={firstKeyDown}
         >
-          홈
-        </Text>
-      </IconWrapper>
+          {navbarHighlights.home ? <FocusHome /> : <Home />}
+          <Text
+            color={navbarHighlights.home ? 'primary' : 'darkGray'}
+            $fontSize="extraSmall"
+            $fontWeight="normal"
+          >
+            홈
+          </Text>
+        </IconWrapper>
 
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={goToSeeTogether}
-        tabIndex={10}
-        ref={secondElement}
-        onKeyDown={secondKeyDown}
-      >
-        {navbarHighlights.seeTogether ? <FocusSeeTogether /> : <SeeTogether />}
-        <Text
-          color={navbarHighlights.seeTogether ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
+        <IconWrapper
+          $layoutWidth={$layoutWidth}
+          onClick={goToSeeTogether}
+          tabIndex={10}
+          ref={secondElement}
+          onKeyDown={secondKeyDown}
         >
-          모아보기
-        </Text>
-        <SeeTogetherCounter />
-      </IconWrapper>
+          {navbarHighlights.seeTogether ? (
+            <FocusSeeTogether />
+          ) : (
+            <SeeTogether />
+          )}
+          <Text
+            color={navbarHighlights.seeTogether ? 'primary' : 'darkGray'}
+            $fontSize="extraSmall"
+            $fontWeight="normal"
+          >
+            모아보기
+          </Text>
+          <SeeTogetherCounter />
+        </IconWrapper>
 
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={onClickAddMapOrPin}
-        tabIndex={10}
-        ref={thirdElement}
-        onKeyDown={thirdKeyDown}
-      >
-        {navbarHighlights.addMapOrPin ? <FocusAddMapOrPin /> : <AddMapOrPin />}
-        <Text
-          color={navbarHighlights.addMapOrPin ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
+        <IconWrapper
+          $layoutWidth={$layoutWidth}
+          onClick={onClickAddMapOrPin}
+          tabIndex={10}
+          ref={thirdElement}
+          onKeyDown={thirdKeyDown}
         >
-          추가하기
-        </Text>
-      </IconWrapper>
+          {navbarHighlights.addMapOrPin ? (
+            <FocusAddMapOrPin />
+          ) : (
+            <AddMapOrPin />
+          )}
+          <Text
+            color={navbarHighlights.addMapOrPin ? 'primary' : 'darkGray'}
+            $fontSize="extraSmall"
+            $fontWeight="normal"
+          >
+            추가하기
+          </Text>
+        </IconWrapper>
 
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={goToFavorite}
-        tabIndex={11}
-        ref={fourElement}
-        onKeyDown={fourKeyDown}
-      >
-        {navbarHighlights.favorite ? <FocusFavorite /> : <Favorite />}
-        <Text
-          color={navbarHighlights.favorite ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
+        <IconWrapper
+          $layoutWidth={$layoutWidth}
+          onClick={goToFavorite}
+          tabIndex={11}
+          ref={fourElement}
+          onKeyDown={fourKeyDown}
         >
-          즐겨찾기
-        </Text>
-      </IconWrapper>
+          {navbarHighlights.favorite ? <FocusFavorite /> : <Favorite />}
+          <Text
+            color={navbarHighlights.favorite ? 'primary' : 'darkGray'}
+            $fontSize="extraSmall"
+            $fontWeight="normal"
+          >
+            즐겨찾기
+          </Text>
+        </IconWrapper>
 
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={goToProfile}
-        tabIndex={11}
-        ref={FifthElement}
-        onKeyDown={FifthKeyDown}
-      >
-        {navbarHighlights.profile ? <FocusProfile /> : <Profile />}
-        <Text
-          color={navbarHighlights.profile ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
+        <IconWrapper
+          $layoutWidth={$layoutWidth}
+          onClick={goToProfile}
+          tabIndex={11}
+          ref={FifthElement}
+          onKeyDown={FifthKeyDown}
         >
-          내 정보
-        </Text>
-      </IconWrapper>
+          {navbarHighlights.profile ? <FocusProfile /> : <Profile />}
+          <Text
+            color={navbarHighlights.profile ? 'primary' : 'darkGray'}
+            $fontSize="extraSmall"
+            $fontWeight="normal"
+          >
+            내 정보
+          </Text>
+        </IconWrapper>
+      </Wrapper>
 
       <Modal
         modalKey="addMapOrPin"
@@ -182,7 +192,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
           </RouteButton>
         </Flex>
       </Modal>
-    </Wrapper>
+    </>
   );
 };
 
