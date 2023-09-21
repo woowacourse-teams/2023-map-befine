@@ -2,7 +2,6 @@ import Flex from '../common/Flex';
 import Text from '../common/Text';
 import Image from '../common/Image';
 import Space from '../common/Space';
-import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
@@ -15,9 +14,11 @@ import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 import { styled } from 'styled-components';
+import Box from '../common/Box';
+import { useEffect, useState } from 'react';
+import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
-  fullUrl?: string;
   topicId: string;
   idx: number;
   topicImage: string;
@@ -27,13 +28,13 @@ export interface TopicInfoProps {
   topicPinCount: number;
   topicBookmarkCount: number;
   topicDescription: string;
+  canUpdate: boolean;
   isInAtlas: boolean;
   isBookmarked: boolean;
   setTopicsFromServer: () => void;
 }
 
 const TopicInfo = ({
-  fullUrl,
   topicId,
   idx,
   topicImage,
@@ -43,15 +44,16 @@ const TopicInfo = ({
   topicPinCount,
   topicBookmarkCount,
   topicDescription,
+  canUpdate,
   isInAtlas,
   isBookmarked,
   setTopicsFromServer,
 }: TopicInfoProps) => {
-  const { routePage } = useNavigator();
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const { showToast } = useToast();
 
-  const goToNewPin = () => {
-    routePage(`/new-pin?topic-id=${topicId}`, fullUrl);
+  const updateTopicInfo = () => {
+    setIsUpdate(true);
   };
 
   const copyContent = async () => {
@@ -64,6 +66,22 @@ const TopicInfo = ({
     }
   };
 
+  useEffect(() => {
+    if (!isUpdate) setTopicsFromServer();
+  }, [isUpdate]);
+
+  if (isUpdate) {
+    return (
+      <UpdatedTopicInfo
+        id={Number(topicId)}
+        image={topicImage}
+        name={topicTitle}
+        description={topicDescription}
+        setIsUpdate={setIsUpdate}
+      />
+    );
+  }
+
   return (
     <Flex
       position="relative"
@@ -73,11 +91,11 @@ const TopicInfo = ({
       role="button"
       data-cy="topic-info"
     >
-      <Image
+      <TopicImage
         height="168px"
-        width="332px"
+        width="100%"
         src={topicImage}
-        alt="토픽 이미지"
+        alt="사진 이미지"
         $objectFit="cover"
         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
           e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
@@ -86,21 +104,30 @@ const TopicInfo = ({
 
       <Space size={1} />
 
-      <Flex>
-        <Flex $alignItems="center" width="72px">
-          <SmallTopicPin />
-          <Space size={0} />
-          <Text color="black" $fontSize="small" $fontWeight="normal">
-            {topicPinCount > 999 ? '+999' : topicPinCount}개
-          </Text>
+      <Flex $justifyContent="space-between">
+        <Flex>
+          <Flex $alignItems="center" width="72px">
+            <SmallTopicPin />
+            <Space size={0} />
+            <Text color="black" $fontSize="small" $fontWeight="normal">
+              {topicPinCount > 999 ? '+999' : topicPinCount}개
+            </Text>
+          </Flex>
+          <Flex $alignItems="center" width="72px">
+            <SmallTopicStar />
+            <Space size={0} />
+            <Text color="black" $fontSize="small" $fontWeight="normal">
+              {topicBookmarkCount > 999 ? '+999' : topicBookmarkCount}명
+            </Text>
+          </Flex>
         </Flex>
-        <Flex $alignItems="center" width="72px">
-          <SmallTopicStar />
-          <Space size={0} />
-          <Text color="black" $fontSize="small" $fontWeight="normal">
-            {topicBookmarkCount > 999 ? '+999' : topicBookmarkCount}명
-          </Text>
-        </Flex>
+        {canUpdate && (
+          <Box cursor="pointer" onClick={updateTopicInfo}>
+            <Text color="primary" $fontSize="default" $fontWeight="normal">
+              수정하기
+            </Text>
+          </Box>
+        )}
       </Flex>
 
       <Space size={0} />
@@ -127,7 +154,7 @@ const TopicInfo = ({
         <AddSeeTogether
           isInAtlas={isInAtlas}
           id={Number(topicId.split(',')[idx])}
-          setTopicsFromServer={setTopicsFromServer}
+          getTopicsFromServer={setTopicsFromServer}
         >
           {isInAtlas ? (
             <SeeTogetherSVG width="40px" height="40px" />
@@ -139,7 +166,7 @@ const TopicInfo = ({
         <AddFavorite
           isBookmarked={isBookmarked}
           id={Number(topicId.split(',')[idx])}
-          setTopicsFromServer={setTopicsFromServer}
+          getTopicsFromServer={setTopicsFromServer}
         >
           {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
         </AddFavorite>
@@ -156,6 +183,10 @@ const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const TopicImage = styled(Image)`
+  border-radius: ${({ theme }) => theme.radius.medium};
 `;
 
 export default TopicInfo;

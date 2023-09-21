@@ -1,36 +1,25 @@
-// const API_URL =
-//   process.env.NODE_ENV === 'production'
-//     ? process.env.REACT_APP_API_DEFAULT_PROD
-//     : process.env.REACT_APP_API_DEFAULT_DEV;
-
 import { DEFAULT_PROD_URL } from '../constants';
+import withTokenRefresh from './utils';
 
-interface Headers {
-  'Content-Type': string;
-  [key: string]: string;
-}
-export const getApi = async <T>(
-  type: 'tMap' | 'default' | 'login',
-  url: string,
-): Promise<T> => {
-  const apiUrl =
-    type === 'tMap' || type === 'login' ? url : `${DEFAULT_PROD_URL + url}`;
+export const getApi = async <T>(url: string) => {
+  return await withTokenRefresh(async () => {
+    const apiUrl = `${DEFAULT_PROD_URL + url}`;
+    const userToken = localStorage.getItem('userToken');
+    const headers: any = {
+      'content-type': 'application/json',
+    };
 
-  const userToken = localStorage.getItem('userToken');
-  const headers: Headers = {
-    'Content-Type': 'application/json',
-  };
-  if (userToken) {
-    headers['Authorization'] = `Bearer ${userToken}`;
-  }
-  const response = await fetch(apiUrl, {
-    method: 'GET',
-    headers: headers,
+    if (userToken) {
+      headers['Authorization'] = `Bearer ${userToken}`;
+    }
+
+    const response = await fetch(apiUrl, { method: 'GET', headers });
+
+    if (response.status >= 400) {
+      throw new Error('[SERVER] GET 요청에 실패했습니다.');
+    }
+
+    const responseData: T = await response.json();
+    return responseData;
   });
-  const responseData: T = await response.json();
-  if (response.status >= 400) {
-    //todo: status 상태별로 로그인 토큰 유효 검증
-    throw new Error('API 요청에 실패했습니다.');
-  }
-  return responseData;
 };

@@ -1,19 +1,16 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
-import InfoDefalutImg from '../../assets/InfoDefalutImg.svg';
-import ModifyMyInfoIcon from '../../assets/ModifyMyInfoIcon.svg';
+import ProfileDefaultImage from '../../assets/profile_defaultImage.svg';
 import Box from '../common/Box';
-import Text from '../common/Text';
 import Space from '../common/Space';
-import { useEffect, useState } from 'react';
-import { MyInfoType } from '../../types/MyInfo';
+import { ProfileProps } from '../../types/Profile';
 import Button from '../common/Button';
 
 interface UpdateMyInfoProps {
   isThereImg: boolean;
-  myInfoNameAndEmail: MyInfoType;
+  myInfoNameAndEmail: ProfileProps;
   setIsModifyMyInfo: React.Dispatch<React.SetStateAction<boolean>>;
-  setMyInfoNameAndEmail: React.Dispatch<React.SetStateAction<MyInfoType>>;
+  setMyInfoNameAndEmail: React.Dispatch<React.SetStateAction<ProfileProps>>;
 }
 
 const UpdateMyInfo = ({
@@ -23,12 +20,12 @@ const UpdateMyInfo = ({
   setMyInfoNameAndEmail,
 }: UpdateMyInfoProps) => {
   const onChangeMyInfoName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(e.target.value.length >= 20) return;
+    if (e.target.value.length >= 20) return;
     setMyInfoNameAndEmail({ ...myInfoNameAndEmail, name: e.target.value });
   };
 
   const onChangeMyInfoEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(e.target.value.length >= 35) return;
+    if (e.target.value.length >= 35) return;
     setMyInfoNameAndEmail({ ...myInfoNameAndEmail, email: e.target.value });
   };
 
@@ -47,7 +44,7 @@ const UpdateMyInfo = ({
       {isThereImg ? (
         <MyInfoImg src="https://images.unsplash.com/photo-1480429370139-e0132c086e2a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80" />
       ) : (
-        <InfoDefalutImg />
+        <ProfileDefaultImage />
       )}
       <Space size={7} />
       <Box>

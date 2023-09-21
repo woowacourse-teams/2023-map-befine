@@ -14,7 +14,12 @@ const Toast = () => {
 
   return ReactDOM.createPortal(
     toast.show && (
-      <Wrapper $justifyContent="center" $alignItems="center" type={toast.type} role="alert">
+      <Wrapper
+        $justifyContent="center"
+        $alignItems="center"
+        type={toast.type}
+        role="alert"
+      >
         {toast.message}
       </Wrapper>
     ),
@@ -62,6 +67,10 @@ const Wrapper = styled(Flex)<{ type: string }>`
   color: ${({ theme }) => theme.color.white};
 
   z-index: 2;
+
+  @media (max-width: 588px) {
+    width: 80%;
+  }
 `;
 
 export default Toast;

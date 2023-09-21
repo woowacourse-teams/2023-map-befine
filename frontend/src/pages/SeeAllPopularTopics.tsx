@@ -6,15 +6,20 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { Suspense, lazy } from 'react';
-import TopicCardListSkeleton from '../components/TopicCardList/TopicCardListSkeleton';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import useNavigator from '../hooks/useNavigator';
+import { setFullScreenResponsive } from '../constants/responsive';
 
-const SeeAllCardList = lazy(() => import('../components/SeeAllCardList'));
-
-const url = '/topics/bests';
+const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
 const SeeAllTopics = () => {
-  const { width: _ } = useSetLayoutWidth(FULLSCREEN);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
+  const { routePage } = useNavigator();
+  useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('home');
+
+  const goToHome = () => {
+    routePage('/');
+  };
 
   return (
     <Wrapper>
@@ -25,8 +30,14 @@ const SeeAllTopics = () => {
 
       <Space size={5} />
 
-      <Suspense fallback={<TopicCardListSkeleton />}>
-        <SeeAllCardList url={url} />
+      <Suspense fallback={<TopicCardContainerSkeleton />}>
+        <TopicCardList
+          url="/topics/bests"
+          errorMessage="로그인 후 이용해주세요."
+          commentWhenEmpty="즐겨찾기가 많이 된 지도가 없습니다."
+          pageCommentWhenEmpty="메인페이지로 가기"
+          routePage={goToHome}
+        />
       </Suspense>
     </Wrapper>
   );
@@ -35,6 +46,8 @@ const SeeAllTopics = () => {
 const Wrapper = styled(Box)`
   width: 1036px;
   margin: 0 auto;
+
+  ${setFullScreenResponsive()}
 `;
 
 export default SeeAllTopics;

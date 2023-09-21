@@ -2,7 +2,7 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import { useContext, useEffect, useState } from 'react';
-import { PinType } from '../types/Pin';
+import { PinProps } from '../types/Pin';
 import { getApi } from '../apis/getApi';
 import { useSearchParams } from 'react-router-dom';
 import Box from '../components/common/Box';
@@ -15,9 +15,12 @@ import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
+import { postApi } from '../apis/postApi';
+import PinImageContainer from '../components/PinImageContainer';
+import useCompressImage from '../hooks/useCompressImage';
 
 interface PinDetailProps {
-  topicId: string;
+  width: '372px' | '100vw';
   pinId: number;
   isEditPinDetail: boolean;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,14 +29,13 @@ interface PinDetailProps {
 const userToken = localStorage.getItem('userToken');
 
 const PinDetail = ({
-  topicId,
+  width,
   pinId,
   isEditPinDetail,
   setIsEditPinDetail,
 }: PinDetailProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [pin, setPin] = useState<PinType | null>(null);
-  const [selectedTopic, setSelectedTopic] = useState<any>(null); //토픽이 없을 때 사용하는 변수
+  const [pin, setPin] = useState<PinProps | null>(null);
   const { showToast } = useToast();
   const {
     formValues,
@@ -43,10 +45,10 @@ const PinDetail = ({
     onChangeInput,
   } = useFormValues<ModifyPinFormProps>({
     name: '',
-    images: [],
     description: '',
   });
   const { openModal } = useContext(ModalContext);
+  const { compressImage } = useCompressImage();
 
   const openModalWithToken = () => {
     if (userToken) {
@@ -57,32 +59,25 @@ const PinDetail = ({
     showToast('error', '로그인 후 사용해주세요.');
   };
 
-  useEffect(() => {
-    const getPinData = async () => {
-      const pinData = await getApi<PinType>('default', `/pins/${pinId}`);
-      setPin(pinData);
-      setFormValues({
-        name: pinData.name,
-        images: pinData.images,
-        description: pinData.description,
-      });
-    };
+  const getPinData = async () => {
+    const pinData = await getApi<PinProps>(`/pins/${pinId}`);
+    setPin(pinData);
+    setFormValues({
+      name: pinData.name,
+      description: pinData.description,
+    });
+  };
 
+  useEffect(() => {
     getPinData();
   }, [pinId, searchParams]);
-
-  const updateQueryString = (key: string, value: string) => {
-    setSearchParams({ ...Object.fromEntries(searchParams), [key]: value });
-  };
 
   const onClickEditPin = () => {
     setIsEditPinDetail(true);
     setErrorMessages({
       name: '',
-      images: '',
       description: '',
     });
-    updateQueryString('edit', 'true');
   };
 
   const copyContent = async () => {
@@ -94,23 +89,54 @@ const PinDetail = ({
     }
   };
 
+  const onPinImageFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files && event.target.files[0];
+    const formData = new FormData();
+
+    if (!file) {
+      showToast(
+        'error',
+        '이미지를 선택하지 않았거나 추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
+      return;
+    }
+
+    const compressedFile = await compressImage(file);
+
+    formData.append('image', compressedFile);
+
+    const data = JSON.stringify(pinId);
+    const jsonBlob = new Blob([data], { type: 'application/json' });
+
+    formData.append('pinId', jsonBlob);
+
+    await postApi('/pins/images', formData);
+
+    getPinData();
+  };
+
   if (!pin) return <></>;
 
   if (isEditPinDetail)
     return (
-      <UpdatedPinDetail
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-        setIsEditing={setIsEditPinDetail}
-        pinId={pinId}
-        formValues={formValues}
-        errorMessages={errorMessages}
-        onChangeInput={onChangeInput}
-      />
+      <Wrapper $layoutWidth={width} $selectedPinId={pinId}>
+        <UpdatedPinDetail
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+          setIsEditing={setIsEditPinDetail}
+          updatePinDetailAfterEditing={getPinData}
+          pinId={pinId}
+          formValues={formValues}
+          errorMessages={errorMessages}
+          onChangeInput={onChangeInput}
+        />
+      </Wrapper>
     );
 
   return (
-    <>
+    <Wrapper $layoutWidth={width} $selectedPinId={pinId} data-cy="pin-detail">
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
         <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
@@ -124,16 +150,20 @@ const PinDetail = ({
           {pin.creator}
         </Text>
         <Flex $flexDirection="column" $alignItems="flex-end">
-          <Box cursor="pointer">
-            <Text
-              color="primary"
-              $fontSize="default"
-              $fontWeight="normal"
-              onClick={onClickEditPin}
-            >
-              수정하기
-            </Text>
-          </Box>
+          {pin.canUpdate ? (
+            <Box cursor="pointer">
+              <Text
+                color="primary"
+                $fontSize="default"
+                $fontWeight="normal"
+                onClick={onClickEditPin}
+              >
+                수정하기
+              </Text>
+            </Box>
+          ) : (
+            <Space size={5} />
+          )}
           <Text color="black" $fontSize="small" $fontWeight="normal">
             {pin.updatedAt.split('T')[0].split('-').join('.')}
           </Text>
@@ -142,25 +172,15 @@ const PinDetail = ({
 
       <Space size={2} />
 
-      <PinDetailImgContainer
-        width="100%"
-        height="180px"
-        $backgroundColor="whiteGray"
-        $alignItems="center"
-        $justifyContent="center"
-        $flexDirection="column"
-        padding={7}
-        $borderRadius="small"
-      >
-        <Text
-          color="darkGray"
-          $fontSize="default"
-          $fontWeight="normal"
-          $textAlign="center"
-        >
-          + 사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
-        </Text>
-      </PinDetailImgContainer>
+      <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+      <ImageInputButton
+        id="file"
+        type="file"
+        name="image"
+        onChange={onPinImageFileChange}
+      />
+
+      <PinImageContainer images={pin.images} />
 
       <Space size={6} />
 
@@ -184,20 +204,24 @@ const PinDetail = ({
         </Text>
       </Flex>
 
+      <Space size={7} />
+
       <ButtonsWrapper>
         <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
           내 지도에 저장하기
         </SaveToMyMapButton>
-        <Space size={4} />
+        <Space size={3} />
         <ShareButton variant="secondary" onClick={copyContent}>
           공유하기
         </ShareButton>
       </ButtonsWrapper>
 
+      <Space size={8} />
+
       <Modal
         modalKey="addToMyTopicList"
         position="center"
-        width="768px"
+        width="744px"
         height="512px"
         $dimmedColor="rgba(0,0,0,0.25)"
       >
@@ -213,12 +237,43 @@ const PinDetail = ({
           <AddToMyTopicList pin={pin} />
         </ModalContentsWrapper>
       </Modal>
-    </>
+    </Wrapper>
   );
 };
 
-const PinDetailImgContainer = styled(Flex)`
-  box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
+const Wrapper = styled.section<{
+  $layoutWidth: '372px' | '100vw';
+  $selectedPinId: number | null;
+}>`
+  display: flex;
+  flex-direction: column;
+  width: ${({ $layoutWidth }) => $layoutWidth};
+  height: 100vh;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  left: ${({ $layoutWidth }) => $layoutWidth};
+  padding: ${({ theme }) => theme.spacing[4]};
+  border-left: 1px solid ${({ theme }) => theme.color.gray};
+  background-color: ${({ theme }) => theme.color.white};
+  z-index: 1;
+
+  @media (max-width: 1076px) {
+    width: 50vw;
+    margin-top: 50vh;
+    height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
+    left: ${({ $selectedPinId }) => $selectedPinId && '50vw'};
+  }
+
+  @media (max-width: 744px) {
+    border-left: 0;
+    left: 0;
+    width: 100vw;
+  }
+
+  @media (max-width: 372px) {
+    width: ${({ $layoutWidth }) => $layoutWidth};
+  }
 `;
 
 const SaveToMyMapButton = styled(Button)`
@@ -238,10 +293,10 @@ const ShareButton = styled(Button)`
 const ModalContentsWrapper = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: white;
-
-  text-align: center;
-
   overflow: scroll;
 `;
 
@@ -251,8 +306,26 @@ const ButtonsWrapper = styled.div`
   align-items: center;
   width: 332px;
   height: 48px;
-  position: fixed;
-  bottom: 24px;
+  margin: 0 auto;
+`;
+
+const ImageInputLabel = styled.label`
+  width: 80px;
+  height: 40px;
+  margin-bottom: 10px;
+  padding: 10px 10px;
+
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  text-align: center;
+
+  cursor: pointer;
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
 `;
 
 export default PinDetail;

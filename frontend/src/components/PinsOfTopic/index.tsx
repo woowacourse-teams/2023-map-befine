@@ -1,12 +1,12 @@
-import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import { TopicDetailType } from '../../types/Topic';
+import { styled } from 'styled-components';
+import { TopicDetailProps } from '../../types/Topic';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
   topicId: string;
   idx: number;
-  topicDetail: TopicDetailType;
+  topicDetail: TopicDetailProps;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
   setTopicsFromServer: () => void;
@@ -21,9 +21,8 @@ const PinsOfTopic = ({
   setTopicsFromServer,
 }: PinsOfTopicProps) => {
   return (
-    <ul>
+    <Wrapper>
       <TopicInfo
-        fullUrl={String(topicId)}
         topicId={topicId}
         idx={idx}
         topicImage={topicDetail.image}
@@ -33,6 +32,7 @@ const PinsOfTopic = ({
         topicPinCount={topicDetail.pinCount}
         topicBookmarkCount={topicDetail.bookmarkCount}
         topicDescription={topicDetail.description}
+        canUpdate={topicDetail.canUpdate}
         isInAtlas={topicDetail.isInAtlas}
         isBookmarked={topicDetail.isBookmarked}
         setTopicsFromServer={setTopicsFromServer}
@@ -51,8 +51,10 @@ const PinsOfTopic = ({
           />
         </li>
       ))}
-    </ul>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.ul``;
 
 export default PinsOfTopic;

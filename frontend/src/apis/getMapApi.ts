@@ -1,13 +1,16 @@
-export const getMapApi = (url: string) =>
-  fetch(url, {
+export const getMapApi = async <T>(url: string) => {
+  const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'Content-type': 'application/json',
+      'content-type': 'application/json',
     },
-  })
-    .then((data) => {
-      return data.json();
-    })
-    .catch((error) => {
-      throw new Error(`${error.message}`);
-    });
+  });
+
+  if (response.status >= 400) {
+    throw new Error('[MAP] GET 요청에 실패했습니다.');
+  }
+
+  const responseData: T = await response.json();
+
+  return responseData;
+};

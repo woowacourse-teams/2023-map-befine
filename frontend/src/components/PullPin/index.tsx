@@ -21,20 +21,11 @@ const PullPin = ({
   if (tags.length === 0) return <></>;
 
   return (
-    <Wrapper
-      width="332px"
-      $flexDirection="column"
-      $alignItems="center"
-      $justifyContent="center"
-      $backgroundColor="white"
-      position="fixed"
-      $borderRadius="small"
-      $zIndex={1}
-    >
+    <Wrapper>
       <Space size={6} />
       <Flex
         $flexDirection="row"
-        $justifyContent="left"
+        $justifyContent="center"
         $flexWrap="wrap"
         $gap="12px 12px"
       >
@@ -96,8 +87,29 @@ const PullPin = ({
   );
 };
 
-const Wrapper = styled(Flex)`
-  border-bottom: 2px solid ${({ theme }) => theme.color.black};
+const Wrapper = styled.section`
+  width: 332px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  position: fixed;
+  border-radius: ${({ theme }) => theme.radius.small};
+  z-index: 1;
+  border-bottom: 4px solid ${({ theme }) => theme.color.black};
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: calc(100vw - 40px);
+  }
+
+  @media (max-width: 372px) {
+    width: 332px;
+  }
 `;
 
 export default PullPin;

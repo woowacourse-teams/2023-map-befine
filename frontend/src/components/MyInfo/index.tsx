@@ -4,18 +4,46 @@ import Box from '../common/Box';
 import Text from '../common/Text';
 import Space from '../common/Space';
 import { useState } from 'react';
-import { MyInfoType } from '../../types/MyInfo';
+import { ProfileProps } from '../../types/Profile';
 import UpdateMyInfo from './UpdateMyInfo';
+import Button from '../common/Button';
+import useToast from '../../hooks/useToast';
+import { DEFAULT_PROD_URL } from '../../constants';
 
 const user = JSON.parse(localStorage.getItem('user') || '{}');
+const accessToken = localStorage.getItem('userToken');
 
 const MyInfo = () => {
+  const { showToast } = useToast();
+
   const [isThereImg, setIsThereImg] = useState<boolean>(true);
   const [isModifyMyInfo, setIsModifyMyInfo] = useState<boolean>(false);
-  const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<MyInfoType>({
+  const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<ProfileProps>({
     name: user.nickName,
     email: user.email,
   });
+
+  const onClickLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      fetch(`${DEFAULT_PROD_URL}/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          accessToken: accessToken,
+        }),
+      });
+
+      localStorage.removeItem('user');
+      localStorage.removeItem('userToken');
+      window.location.href = '/';
+      showToast('info', '로그아웃 되었습니다.');
+    } catch {
+      showToast('error', '로그아웃에 실패했습니다');
+    }
+  };
 
   if (isModifyMyInfo) {
     return (
@@ -37,11 +65,16 @@ const MyInfo = () => {
       $alignItems="center"
     >
       <MyInfoImg src={user.imageUrl} />
-      <Space size={7} />
+      <Space size={5} />
       <Box>
-        <Text color="black" $fontSize="default" $fontWeight="normal">
-          {user.nickName}
-        </Text>
+        <Flex $justifyContent="space-between" $alignItems="center">
+          <Text color="black" $fontSize="medium" $fontWeight="bold">
+            {user.nickName}
+          </Text>
+          <Button variant="primary" onClick={onClickLogout}>
+            로그아웃
+          </Button>
+        </Flex>
         <Text color="black" $fontSize="small" $fontWeight="normal">
           {user.email}
         </Text>

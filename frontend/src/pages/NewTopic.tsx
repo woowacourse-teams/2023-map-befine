@@ -1,9 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Button from '../components/common/Button';
-import { postApi } from '../apis/postApi';
 import useNavigator from '../hooks/useNavigator';
 import { NewTopicFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
@@ -12,54 +11,38 @@ import useToast from '../hooks/useToast';
 import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { DEFAULT_TOPIC_IMAGE, LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import Modal from '../components/Modal';
-import { styled } from 'styled-components';
-import { ModalContext } from '../context/ModalContext';
-import { getApi } from '../apis/getApi';
-import { Member } from '../types/Login';
-import Checkbox from '../components/common/CheckBox';
 import { TagContext } from '../context/TagContext';
+import usePost from '../apiHooks/usePost';
+import AuthorityRadioContainer from '../components/AuthorityRadioContainer';
+import styled from 'styled-components';
+import useCompressImage from '../hooks/useCompressImage';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
 const NewTopic = () => {
-  const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
-  const [isAll, setIsAll] = useState(true); // 모두 : 지정 인원
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { routePage } = useNavigator();
+  const { state: pulledPinIds } = useLocation();
+  const { showToast } = useToast();
+  const { width } = useSetLayoutWidth(SIDEBAR);
+  const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
+  const { setTags } = useContext(TagContext);
+  const { fetchPost } = usePost();
   const { formValues, errorMessages, onChangeInput } =
     useFormValues<NewTopicFormValuesType>({
       name: '',
       description: '',
       image: '',
     });
-  const { routePage } = useNavigator();
-  const { state: taggedIds } = useLocation();
-  const { showToast } = useToast();
-  const { width } = useSetLayoutWidth(SIDEBAR);
-  const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
-  const { setTags } = useContext(TagContext);
+  const { compressImage } = useCompressImage();
 
-  const [members, setMembers] = useState<Member[]>([]);
+  const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
+  const [isAllPermissioned, setIsAllPermissioned] = useState(true); // 모두 : 지정 인원
+  const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
 
-  useEffect(() => {
-    const getMemberData = async () => {
-      const memberData = await getApi<any>('default', `/members`);
-      setMembers(memberData);
-    };
-
-    getMemberData();
-  }, []);
-
-  //해당 토픽에 권한을 부여할 아이디들을 담는 state
-  //addAuthority에 인자로 넘겨줌
-  const [checkedMemberIds, setCheckedMemberIds] = useState<number[]>([]);
-
-  const handleChecked = (isChecked: boolean, id: number) =>
-    setCheckedMemberIds((prev: Member['id'][]) =>
-      isChecked ? [...prev, id] : prev.filter((n: number) => n !== id),
-    );
+  const [showImage, setShowImage] = useState<string>('');
+  const [formImage, setFormImage] = useState<File | null>(null);
 
   const goToBack = () => {
     routePage(-1);
@@ -73,106 +56,85 @@ const NewTopic = () => {
       return;
     }
 
-    if (isPrivate) {
-      const topicId = await postToServer();
+    const topicId = await createTopic();
 
-      const result = await addAuthority(topicId);
-      if (topicId) routePage(`/topics/${topicId}`);
-      return;
-    }
-
-    if (!isPrivate && !isAll) {
-      const topicId = await postToServer();
-
-      const result = await addAuthority(topicId);
-      if (topicId) routePage(`/topics/${topicId}`);
-      return;
-    }
-
-    if (!isAll && checkedMemberIds.length === 0) {
-      showToast('error', '멤버를 선택해주세요.');
-      return;
-    }
-
-    //생성하기 버튼 눌렀을 때 postToServer로 TopicId 받고, 받은 topicId로 권한 추가
-    try {
-      const topicId = await postToServer();
-
-      if (topicId) routePage(`/topics/${topicId}`);
-
-      showToast('info', '지도를 생성하였습니다.');
-    } catch {
-      showToast(
-        'error',
-        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
-      );
-    }
-  };
-
-  const postToServer = async () => {
-    const response =
-      taggedIds?.length > 1 && typeof taggedIds !== 'string'
-        ? await mergeTopics()
-        : await createTopic();
-    const location = response?.headers.get('Location');
-
-    if (location) {
-      const topicIdFromLocation = location.split('/')[2];
-      return topicIdFromLocation;
-    }
-  };
-
-  //header의 location으로 받아온 topicId에 권한 추가 기능
-  const addAuthority = async (topicId: any) => {
-    if (isAll && !isPrivate) return; // 모두 권한 준거면 return
-
-    const response = await postApi(`/permissions`, {
-      topicId: topicId,
-      memberIds: checkedMemberIds,
-    });
-    return response;
-  };
-
-  const mergeTopics = async () => {
-    try {
-      return await postApi('/topics/merge', {
-        image: formValues.image || DEFAULT_TOPIC_IMAGE,
-        name: formValues.name,
-        description: formValues.description,
-        topics: taggedIds,
-        publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-        permissionType: isAll ? 'ALL_MEMBERS' : 'GROUP_ONLY',
-      });
-    } catch {
-      showToast(
-        'error',
-        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
-      );
-      throw new Error('지도 생성 실패');
+    if (topicId) {
+      await addAuthorityToTopicWithGroupPermission(topicId);
+      routePage(`/topics/${topicId}`);
     }
   };
 
   const createTopic = async () => {
-    try {
-      return await postApi('/topics/new', {
-        image: formValues.image || DEFAULT_TOPIC_IMAGE,
-        name: formValues.name,
-        description: formValues.description,
-        pins: typeof taggedIds === 'string' ? taggedIds.split(',') : [],
-        publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-        permissionType: isPrivate
-          ? 'GROUP_ONLY'
-          : isAll
-          ? 'ALL_MEMBERS'
-          : 'GROUP_ONLY',
-      });
-    } catch {
+    const response = await postToServer();
+    const location = response?.headers.get('Location');
+
+    if (location) {
+      const topicIdFromLocation = location.split('/')[2];
+      return Number(topicIdFromLocation);
+    }
+  };
+
+  const postToServer = async () => {
+    const formData = new FormData();
+
+    if (formImage) {
+      formData.append('image', formImage);
+    }
+
+    const objectData = {
+      name: formValues.name,
+      description: formValues.description,
+      pins: pulledPinIds ? pulledPinIds.split(',') : [],
+      publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
+      permissionType:
+        isAllPermissioned && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+    };
+
+    const data = JSON.stringify(objectData);
+    const jsonBlob = new Blob([data], { type: 'application/json' });
+
+    formData.append('request', jsonBlob);
+
+    return fetchPost({
+      url: '/topics/new',
+      payload: formData,
+      errorMessage:
+        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
+      onSuccess: () => {
+        showToast('info', `${formValues.name} 지도를 생성하였습니다.`);
+      },
+    });
+  };
+
+  const addAuthorityToTopicWithGroupPermission = async (topicId: number) => {
+    if (isAllPermissioned) return;
+
+    fetchPost({
+      url: '/permissions',
+      payload: {
+        topicId,
+        memberIds: authorizedMemberIds,
+      },
+      errorMessage: `${formValues.name} 지도의 권한 설정에 실패했습니다.`,
+    });
+  };
+
+  const onTopicImageFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
       showToast(
         'error',
-        '지도 생성에 실패하였습니다. 입력하신 항목들을 다시 확인해주세요.',
+        '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
       );
-      throw new Error('지도 생성 실패');
+      return;
     }
+
+    const compressedFile = await compressImage(file);
+
+    setFormImage(compressedFile);
+    setShowImage(URL.createObjectURL(file));
   };
 
   return (
@@ -185,21 +147,35 @@ const NewTopic = () => {
         <Text color="black" $fontSize="large" $fontWeight="bold">
           지도 생성
         </Text>
+
         <Space size={5} />
-        <InputContainer
-          tagType="input"
-          containerTitle="지도 이미지"
-          isRequired={false}
-          name="image"
-          value={formValues.image}
-          placeholder="이미지 URL을 입력해주세요."
-          onChangeInput={onChangeInput}
-          tabIndex={1}
-          autoFocus
-          errorMessage={errorMessages.image}
-          maxLength={2048}
-        />
-        <Space size={1} />
+
+        <Text color="black" $fontSize="default" $fontWeight="normal">
+          지도 사진
+        </Text>
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
+          지도를 대표할 수 있는 사진을 추가해주세요.
+        </Text>
+        <Space size={0} />
+        <Flex>
+          {showImage && (
+            <>
+              <ShowImage src={showImage} alt={`사진 이미지`} />{' '}
+              <Space size={2} />{' '}
+            </>
+          )}
+
+          <ImageInputLabel htmlFor="file">파일 찾기</ImageInputLabel>
+          <ImageInputButton
+            id="file"
+            type="file"
+            name="image"
+            onChange={onTopicImageFileChange}
+          />
+        </Flex>
+
+        <Space size={5} />
+
         <InputContainer
           tagType="input"
           containerTitle="지도 이름"
@@ -212,7 +188,9 @@ const NewTopic = () => {
           errorMessage={errorMessages.name}
           maxLength={20}
         />
+
         <Space size={1} />
+
         <InputContainer
           tagType="textarea"
           containerTitle="한 줄 설명"
@@ -225,152 +203,20 @@ const NewTopic = () => {
           errorMessage={errorMessages.description}
           maxLength={100}
         />
+
         <Space size={1} />
-        <Text color="black" $fontSize="default" $fontWeight="normal">
-          공개 여부
-        </Text>
-        <Space size={1} />
-        <Flex>
-          <div>
-            <input
-              type="radio"
-              id="public"
-              name="accessibility"
-              value="public"
-              checked={!isPrivate}
-              onChange={() => setIsPrivate(false)}
-              tabIndex={4}
-            />
-            <label htmlFor="public">공개 지도</label>
-          </div>
-          <Space size={2} />
-          <div>
-            <input
-              type="radio"
-              id="private"
-              name="accessibility"
-              value="private"
-              checked={isPrivate}
-              onChange={() => setIsPrivate(true)}
-              tabIndex={4}
-            />
-            <label htmlFor="private">비공개 지도</label>
-          </div>
-        </Flex>
 
-        <Space size={5} />
-        <Space size={0} />
-        <Text color="black" $fontSize="default" $fontWeight="normal">
-          핀 생성 및 수정 권한
-        </Text>
-        <Space size={1} />
-        <Flex>
-          <div>
-            <input
-              type="radio"
-              id="ALL_MEMBERS"
-              name="pinAuthority"
-              value="all"
-              checked={isAll}
-              onChange={() => {
-                setIsAll(true);
-              }}
-              tabIndex={5}
-            />
-            {isPrivate ? (
-              <label htmlFor="ALL_MEMBERS">혼자</label>
-            ) : (
-              <label htmlFor="ALL_MEMBERS">모두</label>
-            )}
-          </div>
-          <Space size={2} />
-          <div>
-            <input
-              type="radio"
-              id="GROUP_ONLY"
-              name="pinAuthority"
-              value="some"
-              checked={!isAll}
-              onChange={() => {
-                setIsAll(false);
-                openModal('newTopic');
-                setCheckedMemberIds([]);
-              }}
-              tabIndex={5}
-            />
-            <label htmlFor="GROUP_ONLY">특정 인원 지정</label>
-          </div>
-        </Flex>
+        <AuthorityRadioContainer
+          isPrivate={isPrivate}
+          isAllPermissioned={isAllPermissioned}
+          authorizedMemberIds={authorizedMemberIds}
+          setIsPrivate={setIsPrivate}
+          setIsAllPermissioned={setIsAllPermissioned}
+          setAuthorizedMemberIds={setAuthorizedMemberIds}
+        />
 
-        <>
-          <Modal
-            modalKey="newTopic"
-            position="center"
-            width="400px"
-            height="520px"
-            overflow="scroll"
-            $dimmedColor="rgba(0, 0, 0, 0.5)"
-          >
-            <ModalContentsWrapper>
-              <Flex
-                padding={'12px'}
-                position="sticky"
-                top="0"
-                $justifyContent="space-between"
-                $alignItems="center"
-              >
-                <Text $fontSize="large" $fontWeight="bold" color="black">
-                  멤버 선택
-                </Text>
-                <Text $fontSize="small" $fontWeight="normal" color="black">
-                  {checkedMemberIds.length}명 선택됨
-                </Text>
-              </Flex>
-              <Space size={2} />
-              <CheckboxList>
-                {members.map((member) => (
-                  <CheckboxListItem key={member.id}>
-                    <Checkbox
-                      id={member.id}
-                      isAlreadyChecked={checkedMemberIds.includes(member.id)}
-                      label={member.nickName}
-                      onChecked={handleChecked}
-                    />
-                  </CheckboxListItem>
-                ))}
-              </CheckboxList>
-              <Space size={1} />
-              <Flex $justifyContent="end" padding={'12px'} bottom="0px">
-                <Button
-                  tabIndex={6}
-                  type="button"
-                  variant="secondary"
-                  onClick={() => {
-                    closeModal('newTopic');
-                    setIsAll(true);
-                    setCheckedMemberIds([]);
-                  }}
-                >
-                  취소하기
-                </Button>
-
-                <Space size={3} />
-
-                <Button
-                  tabIndex={6}
-                  variant="primary"
-                  onClick={() => {
-                    closeModal('newTopic');
-                  }}
-                >
-                  선택하기
-                </Button>
-              </Flex>
-              <Space size={2} />
-            </ModalContentsWrapper>
-          </Modal>
-        </>
         <Space size={6} />
+
         <Flex $justifyContent="end">
           <Button
             tabIndex={7}
@@ -396,34 +242,22 @@ const NewTopic = () => {
   );
 };
 
-const ModalContentsWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  display: flex;
-  flex-direction: column;
+const ImageInputLabel = styled.label`
+  height: 40px;
+  padding: 10px 10px;
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  cursor: pointer;
 `;
 
-const CheckboxList = styled.div`
-  flex: 1;
-  overflow-y: scroll;
+const ShowImage = styled.img`
+  width: 80px;
+  height: 80px;
 `;
 
-const CheckboxListItem = styled.div`
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-radius: 5px;
-  background-color: white;
-
-  &:last-child {
-    margin-bottom: 0;
-    border-bottom: none;
-  }
-
-  &:hover {
-    background-color: #f8f9fa;
-  }
+const ImageInputButton = styled.input`
+  display: none;
 `;
 
 export default NewTopic;

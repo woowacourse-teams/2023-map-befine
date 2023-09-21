@@ -8,10 +8,8 @@ import {
 } from 'react';
 import { styled } from 'styled-components';
 import Space from '../components/common/Space';
-import Flex from '../components/common/Flex';
-import { TopicDetailType } from '../types/Topic';
+import { TopicDetailProps } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
-import theme from '../themes';
 import PinDetail from './PinDetail';
 import { getApi } from '../apis/getApi';
 import PullPin from '../components/PullPin';
@@ -20,16 +18,16 @@ import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import PinsOfTopicSkeleton from '../components/PinsOfTopic/PinsOfTopicSkeleton';
+import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { TagContext } from '../context/TagContext';
-import { PinType } from '../types/Pin';
+import { PinProps } from '../types/Pin';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
 const SelectedTopic = () => {
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
-  const [topicDetails, setTopicDetails] = useState<TopicDetailType[] | null>(
+  const [topicDetails, setTopicDetails] = useState<TopicDetailProps[] | null>(
     null,
   );
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
@@ -39,13 +37,10 @@ const SelectedTopic = () => {
   const { setCoordinates } = useContext(CoordinatesContext);
   const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('');
+  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi<TopicDetailType[]>(
-      'default',
-      `/topics/ids?ids=${topicId}`,
-    );
+    const data = await getApi<TopicDetailProps[]>(`/topics/ids?ids=${topicId}`);
 
     const topicHashmap = new Map([]);
 
@@ -54,8 +49,8 @@ const SelectedTopic = () => {
     // 각 topic의 pin들의 좌표를 가져옴
     const newCoordinates: any = [];
 
-    data.forEach((topic: TopicDetailType) => {
-      topic.pins.forEach((pin: PinType) => {
+    data.forEach((topic: TopicDetailProps) => {
+      topic.pins.forEach((pin: PinProps) => {
         newCoordinates.push({
           id: pin.id,
           topicId: topic.id,
@@ -68,13 +63,13 @@ const SelectedTopic = () => {
 
     setCoordinates(newCoordinates);
 
-    data.forEach((topicDetailFromData: TopicDetailType) =>
+    data.forEach((topicDetailFromData: TopicDetailProps) =>
       topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
     );
 
     const topicDetailFromData = topicId
       ?.split(',')
-      .map((number) => topicHashmap.get(number)) as TopicDetailType[];
+      .map((number) => topicHashmap.get(number)) as TopicDetailProps[];
 
     if (!topicDetailFromData) return;
 
@@ -95,6 +90,8 @@ const SelectedTopic = () => {
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
+    } else {
+      setSelectedPinId(null);
     }
 
     setIsOpen(true);
@@ -112,69 +109,76 @@ const SelectedTopic = () => {
   if (!topicId) return <></>;
 
   return (
-    <>
-      <Flex
-        width={`calc(${width} - ${LAYOUT_PADDING})`}
-        $flexDirection="column"
-      >
-        <Space size={3} />
-        {tags.length > 0 && (
-          <PullPin
-            tags={tags}
-            confirmButton="뽑아오기"
-            onClickConfirm={onClickConfirm}
-            onClickClose={onTagCancel}
-          />
-        )}
-        <Suspense fallback={<PinsOfTopicSkeleton />}>
-          {topicDetails.map((topicDetail, idx) => (
-            <Fragment key={topicDetail.id}>
-              <PinsOfTopic
-                topicId={topicId}
-                idx={idx}
-                topicDetail={topicDetail}
-                setSelectedPinId={setSelectedPinId}
-                setIsEditPinDetail={setIsEditPinDetail}
-                setTopicsFromServer={getAndSetDataFromServer}
-              />
-              {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
-            </Fragment>
-          ))}
-        </Suspense>
+    <Wrapper
+      width={`calc(${width} - ${LAYOUT_PADDING})`}
+      $selectedPinId={selectedPinId}
+    >
+      <Space size={3} />
+      {tags.length > 0 && (
+        <PullPin
+          tags={tags}
+          confirmButton="뽑아오기"
+          onClickConfirm={onClickConfirm}
+          onClickClose={onTagCancel}
+        />
+      )}
+      <Suspense fallback={<PinsOfTopicSkeleton />}>
+        {topicDetails.map((topicDetail, idx) => (
+          <Fragment key={topicDetail.id}>
+            <PinsOfTopic
+              topicId={topicId.split(',')[idx]}
+              idx={idx}
+              topicDetail={topicDetail}
+              setSelectedPinId={setSelectedPinId}
+              setIsEditPinDetail={setIsEditPinDetail}
+              setTopicsFromServer={getAndSetDataFromServer}
+            />
+            {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
+          </Fragment>
+        ))}
+      </Suspense>
 
-        {selectedPinId && (
-          <>
-            <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>
-              ◀
-            </ToggleButton>
-            <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
-              <Flex
-                $backgroundColor="white"
-                width={width}
-                height="100vh"
-                overflow="auto"
-                position="absolute"
-                left={width}
-                top="0px"
-                padding={4}
-                $flexDirection="column"
-                $borderLeft={`1px solid ${theme.color.gray}`}
-                $zIndex={1}
-              >
-                <PinDetail
-                  topicId={topicId}
-                  pinId={selectedPinId}
-                  isEditPinDetail={isEditPinDetail}
-                  setIsEditPinDetail={setIsEditPinDetail}
-                />
-              </Flex>
-            </PinDetailWrapper>
-          </>
-        )}
-      </Flex>
-    </>
+      {selectedPinId && (
+        <>
+          <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>
+            ◀
+          </ToggleButton>
+          <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
+            <PinDetail
+              width={width}
+              topicId={topicId}
+              pinId={selectedPinId}
+              isEditPinDetail={isEditPinDetail}
+              setIsEditPinDetail={setIsEditPinDetail}
+            />
+          </PinDetailWrapper>
+        </>
+      )}
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.section<{
+  width: 'calc(100vw - 40px)' | 'calc(372px - 40px)';
+  $selectedPinId: number | null;
+}>`
+  display: flex;
+  flex-direction: column;
+  width: ${({ width }) => width};
+  margin: ${({ $selectedPinId }) => $selectedPinId === null && '0 auto'};
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: 100%;
+  }
+
+  @media (max-width: 372px) {
+    width: ${({ width }) => width};
+  }
+`;
 
 const PinDetailWrapper = styled.div`
   &.collapsedPinDetail {
@@ -182,7 +186,9 @@ const PinDetailWrapper = styled.div`
   }
 `;
 
-const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
+const ToggleButton = styled.button<{
+  $isCollapsed: boolean;
+}>`
   position: absolute;
   top: 50%;
   left: 744px;
@@ -206,6 +212,10 @@ const ToggleButton = styled.button<{ $isCollapsed: boolean }>`
 
   &:hover {
     background-color: #f5f5f5;
+  }
+
+  @media (max-width: 1076px) {
+    display: none;
   }
 `;
 

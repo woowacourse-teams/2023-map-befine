@@ -7,10 +7,10 @@ import Text from '../components/common/Text';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { DEFAULT_PROD_URL, FULLSCREEN } from '../constants';
 
-const LoginError = () => {
+const AskLogin = () => {
   const { width } = useSetLayoutWidth(FULLSCREEN);
 
-  const loginButtonClick = () => {
+  const loginButtonClick = async () => {
     window.location.href = `${DEFAULT_PROD_URL}/oauth/kakao`;
   };
 
@@ -53,4 +53,4 @@ const NotFoundButton = styled(Button)`
   border: 1px solid ${({ theme }) => theme.color.white};
 `;
 
-export default LoginError;
+export default AskLogin;

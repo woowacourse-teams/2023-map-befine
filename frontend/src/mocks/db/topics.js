@@ -1,17 +1,25 @@
 const topics = [
   {
-    id: '1',
-    name: '선릉 직장인이 추천하는 맛집',
-    image: 'image',
+    id: 1,
+    name: '준팍의 또 토픽',
+    image: 'https://map-befine-official.github.io/favicon.png',
+    creator: '준팍',
     pinCount: 3,
-    updatedAt: '2023-07-12',
+    isInAtlas: false,
+    bookmarkCount: 5,
+    isBookmarked: true,
+    updatedAt: '2023-08-17T20:44:58.712930015',
   },
   {
-    id: '2',
-    name: '산스장 모음',
-    image: 'image',
+    id: 2,
+    name: '준팍의 두번째 토픽',
+    image: 'https://map-befine-official.github.io/favicon.png',
+    creator: '준팍',
     pinCount: 5,
-    updatedAt: '2022-12-25',
+    isInAtlas: false,
+    bookmarkCount: 3,
+    isBookmarked: false,
+    updatedAt: '2023-08-17T20:44:58.712945115',
   },
 ];
 

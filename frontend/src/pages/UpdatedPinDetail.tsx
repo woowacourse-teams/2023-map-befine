@@ -1,13 +1,15 @@
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import Box from '../components/common/Box';
 import { putApi } from '../apis/putApi';
 import { SetURLSearchParams } from 'react-router-dom';
-import { ModifyPinFormProps } from '../types/FormValues';
+import { ModifyPinFormProps } from '../types/tmap';
 import InputContainer from '../components/InputContainer';
 import { hasErrorMessage, hasNullValue } from '../validations';
 import useToast from '../hooks/useToast';
+import Button from '../components/common/Button';
+import styled from 'styled-components';
+import usePut from '../apiHooks/usePut';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
@@ -15,6 +17,7 @@ interface UpdatedPinDetailProps {
   formValues: ModifyPinFormProps;
   errorMessages: Record<keyof ModifyPinFormProps, string>;
   setSearchParams: SetURLSearchParams;
+  updatePinDetailAfterEditing: () => void;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChangeInput: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -30,9 +33,11 @@ const UpdatedPinDetail = ({
   errorMessages,
   setSearchParams,
   setIsEditing,
+  updatePinDetailAfterEditing,
   onChangeInput,
 }: UpdatedPinDetailProps) => {
   const { showToast } = useToast();
+  const { fetchPut } = usePut();
 
   const removeQueryString = (key: string) => {
     const updatedSearchParams = { ...Object.fromEntries(searchParams) };
@@ -45,15 +50,19 @@ const UpdatedPinDetail = ({
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }
-    try {
-      await putApi(`/pins/${pinId}`, formValues);
-      setIsEditing(false);
-      removeQueryString('edit');
 
-      showToast('info', '핀 수정을 완료하였습니다.');
-    } catch (error) {
-      showToast('error', '해당 지도에 대해 수정 권한이 없습니다. ');
-    }
+    fetchPut({
+      url: `/pins/${pinId}`,
+      payload: formValues,
+      errorMessage: '입력하신 항목들을 다시 한 번 확인해주세요.',
+      onSuccess: () => {
+        setIsEditing(false);
+        removeQueryString('edit');
+        updatePinDetailAfterEditing();
+
+        showToast('info', '핀 수정을 완료하였습니다.');
+      },
+    });
   };
 
   const onClickCancelPinUpdate = () => {
@@ -62,7 +71,7 @@ const UpdatedPinDetail = ({
   };
 
   return (
-    <Flex $flexDirection="column">
+    <Wrapper>
       <Flex
         width="100%"
         height="180px"
@@ -89,10 +98,10 @@ const UpdatedPinDetail = ({
       <InputContainer
         tagType="input"
         containerTitle="장소 이름"
-        isRequired={false}
+        isRequired={true}
         name="name"
         value={formValues.name}
-        placeholder="지도를 클릭하거나 장소의 이름을 입력해주세요."
+        placeholder="50글자 이내로 장소의 이름을 입력해주세요."
         onChangeInput={onChangeInput}
         tabIndex={1}
         errorMessage={errorMessages.name}
@@ -100,12 +109,12 @@ const UpdatedPinDetail = ({
         maxLength={50}
       />
 
-      <Space size={5} />
+      <Space size={1} />
 
       <InputContainer
         tagType="textarea"
         containerTitle="장소 설명"
-        isRequired={false}
+        isRequired={true}
         name="description"
         value={formValues.description}
         placeholder="1000자 이내로 장소에 대한 의견을 남겨주세요."
@@ -116,33 +125,34 @@ const UpdatedPinDetail = ({
         maxLength={1000}
       />
 
-      <Space size={3} />
+      <Space size={6} />
 
       <Flex $justifyContent="end">
-        <Box cursor="pointer">
-          <Text
-            color="black"
-            $fontSize="default"
-            $fontWeight="normal"
-            onClick={onClickCancelPinUpdate}
-          >
-            취소
-          </Text>
-        </Box>
-        <Space size={2} />
-        <Box cursor="pointer">
-          <Text
-            color="primary"
-            $fontSize="default"
-            $fontWeight="normal"
-            onClick={onClickUpdatePin}
-          >
-            저장
-          </Text>
-        </Box>
+        <Button variant="secondary" onClick={onClickCancelPinUpdate}>
+          취소하기
+        </Button>
+        <Space size={3} />
+        <Button variant="primary" onClick={onClickUpdatePin}>
+          수정하기
+        </Button>
       </Flex>
-    </Flex>
+
+      <Space size={8} />
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  margin: 0 auto;
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: 332px;
+    margin: 0 auto;
+  }
+`;
 
 export default UpdatedPinDetail;

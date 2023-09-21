@@ -1,9 +1,3 @@
-export interface DefaultFormProps {
-  name: string;
-  address: string;
-  description: string;
-}
-
 export interface NewTopicFormProps {
   name: string;
   description: string;
@@ -13,7 +7,6 @@ export interface NewTopicFormProps {
 
 export interface ModifyPinFormProps {
   name: string;
-  images: string[];
   description: string;
 }
 

@@ -1,13 +1,16 @@
 import { styled } from 'styled-components';
-import NotFoundIcon from '../../assets/NotFoundIcon.svg';
-import useNavigator from '../../hooks/useNavigator';
-import Button from '../common/Button';
-import Flex from '../common/Flex';
-import Space from '../common/Space';
-import Text from '../common/Text';
+import NotFoundIcon from '../assets/NotFoundIcon.svg';
+import useNavigator from '../hooks/useNavigator';
+import Button from '../components/common/Button';
+import Flex from '../components/common/Flex';
+import Space from '../components/common/Space';
+import Text from '../components/common/Text';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import { FULLSCREEN } from '../constants';
 
 const NotFound = () => {
   const { routePage } = useNavigator();
+  useSetLayoutWidth(FULLSCREEN);
 
   return (
     <NotFoundContainer

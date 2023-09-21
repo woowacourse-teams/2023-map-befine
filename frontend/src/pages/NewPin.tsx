@@ -6,7 +6,7 @@ import Button from '../components/common/Button';
 import { postApi } from '../apis/postApi';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { getApi } from '../apis/getApi';
-import { TopicType } from '../types/Topic';
+import { TopicCardProps } from '../types/Topic';
 import useNavigator from '../hooks/useNavigator';
 import { NewPinFormProps } from '../types/FormValues';
 import useFormValues from '../hooks/useFormValues';
@@ -23,6 +23,8 @@ import { ModalContext } from '../context/ModalContext';
 import Modal from '../components/Modal';
 import { styled } from 'styled-components';
 import ModalMyTopicList from '../components/ModalMyTopicList';
+import { getMapApi } from '../apis/getMapApi';
+import useCompressImage from '../hooks/useCompressImage';
 
 type NewPinFormValueType = Pick<
   NewPinFormProps,
@@ -34,6 +36,7 @@ const NewPin = () => {
   const { navbarHighlights: _ } = useSetNavbarHighlight('addMapOrPin');
   const [topic, setTopic] = useState<any>(null);
   const [selectedTopic, setSelectedTopic] = useState<any>(null);
+  const [showedImages, setShowedImages] = useState<string[]>([]);
   const { clickedMarker } = useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
@@ -47,6 +50,9 @@ const NewPin = () => {
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { openModal, closeModal } = useContext(ModalContext);
+  const { compressImageList } = useCompressImage();
+
+  const [formImages, setFormImages] = useState<File[]>([]);
 
   const goToBack = () => {
     routePage(-1);
@@ -55,6 +61,8 @@ const NewPin = () => {
   const postToServer = async () => {
     let postTopicId = topic?.id;
     let postName = formValues.name;
+
+    const formData = new FormData();
 
     if (!topic) {
       //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
@@ -65,7 +73,11 @@ const NewPin = () => {
       postTopicId = selectedTopic.topicId;
     }
 
-    await postApi('/pins', {
+    formImages.forEach((file) => {
+      formData.append('images', file);
+    });
+
+    const objectData = {
       topicId: postTopicId,
       name: postName,
       address: clickedCoordinate.address,
@@ -73,8 +85,14 @@ const NewPin = () => {
       latitude: clickedCoordinate.latitude,
       longitude: clickedCoordinate.longitude,
       legalDongCode: '',
-      images: [],
-    });
+    };
+
+    const data = JSON.stringify(objectData);
+    const jsonBlob = new Blob([data], { type: 'application/json' });
+
+    formData.append('request', jsonBlob);
+
+    await postApi('/pins', formData);
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -101,8 +119,8 @@ const NewPin = () => {
       }
 
       setClickedCoordinate({
-        latitude: '',
-        longitude: '',
+        latitude: 0,
+        longitude: 0,
         address: '',
       });
 
@@ -116,7 +134,7 @@ const NewPin = () => {
       if (!topic) {
         //토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
         postTopicId = selectedTopic?.topicId;
-        postName = selectedTopic?.topicTitle;
+        postName = selectedTopic?.topicName;
       }
 
       if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
@@ -144,8 +162,7 @@ const NewPin = () => {
         const addr = data.roadAddress; // 주소 변수
 
         //data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getApi<any>(
-          'tMap',
+        const { ConvertAdd } = await getMapApi<any>(
           `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
         );
         const lat = ConvertAdd.oldLat;
@@ -162,19 +179,50 @@ const NewPin = () => {
     });
   };
 
+  const onPinImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const imageLists = event.target.files;
+    let imageUrlLists = [...showedImages];
+
+    if (!imageLists) {
+      showToast(
+        'error',
+        '추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
+      return;
+    }
+
+    const compressedImageList = await compressImageList(imageLists);
+
+    for (let i = 0; i < imageLists.length; i++) {
+      const currentImageUrl = URL.createObjectURL(compressedImageList[i]);
+      imageUrlLists.push(currentImageUrl);
+    }
+
+    if (imageUrlLists.length > 8) {
+      showToast(
+        'info',
+        '이미지 개수는 최대 8개까지만 선택 가능합니다. 다시 선택해 주세요.',
+      );
+      imageUrlLists = imageUrlLists.slice(0, 8);
+      return;
+    }
+
+    setFormImages([...formImages, ...compressedImageList]);
+    setShowedImages(imageUrlLists);
+  };
+
   useEffect(() => {
     const getTopicId = async () => {
       if (topicId && topicId.split(',').length === 1) {
-        const data = await getApi<TopicType>('default', `/topics/${topicId}`);
+        const data = await getApi<TopicCardProps>(`/topics/${topicId}`);
 
         setTopic(data);
       }
 
       if (topicId && topicId.split(',').length > 1) {
-        const topics = await getApi<any>(
-          'default',
-          `/topics/ids?ids=${topicId}`,
-        );
+        const topics = await getApi<any>(`/topics/ids?ids=${topicId}`);
 
         setTopic(topics);
       }
@@ -187,7 +235,7 @@ const NewPin = () => {
     <>
       <form onSubmit={onSubmit}>
         <Space size={4} />
-        <Flex
+        <Wrapper
           width={`calc(${width} - ${LAYOUT_PADDING})`}
           $flexDirection="column"
         >
@@ -197,32 +245,55 @@ const NewPin = () => {
 
           <Space size={5} />
 
-          <section>
-            <Flex>
-              <Text color="black" $fontSize="default" $fontWeight="normal">
-                지도 선택
-              </Text>
-              <Space size={0} />
-              <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-                *
-              </Text>
-            </Flex>
-            <Space size={0} />
-            <Button
-              type="button"
-              variant="primary"
-              onClick={() => {
-                if (topic && topic.name) return;
-                openModal('newPin');
-              }}
-            >
-              {topic?.name
-                ? topic?.name
-                : selectedTopic?.topicTitle
-                ? selectedTopic?.topicTitle
-                : '지도를 선택해주세요.'}
-            </Button>
-          </section>
+          <Text color="black" $fontSize="default" $fontWeight="normal">
+            지도 선택
+          </Text>
+
+          <Space size={2} />
+
+          <Button
+            type="button"
+            variant="primary"
+            onClick={() => {
+              if (topic && topic.name) return;
+              openModal('newPin');
+            }}
+          >
+            {topic?.name
+              ? topic?.name
+              : selectedTopic?.topicName
+              ? selectedTopic?.topicName
+              : '지도를 선택해주세요.'}
+          </Button>
+
+          <Space size={5} />
+
+          <Text color="black" $fontSize="default" $fontWeight="normal">
+            장소 사진
+          </Text>
+          <Text color="gray" $fontSize="small" $fontWeight="normal">
+            장소에 대한 사진을 추가해주세요.
+          </Text>
+          <Space size={0} />
+          <Flex>
+            <ImageInputLabel htmlFor="file">파일 찾기</ImageInputLabel>
+            <ImageInputButton
+              id="file"
+              type="file"
+              name="images"
+              onChange={onPinImageChange}
+              multiple
+            />
+          </Flex>
+          <Space size={0} />
+          <Flex $flexDirection="row" $flexWrap="wrap">
+            {showedImages.map((image, id) => (
+              <div key={id}>
+                <ShowImage src={image} alt={`${image}-${id}`} />
+                <Space size={0} />
+              </div>
+            ))}
+          </Flex>
 
           <Space size={5} />
 
@@ -242,27 +313,25 @@ const NewPin = () => {
 
           <Space size={1} />
 
-          <section>
-            <Flex>
-              <Text color="black" $fontSize="default" $fontWeight="normal">
-                장소 위치
-              </Text>
-              <Space size={0} />
-              <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-                *
-              </Text>
-            </Flex>
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              장소 위치
+            </Text>
             <Space size={0} />
-            <Input
-              name="address"
-              readOnly
-              value={clickedCoordinate.address}
-              onClick={onClickAddressInput}
-              onKeyDown={onClickAddressInput}
-              tabIndex={2}
-              placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
-            />
-          </section>
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
+              *
+            </Text>
+          </Flex>
+          <Space size={0} />
+          <Input
+            name="address"
+            readOnly
+            value={clickedCoordinate.address}
+            onClick={onClickAddressInput}
+            onKeyDown={onClickAddressInput}
+            tabIndex={2}
+            placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
+          />
 
           <Space size={5} />
 
@@ -295,13 +364,13 @@ const NewPin = () => {
               추가하기
             </Button>
           </Flex>
-        </Flex>
+        </Wrapper>
       </form>
 
       <Modal
         modalKey="newPin"
         position="center"
-        width="768px"
+        width="744px"
         height="512px"
         $dimmedColor="rgba(0,0,0,0.25)"
       >
@@ -321,14 +390,47 @@ const NewPin = () => {
   );
 };
 
+const Wrapper = styled(Flex)`
+  margin: 0 auto;
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: ${({ width }) => width};
+    margin: 0 auto;
+  }
+`;
+
 const ModalContentsWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: white;
-
-  text-align: center;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow: scroll;
+`;
+
+const ImageInputLabel = styled.label`
+  height: 40px;
+  padding: 10px 10px;
+
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  cursor: pointer;
+`;
+
+const ShowImage = styled.img`
+  width: 80px;
+  height: 80px;
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
 `;
 
 export default NewPin;
