@@ -1,7 +1,8 @@
+import { Suspense, lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
 import RootPage from './pages/RootPage';
-import { ReactNode, lazy } from 'react';
+import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './pages/NotFound';
 
@@ -26,6 +27,14 @@ interface routeElement {
   children: { path: string; element: ReactNode; withAuth: boolean }[];
 }
 
+interface SuspenseCompProps {
+  children: ReactNode;
+}
+
+const SuspenseComp = ({ children }: SuspenseCompProps) => {
+  return <Suspense fallback={null}>{children}</Suspense>;
+};
+
 const routes: routeElement[] = [
   {
     path: '/',
@@ -41,57 +50,101 @@ const routes: routeElement[] = [
       },
       {
         path: 'topics/:topicId',
-        element: <SelectedTopic />,
+        element: (
+          <SuspenseComp>
+            <SelectedTopic />
+          </SuspenseComp>
+        ),
         withAuth: false,
       },
       {
         path: 'new-topic',
-        element: <NewTopic />,
+        element: (
+          <SuspenseComp>
+            <NewTopic />
+          </SuspenseComp>
+        ),
         withAuth: true,
       },
       {
         path: 'new-pin',
-        element: <NewPin />,
+        element: (
+          <SuspenseComp>
+            <NewPin />
+          </SuspenseComp>
+        ),
         withAuth: true,
       },
       {
         path: 'see-all/popularity',
-        element: <SeeAllPopularTopics />,
+        element: (
+          <SuspenseComp>
+            <SeeAllPopularTopics />
+          </SuspenseComp>
+        ),
         withAuth: false,
       },
       {
         path: 'see-all/near',
-        element: <SeeAllNearTopics />,
+        element: (
+          <SuspenseComp>
+            <SeeAllNearTopics />
+          </SuspenseComp>
+        ),
         withAuth: false,
       },
       {
         path: 'see-all/latest',
-        element: <SeeAllLatestTopics />,
+        element: (
+          <SuspenseComp>
+            <SeeAllLatestTopics />
+          </SuspenseComp>
+        ),
         withAuth: false,
       },
       {
         path: 'see-together',
-        element: <SeeTogetherTopics />,
+        element: (
+          <SuspenseComp>
+            <SeeTogetherTopics />
+          </SuspenseComp>
+        ),
         withAuth: true,
       },
       {
         path: 'favorite',
-        element: <Bookmark />,
+        element: (
+          <SuspenseComp>
+            <Bookmark />
+          </SuspenseComp>
+        ),
         withAuth: true,
       },
       {
         path: 'my-page',
-        element: <Profile />,
+        element: (
+          <SuspenseComp>
+            <Profile />
+          </SuspenseComp>
+        ),
         withAuth: true,
       },
       {
         path: '/askLogin',
-        element: <AskLogin />,
+        element: (
+          <SuspenseComp>
+            <AskLogin />
+          </SuspenseComp>
+        ),
         withAuth: false,
       },
       {
         path: '/oauth/redirected/kakao',
-        element: <KakaoRedirect />,
+        element: (
+          <SuspenseComp>
+            <KakaoRedirect />
+          </SuspenseComp>
+        ),
         withAuth: false,
       },
     ],
