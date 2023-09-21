@@ -1,0 +1,13 @@
+== 소셜 로그인
+
+=== KAKAO 로그인 URL 반환
+
+operation::login-controller-test/redirection[snippets='http-request,http-response']
+
+=== KAKAO 로그인
+
+operation::login-controller-test/login[snippets='http-request,http-response']
+
+=== 로그아웃
+
+operation::login-controller-test/logout[snippets='http-request,http-response']

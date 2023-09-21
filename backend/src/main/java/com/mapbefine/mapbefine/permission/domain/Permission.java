@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Permission extends BaseTimeEntity {
 
+    // TODO 매핑 테이블인데 Id를 가져야 할까?
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

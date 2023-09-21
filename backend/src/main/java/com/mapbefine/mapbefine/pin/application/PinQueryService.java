@@ -40,7 +40,7 @@ public class PinQueryService {
                 .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
         validateReadAuth(member, pin.getTopic());
 
-        return PinDetailResponse.from(pin);
+        return PinDetailResponse.of(pin, member.canPinCreateOrUpdate(pin.getTopic()));
     }
 
     private void validateReadAuth(AuthMember member, Topic topic) {
@@ -52,7 +52,7 @@ public class PinQueryService {
     }
 
     public List<PinResponse> findAllPinsByMemberId(AuthMember authMember, Long memberId) {
-        return pinRepository.findByCreatorId(memberId)
+        return pinRepository.findAllByCreatorId(memberId)
                 .stream()
                 .filter(pin -> authMember.canRead(pin.getTopic()))
                 .map(PinResponse::from)

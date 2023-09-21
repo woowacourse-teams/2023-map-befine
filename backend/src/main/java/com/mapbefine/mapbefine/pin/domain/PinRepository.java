@@ -18,9 +18,12 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
     @Query("update Pin p set p.isDeleted = true where p.id = :pinId")
     void deleteById(@Param("pinId") Long pinId);
 
+    @Modifying(clearAutomatically = true)
+    @Query("update Pin p set p.isDeleted = true where p.creator.id = :memberId")
+    void deleteAllByMemberId(@Param("memberId") Long memberId);
+
     List<Pin> findAllByTopicId(Long topicId);
 
-    List<Pin> findByCreatorId(Long creatorId);
+    List<Pin> findAllByCreatorId(Long creatorId);
 
-    List<Pin> findAllByOrderByUpdatedAtDesc();
 }

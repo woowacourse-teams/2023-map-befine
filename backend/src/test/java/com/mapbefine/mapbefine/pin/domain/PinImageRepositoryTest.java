@@ -14,6 +14,7 @@ import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -87,4 +88,30 @@ class PinImageRepositoryTest {
                 .extractingResultOf("isDeleted")
                 .containsOnly(true);
     }
+
+    @Test
+    @DisplayName("여러 핀을 Id로 삭제하면, 핀 이미지들도 soft-deleting 된다.")
+    void deleteAllByMemberId_Success() {
+        //given
+        Pin otherPin = pinRepository.save(PinFixture.create(pin.getLocation(), topic, member));
+
+        PinImage pinImage1 = PinImageFixture.create(pin);
+        PinImage pinImage2 = PinImageFixture.create(otherPin);
+        pinImageRepository.save(pinImage1);
+        pinImageRepository.save(pinImage2);
+
+        //when
+        assertThat(pinImage1.isDeleted()).isFalse();
+        assertThat(pinImage2.isDeleted()).isFalse();
+        pinImageRepository.deleteAllByPinIds(List.of(pin.getId(),otherPin.getId()));
+
+        //then
+        assertThat(pinImageRepository.findAllByPinId(pin.getId()))
+                .extractingResultOf("isDeleted")
+                .containsOnly(true);
+        assertThat(pinImageRepository.findAllByPinId(otherPin.getId()))
+                .extractingResultOf("isDeleted")
+                .containsOnly(true);
+    }
+
 }
