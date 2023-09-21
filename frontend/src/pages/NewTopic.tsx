@@ -38,7 +38,7 @@ const NewTopic = () => {
   const { compressImage } = useCompressImage();
 
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
-  const [isAllPermissioned, setIsAllPermissioned] = useState(true); // 모두 : 지정 인원
+  const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
 
   const [showImage, setShowImage] = useState<string>('');
@@ -86,8 +86,7 @@ const NewTopic = () => {
       description: formValues.description,
       pins: pulledPinIds ? pulledPinIds.split(',') : [],
       publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-      permissionType:
-        isAllPermissioned && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+      permissionType: isPublic && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
     };
 
     const data = JSON.stringify(objectData);
@@ -107,13 +106,13 @@ const NewTopic = () => {
   };
 
   const addAuthorityToTopicWithGroupPermission = async (topicId: number) => {
-    if (isAllPermissioned) return;
+    if (isPublic) return;
 
     fetchPost({
       url: '/permissions',
       payload: {
         topicId,
-        memberIds: authorizedMemberIds,
+        memberIds: isPrivate ? [] : authorizedMemberIds,
       },
       errorMessage: `${formValues.name} 지도의 권한 설정에 실패했습니다.`,
     });
@@ -151,21 +150,15 @@ const NewTopic = () => {
         <Space size={5} />
 
         <Text color="black" $fontSize="default" $fontWeight="normal">
-          지도 사진
+          지도 선택
         </Text>
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
-          지도를 대표할 수 있는 사진을 추가해주세요.
-        </Text>
-        <Space size={0} />
-        <Flex>
-          {showImage && (
-            <>
-              <ShowImage src={showImage} alt={`사진 이미지`} />{' '}
-              <Space size={2} />{' '}
-            </>
-          )}
 
-          <ImageInputLabel htmlFor="file">파일 찾기</ImageInputLabel>
+        <Space size={2} />
+
+        <Flex>
+          {showImage && <ShowImage src={showImage} alt={`사진 이미지`} />}
+          <Space size={2} />
+          <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
           <ImageInputButton
             id="file"
             type="file"
@@ -208,10 +201,10 @@ const NewTopic = () => {
 
         <AuthorityRadioContainer
           isPrivate={isPrivate}
-          isAllPermissioned={isAllPermissioned}
+          isPublic={isPublic}
           authorizedMemberIds={authorizedMemberIds}
           setIsPrivate={setIsPrivate}
-          setIsAllPermissioned={setIsAllPermissioned}
+          setIsPublic={setIsPublic}
           setAuthorizedMemberIds={setAuthorizedMemberIds}
         />
 

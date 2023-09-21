@@ -109,7 +109,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
           </RouteButton>
         </Flex>
       </Modal>
-    </>
+    </Wrapper>
   );
 };
 

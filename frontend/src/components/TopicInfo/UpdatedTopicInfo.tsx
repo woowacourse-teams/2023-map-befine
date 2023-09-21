@@ -47,7 +47,7 @@ const UpdatedTopicInfo = ({
   const [topicAuthorInfo, setTopicAuthorInfo] =
     useState<TopicAuthorInfo | null>(null);
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
-  const [isAllPermissioned, setIsAllPermissioned] = useState(true); // 모두 : 지정 인원
+  const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
 
   const updateTopicInfo = async () => {
@@ -59,39 +59,27 @@ const UpdatedTopicInfo = ({
           image,
           description: formValues.description,
           publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-          permissionType:
-            isAllPermissioned && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+          permissionType: isPublic && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
         },
         errorMessage: `권한은 '공개 ➡️ 비공개', '모두 ➡️ 친구', '친구 ➡️ 혼자' 로 변경할 수 없습니다.`,
         isThrow: true,
       });
 
-      // // TODO : 수정해야하는 로직
-      // if (authorizedMemberIds.length === 0) {
-      //   await deleteTopicPermissionMembers();
-      // }
-
-      // if (authorizedMemberIds.length > 0) {
-      //   await deleteTopicPermissionMembers();
-      //   await updateTopicPermissionMembers();
-      // }
+      if (authorizedMemberIds.length > 0) await updateTopicAuthority();
 
       showToast('info', '지도를 수정하였습니다.');
       setIsUpdate(false);
     } catch {}
   };
 
-  const deleteTopicPermissionMembers = async () => {
-    if (topicAuthorInfo && topicAuthorInfo.permissionedMembers[0]) {
-      await fetchDelete({
-        url: `/permissions/${topicAuthorInfo.permissionedMembers[0].id}`,
-        errorMessage: '권한 삭제에 실패했습니다.',
-        isThrow: true,
-      });
-    }
-  };
+  const updateTopicAuthority = async () => {
+    // topicAuthorInfo api 구조 이상으로 권한 설정 자체에 대한 id를 사용 (topicId 아님)
+    await fetchDelete({
+      url: `/permissions/${topicAuthorInfo?.permissionedMembers[0].id}`,
+      errorMessage: '권한 삭제에 실패했습니다.',
+      isThrow: true,
+    });
 
-  const updateTopicPermissionMembers = async () => {
     await fetchPost({
       url: '/permissions',
       payload: {
@@ -115,7 +103,7 @@ const UpdatedTopicInfo = ({
         setTopicAuthorInfo(response);
         setIsPrivate(response.publicity === 'PRIVATE');
 
-        setIsAllPermissioned(response.permissionedMembers.length === 0);
+        setIsPublic(response.permissionedMembers.length === 0);
       },
     );
   }, []);
@@ -150,15 +138,15 @@ const UpdatedTopicInfo = ({
         maxLength={100}
       />
 
-      {/* <AuthorityRadioContainer
+      <AuthorityRadioContainer
         isPrivate={isPrivate}
-        isAllPermissioned={isAllPermissioned}
+        isPublic={isPublic}
         authorizedMemberIds={authorizedMemberIds}
         setIsPrivate={setIsPrivate}
-        setIsAllPermissioned={setIsAllPermissioned}
+        setIsPublic={setIsPublic}
         setAuthorizedMemberIds={setAuthorizedMemberIds}
         permissionedMembers={topicAuthorInfo?.permissionedMembers}
-      /> */}
+      />
 
       <Space size={6} />
 
