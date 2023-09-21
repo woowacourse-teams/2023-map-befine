@@ -1,20 +1,21 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
-import NewPin from './pages/NewPin';
-import NewTopic from './pages/NewTopic';
 import RootPage from './pages/RootPage';
-import SelectedTopic from './pages/SelectedTopic';
-import SeeAllPopularTopics from './pages/SeeAllPopularTopics';
-import SeeAllNearTopics from './pages/SeeAllNearTopics';
-import SeeAllLatestTopics from './pages/SeeAllLatestTopics';
-import KakaoRedirect from './pages/KakaoRedirect';
-import { ReactNode } from 'react';
+import { ReactNode, lazy } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './pages/NotFound';
-import SeeTogetherTopics from './pages/SeeTogetherTopics';
-import Profile from './pages/Profile';
-import AskLogin from './pages/AskLogin';
-import Bookmark from './pages/Bookmark';
+
+const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
+const NewPin = lazy(() => import('./pages/NewPin'));
+const NewTopic = lazy(() => import('./pages/NewTopic'));
+const SeeAllPopularTopics = lazy(() => import('./pages/SeeAllPopularTopics'));
+const SeeAllNearTopics = lazy(() => import('./pages/SeeAllNearTopics'));
+const SeeAllLatestTopics = lazy(() => import('./pages/SeeAllLatestTopics'));
+const KakaoRedirect = lazy(() => import('./pages/KakaoRedirect'));
+const SeeTogetherTopics = lazy(() => import('./pages/SeeTogetherTopics'));
+const Profile = lazy(() => import('./pages/Profile'));
+const AskLogin = lazy(() => import('./pages/AskLogin'));
+const Bookmark = lazy(() => import('./pages/Bookmark'));
 
 interface routeElement {
   path: string;
