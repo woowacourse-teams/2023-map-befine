@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.topic;
 
 
+import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
@@ -15,8 +16,8 @@ public class TopicFixture {
 
     public static Topic createPrivateAndGroupOnlyTopic(Member member) {
         return Topic.createTopicAssociatedWithCreator(
-                "토픽 멤버만 읽을 수 있는 토픽",
-                "토픽 멤버만 읽을 수 있습니다.",
+                "토픽 회원만 읽을 수 있는 토픽",
+                "토픽 회원만 읽을 수 있습니다.",
                 IMAGE_URL,
                 Publicity.PRIVATE,
                 PermissionType.GROUP_ONLY,
@@ -39,7 +40,7 @@ public class TopicFixture {
         return Topic.createTopicAssociatedWithCreator(
                 name,
                 "설명",
-                null,
+                IMAGE_URL,
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
                 member
@@ -50,7 +51,7 @@ public class TopicFixture {
         return Topic.createTopicAssociatedWithCreator(
                 name,
                 "설명",
-                null,
+                IMAGE_URL,
                 Publicity.PRIVATE,
                 PermissionType.GROUP_ONLY,
                 member
@@ -62,7 +63,20 @@ public class TopicFixture {
     ) {
         return new TopicCreateRequest(
                 "아무나 읽을 수 있는 토픽",
-                IMAGE_URL,
+                FileFixture.createFile(),
+                "아무나 읽을 수 있는 토픽입니다.",
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                pinIds
+        );
+    }
+
+    public static TopicCreateRequest createPublicAndAllMembersAndEmptyImageCreateRequestWithPins(
+            List<Long> pinIds
+    ) {
+        return new TopicCreateRequest(
+                "아무나 읽을 수 있는 토픽",
+                null,
                 "아무나 읽을 수 있는 토픽입니다.",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -75,7 +89,7 @@ public class TopicFixture {
     ) {
         return new TopicMergeRequest(
                 "아무나 읽을 수 있는 토픽",
-                IMAGE_URL,
+                FileFixture.createFile(),
                 "아무나 읽을 수 있는 토픽입니다.",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,

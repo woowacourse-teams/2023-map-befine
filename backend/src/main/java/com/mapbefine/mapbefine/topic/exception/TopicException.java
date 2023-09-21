@@ -23,6 +23,10 @@ public class TopicException {
         public TopicNotFoundException(TopicErrorCode errorCode, List<Long> ids) {
             super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), ids));
         }
+
+        public TopicNotFoundException(TopicErrorCode errorCode, Long id) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), id));
+        }
     }
 
 }

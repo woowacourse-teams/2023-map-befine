@@ -53,7 +53,7 @@ class LocationControllerTest extends RestDocsIntegration {
 
     @Test
     @DisplayName("현재 위치를 기준 토픽의 핀 개수로 나열한다.")
-    void findNearbyTopicsSortedByPinCount_Success() throws Exception {
+    void findNearbyTopicsSortedByPinCount() throws Exception {
         //given
         double latitude = 37;
         double longitude = 127;

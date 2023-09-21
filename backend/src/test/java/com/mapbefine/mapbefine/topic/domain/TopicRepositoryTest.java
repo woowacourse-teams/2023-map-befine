@@ -6,6 +6,8 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.topic.TopicFixture;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,24 +27,14 @@ class TopicRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = MemberFixture.create("member", "member@naver.com", Role.USER);
-        memberRepository.save(member);
+        member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
     }
 
     @Test
     @DisplayName("토픽을 삭제하면, soft-deleting 된다.")
     void deleteById_Success() {
         //given
-        Topic topic = Topic.createTopicAssociatedWithCreator(
-                "토픽",
-                "토픽설명",
-                "https://example.com/image.jpg",
-                Publicity.PUBLIC,
-                PermissionType.ALL_MEMBERS,
-                member
-        );
-
-        topicRepository.save(topic);
+        Topic topic = topicRepository.save(TopicFixture.createByName("Topic", member));
 
         assertThat(topic.isDeleted()).isFalse();
 
@@ -54,4 +46,24 @@ class TopicRepositoryTest {
         assertThat(deletedTopic.isDeleted()).isTrue();
     }
 
+    @Test
+    @DisplayName("Member Id로 모든 토픽을 삭제하면, soft-deleting 된다.")
+    void deleteAllByMemberId_Success() {
+        //given
+        for (int i = 0; i < 10; i++) {
+            topicRepository.save(TopicFixture.createByName("topic" + i, member));
+        }
+        assertThat(member.getCreatedTopics()).hasSize(10)
+                .extractingResultOf("isDeleted")
+                .containsOnly(false);
+
+        //when
+        topicRepository.deleteAllByMemberId(member.getId());
+
+        //then
+        List<Topic> deletedTopics = topicRepository.findAllByCreatorId(member.getId());
+        assertThat(deletedTopics).hasSize(10)
+                .extractingResultOf("isDeleted")
+                .containsOnly(true);
+    }
 }
