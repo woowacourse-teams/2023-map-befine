@@ -4,7 +4,7 @@ import withTokenRefresh from './utils';
 
 export const postApi = async (
   url: string,
-  payload: {} | FormData,
+  payload?: {} | FormData,
   contentType?: ContentTypeType,
 ) => {
   return await withTokenRefresh(async () => {
