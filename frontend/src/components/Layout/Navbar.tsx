@@ -25,14 +25,14 @@ interface NavBarProps {
   $layoutWidth: '100vw' | '372px';
 }
 
-type NavbarItem = {
+interface NavbarItemProps {
   key: NavbarHighlightKeys;
   label: string;
   icon: React.FunctionComponent;
   focusIcon: React.FunctionComponent;
-};
+}
 
-const NAV_ITEMS: NavbarItem[] = [
+const NAV_ITEMS: NavbarItemProps[] = [
   { key: 'home', label: '홈', icon: Home, focusIcon: FocusHome },
   {
     key: 'seeTogether',
