@@ -1,5 +1,4 @@
 import Space from '../components/common/Space';
-import Box from '../components/common/Box';
 import useNavigator from '../hooks/useNavigator';
 import { css, styled } from 'styled-components';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
@@ -15,23 +14,15 @@ const TopicListContainer = lazy(
 );
 
 const Home = () => {
-  const { routePage } = useNavigator();
+  const { routingHandlers } = useNavigator();
+  const { goToPopularTopics, goToLatestTopics, goToNearByMeTopics } =
+    routingHandlers;
+
   const { markers, removeMarkers, removeInfowindows } =
     useContext(MarkerContext);
+
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
-
-  const goToPopularTopics = () => {
-    routePage('see-all/popularity');
-  };
-
-  const goToNearByMeTopics = () => {
-    routePage('see-all/near');
-  };
-
-  const goToLatestTopics = () => {
-    routePage('see-all/latest');
-  };
 
   useEffect(() => {
     if (markers && markers.length > 0) {
