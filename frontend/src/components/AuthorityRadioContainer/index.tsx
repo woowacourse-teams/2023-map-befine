@@ -16,20 +16,20 @@ import useGet from '../../apiHooks/useGet';
 
 interface AuthorityRadioContainer {
   isPrivate: boolean;
-  isPublic: boolean;
+  isAllPermissioned: boolean;
   authorizedMemberIds: number[];
   setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsPublic: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAllPermissioned: React.Dispatch<React.SetStateAction<boolean>>;
   setAuthorizedMemberIds: React.Dispatch<React.SetStateAction<number[]>>;
   permissionedMembers?: TopicAuthorMemberWithAuthorId[];
 }
 
 const AuthorityRadioContainer = ({
   isPrivate,
-  isPublic,
+  isAllPermissioned,
   authorizedMemberIds,
   setIsPrivate,
-  setIsPublic,
+  setIsAllPermissioned,
   setAuthorizedMemberIds,
   permissionedMembers,
 }: AuthorityRadioContainer) => {
@@ -38,7 +38,7 @@ const AuthorityRadioContainer = ({
 
   const [members, setMembers] = useState<TopicAuthorMember[]>([]);
   const viewPrevAuthorMembersCondition =
-    authorizedMemberIds.length === 0 && !isPublic;
+    authorizedMemberIds.length === 0 && !isAllPermissioned;
 
   useEffect(() => {
     fetchGet<TopicAuthorMember[]>(
@@ -51,13 +51,13 @@ const AuthorityRadioContainer = ({
   }, []);
 
   const onChangeInitAuthMembers = () => {
-    setIsPublic(false);
+    setIsAllPermissioned(false);
     openModal('newTopic');
     setAuthorizedMemberIds([]);
   };
 
-  const onChangeInitAuthMembersWithSetIsPublic = () => {
-    setIsPublic(true);
+  const onChangeInitAuthMembersWithSetIsAllPermissioned = () => {
+    setIsAllPermissioned(true);
     setAuthorizedMemberIds([]);
   };
 
@@ -113,8 +113,8 @@ const AuthorityRadioContainer = ({
           <input
             type="radio"
             id="permission-all"
-            checked={isPublic}
-            onChange={onChangeInitAuthMembersWithSetIsPublic}
+            checked={isAllPermissioned}
+            onChange={onChangeInitAuthMembersWithSetIsAllPermissioned}
             tabIndex={5}
           />
           <Space size={1} />
@@ -130,10 +130,10 @@ const AuthorityRadioContainer = ({
         <input
           type="radio"
           id="permission-group"
-          checked={!isPublic}
+          checked={!isAllPermissioned}
           onChange={onChangeInitAuthMembers}
           onClick={() => {
-            isPublic === false && openModal('newTopic');
+            isAllPermissioned === false && openModal('newTopic');
           }}
           tabIndex={5}
         />
@@ -242,7 +242,7 @@ const AuthorityRadioContainer = ({
               variant="secondary"
               onClick={() => {
                 closeModal('newTopic');
-                setIsPublic(true);
+                setIsAllPermissioned(true);
                 setAuthorizedMemberIds([]);
               }}
             >
