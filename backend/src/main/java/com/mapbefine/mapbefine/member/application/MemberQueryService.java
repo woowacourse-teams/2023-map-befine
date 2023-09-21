@@ -37,7 +37,6 @@ public class MemberQueryService {
                 .orElseThrow(() -> new MemberNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND, id));
     }
 
-    // TODO: 2023/09/13 차단된 or 탈퇴한 사용자 필터링 필요
     public List<MemberResponse> findAll() {
         return memberRepository.findAll()
                 .stream()

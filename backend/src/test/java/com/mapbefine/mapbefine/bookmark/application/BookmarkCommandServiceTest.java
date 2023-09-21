@@ -39,8 +39,8 @@ class BookmarkCommandServiceTest {
     private TestEntityManager testEntityManager;
 
     @Test
-    @DisplayName("다른 회원의 토픽을 즐겨찾기에 추가할 수 있다.")
-    void addTopicInBookmark_Success() {
+    @DisplayName("다른 유저의 토픽을 즐겨찾기에 추가할 수 있다.")
+    public void addTopicInBookmark_Success() {
         //given
         Member creator = MemberFixture.create(
                 "member",
@@ -72,8 +72,8 @@ class BookmarkCommandServiceTest {
     }
 
     @Test
-    @DisplayName("권한이 없는 다른 회원의 토픽을 즐겨찾기에 추가할 수 없다.")
-    void addTopicInBookmark_Fail1() {
+    @DisplayName("권한이 없는 다른 유저의 토픽을 즐겨찾기에 추가할 수 없다.")
+    public void addTopicInBookmark_Fail1() {
         //given
         Member creator = MemberFixture.create(
                 "member",
@@ -102,7 +102,7 @@ class BookmarkCommandServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 목록에 있는 토픽을 삭제할 수 있다.")
-    void deleteTopicInBookmark_Success() {
+    public void deleteTopicInBookmark_Success() {
         //given
         Member creator = MemberFixture.create(
                 "member",
@@ -136,7 +136,7 @@ class BookmarkCommandServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 목록에 있는 권한이 없는 토픽은 삭제할 수 없다.")
-    void deleteTopicInBookmark_Fail() {
+    public void deleteTopicInBookmark_Fail() {
         //given
         Member creator = MemberFixture.create(
                 "member",
@@ -167,7 +167,7 @@ class BookmarkCommandServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 목록에 있는 모든 토픽을 삭제할 수 있다")
-    void deleteAllBookmarks_Success() {
+    public void deleteAllBookmarks_Success() {
         //given
         Member creatorBefore = memberRepository.save(MemberFixture.create(
                 "member",
@@ -197,7 +197,7 @@ class BookmarkCommandServiceTest {
 
         //then
         Member creatorAfter = memberRepository.findById(creatorBefore.getId()).get();
-        assertThat(creatorAfter.getBookmarks()).isEmpty();
+        assertThat(creatorAfter.getBookmarks()).hasSize(0);
     }
 
 }

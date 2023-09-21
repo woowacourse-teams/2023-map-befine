@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.auth.domain.member;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicStatus;
 import java.util.List;
@@ -53,11 +52,6 @@ public class User extends AuthMember {
 
     private boolean hasPermission(Long topicId) {
         return createdTopic.contains(topicId) || topicsWithPermission.contains(topicId);
-    }
-
-    @Override
-    public boolean isRole(Role role) {
-        return Role.USER == role;
     }
 
 }

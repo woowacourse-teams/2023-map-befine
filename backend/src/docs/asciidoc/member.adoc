@@ -1,29 +1,25 @@
-== 회원
+== 유저
 
-=== 회원 목록 조회
+=== 유저 목록 조회
 
 operation::member-controller-test/find-all-member[snippets='http-request,http-response']
 
-=== 회원 단일 조회
+=== 유저 단일 조회
 
 operation::member-controller-test/find-member-by-id[snippets='http-request,http-response']
 
-=== 회원의 나의 지도 목록 조회
+=== 유저의 나의 지도 목록 조회
 
 operation::member-controller-test/find-my-all-topics[snippets='http-request,http-response']
 
-=== 회원의 나의 핀 목록 조회
+=== 유저의 나의 핀 목록 조회
 
 operation::member-controller-test/find-my-all-pins[snippets='http-request,http-response']
 
-=== 회원의 모아보기 조회
+=== 유저의 모아보기 조회
 
 operation::member-controller-test/find-all-topics-in-atlas[snippets='http-request,http-response']
 
-=== 회원의 즐겨찾기 조회
+=== 유저의 즐겨찾기 조회
 
 operation::member-controller-test/find-all-topics-in-bookmark[snippets='http-request,http-response']
-
-=== 회원의 내 정보 수정
-
-operation::member-controller-test/update-my-info[snippets='http-request,http-response']

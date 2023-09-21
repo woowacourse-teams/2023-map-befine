@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.topic.domain;
 
-import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PERMISSION_FOR_PUBLICITY_PRIVATE;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PERMISSION_NULL;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PERMISSION_FOR_PUBLICITY_PRIVATE;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PERMISSION_UPDATE;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PUBLICITY_FOR_PERMISSION_ALL_MEMBERS;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_PUBLICITY_NULL;

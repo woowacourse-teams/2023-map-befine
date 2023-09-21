@@ -18,9 +18,6 @@ public interface PinImageRepository extends JpaRepository<PinImage, Long> {
     @Query("update PinImage p set p.isDeleted = true where p.id = :id")
     void deleteById(@Param("id") Long id);
 
-    @Modifying(clearAutomatically = true)
-    @Query("update PinImage p set p.isDeleted = true where p.pin.id in :pinIds")
-    void deleteAllByPinIds(@Param("pinIds") List<Long> pinIds);
-
     List<PinImage> findAllByPinId(Long pinId);
+    
 }

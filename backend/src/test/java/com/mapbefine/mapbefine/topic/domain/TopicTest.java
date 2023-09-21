@@ -8,9 +8,7 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TopicTest {
@@ -35,7 +33,6 @@ class TopicTest {
     }
 
     @Test
-    @DisplayName("토픽 정보를 변경한다.")
     void updateTopicInfo() {
         //given
         String name = "New Topic";
@@ -57,7 +54,6 @@ class TopicTest {
     }
 
     @Test
-    @DisplayName("토픽 상태를 변경한다.")
     void updateTopicStatus() {
         //given
         Publicity publicity = Publicity.PRIVATE;
@@ -76,7 +72,6 @@ class TopicTest {
     }
 
     @Test
-    @DisplayName("토픽의 핀 개수를 알 수 있다.")
     void countPins() {
         //given
         topic.addPin(pin);
@@ -86,27 +81,15 @@ class TopicTest {
 
         //then
         assertThat(pinCounts).isEqualTo(2);
+        // 핀이 처음 생성됐을 때, 연관관계 매핑으로 인해 하나 추가된 후 해당 메서드에서 하나 더 추가됌
     }
 
     @Test
-    @DisplayName("토픽에 직접 핀을 추가해도, 조회 전용이므로 핀 변경 일시는 반영되지 않는다.")
     void addPin() {
         //when
-        LocalDateTime beforeAdding = topic.getLastPinUpdatedAt();
         topic.addPin(pin);
 
         //then
         assertThat(topic.getPins()).contains(pin);
-        assertThat(topic.getLastPinUpdatedAt()).isEqualTo(beforeAdding);
-    }
-
-    @Test
-    @DisplayName("핀 없이 생성된 토픽의 초기 핀 추가 일시는 토픽 변경 일시와 같다.")
-    void create() {
-        // when
-        Topic emptyPinsTopic = new Topic();
-
-        //then
-        assertThat(emptyPinsTopic.getCreatedAt()).isEqualTo(emptyPinsTopic.getLastPinUpdatedAt());
     }
 }

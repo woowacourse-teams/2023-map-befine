@@ -1,17 +1,13 @@
 package com.mapbefine.mapbefine.auth.application;
 
-import static com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
-
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.User;
-import com.mapbefine.mapbefine.auth.exception.AuthErrorCode;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +21,11 @@ public class AuthService {
         this.memberRepository = memberRepository;
     }
 
-    public void validateMember(Long memberId) {
-        if (Objects.isNull(memberId) || !memberRepository.existsById(memberId)) {
-            throw new AuthUnauthorizedException(AuthErrorCode.ILLEGAL_MEMBER_ID);
+    public boolean isMember(Long memberId) {
+        if (Objects.isNull(memberId)) {
+            return false;
         }
+        return memberRepository.existsById(memberId);
     }
 
     public AuthMember findAuthMemberByMemberId(Long memberId) {
@@ -61,17 +58,6 @@ public class AuthService {
                 .stream()
                 .map(Topic::getId)
                 .toList();
-    }
-
-    public boolean isAdmin(Long memberId) {
-        if (Objects.isNull(memberId)) {
-            return false;
-        }
-
-        Optional<Member> member = memberRepository.findById(memberId);
-
-        return member.map(Member::isAdmin)
-                .orElse(false);
     }
 
 }

@@ -1,15 +1,10 @@
 spring:
-  profiles:
-    active: test
-
   datasource:
     url: jdbc:h2:mem:mapbefine;MODE=MySQL
     username: sa
-
   sql:
     init:
       data-locations:
-
   jpa:
     show-sql: true
     hibernate:
@@ -26,6 +21,10 @@ spring:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: trace
+    org.hibernate.type: trace
+    org.hibernate.stat: debug
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %msg %n"
 
 oauth:
   kakao:
@@ -38,5 +37,4 @@ security:
   jwt:
     token:
       secret-key: ${TEST_JWT_SECRET_KEY}
-      access-expire-length: ${TEST_JWT_ACCESS_EXPIRE_LENGTH}
-      refresh-expire-length: ${TEST_JWT_REFRESH_EXPIRE_LENGTH}
+      expire-length: ${TEST_JWT_EXPIRE_LENGTH}
