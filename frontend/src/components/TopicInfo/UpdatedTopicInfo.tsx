@@ -47,7 +47,7 @@ const UpdatedTopicInfo = ({
   const [topicAuthorInfo, setTopicAuthorInfo] =
     useState<TopicAuthorInfo | null>(null);
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
-  const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
+  const [isAllPermissioned, setIsAllPermissioned] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
 
   const updateTopicInfo = async () => {
@@ -59,7 +59,8 @@ const UpdatedTopicInfo = ({
           image,
           description: formValues.description,
           publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-          permissionType: isPublic && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+          permissionType:
+            isAllPermissioned && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
         },
         errorMessage: `권한은 '공개 ➡️ 비공개', '모두 ➡️ 친구', '친구 ➡️ 혼자' 로 변경할 수 없습니다.`,
         isThrow: true,
@@ -103,7 +104,7 @@ const UpdatedTopicInfo = ({
         setTopicAuthorInfo(response);
         setIsPrivate(response.publicity === 'PRIVATE');
 
-        setIsPublic(response.permissionedMembers.length === 0);
+        setIsAllPermissioned(response.permissionedMembers.length === 0);
       },
     );
   }, []);
@@ -140,10 +141,10 @@ const UpdatedTopicInfo = ({
 
       <AuthorityRadioContainer
         isPrivate={isPrivate}
-        isPublic={isPublic}
+        isAllPermissioned={isAllPermissioned}
         authorizedMemberIds={authorizedMemberIds}
         setIsPrivate={setIsPrivate}
-        setIsPublic={setIsPublic}
+        setIsAllPermissioned={setIsAllPermissioned}
         setAuthorizedMemberIds={setAuthorizedMemberIds}
         permissionedMembers={topicAuthorInfo?.permissionedMembers}
       />

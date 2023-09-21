@@ -38,7 +38,7 @@ const NewTopic = () => {
   const { compressImage } = useCompressImage();
 
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
-  const [isPublic, setIsPublic] = useState(true); // 모두 : 지정 인원
+  const [isAllPermissioned, setIsAllPermissioned] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
 
   const [showImage, setShowImage] = useState<string>('');
@@ -86,7 +86,8 @@ const NewTopic = () => {
       description: formValues.description,
       pins: pulledPinIds ? pulledPinIds.split(',') : [],
       publicity: isPrivate ? 'PRIVATE' : 'PUBLIC',
-      permissionType: isPublic && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
+      permissionType:
+        isAllPermissioned && !isPrivate ? 'ALL_MEMBERS' : 'GROUP_ONLY',
     };
 
     const data = JSON.stringify(objectData);
@@ -106,7 +107,7 @@ const NewTopic = () => {
   };
 
   const addAuthorityToTopicWithGroupPermission = async (topicId: number) => {
-    if (isPublic) return;
+    if (isAllPermissioned) return;
 
     fetchPost({
       url: '/permissions',
@@ -201,10 +202,10 @@ const NewTopic = () => {
 
         <AuthorityRadioContainer
           isPrivate={isPrivate}
-          isPublic={isPublic}
+          isAllPermissioned={isAllPermissioned}
           authorizedMemberIds={authorizedMemberIds}
           setIsPrivate={setIsPrivate}
-          setIsPublic={setIsPublic}
+          setIsAllPermissioned={setIsAllPermissioned}
           setAuthorizedMemberIds={setAuthorizedMemberIds}
         />
 
