@@ -2,6 +2,7 @@ import { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import useKeyDown from '../../hooks/useKeyDown';
 import Text from '../common/Text';
+import SeeTogetherCounter from '../SeeTogetherCounter';
 
 interface NavbarItemProps {
   label: string;
@@ -38,6 +39,7 @@ const NavbarItem = ({
       >
         {label}
       </Text>
+      {label === '모아보기' ? <SeeTogetherCounter /> : null}
     </IconWrapper>
   );
 };
