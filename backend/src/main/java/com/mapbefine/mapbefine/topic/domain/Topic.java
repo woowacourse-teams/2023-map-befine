@@ -17,8 +17,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -57,9 +55,6 @@ public class Topic extends BaseTimeEntity {
     @ColumnDefault(value = "false")
     private boolean isDeleted = false;
 
-    @Column(nullable = false)
-    private LocalDateTime lastPinUpdatedAt;
-
     private Topic(
             TopicInfo topicInfo,
             TopicStatus topicStatus,
@@ -68,11 +63,6 @@ public class Topic extends BaseTimeEntity {
         this.topicInfo = topicInfo;
         this.topicStatus = topicStatus;
         this.creator = creator;
-    }
-
-    @PrePersist
-    protected void prePersist() {
-        lastPinUpdatedAt = LocalDateTime.now();
     }
 
     public static Topic createTopicAssociatedWithCreator(
@@ -100,10 +90,6 @@ public class Topic extends BaseTimeEntity {
         this.topicInfo = TopicInfo.of(name, description, imageUrl);
     }
 
-    public void updateLastPinUpdatedAt(LocalDateTime lastPinUpdatedAt) {
-        this.lastPinUpdatedAt = lastPinUpdatedAt;
-    }
-
     public void updateTopicStatus(Publicity publicity, PermissionType permissionType) {
         topicStatus.update(publicity, permissionType);
     }
@@ -126,13 +112,6 @@ public class Topic extends BaseTimeEntity {
 
     public int countBookmarks() {
         return bookmarks.size();
-    }
-
-    public Publicity getPublicity() {
-        return topicStatus.getPublicity();
-    }
-    public void removeImage() {
-        this.topicInfo = topicInfo.removeImage();
     }
 
 }

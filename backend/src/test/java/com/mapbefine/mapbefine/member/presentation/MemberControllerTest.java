@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.given;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
-import com.mapbefine.mapbefine.member.dto.request.MemberUpdateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -17,7 +16,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 class MemberControllerTest extends RestDocsIntegration {
@@ -26,7 +24,7 @@ class MemberControllerTest extends RestDocsIntegration {
     private MemberQueryService memberQueryService;
 
     @Test
-    @DisplayName("회원 목록 조회")
+    @DisplayName("유저 목록 조회")
     void findAllMember() throws Exception {
         List<MemberResponse> memberResponses = List.of(
                 new MemberResponse(
@@ -50,7 +48,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("회원 단일 조회")
+    @DisplayName("유저 단일 조회")
     void findMemberById() throws Exception {
         MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
                 1L,
@@ -69,7 +67,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("회원의 모아보기 목록 조회")
+    @DisplayName("유저의 모아보기 목록 조회")
     void findAllTopicsInAtlas() throws Exception {
         List<TopicResponse> responses = List.of(
                 new TopicResponse(
@@ -104,7 +102,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("회원의 즐겨찾기 목록 조회")
+    @DisplayName("유저의 즐겨찾기 목록 조회")
     void findAllTopicsInBookmark() throws Exception {
         List<TopicResponse> responses = List.of(
                 new TopicResponse(
@@ -139,7 +137,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("회원의 지도 목록 조회")
+    @DisplayName("유저의 지도 목록 조회")
     void findMyAllTopics() throws Exception {
         List<TopicResponse> responses = List.of(
                 new TopicResponse(
@@ -174,7 +172,7 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("회원의 핀 목록 조회")
+    @DisplayName("유저의 핀 목록 조회")
     void findMyAllPins() throws Exception {
         List<PinResponse> responses = List.of(
                 new PinResponse(
@@ -201,19 +199,6 @@ class MemberControllerTest extends RestDocsIntegration {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/my/pins")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
-    }
-
-    @Test
-    @DisplayName("회원의 정보 수정")
-    void updateMyInfo() throws Exception {
-        MemberUpdateRequest request = new MemberUpdateRequest("새로운 닉네임");
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.patch("/members/my/profiles")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
         ).andDo(restDocs.document());
     }
 

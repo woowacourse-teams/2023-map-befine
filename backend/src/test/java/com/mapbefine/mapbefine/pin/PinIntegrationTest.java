@@ -12,15 +12,15 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
-import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
+import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
-import java.io.File;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +30,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 class PinIntegrationTest extends IntegrationTest {
+
+    private static final String BASE_IMAGE = "https://map-befine-official.github.io/favicon.png";
 
     private Topic topic;
     private Location location;
@@ -70,7 +72,7 @@ class PinIntegrationTest extends IntegrationTest {
                 topic.getId(),
                 "pin",
                 "description",
-                "address",
+                "기존에 없는 주소",
                 "legalDongCode",
                 37,
                 126
@@ -79,7 +81,7 @@ class PinIntegrationTest extends IntegrationTest {
                 topic.getId(),
                 "pine2",
                 "description",
-                "address",
+                "기존에 없는 주소",
                 "legalDongCode",
                 37.12345,
                 126.12345
@@ -98,37 +100,13 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> createPin(PinCreateRequest request) {
-        String imageFilePath = getClass().getClassLoader()
-                .getResource("test.png")
-                .getPath();
-
-        return RestAssured.given()
-                .log().all()
+        return RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
-                .multiPart("images", new File(imageFilePath), MediaType.MULTIPART_FORM_DATA_VALUE)
-                .multiPart("images", new File(imageFilePath), MediaType.MULTIPART_FORM_DATA_VALUE)
-                .multiPart("images", new File(imageFilePath), MediaType.MULTIPART_FORM_DATA_VALUE)
-                .multiPart("request", request, MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
                 .when().post("/pins")
                 .then().log().all()
                 .extract();
-    }
-
-    @Test
-    @DisplayName("Image List 없이 Pin 을 정상적으로 생성한다.")
-    void addIfNonExistImageList_Success() {
-        // when
-        ExtractableResponse<Response> response = RestAssured.given()
-                .log().all()
-                .header(AUTHORIZATION, authHeader)
-                .multiPart("request", createRequestDuplicateLocation, MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/pins")
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.header("Location")).isNotBlank();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @Test
@@ -176,8 +154,6 @@ class PinIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = findById(pinId);
 
-        PinDetailResponse as = response.as(PinDetailResponse.class);
-
         // then
         assertThat(response.jsonPath().getString("name"))
                 .isEqualTo(createRequestNoDuplicateLocation.name());
@@ -216,15 +192,10 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     private ExtractableResponse<Response> createPinImage(long pinId) {
-        String imageFilePath = getClass().getClassLoader()
-                .getResource("test.png")
-                .getPath();
-        File mockFile = new File(imageFilePath);
-
         return RestAssured.given().log().all()
                 .header(AUTHORIZATION, authHeader)
-                .multiPart("image", mockFile, MediaType.MULTIPART_FORM_DATA_VALUE)
-                .multiPart("pinId", pinId, MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new PinImageCreateRequest(pinId, BASE_IMAGE))
                 .when().post("/pins/images")
                 .then().log().all()
                 .extract();
@@ -255,7 +226,7 @@ class PinIntegrationTest extends IntegrationTest {
 
 
     @Test
-    @DisplayName("회원별 Pin 목록을 조회하면 200을 반환한다")
+    @DisplayName("멤버별 Pin 목록을 조회하면 200을 반환한다")
     void findAllPinsByMemberId_Success() {
         //given
         createPinAndGetId(createRequestDuplicateLocation);

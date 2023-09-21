@@ -64,15 +64,13 @@ public class Member extends BaseTimeEntity {
             String email,
             String imageUrl,
             Role role,
-            Status status,
             OauthId oauthId
     ) {
         MemberInfo memberInfo = MemberInfo.of(
                 nickName,
                 email,
                 imageUrl,
-                role,
-                status
+                role
         );
 
         return new Member(memberInfo, oauthId);
@@ -87,7 +85,7 @@ public class Member extends BaseTimeEntity {
     ) {
         String nickName = createNickname(nickname);
 
-        return Member.of(nickName, email, imageUrl, role, Status.NORMAL, oauthId);
+        return Member.of(nickName, email, imageUrl, role, oauthId);
     }
 
     private static String createNickname(String nickname) {
@@ -100,14 +98,21 @@ public class Member extends BaseTimeEntity {
     private static String createNicknameSuffix() {
         return randomUUID()
                 .toString()
-                .replace("-", "")
+                .replaceAll("-", "")
                 .substring(0, DEFAULT_NICKNAME_SUFFIX_LENGTH);
     }
 
     public void update(
-            String nickName
+            String nickName,
+            String email,
+            String imageUrl
     ) {
-        memberInfo = memberInfo.createUpdatedMemberInfo(nickName);
+        memberInfo = MemberInfo.of(
+                nickName,
+                email,
+                imageUrl,
+                memberInfo.getRole()
+        );
     }
 
     public void addTopic(Topic topic) {
@@ -144,17 +149,4 @@ public class Member extends BaseTimeEntity {
                 .toList();
     }
 
-    public boolean isNormalStatus() {
-        return memberInfo.getStatus() == Status.NORMAL;
-    }
-
-    public void updateStatus(Status status) {
-        memberInfo = MemberInfo.of(
-                memberInfo.getNickName(),
-                memberInfo.getEmail(),
-                memberInfo.getImageUrl(),
-                memberInfo.getRole(),
-                status
-        );
-    }
 }

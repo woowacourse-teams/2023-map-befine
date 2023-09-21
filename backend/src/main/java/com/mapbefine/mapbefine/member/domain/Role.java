@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum Role {
 
     ADMIN("ROLE_ADMIN", "운영자"),
-    USER("ROLE_USER", "로그인 회원"),
+    USER("ROLE_USER", "로그인 유저"),
     GUEST("ROLE_GUEST", "손님");
 
     private final String key;

@@ -73,7 +73,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("비어있는 토픽을 생성할 수 있다.")
-    void saveEmptyTopic_Success() {
+    public void saveEmptyTopic_Success() {
         //given
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
@@ -93,32 +93,8 @@ class TopicCommandServiceTest {
     }
 
     @Test
-    @DisplayName("이미지 없이 토픽을 생성하면 기본 이미지를 반환한다.")
-    void saveEmptyTopicAndEmptyImage_Success() {
-        //given
-        TopicCreateRequest request =
-                TopicFixture.createPublicAndAllMembersAndEmptyImageCreateRequestWithPins(
-                        Collections.emptyList()
-                );
-
-        //when
-        Long topicId = topicCommandService.saveTopic(user, request);
-
-        //then
-        TopicDetailResponse detail = topicQueryService.findDetailById(user, topicId);
-
-        assertThat(detail.id()).isEqualTo(topicId);
-        assertThat(detail.name()).isEqualTo(request.name());
-        assertThat(detail.description()).isEqualTo(request.description());
-        assertThat(detail.pinCount()).isEqualTo(request.pins().size());
-        assertThat(detail.image()).isEqualTo(
-                "https://velog.velcdn.com/images/semnil5202/post/37f3bcb9-0b07-4100-85f6-f1d5ad037c14/image.svg"
-        );
-    }
-
-    @Test
     @DisplayName("Guest는 비어있는 토픽을 생성할 수 없다.")
-    void saveEmptyTopic_Fail() {
+    public void saveEmptyTopic_Fail() {
         //given
         TopicCreateRequest request =
                 TopicFixture.createPublicAndAllMembersCreateRequestWithPins(
@@ -132,7 +108,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("핀을 통해 새로운 토픽을 생성할 수 있다.")
-    void saveTopicWithPins_Success() {
+    public void saveTopicWithPins_Success() {
         //given
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
 
@@ -163,7 +139,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Guest는 핀을 통해 새로운 토픽을 생성할 수 없다.")
-    void saveTopicWithPins_Fail1() {
+    public void saveTopicWithPins_Fail1() {
         //given
         Topic publicAndAllMembersTopic = TopicFixture.createPublicAndAllMembersTopic(member);
 
@@ -184,7 +160,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("권한이 없는 핀을 통해 토픽을 생성할 수 없다.")
-    void saveTopicWithPins_Fail2() {
+    public void saveTopicWithPins_Fail2() {
         //given
         Member topicOwner = MemberFixture.create(
                 "topicOwner",
@@ -211,7 +187,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("기존의 토픽들을 통해 새로운 토픽을 생성할 수 있다.")
-    void merge_Success() {
+    public void merge_Success() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topic2 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -248,7 +224,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Guest는 기존의 토픽들을 통해 새로운 토픽을 생성할 수 없다.")
-    void merge_Fail1() {
+    public void merge_Fail1() {
         //given
         Topic privateAndGroupOnlyTopic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
         topicRepository.save(privateAndGroupOnlyTopic);
@@ -265,7 +241,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("권한이 없는 토픽들을 통해 새로운 토픽을 생성할 수 없다.")
-    void merge_Fail2() {
+    public void merge_Fail2() {
         //given
         Member topicOwner = MemberFixture.create(
                 "topicOwner",
@@ -321,14 +297,14 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("토픽의 정보를 수정할 수 있다.")
-    void updateTopicInfo_Success() {
+    public void updateTopicInfo_Success() {
         //given
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
         topicRepository.save(topic);
 
         //when
-        assertThat(topic.getTopicInfo().getName()).isEqualTo("토픽 회원만 읽을 수 있는 토픽");
-        assertThat(topic.getTopicInfo().getDescription()).isEqualTo("토픽 회원만 읽을 수 있습니다.");
+        assertThat(topic.getTopicInfo().getName()).isEqualTo("토픽 멤버만 읽을 수 있는 토픽");
+        assertThat(topic.getTopicInfo().getDescription()).isEqualTo("토픽 멤버만 읽을 수 있습니다.");
 
         AuthMember user = MemberFixture.createUser(member);
         TopicUpdateRequest request = new TopicUpdateRequest(
@@ -350,7 +326,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("권한이 없는 토픽의 정보를 수정할 수 없다.")
-    void updateTopicInfo_Fail() {
+    public void updateTopicInfo_Fail() {
         //given
         Member topicOwner = MemberFixture.create(
                 "topicOwner",
@@ -377,7 +353,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Admin은 토픽을 삭제할 수 있다.")
-    void delete_Success() {
+    public void delete_Success() {
         //given
         Member admin = MemberFixture.create(
                 "topicOwner",
@@ -404,7 +380,7 @@ class TopicCommandServiceTest {
 
     @Test
     @DisplayName("Admin이 아닌 경우, 토픽을 삭제할 수 없다.")
-    void delete_Fail() {
+    public void delete_Fail() {
         //given
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);

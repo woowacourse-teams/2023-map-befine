@@ -84,7 +84,7 @@ class AtlasCommandServiceTest {
             List<Atlas> actual = actualMember.getAtlantes();
 
             //then
-            assertThat(actual).hasSameSizeAs(expected);
+            assertThat(actual.size()).isEqualTo(expected.size());
         }
 
         @Test
@@ -105,7 +105,7 @@ class AtlasCommandServiceTest {
     }
 
     @Test
-    @DisplayName("회원 ID와 TopicId가 있을 경우, atlas에서 해당 topic을 비운다.")
+    @DisplayName("멤버 ID와 TopicId가 있을 경우, atlas에서 해당 topic을 비운다.")
     void remove_Success() {
         Long topicId = topic.getId();
         Long memberId = authMember.getMemberId();
@@ -124,7 +124,7 @@ class AtlasCommandServiceTest {
         List<Atlas> actual = memberAfter.getAtlantes();
 
         //then
-        assertThat(actual).hasSize(expected.size() - 1);
+        assertThat(actual.size()).isEqualTo(expected.size() - 1);
     }
 
 }

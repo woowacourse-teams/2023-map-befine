@@ -8,6 +8,8 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
@@ -26,13 +28,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class TopicQueryService {
 
     private final TopicRepository topicRepository;
+    private final PinRepository pinRepository;
     private final MemberRepository memberRepository;
 
     public TopicQueryService(
             TopicRepository topicRepository,
+            PinRepository pinRepository,
             MemberRepository memberRepository
     ) {
         this.topicRepository = topicRepository;
+        this.pinRepository = pinRepository;
         this.memberRepository = memberRepository;
     }
 
@@ -47,7 +52,7 @@ public class TopicQueryService {
         return topicRepository.findAll()
                 .stream()
                 .filter(authMember::canRead)
-                .map(TopicResponse::fromGuestQuery)
+                .map(topic -> TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
                 .toList();
     }
 
@@ -94,12 +99,13 @@ public class TopicQueryService {
         return bookMarkedTopics.contains(topic);
     }
 
+
     public TopicDetailResponse findDetailById(AuthMember authMember, Long topicId) {
         Topic topic = findTopic(topicId);
         validateReadableTopic(authMember, topic);
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return TopicDetailResponse.fromGuestQuery(topic);
+            return TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE);
         }
 
         Member member = findMemberById(authMember.getMemberId());
@@ -107,11 +113,10 @@ public class TopicQueryService {
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
         List<Topic> topicsInBookMark = findBookMarkedTopics(member);
 
-        return TopicDetailResponse.of(
+        return TopicDetailResponse.from(
                 topic,
                 isInAtlas(topicsInAtlas, topic),
-                isBookMarked(topicsInBookMark, topic),
-                authMember.canTopicUpdate(topic)
+                isBookMarked(topicsInBookMark, topic)
         );
     }
 
@@ -135,10 +140,16 @@ public class TopicQueryService {
         validateReadableTopics(authMember, topics);
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return TopicDetailResponse.ofGuestQueries(topics);
+            return getGuestTopicDetailResponses(topics);
         }
 
         return getUserTopicDetailResponses(authMember, topics);
+    }
+
+    private static List<TopicDetailResponse> getGuestTopicDetailResponses(List<Topic> topics) {
+        return topics.stream()
+                .map(topic -> TopicDetailResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
+                .toList();
     }
 
     private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember, List<Topic> topics) {
@@ -148,11 +159,10 @@ public class TopicQueryService {
         List<Topic> topicsInBookMark = findBookMarkedTopics(member);
 
         return topics.stream()
-                .map(topic -> TopicDetailResponse.of(
+                .map(topic -> TopicDetailResponse.from(
                         topic,
                         isInAtlas(topicsInAtlas, topic),
-                        isBookMarked(topicsInBookMark, topic),
-                        authMember.canTopicUpdate(topic)
+                        isBookMarked(topicsInBookMark, topic)
                 ))
                 .toList();
     }
@@ -181,10 +191,10 @@ public class TopicQueryService {
     public List<TopicResponse> findAllTopicsByMemberId(AuthMember authMember, Long memberId) {
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return topicRepository.findAllByCreatorId(memberId)
+            return topicRepository.findByCreatorId(memberId)
                     .stream()
                     .filter(authMember::canRead)
-                    .map(TopicResponse::fromGuestQuery)
+                    .map(topic -> TopicResponse.from(topic, Boolean.FALSE, Boolean.FALSE))
                     .toList();
         }
 
@@ -193,7 +203,7 @@ public class TopicQueryService {
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
         List<Topic> topicsInBookMark = findBookMarkedTopics(member);
 
-        return topicRepository.findAllByCreatorId(memberId)
+        return topicRepository.findByCreatorId(memberId)
                 .stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
@@ -218,8 +228,10 @@ public class TopicQueryService {
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
         List<Topic> topicsInBookMark = findBookMarkedTopics(member);
 
-        return topicRepository.findAllByOrderByLastPinUpdatedAtDesc()
+        return pinRepository.findAllByOrderByUpdatedAtDesc()
                 .stream()
+                .map(Pin::getTopic)
+                .distinct()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
                         topic,
@@ -230,11 +242,16 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestNewestTopicResponse(AuthMember authMember) {
-        return topicRepository.findAllByOrderByLastPinUpdatedAtDesc()
+        return pinRepository.findAllByOrderByUpdatedAtDesc()
                 .stream()
+                .map(Pin::getTopic)
+                .distinct()
                 .filter(authMember::canRead)
-                .map(TopicResponse::fromGuestQuery)
-                .toList();
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        Boolean.FALSE,
+                        Boolean.FALSE
+                )).toList();
     }
 
     public List<TopicResponse> findAllBestTopics(AuthMember authMember) {
@@ -249,8 +266,11 @@ public class TopicQueryService {
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
-                .map(TopicResponse::fromGuestQuery)
-                .toList();
+                .map(topic -> TopicResponse.from(
+                        topic,
+                        Boolean.FALSE,
+                        Boolean.FALSE
+                )).toList();
     }
 
     private List<TopicResponse> getUserBestTopicResponse(AuthMember authMember) {

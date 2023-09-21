@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.bookmark;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,13 +14,14 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.response.*;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-class BookmarkIntegrationTest extends IntegrationTest {
+public class BookmarkIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -32,7 +33,7 @@ class BookmarkIntegrationTest extends IntegrationTest {
     private BookmarkRepository bookmarkRepository;
 
     @Test
-    @DisplayName("회원이 토픽을 즐겨찾기 목록에 추가하면, 201을 반환한다.")
+    @DisplayName("유저가 토픽을 즐겨찾기 목록에 추가하면, 201을 반환한다.")
     void addTopicInBookmark_Success() {
         //given
         Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);
@@ -62,7 +63,7 @@ class BookmarkIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("회원의 즐겨찾기 토픽을 삭제하면, 204를 반환한다.")
+    @DisplayName("유저의 즐겨찾기 토픽을 삭제하면, 204를 반환한다.")
     void deleteTopicInBookmark_Success() {
         //given
         Member creator = MemberFixture.create("member", "member@naver.com", Role.USER);

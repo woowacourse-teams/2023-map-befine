@@ -13,12 +13,11 @@ public record PinDetailResponse(
         String creator,
         double latitude,
         double longitude,
-        Boolean canUpdate,
         LocalDateTime updatedAt,
         List<PinImageResponse> images
 ) {
 
-    public static PinDetailResponse of(Pin pin, Boolean canUpdate) {
+    public static PinDetailResponse from(Pin pin) {
         PinInfo pinInfo = pin.getPinInfo();
 
         return new PinDetailResponse(
@@ -29,7 +28,6 @@ public record PinDetailResponse(
                 pin.getCreator().getMemberInfo().getNickName(),
                 pin.getLatitude(),
                 pin.getLongitude(),
-                canUpdate,
                 pin.getUpdatedAt(),
                 PinImageResponse.from(pin.getPinImages())
         );

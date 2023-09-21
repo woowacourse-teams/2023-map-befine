@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.member.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.mapbefine.mapbefine.common.exception.BadRequestException.ImageBadRequestException;
 import com.mapbefine.mapbefine.member.exception.MemberException.MemberBadRequestException;
@@ -23,18 +22,16 @@ public class MemberInfoTest {
         private final String VALID_EMAIL = "member@naver.com";
         private final String VALID_IMAGE_URL = "https://map-befine-official.github.io/favicon.png";
         private final Role VALID_ROLE = Role.ADMIN;
-        private final Status VALID_STATUS = Status.NORMAL;
 
         @Test
-        @DisplayName("유효한 정보를 입력했을 때 객체를 생성할 수 있다.")
-        void create_Success() {
+        @DisplayName("정확한 값을 입력하면 객체가 생성된다")
+        void success() {
             //given when
             MemberInfo memberInfo = MemberInfo.of(
                     VALID_NICK_NAME,
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
-                    VALID_ROLE,
-                    VALID_STATUS
+                    VALID_ROLE
             );
 
             //then
@@ -45,42 +42,17 @@ public class MemberInfoTest {
             assertThat(memberInfo.getRole()).isEqualTo(VALID_ROLE);
         }
 
-        @Test
-        @DisplayName("일부 정보(닉네임)만 변경한 회원 정보를 생성할 수 있다.")
-        void createUpdatedMemberInfo() {
-            // given
-            MemberInfo before = MemberInfo.of(
-                    "member",
-                    "member@naver.com",
-                    "https://map-befine-official.github.io/favicon.png",
-                    Role.ADMIN,
-                    Status.NORMAL);
-
-            // when
-            String expected = "newNickName";
-            MemberInfo patched = before.createUpdatedMemberInfo(expected);
-
-            // then
-            assertSoftly(softly -> {
-                assertThat(patched).usingRecursiveComparison()
-                        .ignoringFields("nickName")
-                        .isEqualTo(before);
-                assertThat(patched.getNickName()).isEqualTo(expected);
-            });
-        }
-
         @ParameterizedTest
         @NullSource
         @ValueSource(strings = {"", "aaaaaaaaaaaaaaaaaaaaa"})
-        @DisplayName("유효한 닉네임이 아닌 경우 예외가 발생한다")
-        void validateNickName(String invalidNickName) {
+        @DisplayName("유효한 이름이 아닌 경우 예외가 발생한다")
+        void whenNameIsInvalid_thenFail(String invalidNickName) {
             //given when then
             assertThatThrownBy(() -> MemberInfo.of(
                     invalidNickName,
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
-                    VALID_ROLE,
-                    VALID_STATUS
+                    VALID_ROLE
             )).isInstanceOf(MemberBadRequestException.class);
         }
 
@@ -89,20 +61,19 @@ public class MemberInfoTest {
         @EmptySource
         @ValueSource(strings = "member")
         @DisplayName("유효한 이메일이 아닌 경우 예외가 발생한다")
-        void validateEmail(String invalidEmail) {
+        void whenEmailIsInvalid_thenFail(String invalidEmail) {
             //given when then
             assertThatThrownBy(() -> MemberInfo.of(
                     VALID_NICK_NAME,
                     invalidEmail,
                     VALID_IMAGE_URL,
-                    VALID_ROLE,
-                    VALID_STATUS
+                    VALID_ROLE
             )).isInstanceOf(MemberBadRequestException.class);
         }
 
         @Test
         @DisplayName("올바르지 않은 형식의 Image Url 이 들어오는 경우 예외가 발생한다.")
-        void validateImageUrl() {
+        void whenImageUrlIsInvalid_thenFail() {
             String invalidImageUrl = "image.png";
 
             //given when then
@@ -110,21 +81,19 @@ public class MemberInfoTest {
                     VALID_NICK_NAME,
                     VALID_EMAIL,
                     invalidImageUrl,
-                    VALID_ROLE,
-                    VALID_STATUS
+                    VALID_ROLE
             )).isInstanceOf(ImageBadRequestException.class);
         }
 
         @Test
         @DisplayName("유효하지 않은 Role 이 들어오는 경우 예외가 발생한다.")
-        void validateRole() {
+        void whenRoleIsInvalid_thenFail() {
             //given when then
             assertThatThrownBy(() -> MemberInfo.of(
                     VALID_NICK_NAME,
                     VALID_EMAIL,
                     VALID_IMAGE_URL,
                     null
-                    ,VALID_STATUS
             )).isInstanceOf(IllegalArgumentException.class);
         }
 

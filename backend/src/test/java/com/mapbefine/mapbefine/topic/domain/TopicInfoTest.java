@@ -116,8 +116,7 @@ class TopicInfoTest {
         assertThat(topicInfo.getName()).isEqualTo(validName);
         assertThat(topicInfo.getDescription()).isEqualTo(validDescription);
         assertThat(topicInfo.getImageUrl()).isEqualTo(
-                "https://velog.velcdn.com/images/semnil5202/post/37f3bcb9-0b07-4100-85f6-f1d5ad037c14/image.svg"
-        );
+                "https://map-befine-official.github.io/favicon.png");
     }
 
 }
