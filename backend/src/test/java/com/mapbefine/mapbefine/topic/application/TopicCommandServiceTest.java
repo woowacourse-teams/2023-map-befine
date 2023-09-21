@@ -93,6 +93,30 @@ class TopicCommandServiceTest {
     }
 
     @Test
+    @DisplayName("이미지 없이 토픽을 생성하면 기본 이미지를 반환한다.")
+    void saveEmptyTopicAndEmptyImage_Success() {
+        //given
+        TopicCreateRequest request =
+                TopicFixture.createPublicAndAllMembersAndEmptyImageCreateRequestWithPins(
+                        Collections.emptyList()
+                );
+
+        //when
+        Long topicId = topicCommandService.saveTopic(user, request);
+
+        //then
+        TopicDetailResponse detail = topicQueryService.findDetailById(user, topicId);
+
+        assertThat(detail.id()).isEqualTo(topicId);
+        assertThat(detail.name()).isEqualTo(request.name());
+        assertThat(detail.description()).isEqualTo(request.description());
+        assertThat(detail.pinCount()).isEqualTo(request.pins().size());
+        assertThat(detail.image()).isEqualTo(
+                "https://velog.velcdn.com/images/semnil5202/post/37f3bcb9-0b07-4100-85f6-f1d5ad037c14/image.svg"
+        );
+    }
+
+    @Test
     @DisplayName("Guest는 비어있는 토픽을 생성할 수 없다.")
     void saveEmptyTopic_Fail() {
         //given

@@ -115,6 +115,23 @@ class PinIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("Image List 없이 Pin 을 정상적으로 생성한다.")
+    void addIfNonExistImageList_Success() {
+        // when
+        ExtractableResponse<Response> response = RestAssured.given()
+                .log().all()
+                .header(AUTHORIZATION, authHeader)
+                .multiPart("request", createRequestDuplicateLocation, MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/pins")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
     @DisplayName("Pin을 생성하면 저장된 Pin의 Location 헤더값과 201을 반환한다.")
     void addIfNotExistDuplicateLocation_Success() {
         //given, when
@@ -160,7 +177,6 @@ class PinIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = findById(pinId);
 
         PinDetailResponse as = response.as(PinDetailResponse.class);
-        System.out.println(as);
 
         // then
         assertThat(response.jsonPath().getString("name"))
@@ -194,8 +210,6 @@ class PinIntegrationTest extends IntegrationTest {
 
         // when
         ExtractableResponse<Response> response = createPinImage(pinId);
-
-        System.out.println(response);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

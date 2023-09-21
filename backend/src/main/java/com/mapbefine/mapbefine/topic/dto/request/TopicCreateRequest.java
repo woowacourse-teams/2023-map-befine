@@ -15,7 +15,7 @@ public record TopicCreateRequest(
 ) {
 
     public static TopicCreateRequest of(
-            TopicCreateRequestWithOutImage request,
+            TopicCreateRequestWithoutImage request,
             MultipartFile image
     ) {
         return new TopicCreateRequest(
@@ -27,4 +27,5 @@ public record TopicCreateRequest(
                 request.pins()
         );
     }
+
 }

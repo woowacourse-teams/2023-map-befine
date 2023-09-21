@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.application;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_IMAGE_ID;
+import static com.mapbefine.mapbefine.image.exception.ImageErrorCode.IMAGE_FILE_IS_NULL;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_TOPIC_ID;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
@@ -21,7 +22,8 @@ import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
-import com.mapbefine.mapbefine.s3.application.S3Service;
+import com.mapbefine.mapbefine.image.application.ImageService;
+import com.mapbefine.mapbefine.image.exception.ImageException.ImageBadRequestException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
@@ -43,7 +45,7 @@ public class PinCommandService {
     private final TopicRepository topicRepository;
     private final MemberRepository memberRepository;
     private final PinImageRepository pinImageRepository;
-    private final S3Service s3Service;
+    private final ImageService imageService;
 
     public PinCommandService(
             PinRepository pinRepository,
@@ -51,14 +53,14 @@ public class PinCommandService {
             TopicRepository topicRepository,
             MemberRepository memberRepository,
             PinImageRepository pinImageRepository,
-            S3Service s3Service
+            ImageService imageService
     ) {
         this.pinRepository = pinRepository;
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
         this.memberRepository = memberRepository;
         this.pinImageRepository = pinImageRepository;
-        this.s3Service = s3Service;
+        this.imageService = imageService;
     }
 
     public long save(
@@ -78,10 +80,19 @@ public class PinCommandService {
                 member
         );
 
-        images.forEach(image -> addImageToPin(image, pin));
+        addPinImagesToPin(images, pin);
+
         pinRepository.save(pin);
 
         return pin.getId();
+    }
+
+    private void addPinImagesToPin(final List<MultipartFile> images, final Pin pin) {
+        if (Objects.isNull(images)) {
+            return;
+        }
+
+        images.forEach(image -> addImageToPin(image, pin));
     }
 
     private Topic findTopic(Long topicId) {
@@ -153,7 +164,11 @@ public class PinCommandService {
     }
 
     private void addImageToPin(MultipartFile image, Pin pin) {
-        String imageUrl = s3Service.upload(image);
+        if (Objects.isNull(image)) {
+            throw new ImageBadRequestException(IMAGE_FILE_IS_NULL);
+        }
+
+        String imageUrl = imageService.upload(image);
         PinImage.createPinImageAssociatedWithPin(imageUrl, pin);
     }
 

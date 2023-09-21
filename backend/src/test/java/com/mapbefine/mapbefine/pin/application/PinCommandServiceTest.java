@@ -3,11 +3,12 @@ package com.mapbefine.mapbefine.pin.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.mapbefine.mapbefine.FileFixture;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.image.FileFixture;
+import com.mapbefine.mapbefine.image.exception.ImageException.ImageBadRequestException;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -232,6 +233,19 @@ class PinCommandServiceTest {
                         found -> assertThat(found.getImageUrl()).isNotNull(),
                         Assertions::fail
                 );
+    }
+
+    @Test
+    @DisplayName("이미지가 null 인 경우 예외를 발생시킨다.")
+    void addImage_FailByNull() {
+        // given
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+
+        PinImageCreateRequest imageNullRequest = new PinImageCreateRequest(pinId, null);
+
+        // when then
+        assertThatThrownBy(() -> pinCommandService.addImage(authMember, imageNullRequest))
+                .isInstanceOf(ImageBadRequestException.class);
     }
 
     @Test

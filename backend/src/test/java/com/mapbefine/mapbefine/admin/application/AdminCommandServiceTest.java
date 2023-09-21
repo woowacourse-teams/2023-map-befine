@@ -194,8 +194,9 @@ class AdminCommandServiceTest {
         //then
         Topic imageDeletedTopic = topicRepository.findById(topic.getId()).get();
 
-        assertThat(imageDeletedTopic.getTopicInfo().getImageUrl())
-                .isEqualTo("https://map-befine-official.github.io/favicon.png");
+        assertThat(imageDeletedTopic.getTopicInfo().getImageUrl()).isEqualTo(
+                "https://velog.velcdn.com/images/semnil5202/post/37f3bcb9-0b07-4100-85f6-f1d5ad037c14/image.svg"
+        );
     }
 
     @DisplayName("Admin이 아닐 경우, 이미지를 삭제할 수 없다.")

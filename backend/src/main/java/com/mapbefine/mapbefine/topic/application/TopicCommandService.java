@@ -14,7 +14,7 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
-import com.mapbefine.mapbefine.s3.application.S3Service;
+import com.mapbefine.mapbefine.image.application.ImageService;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -28,6 +28,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
@@ -36,25 +37,25 @@ public class TopicCommandService {
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
     private final MemberRepository memberRepository;
-    private final S3Service s3Service;
+    private final ImageService imageService;
 
     public TopicCommandService(
             TopicRepository topicRepository,
             PinRepository pinRepository,
             MemberRepository memberRepository,
-            S3Service s3Service
+            ImageService imageService
     ) {
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
         this.memberRepository = memberRepository;
-        this.s3Service = s3Service;
+        this.imageService = imageService;
     }
 
     public Long saveTopic(AuthMember member, TopicCreateRequest request) {
         Topic topic = convertToTopic(member, request);
         List<Long> pinIds = request.pins();
 
-        if (pinIds.size() > 0) {
+        if (0 < pinIds.size()) {
             copyPinsToTopic(member, topic, pinIds);
         }
 
@@ -65,7 +66,7 @@ public class TopicCommandService {
 
     private Topic convertToTopic(AuthMember member, TopicCreateRequest request) {
         Member creator = findCreatorByAuthMember(member);
-        String image = s3Service.upload(request.image());
+        String image = createImageUrl(request.image());
 
         return Topic.createTopicAssociatedWithCreator(
                 request.name(),
@@ -75,6 +76,14 @@ public class TopicCommandService {
                 request.permissionType(),
                 creator
         );
+    }
+
+    private String createImageUrl(MultipartFile image) {
+        if (Objects.isNull(image)) {
+            return null;
+        }
+
+        return imageService.upload(image);
     }
 
     private Member findCreatorByAuthMember(AuthMember member) {
@@ -137,11 +146,12 @@ public class TopicCommandService {
 
     private Topic convertToTopic(AuthMember member, TopicMergeRequest request) {
         Member creator = findCreatorByAuthMember(member);
+        String imageUrl = createImageUrl(request.image());
 
         return Topic.createTopicAssociatedWithCreator(
                 request.name(),
                 request.description(),
-                request.image(),
+                imageUrl,
                 request.publicity(),
                 request.permissionType(),
                 creator

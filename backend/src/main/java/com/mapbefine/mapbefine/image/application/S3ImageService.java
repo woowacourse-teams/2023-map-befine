@@ -1,7 +1,7 @@
-package com.mapbefine.mapbefine.s3.application;
+package com.mapbefine.mapbefine.image.application;
 
-import com.mapbefine.mapbefine.s3.domain.S3Client;
-import com.mapbefine.mapbefine.s3.domain.UploadFile;
+import com.mapbefine.mapbefine.image.domain.S3Client;
+import com.mapbefine.mapbefine.image.domain.UploadFile;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -10,13 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Profile("!test")
-public class S3ServiceImpl implements S3Service {
+public class S3ImageService implements ImageService {
 
     @Value("${prefix.upload.path}")
     private String prefixUploadPath;
     private final S3Client s3Client;
 
-    public S3ServiceImpl(S3Client s3Client) {
+    public S3ImageService(S3Client s3Client) {
         this.s3Client = s3Client;
     }
 
@@ -31,7 +31,7 @@ public class S3ServiceImpl implements S3Service {
         }
     }
 
-    private String getUploadPath(final UploadFile uploadFile) {
+    private String getUploadPath(UploadFile uploadFile) {
         return String.join(
                 "/",
                 prefixUploadPath,

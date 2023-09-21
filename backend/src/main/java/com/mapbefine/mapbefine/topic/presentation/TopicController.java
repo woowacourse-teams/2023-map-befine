@@ -5,8 +5,9 @@ import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
-import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithOutImage;
+import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
+import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
@@ -44,12 +45,12 @@ public class TopicController {
     @LoginRequired
     @PostMapping(
             value = "/new",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}
     )
     public ResponseEntity<Void> create(
             AuthMember member,
-            @RequestPart TopicCreateRequestWithOutImage request,
-            @RequestPart MultipartFile image
+            @RequestPart TopicCreateRequestWithoutImage request,
+            @RequestPart(required = false) MultipartFile image
     ) {
         TopicCreateRequest topicCreateRequest = TopicCreateRequest.of(request, image);
         Long topicId = topicCommandService.saveTopic(member, topicCreateRequest);
@@ -59,9 +60,17 @@ public class TopicController {
     }
 
     @LoginRequired
-    @PostMapping("/merge")
-    public ResponseEntity<Void> mergeAndCreate(AuthMember member, @RequestBody TopicMergeRequest request) {
-        Long topicId = topicCommandService.merge(member, request);
+    @PostMapping(
+            value = "/merge",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}
+    )
+    public ResponseEntity<Void> mergeAndCreate(
+            AuthMember member,
+            @RequestPart TopicMergeRequestWithoutImage request,
+            @RequestPart(required = false) MultipartFile image
+    ) {
+        TopicMergeRequest topicMergeRequest = TopicMergeRequest.of(request, image);
+        Long topicId = topicCommandService.merge(member, topicMergeRequest);
 
         return ResponseEntity.created(URI.create("/topics/" + topicId))
                 .build();

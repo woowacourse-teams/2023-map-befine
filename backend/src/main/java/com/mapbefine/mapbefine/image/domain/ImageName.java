@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.s3.domain;
+package com.mapbefine.mapbefine.image.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 public class ImageName {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS");
-    private static final String EXTENSION_DELIMITER = ".";
 
     private final String fileName;
 
@@ -16,15 +15,14 @@ public class ImageName {
 
     public static ImageName from(String originalFileName) {
         String fileName = FORMATTER.format(LocalDateTime.now());
-        String extension = getExtension(originalFileName);
+        String extension = extractExtension(originalFileName);
 
         return new ImageName(fileName + extension);
     }
 
-    private static String getExtension(String originalFileName) {
-        return originalFileName.substring(
-                originalFileName.lastIndexOf(EXTENSION_DELIMITER)
-        );
+    private static String extractExtension(String originalFileName) {
+        return ImageExtension.from(originalFileName)
+                .getExtension();
     }
 
     public String getFileName() {
