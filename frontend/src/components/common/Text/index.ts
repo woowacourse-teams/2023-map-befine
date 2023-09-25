@@ -19,6 +19,7 @@ const Text = styled.span<TextProps>`
   font-size: ${({ $fontSize }) => theme.fontSize[$fontSize]};
   font-weight: ${({ $fontWeight }) => theme.fontWeight[$fontWeight]};
   text-align: ${({ $textAlign }) => $textAlign};
+  white-space: pre-wrap;
 `;
 
 export default Text;

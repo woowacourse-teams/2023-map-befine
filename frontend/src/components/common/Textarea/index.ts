@@ -6,7 +6,7 @@ interface TextareaProps {
 
 const Textarea = styled.textarea<TextareaProps>`
   width: 100%;
-  height: 100px;
+  height: 160px;
   box-sizing: border-box;
   resize: none;
   line-height: 160%;
