@@ -192,6 +192,3 @@ const router = createBrowserRouter(
 );
 
 export default router;
-function createBrowserHistory() {
-  throw new Error('Function not implemented.');
-}
