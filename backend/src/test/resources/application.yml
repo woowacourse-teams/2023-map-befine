@@ -40,3 +40,5 @@ security:
       secret-key: ${TEST_JWT_SECRET_KEY}
       access-expire-length: ${TEST_JWT_ACCESS_EXPIRE_LENGTH}
       refresh-expire-length: ${TEST_JWT_REFRESH_EXPIRE_LENGTH}
+  admin:
+    key: testkey

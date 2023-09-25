@@ -87,7 +87,6 @@ class AdminCommandServiceTest {
     @Test
     void blockMember_Success() {
         //given
-        AuthMember adminAuthMember = MemberFixture.createUser(admin);
         Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
         Atlas atlas = Atlas.createWithAssociatedMember(topic, member);
         Permission permission = Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
@@ -107,7 +106,7 @@ class AdminCommandServiceTest {
         });
 
         //when
-        adminCommandService.blockMember(adminAuthMember, member.getId());
+        adminCommandService.blockMember(member.getId());
 
         //then
         Topic deletedTopic = topicRepository.findById(topic.getId()).get();
@@ -125,37 +124,14 @@ class AdminCommandServiceTest {
         });
     }
 
-    @DisplayName("Admin이 아닐 경우, Member를 차단(탈퇴시킬)할 수 없다.")
-    @Test
-    void blockMember_Fail() {
-        //given
-        AuthMember userAuthMember = MemberFixture.createUser(member);
-        Member otherMember = MemberFixture.create("otherMember", "otherMember@email.com", Role.USER);
-        memberRepository.save(otherMember);
-
-        assertAll(() -> {
-            assertThat(member.getMemberInfo().getStatus()).isEqualTo(Status.NORMAL);
-            assertThat(topic.isDeleted()).isFalse();
-            assertThat(pin.isDeleted()).isFalse();
-            assertThat(pinImage.isDeleted()).isFalse();
-        });
-
-        //when then
-        Long otherMemberId = otherMember.getId();
-        assertThatThrownBy(() -> adminCommandService.blockMember(userAuthMember, otherMemberId))
-                .isInstanceOf(PermissionForbiddenException.class);
-    }
-
     @DisplayName("Admin은 토픽을 삭제시킬 수 있다.")
     @Test
     void deleteTopic_Success() {
         //given
-        AuthMember adminAuthMember = MemberFixture.createUser(admin);
-
         assertThat(topic.isDeleted()).isFalse();
 
         //when
-        adminCommandService.deleteTopic(adminAuthMember, topic.getId());
+        adminCommandService.deleteTopic(topic.getId());
 
         //then
         Topic deletedTopic = topicRepository.findById(topic.getId()).get();
@@ -163,25 +139,10 @@ class AdminCommandServiceTest {
         assertThat(deletedTopic.isDeleted()).isTrue();
     }
 
-    @DisplayName("Admin이 아닐 경우, 토픽을 삭제시킬 수 없다.")
-    @Test
-    void deleteTopic_Fail() {
-        //given
-        AuthMember userAuthMember = MemberFixture.createUser(member);
-
-        assertThat(topic.isDeleted()).isFalse();
-
-        //when then
-        Long topicId = topic.getId();
-        assertThatThrownBy(() -> adminCommandService.deleteTopic(userAuthMember, topicId))
-                .isInstanceOf(PermissionForbiddenException.class);
-    }
-
     @DisplayName("Admin은 토픽 이미지를 삭제할 수 있다.")
     @Test
     void deleteTopicImage_Success() {
         //given
-        AuthMember adminAuthMember = MemberFixture.createUser(admin);
         TopicInfo topicInfo = topic.getTopicInfo();
 
         topic.updateTopicInfo(topicInfo.getName(), topicInfo.getDescription(), "https://imageUrl.png");
@@ -189,7 +150,7 @@ class AdminCommandServiceTest {
         assertThat(topic.getTopicInfo().getImageUrl()).isEqualTo("https://imageUrl.png");
 
         //when
-        adminCommandService.deleteTopicImage(adminAuthMember, topic.getId());
+        adminCommandService.deleteTopicImage(topic.getId());
 
         //then
         Topic imageDeletedTopic = topicRepository.findById(topic.getId()).get();
@@ -199,33 +160,14 @@ class AdminCommandServiceTest {
         );
     }
 
-    @DisplayName("Admin이 아닐 경우, 이미지를 삭제할 수 없다.")
-    @Test
-    void deleteTopicImage_Fail() {
-        //given
-        AuthMember userAuthMember = MemberFixture.createUser(member);
-        TopicInfo topicInfo = topic.getTopicInfo();
-
-        topic.updateTopicInfo(topicInfo.getName(), topicInfo.getDescription(), "https://imageUrl.png");
-
-        assertThat(topic.getTopicInfo().getImageUrl()).isEqualTo("https://imageUrl.png");
-
-        //when then
-        Long topicId = topic.getId();
-        assertThatThrownBy(() -> adminCommandService.deleteTopicImage(userAuthMember, topicId))
-                .isInstanceOf(PermissionForbiddenException.class);
-    }
-
     @DisplayName("Admin은 핀을 삭제할 수 있다.")
     @Test
     void deletePin_Success() {
         //given
-        AuthMember adminAuthMember = MemberFixture.createUser(admin);
-
         assertThat(pin.isDeleted()).isFalse();
 
         //when
-        adminCommandService.deletePin(adminAuthMember, pin.getId());
+        adminCommandService.deletePin(pin.getId());
 
         //then
         Pin deletedPin = pinRepository.findById(pin.getId()).get();
@@ -233,49 +175,19 @@ class AdminCommandServiceTest {
         assertThat(deletedPin.isDeleted()).isTrue();
     }
 
-    @DisplayName("Admin이 아닐 경우, 핀을 삭제할 수 없다.")
-    @Test
-    void deletePin_Fail() {
-        //given
-        AuthMember userAuthMember = MemberFixture.createUser(member);
-
-        assertThat(pin.isDeleted()).isFalse();
-
-        //when then
-        Long pinId = pin.getId();
-        assertThatThrownBy(() -> adminCommandService.deletePin(userAuthMember, pinId))
-                .isInstanceOf(PermissionForbiddenException.class);
-    }
-
     @DisplayName("Admin인 경우, 핀 이미지를 삭제할 수 있다.")
     @Test
     void deletePinImage_Success() {
         //given
-        AuthMember adminAuthMember = MemberFixture.createUser(admin);
-
         assertThat(pinImage.isDeleted()).isFalse();
 
         //when
-        adminCommandService.deletePinImage(adminAuthMember, pinImage.getId());
+        adminCommandService.deletePinImage(pinImage.getId());
 
         //then
         PinImage deletedPinImage = pinImageRepository.findById(pinImage.getId()).get();
 
         assertThat(deletedPinImage.isDeleted()).isTrue();
-    }
-
-    @DisplayName("Admin이 아닐 경우, 핀 이미지를 삭제할 수 없다.")
-    @Test
-    void deletePinImage_Fail() {
-        //given
-        AuthMember userAuthMember = MemberFixture.createUser(member);
-
-        assertThat(pinImage.isDeleted()).isFalse();
-
-        //when then
-        Long pinImageId = pinImage.getId();
-        assertThatThrownBy(() -> adminCommandService.deletePinImage(userAuthMember, pinImageId))
-                .isInstanceOf(PermissionForbiddenException.class);
     }
 
 }
