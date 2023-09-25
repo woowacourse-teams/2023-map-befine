@@ -65,35 +65,17 @@ class AdminQueryServiceTest {
     @DisplayName("사용자와 관련된 세부(민감한 정보 포함) 정보를 모두 조회할 수 있다.")
     void findMemberDetail_Success() {
         //given
-        AuthMember adminAuthMember = MemberFixture.createUser(admin);
+        AdminMemberDetailResponse response = adminQueryService.findMemberDetail(member.getId());
 
-        //when
-        AdminMemberDetailResponse response = adminQueryService.findMemberDetail(adminAuthMember, member.getId());
-
-        //then
+        //when //then
         assertThat(response).usingRecursiveComparison()
                 .ignoringFields("updatedAt")
                 .isEqualTo(AdminMemberDetailResponse.of(member, List.of(topic), List.of(pin)));
     }
-
-    @Test
-    @DisplayName("Admin이 아닌 경우, 사용자와 관련된 세부(민감한 정보 포함) 정보를 모두 조회할 수 없다.")
-    void findMemberDetail_Fail() {
-        //given
-        AuthMember userAuthMember = MemberFixture.createUser(member);
-
-        //when //then
-        Long memberId = member.getId();
-        assertThatThrownBy(() -> adminQueryService.findMemberDetail(userAuthMember, memberId))
-                .isInstanceOf(PermissionForbiddenException.class);
-    }
-
     @Test
     @DisplayName("모든 사용자와 관련된 세부 정보를 모두 조회할 수 있다.")
     void findAllMemberDetails_Success() {
         //given
-        AuthMember adminAuthMember = MemberFixture.createUser(admin);
-
         ArrayList<Member> members = new ArrayList<>();
         members.add(member);
         for (int i = 0; i < 10; i++) {
@@ -102,7 +84,7 @@ class AdminQueryServiceTest {
         }
 
         //when
-        List<AdminMemberResponse> responses = adminQueryService.findAllMemberDetails(adminAuthMember);
+        List<AdminMemberResponse> responses = adminQueryService.findAllMemberDetails();
         //then
         List<AdminMemberResponse> expected = members.stream()
                 .map(AdminMemberResponse::from)
@@ -112,24 +94,6 @@ class AdminQueryServiceTest {
                 .ignoringFields("updatedAt")
                 .ignoringCollectionOrderInFields()
                 .isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("Admin이 아닌 경우 모든 사용자와 관련된 세부 정보를 모두 조회할 수 없다.")
-    void findAllMemberDetails_Fail() {
-        //given
-        AuthMember memberAuthMember = MemberFixture.createUser(member);
-
-        ArrayList<Member> members = new ArrayList<>();
-        members.add(member);
-        for (int i = 0; i < 10; i++) {
-            Member saveMember = MemberFixture.create("member" + i, "member" + i + "@email.com", Role.USER);
-            members.add(memberRepository.save(saveMember));
-        }
-
-        //when //then
-        assertThatThrownBy(() -> adminQueryService.findAllMemberDetails(memberAuthMember))
-                .isInstanceOf(PermissionForbiddenException.class);
     }
 
 }
