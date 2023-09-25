@@ -5,6 +5,8 @@ import RootPage from './pages/RootPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './pages/NotFound';
+import ReactGA from 'react-ga';
+import { createBrowserHistory as createHistory } from 'history';
 
 const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
 const NewPin = lazy(() => import('./pages/NewPin'));
@@ -17,6 +19,15 @@ const SeeTogetherTopics = lazy(() => import('./pages/SeeTogetherTopics'));
 const Profile = lazy(() => import('./pages/Profile'));
 const AskLogin = lazy(() => import('./pages/AskLogin'));
 const Bookmark = lazy(() => import('./pages/Bookmark'));
+
+const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID || '';
+
+ReactGA.initialize(gaTrackingId, { debug: true });
+const history = createHistory();
+history.listen((location: any) => {
+  ReactGA.set({ page: location.pathname });
+  ReactGA.pageview(location.pathname);
+});
 
 interface routeElement {
   path: string;
