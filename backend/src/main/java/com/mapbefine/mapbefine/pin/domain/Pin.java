@@ -17,6 +17,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -84,6 +86,16 @@ public class Pin extends BaseTimeEntity {
         creator.addPin(pin);
 
         return pin;
+    }
+
+    @PrePersist
+    protected void prePersist() {
+        topic.updateLastPinUpdatedAt(getUpdatedAt());
+    }
+
+    @PreUpdate
+    protected void preUpdate() {
+        topic.updateLastPinUpdatedAt(getUpdatedAt());
     }
 
     public void updatePinInfo(String name, String description) {

@@ -20,13 +20,16 @@ import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
+import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
+import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +60,7 @@ class TopicIntegrationTest extends IntegrationTest {
     private Topic topic;
     private Location location;
     private String authHeader;
+    private File mockFile;
 
     @BeforeEach
     void setMember() {
@@ -64,15 +68,19 @@ class TopicIntegrationTest extends IntegrationTest {
         topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
         location = locationRepository.save(LocationFixture.create());
         authHeader = testAuthHeaderProvider.createAuthHeader(member);
-    }
+        mockFile = new File(
+                getClass().getClassLoader()
+                        .getResource("test.png")
+                        .getPath()
+        );
 
+    }
 
     @Test
     @DisplayName("Pin 목록 없이 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithoutPins_Success() {
-        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
+        TopicCreateRequestWithoutImage 준팍의_또간집 = new TopicCreateRequestWithoutImage(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -87,12 +95,22 @@ class TopicIntegrationTest extends IntegrationTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    private ExtractableResponse<Response> createNewTopic(TopicCreateRequest request, String authHeader) {
+    private ExtractableResponse<Response> createNewTopic(TopicCreateRequestWithoutImage request, String authHeader) {
         return RestAssured.given()
                 .log().all()
                 .header(AUTHORIZATION, authHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
+                .multiPart("image", mockFile, MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("request", request, MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/topics/new")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> createNewTopicExcludeImage(TopicCreateRequestWithoutImage request, String authHeader) {
+        return RestAssured.given()
+                .log().all()
+                .header(AUTHORIZATION, authHeader)
+                .multiPart("request", request, MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/topics/new")
                 .then().log().all()
                 .extract();
@@ -101,7 +119,6 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록과 함께 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithPins_Success() {
-
         PinFixture.create(location, topic, member);
 
         List<Pin> pins = pinRepository.findAll();
@@ -109,9 +126,8 @@ class TopicIntegrationTest extends IntegrationTest {
                 .map(Pin::getId)
                 .toList();
 
-        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
+        TopicCreateRequestWithoutImage 준팍의_또간집 = new TopicCreateRequestWithoutImage(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -127,20 +143,44 @@ class TopicIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("Image 없이 Topic 을 생성하더라도 201을 반환한다")
+    void createNewTopicNonExistsImage_Success() {
+        PinFixture.create(location, topic, member);
+
+        List<Pin> pins = pinRepository.findAll();
+        List<Long> pinIds = pins.stream()
+                .map(Pin::getId)
+                .toList();
+
+        TopicCreateRequestWithoutImage 준팍의_또간집 = new TopicCreateRequestWithoutImage(
+                "준팍의 또간집",
+                "준팍이 2번 이상 간집 ",
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                pinIds
+        );
+
+        // when
+        ExtractableResponse<Response> response = createNewTopicExcludeImage(준팍의_또간집, authHeader);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
+    @Test
     @DisplayName("여러개의 토픽을 병합하면 201을 반환한다")
     void createMergeTopic_Success() {
         // given
-        TopicCreateRequest 준팍의_또간집 = new TopicCreateRequest(
+        TopicCreateRequestWithoutImage 준팍의_또간집 = new TopicCreateRequestWithoutImage(
                 "준팍의 또간집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
                 Collections.emptyList()
         );
-        TopicCreateRequest 준팍의_또안간집 = new TopicCreateRequest(
+        TopicCreateRequestWithoutImage 준팍의_또안간집 = new TopicCreateRequestWithoutImage(
                 "준팍의 또안간집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 2번 이상 안간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -153,20 +193,65 @@ class TopicIntegrationTest extends IntegrationTest {
                 .map(Topic::getId)
                 .toList();
 
-        TopicMergeRequest 송파_데이트코스 = new TopicMergeRequest(
+        TopicMergeRequestWithoutImage 송파_데이트코스 = new TopicMergeRequestWithoutImage(
                 "송파 데이트코스",
-                "https://map-befine-official.github.io/favicon.png",
                 "맛집과 카페 토픽 합치기",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
                 topicIds);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given()
+                .log().all()
                 .header(AUTHORIZATION, authHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(송파_데이트코스)
+                .multiPart("image", mockFile, MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("request", 송파_데이트코스, MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/topics/merge")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("여러개의 토픽을 토픽 이미지 없이 병합해도 201을 반환한다")
+    void createMergeTopicWithoutImage_Success() {
+        // given
+        TopicCreateRequestWithoutImage 준팍의_또간집 = new TopicCreateRequestWithoutImage(
+                "준팍의 또간집",
+                "준팍이 2번 이상 간집 ",
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                Collections.emptyList()
+        );
+        TopicCreateRequestWithoutImage 준팍의_또안간집 = new TopicCreateRequestWithoutImage(
+                "준팍의 또안간집",
+                "준팍이 2번 이상 안간집 ",
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                Collections.emptyList()
+        );
+        createNewTopic(준팍의_또간집, authHeader);
+        createNewTopic(준팍의_또안간집, authHeader);
+        List<Topic> topics = topicRepository.findAll();
+        List<Long> topicIds = topics.stream()
+                .map(Topic::getId)
+                .toList();
+
+        TopicMergeRequestWithoutImage 송파_데이트코스 = new TopicMergeRequestWithoutImage(
+                "송파 데이트코스",
+                "맛집과 카페 토픽 합치기",
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                topicIds);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given()
+                .log().all()
+                .header(AUTHORIZATION, authHeader)
+                .multiPart("request", 송파_데이트코스, MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/topics/merge")
                 .then().log().all()
                 .extract();
@@ -180,9 +265,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic을 수정하면 200을 반환한다")
     void updateTopic_Success() {
         ExtractableResponse<Response> newTopic = createNewTopic(
-                new TopicCreateRequest(
+                new TopicCreateRequestWithoutImage(
                         "준팍의 또간집",
-                        "https://map-befine-official.github.io/favicon.png",
                         "준팍이 두번 간집",
                         Publicity.PUBLIC,
                         PermissionType.ALL_MEMBERS,
@@ -217,9 +301,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic을 삭제하면 204를 반환한다")
     void deleteTopic_Success() {
         ExtractableResponse<Response> newTopic = createNewTopic(
-                new TopicCreateRequest(
+                new TopicCreateRequestWithoutImage(
                         "준팍의 또간집",
-                        "https://map-befine-official.github.io/favicon.png",
                         "준팍이 두번 간집 ",
                         Publicity.PUBLIC,
                         PermissionType.ALL_MEMBERS,
@@ -262,9 +345,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 상세 정보를 조회하면 200을 반환한다")
     void findTopicDetail_Success() {
         //given
-        TopicCreateRequest request = new TopicCreateRequest(
+        TopicCreateRequestWithoutImage request = new TopicCreateRequestWithoutImage(
                 "topicName",
-                "https://map-befine-official.github.io/favicon.png",
                 "description",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -291,9 +373,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @DisplayName("Topic 상세 정보 여러개를 조회하면 200을 반환한다")
     void findTopicDetailsByIds_Success() {
         //given
-        TopicCreateRequest request = new TopicCreateRequest(
+        TopicCreateRequestWithoutImage request = new TopicCreateRequestWithoutImage(
                 "topicName",
-                "https://map-befine-official.github.io/favicon.png",
                 "description",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
@@ -320,7 +401,6 @@ class TopicIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responses).hasSize(2);
         assertThat(responses).hasSize(2);
     }
 
@@ -363,6 +443,8 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("핀이 추가/수정된 일자 기준 내림차순으로 토픽 목록을 조회할 경우, 200을 반환한다")
     void findAllByOrderByUpdatedAtDesc_Success() {
+        topicRepository.deleteAll();
+
         // given
         Topic topic1 = topicRepository.save(TopicFixture.createByName("topic1", member));
         Topic topic2 = topicRepository.save(TopicFixture.createByName("topic2", member));
@@ -388,6 +470,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
+        // then
         List<TopicResponse> topicResponses = response.jsonPath().getList(".", TopicResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(topicResponses).hasSize(3);
@@ -396,7 +479,7 @@ class TopicIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("멤버별 Topic 목록을 조회하면 200을 반환한다")
+    @DisplayName("회원별 Topic 목록을 조회하면 200을 반환한다")
     void findAllTopicsByMemberId_Success() {
         // when
         ExtractableResponse<Response> response = RestAssured

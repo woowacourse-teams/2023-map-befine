@@ -21,8 +21,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class TopicInfo {
 
-    private static final Image DEFAULT_IMAGE =
-            Image.from("https://map-befine-official.github.io/favicon.png");
+    private static final Image DEFAULT_IMAGE = Image.from(
+            "https://velog.velcdn.com/images/semnil5202/post/37f3bcb9-0b07-4100-85f6-f1d5ad037c14/image.svg"
+    );
 
     private static final int MAX_DESCRIPTION_LENGTH = 1000;
     private static final int MAX_NAME_LENGTH = 20;
@@ -88,4 +89,13 @@ public class TopicInfo {
     public String getImageUrl() {
         return image.getImageUrl();
     }
+
+    public TopicInfo removeImage() {
+        return new TopicInfo(
+                this.name,
+                this.description,
+                DEFAULT_IMAGE
+        );
+    }
+
 }

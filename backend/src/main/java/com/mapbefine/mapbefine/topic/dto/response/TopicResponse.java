@@ -15,6 +15,7 @@ public record TopicResponse(
         Boolean isBookmarked,
         LocalDateTime updatedAt
 ) {
+
     public static TopicResponse from(Topic topic, Boolean isInAtlas, Boolean isBookmarked) {
         TopicInfo topicInfo = topic.getTopicInfo();
 
@@ -27,7 +28,23 @@ public record TopicResponse(
                 isInAtlas,
                 topic.countBookmarks(),
                 isBookmarked,
-                topic.getUpdatedAt()
+                topic.getLastPinUpdatedAt()
+        );
+    }
+
+    public static TopicResponse fromGuestQuery(Topic topic) {
+        TopicInfo topicInfo = topic.getTopicInfo();
+
+        return new TopicResponse(
+                topic.getId(),
+                topicInfo.getName(),
+                topicInfo.getImageUrl(),
+                topic.getCreator().getMemberInfo().getNickName(),
+                topic.countPins(),
+                Boolean.FALSE,
+                topic.countBookmarks(),
+                Boolean.FALSE,
+                topic.getLastPinUpdatedAt()
         );
     }
 

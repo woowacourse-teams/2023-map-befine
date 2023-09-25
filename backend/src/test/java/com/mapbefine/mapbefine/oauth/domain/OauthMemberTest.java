@@ -22,7 +22,6 @@ class OauthMemberTest {
                 .getMemberInfo()
                 .getNickName();
 
-        System.out.println(expected);
         assertThat(expected).contains("모험가");
     }
 }

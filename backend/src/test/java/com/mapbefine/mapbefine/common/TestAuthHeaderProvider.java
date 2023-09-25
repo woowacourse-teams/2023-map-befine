@@ -17,19 +17,23 @@ public class TestAuthHeaderProvider {
 
     public String createAuthHeader(Member member) {
         Long memberId = member.getId();
-        return TOKEN_TYPE + generateToken(memberId);
+        return TOKEN_TYPE + generateAccessToken(memberId);
     }
 
     public String createAuthHeaderById(Long memberId) {
-        return TOKEN_TYPE + generateToken(memberId);
+        return TOKEN_TYPE + generateAccessToken(memberId);
     }
 
     public String createResponseAccessTokenById(Long id) {
-        return generateToken(id);
+        return generateAccessToken(id);
     }
 
-    private String generateToken(Long memberId) {
-        return jwtTokenProvider.createToken(String.valueOf(memberId));
+    public String createRefreshToken() {
+        return jwtTokenProvider.createRefreshToken();
+    }
+
+    private String generateAccessToken(Long memberId) {
+        return jwtTokenProvider.createAccessToken(String.valueOf(memberId));
     }
 
 }
