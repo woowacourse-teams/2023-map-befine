@@ -20,9 +20,7 @@ const Profile = lazy(() => import('./pages/Profile'));
 const AskLogin = lazy(() => import('./pages/AskLogin'));
 const Bookmark = lazy(() => import('./pages/Bookmark'));
 
-const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID || '';
-
-ReactGA.initialize(gaTrackingId, { debug: true });
+ReactGA.initialize('G-RRSTX6Y61Y', { debug: true });
 const history = createHistory();
 history.listen((location: any) => {
   ReactGA.set({ page: location.pathname });
