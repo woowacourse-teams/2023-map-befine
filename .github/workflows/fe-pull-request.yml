@@ -3,7 +3,7 @@ name: Frontend CI For Test Validation
 on:
   # pull request open과 reopen 시 실행한다.
   pull_request:
-    branches: [main, develop-FE]
+    branches: [main, develop-FE-2]
     paths: frontend/**
 
 defaults:
