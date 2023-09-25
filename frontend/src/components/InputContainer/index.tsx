@@ -4,7 +4,6 @@ import Input from '../common/Input';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import Textarea from '../common/Textarea';
-import { ForwardedRef, forwardRef } from 'react';
 import Box from '../common/Box';
 
 interface InputContainerProps {
