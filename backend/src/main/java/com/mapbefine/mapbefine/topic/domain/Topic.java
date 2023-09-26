@@ -11,6 +11,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,12 +19,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -40,18 +44,22 @@ public class Topic extends BaseTimeEntity {
     @Embedded
     private TopicStatus topicStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member creator;
 
     @OneToMany(mappedBy = "topic")
-    private List<Permission> permissions = new ArrayList<>();
+    private Set<Permission> permissions = new HashSet<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
 
     @OneToMany(mappedBy = "topic")
-    private List<Bookmark> bookmarks = new ArrayList<>();
+    private Set<Bookmark> bookmarks = new HashSet<>();
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    private int pinCount = 0;
 
     @Column(nullable = false)
     @ColumnDefault(value = "false")
@@ -109,11 +117,12 @@ public class Topic extends BaseTimeEntity {
     }
 
     public int countPins() {
-        return pins.size();
+        return pinCount;
     }
 
     public void addPin(Pin pin) {
         pins.add(pin);
+        pinCount++;
     }
 
     public void addBookmark(Bookmark bookmark) {
@@ -135,4 +144,7 @@ public class Topic extends BaseTimeEntity {
         this.topicInfo = topicInfo.removeImage();
     }
 
+    public void setPinCount(int count){
+        this.pinCount = count;
+    }
 }
