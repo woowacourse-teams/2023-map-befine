@@ -97,7 +97,6 @@ const MediaWrapper = styled.section<{
   overflow: hidden;
   @media (max-width: 1076px) {
     flex-direction: ${({ $isAddPage, $layoutWidth }) => {
-      if ($isAddPage) return 'column';
       if ($layoutWidth === '372px') return 'column-reverse';
     }};
   }
