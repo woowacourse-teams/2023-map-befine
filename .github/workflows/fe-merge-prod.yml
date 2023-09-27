@@ -23,20 +23,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
-          cache-dependency-path: 'frontend'
+          cache: "npm"
+          cache-dependency-path: "frontend"
 
       - name: Install npm
         run: npm install
         working-directory: frontend
 
       - name: Build project
-        env:
-          APP_URL: "https://mapbefine.com/api"
+
         run: npm run build
         working-directory: frontend
         env:
           REACT_APP_GOOGLE_ANALYTICS: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS }}
+          APP_URL: "https://mapbefine.com/api"
 
       - name: upload to artifact
         uses: actions/upload-artifact@v3

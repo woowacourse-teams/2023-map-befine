@@ -31,11 +31,10 @@ jobs:
         working-directory: frontend
 
       - name: Build project
-        env:
-          APP_URL: "https://mapbefine.kro.kr/api"
         run: npm run build
         working-directory: frontend
         env:
+          APP_URL: "https://mapbefine.kro.kr/api"
           REACT_APP_GOOGLE_ANALYTICS: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS }}
 
       - name: upload to artifact
