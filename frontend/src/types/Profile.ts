@@ -1,5 +1,5 @@
 export interface ProfileProps {
-  name: string;
+  nickName: string;
   email: string;
   image: string;
 }

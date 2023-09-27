@@ -11,15 +11,15 @@ import useToast from '../../hooks/useToast';
 import { DEFAULT_PROD_URL } from '../../constants';
 import Setting from '../../assets/setting.svg';
 
-const user = JSON.parse(localStorage.getItem('user') || '{}');
 const accessToken = localStorage.getItem('userToken');
 
 const MyInfo = () => {
   const { showToast } = useToast();
 
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [isModifyMyInfo, setIsModifyMyInfo] = useState<boolean>(false);
   const [myInfo, setMyInfo] = useState<ProfileProps>({
-    name: user.nickName,
+    nickName: user.nickName,
     email: user.email,
     image: user.imageUrl,
   });

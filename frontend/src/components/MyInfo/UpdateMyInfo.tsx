@@ -22,14 +22,14 @@ const UpdateMyInfo = ({
 
   const onChangeMyInfoName = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length >= 20) return;
-    setMyInfo({ ...myInfo, name: e.target.value });
+    setMyInfo({ ...myInfo, nickName: e.target.value });
   };
 
   const onClickModifyButton = async () => {
     await fetchPatch({
       url: '/members/my/profiles',
       payload: {
-        nickName: myInfo.name,
+        nickName: myInfo.nickName,
       },
       errorMessage: '회원정보 수정에 실패했습니다.',
       isThrow: true,
@@ -51,7 +51,7 @@ const UpdateMyInfo = ({
       <MyInfoImg src={myInfo.image} />
       <Space size={5} />
       <Box>
-        <MyInfoInput value={myInfo.name} onChange={onChangeMyInfoName} />
+        <MyInfoInput value={myInfo.nickName} onChange={onChangeMyInfoName} />
         <Space size={0} />
         <Text color="black" $fontSize="small" $fontWeight="normal">
           {myInfo.email}
