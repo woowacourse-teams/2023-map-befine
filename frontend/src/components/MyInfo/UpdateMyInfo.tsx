@@ -1,36 +1,42 @@
 import { styled } from 'styled-components';
 import Flex from '../common/Flex';
-import ProfileDefaultImage from '../../assets/profile_defaultImage.svg';
 import Box from '../common/Box';
 import Space from '../common/Space';
 import { ProfileProps } from '../../types/Profile';
 import Button from '../common/Button';
+import Text from '../common/Text';
+import usePatch from '../../apiHooks/usePatch';
 
 interface UpdateMyInfoProps {
-  isThereImg: boolean;
-  myInfoNameAndEmail: ProfileProps;
+  myInfo: ProfileProps;
   setIsModifyMyInfo: React.Dispatch<React.SetStateAction<boolean>>;
-  setMyInfoNameAndEmail: React.Dispatch<React.SetStateAction<ProfileProps>>;
+  setMyInfo: React.Dispatch<React.SetStateAction<ProfileProps>>;
 }
 
 const UpdateMyInfo = ({
-  isThereImg,
-  myInfoNameAndEmail,
+  myInfo,
   setIsModifyMyInfo,
-  setMyInfoNameAndEmail,
+  setMyInfo,
 }: UpdateMyInfoProps) => {
+  const { fetchPatch } = usePatch();
+
   const onChangeMyInfoName = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length >= 20) return;
-    setMyInfoNameAndEmail({ ...myInfoNameAndEmail, name: e.target.value });
+    setMyInfo({ ...myInfo, name: e.target.value });
   };
 
-  const onChangeMyInfoEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length >= 35) return;
-    setMyInfoNameAndEmail({ ...myInfoNameAndEmail, email: e.target.value });
-  };
-
-  const onClickModifyButton = () => {
-    setIsModifyMyInfo(false);
+  const onClickModifyButton = async () => {
+    await fetchPatch({
+      url: '/members/my/profiles',
+      payload: {
+        nickName: myInfo.name,
+      },
+      errorMessage: '회원정보 수정에 실패했습니다.',
+      isThrow: true,
+      onSuccess: () => {
+        setIsModifyMyInfo(false);
+      },
+    });
   };
 
   return (
@@ -41,22 +47,14 @@ const UpdateMyInfo = ({
       $justifyContent="center"
       $alignItems="center"
     >
-      {isThereImg ? (
-        <MyInfoImg src="https://images.unsplash.com/photo-1480429370139-e0132c086e2a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80" />
-      ) : (
-        <ProfileDefaultImage />
-      )}
-      <Space size={7} />
+      <MyInfoImg src={myInfo.image} />
+      <Space size={5} />
       <Box>
-        <MyInfoInput
-          value={myInfoNameAndEmail.name}
-          onChange={onChangeMyInfoName}
-        />
+        <MyInfoInput value={myInfo.name} onChange={onChangeMyInfoName} />
         <Space size={0} />
-        <MyInfoInput
-          value={myInfoNameAndEmail.email}
-          onChange={onChangeMyInfoEmail}
-        />
+        <Text color="black" $fontSize="small" $fontWeight="normal">
+          {myInfo.email}
+        </Text>
       </Box>
       <Space size={3} />
       <Button variant="primary" onClick={onClickModifyButton}>
