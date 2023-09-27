@@ -21,7 +21,7 @@ const MyInfo = () => {
   const [myInfo, setMyInfo] = useState<ProfileProps>({
     nickName: user.nickName,
     email: user.email,
-    image: user.imageUrl,
+    imageUrl: user.imageUrl,
   });
 
   const onClickSetting = () => {
