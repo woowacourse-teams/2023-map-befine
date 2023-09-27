@@ -7,9 +7,11 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Set;
 
 class PermissionTest {
 
@@ -52,7 +54,7 @@ class PermissionTest {
         Permission permission =
                 Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
         List<Topic> topicsWithPermission = member.getTopicsWithPermissions();
-        List<Permission> permissions = topic.getPermissions();
+        Set<Permission> permissions = topic.getPermissions();
 
         // then
         assertThat(topicsWithPermission).hasSize(1);
@@ -60,7 +62,7 @@ class PermissionTest {
         assertThat(topicsWithPermission.get(0)).usingRecursiveComparison()
                 .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(topic);
-        assertThat(permissions.get(0)).usingRecursiveComparison()
+        assertThat(permissions.iterator().next()).usingRecursiveComparison()
                 .ignoringFields("createdAt", "updatedAt")
                 .isEqualTo(permission);
     }

@@ -24,17 +24,15 @@ import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import io.restassured.common.mapper.TypeRef;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+
+import java.util.List;
 
 class AdminIntegrationTest extends IntegrationTest {
 
@@ -52,6 +50,7 @@ class AdminIntegrationTest extends IntegrationTest {
 
     @Autowired
     private PinImageRepository pinImageRepository;
+
     @Value("${security.admin.key}")
     private String secretKey;
 
@@ -67,6 +66,7 @@ class AdminIntegrationTest extends IntegrationTest {
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
         location = locationRepository.save(LocationFixture.create());
         pin = pinRepository.save(PinFixture.create(location, topic, member));
+        topic = topicRepository.save(topic);
         pinImage = pinImageRepository.save(PinImageFixture.create(pin));
     }
 
@@ -124,7 +124,7 @@ class AdminIntegrationTest extends IntegrationTest {
                 .extract()
                 .as(new TypeRef<>() {
                 });
-
+        System.out.println("====" + topic.getPinCount());
         //then
 
         AdminMemberDetailResponse expected = AdminMemberDetailResponse.of(
