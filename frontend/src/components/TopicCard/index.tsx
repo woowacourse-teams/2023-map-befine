@@ -3,7 +3,7 @@ import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
 import Image from '../common/Image';
-import { SyntheticEvent, useContext } from 'react';
+import { SyntheticEvent, useContext, useState } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
@@ -47,6 +47,7 @@ const TopicCard = ({
   const { routePage } = useNavigator();
   const { closeModal } = useContext(ModalContext);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
+  const [atlas, setAtlas] = useState<boolean>(isInAtlas);
 
   const goToSelectedTopic = () => {
     routePage(`/topics/${id}`, [id]);
@@ -60,6 +61,9 @@ const TopicCard = ({
     closeModal('newPin');
   };
 
+  const onChangeIsInAtlas = () => {
+    setAtlas(!atlas);
+  };
   return (
     <Wrapper
       data-cy="topic-card"
@@ -139,10 +143,11 @@ const TopicCard = ({
             <ButtonWrapper>
               <AddSeeTogether
                 isInAtlas={isInAtlas}
+                onClickAtlas={onChangeIsInAtlas}
                 id={id}
                 getTopicsFromServer={getTopicsFromServer}
               >
-                {isInAtlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
+                {atlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
               </AddSeeTogether>
               <AddFavorite
                 isBookmarked={isBookmarked}

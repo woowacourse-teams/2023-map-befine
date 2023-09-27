@@ -66,6 +66,10 @@ const TopicInfo = ({
     }
   };
 
+  const onChangeIsInAtlas = () => {
+    isInAtlas = !isInAtlas;
+  }
+
   useEffect(() => {
     if (!isUpdate) setTopicsFromServer();
   }, [isUpdate]);
@@ -153,6 +157,7 @@ const TopicInfo = ({
       <ButtonsWrapper>
         <AddSeeTogether
           isInAtlas={isInAtlas}
+          onClickAtlas = {onChangeIsInAtlas}
           id={Number(topicId.split(',')[idx])}
           getTopicsFromServer={setTopicsFromServer}
         >

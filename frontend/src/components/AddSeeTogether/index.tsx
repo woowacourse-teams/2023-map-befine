@@ -12,6 +12,7 @@ interface AddSeeTogetherProps {
   id: number;
   children: React.ReactNode;
   getTopicsFromServer: () => void;
+  onClickAtlas: () => void;
 }
 
 const AddSeeTogether = ({
@@ -19,10 +20,13 @@ const AddSeeTogether = ({
   id,
   children,
   getTopicsFromServer,
+  onClickAtlas,
 }: AddSeeTogetherProps) => {
   const { showToast } = useToast();
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
+
+  const accessToken = localStorage.getItem('userToken');
 
   const addSeeTogetherList = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -37,10 +41,11 @@ const AddSeeTogether = ({
 
       const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
 
-      setSeeTogetherTopics(topics);
+      setSeeTogetherTopics(topics.map((topic) => topic.id));
 
       // TODO: 모아보기 페이지에서는 GET /members/my/atlas 두 번 됨
       getTopicsFromServer();
+      onClickAtlas();
 
       showToast('info', '모아보기에 추가했습니다.');
     } catch {
@@ -56,16 +61,29 @@ const AddSeeTogether = ({
 
       const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
 
-      setSeeTogetherTopics(topics);
+      setSeeTogetherTopics(topics.map((topic) => topic.id));
 
       // TODO: 모아보기 페이지에서는 GET /members/my/atlas 두 번 됨
       getTopicsFromServer();
+      onClickAtlas();
 
       showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
     } catch {
       showToast('error', '로그인 후 사용해주세요.');
     }
   };
+
+  const onChangeIsInAtlas = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
+    setSeeTogetherTopics((prev) => [...prev, id]);
+
+    onClickAtlas();
+  };
+
+  if (accessToken === null) {
+    return <Wrapper onClick={onChangeIsInAtlas}>{children}</Wrapper>;
+  }
 
   return (
     <Wrapper onClick={isInAtlas ? deleteSeeTogether : addSeeTogetherList}>

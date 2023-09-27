@@ -146,7 +146,6 @@ const SelectedTopic = () => {
           <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
             <PinDetail
               width={width}
-              topicId={topicId}
               pinId={selectedPinId}
               isEditPinDetail={isEditPinDetail}
               setIsEditPinDetail={setIsEditPinDetail}

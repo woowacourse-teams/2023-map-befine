@@ -5,7 +5,6 @@ import RootPage from './pages/RootPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './pages/NotFound';
-
 const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
 const NewPin = lazy(() => import('./pages/NewPin'));
 const NewTopic = lazy(() => import('./pages/NewTopic'));
@@ -101,15 +100,6 @@ const routes: routeElement[] = [
           </SuspenseComp>
         ),
         withAuth: false,
-      },
-      {
-        path: 'see-together',
-        element: (
-          <SuspenseComp>
-            <SeeTogetherTopics />
-          </SuspenseComp>
-        ),
-        withAuth: true,
       },
       {
         path: 'favorite',
