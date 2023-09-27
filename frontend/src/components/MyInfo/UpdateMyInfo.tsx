@@ -6,6 +6,7 @@ import { ProfileProps } from '../../types/Profile';
 import Button from '../common/Button';
 import Text from '../common/Text';
 import usePatch from '../../apiHooks/usePatch';
+import useToast from '../../hooks/useToast';
 
 interface UpdateMyInfoProps {
   myInfo: ProfileProps;
@@ -19,6 +20,7 @@ const UpdateMyInfo = ({
   setMyInfo,
 }: UpdateMyInfoProps) => {
   const { fetchPatch } = usePatch();
+  const { showToast } = useToast();
 
   const onChangeMyInfoName = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length >= 20) return;
@@ -32,10 +34,10 @@ const UpdateMyInfo = ({
         nickName: myInfo.nickName,
       },
       errorMessage: '회원정보 수정에 실패했습니다.',
-      isThrow: true,
       onSuccess: () => {
         localStorage.setItem('user', JSON.stringify(myInfo));
         setIsModifyMyInfo(false);
+        showToast('info', '회원정보를 수정했습니다.');
       },
     });
   };
@@ -48,7 +50,7 @@ const UpdateMyInfo = ({
       $justifyContent="center"
       $alignItems="center"
     >
-      <MyInfoImg src={myInfo.image} />
+      <MyInfoImg src={myInfo.imageUrl} />
       <Space size={5} />
       <Box>
         <MyInfoInput value={myInfo.nickName} onChange={onChangeMyInfoName} />
