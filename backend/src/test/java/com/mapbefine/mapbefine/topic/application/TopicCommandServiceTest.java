@@ -312,7 +312,7 @@ class TopicCommandServiceTest {
         topicCommandService.copyPin(user, target.getId(), pinIds);
 
         // then
-        Set<Pin> targetPins = target.getPins();
+        List<Pin> targetPins = target.getPins();
         Pin targetPin = targetPins.iterator().next();
         Pin sourcePin = sourcePins.get(0);
 

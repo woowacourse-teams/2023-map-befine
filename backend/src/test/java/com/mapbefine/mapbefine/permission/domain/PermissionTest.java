@@ -54,7 +54,7 @@ class PermissionTest {
         Permission permission =
                 Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
         List<Topic> topicsWithPermission = member.getTopicsWithPermissions();
-        Set<Permission> permissions = topic.getPermissions();
+        List<Permission> permissions = topic.getPermissions();
 
         // then
         assertThat(topicsWithPermission).hasSize(1);

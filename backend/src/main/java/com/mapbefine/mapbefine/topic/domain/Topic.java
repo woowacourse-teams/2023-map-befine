@@ -20,8 +20,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -46,13 +46,13 @@ public class Topic extends BaseTimeEntity {
     private Member creator;
 
     @OneToMany(mappedBy = "topic")
-    private Set<Permission> permissions = new LinkedHashSet<>();
+    private List<Permission> permissions = new ArrayList<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
-    private Set<Pin> pins = new LinkedHashSet<>();
+    private List<Pin> pins = new ArrayList<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private Set<Bookmark> bookmarks = new LinkedHashSet<>();
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     @Column(nullable = false)
     @ColumnDefault(value = "0")
