@@ -34,6 +34,7 @@ const UpdateMyInfo = ({
       errorMessage: '회원정보 수정에 실패했습니다.',
       isThrow: true,
       onSuccess: () => {
+        localStorage.setItem('user', JSON.stringify(myInfo));
         setIsModifyMyInfo(false);
       },
     });
