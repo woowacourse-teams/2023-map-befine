@@ -8,22 +8,30 @@ import { Suspense, lazy, useContext, useEffect } from 'react';
 import { MarkerContext } from '../context/MarkerContext';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { setFullScreenResponsive } from '../constants/responsive';
+import { SeeTogetherContext } from '../context/SeeTogetherContext';
 
 const TopicListContainer = lazy(
   () => import('../components/TopicCardContainer'),
 );
 
 const Home = () => {
-  console.log(`${process.env.APP_URL}`, '환경변수 테스트');
   const { routingHandlers } = useNavigator();
   const { goToPopularTopics, goToLatestTopics, goToNearByMeTopics } =
     routingHandlers;
-
+  const { seeTogetherTopics, setSeeTogetherTopics } =
+    useContext(SeeTogetherContext);
   const { markers, removeMarkers, removeInfowindows } =
     useContext(MarkerContext);
+  const accessToken = localStorage.getItem('userToken');
 
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
+
+  useEffect(() => {
+    if (accessToken === null && seeTogetherTopics?.length !== 0) {
+      setSeeTogetherTopics([]);
+    }
+  }, []);
 
   useEffect(() => {
     if (markers && markers.length > 0) {

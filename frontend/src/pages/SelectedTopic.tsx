@@ -118,8 +118,6 @@ const SelectedTopic = () => {
     setIsOpen(!isOpen);
   };
 
-  console.log(topicId);
-
   if (!seeTogetherTopics) return <></>;
 
   if (seeTogetherTopics.length === 0 && topicId === '-1') {
