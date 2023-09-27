@@ -181,21 +181,24 @@ class BookmarkCommandServiceTest {
         topicRepository.save(topic2);
 
         Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creatorBefore);
-        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic1, creatorBefore);
+        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic2, creatorBefore);
 
         bookmarkRepository.save(bookmark1);
         bookmarkRepository.save(bookmark2);
+
+        testEntityManager.flush();
+        testEntityManager.clear();
 
         //when
         assertThat(creatorBefore.getBookmarks()).hasSize(2);
 
         AuthMember user = MemberFixture.createUser(creatorBefore);
         bookmarkCommandService.deleteAllBookmarks(user);
-
         testEntityManager.flush();
         testEntityManager.clear();
 
         //then
+        assertThat(bookmarkRepository.findById(creatorBefore.getId())).isEmpty();
         Member creatorAfter = memberRepository.findById(creatorBefore.getId()).get();
         assertThat(creatorAfter.getBookmarks()).isEmpty();
     }
