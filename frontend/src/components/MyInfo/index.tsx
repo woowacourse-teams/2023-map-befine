@@ -9,19 +9,24 @@ import UpdateMyInfo from './UpdateMyInfo';
 import Button from '../common/Button';
 import useToast from '../../hooks/useToast';
 import { DEFAULT_PROD_URL } from '../../constants';
+import Setting from '../../assets/setting.svg';
 
-const user = JSON.parse(localStorage.getItem('user') || '{}');
 const accessToken = localStorage.getItem('userToken');
 
 const MyInfo = () => {
   const { showToast } = useToast();
 
-  const [isThereImg, setIsThereImg] = useState<boolean>(true);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [isModifyMyInfo, setIsModifyMyInfo] = useState<boolean>(false);
-  const [myInfoNameAndEmail, setMyInfoNameAndEmail] = useState<ProfileProps>({
-    name: user.nickName,
+  const [myInfo, setMyInfo] = useState<ProfileProps>({
+    nickName: user.nickName,
     email: user.email,
+    image: user.imageUrl,
   });
+
+  const onClickSetting = () => {
+    setIsModifyMyInfo(true);
+  };
 
   const onClickLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
@@ -48,10 +53,9 @@ const MyInfo = () => {
   if (isModifyMyInfo) {
     return (
       <UpdateMyInfo
-        isThereImg={isThereImg}
-        myInfoNameAndEmail={myInfoNameAndEmail}
+        myInfo={myInfo}
         setIsModifyMyInfo={setIsModifyMyInfo}
-        setMyInfoNameAndEmail={setMyInfoNameAndEmail}
+        setMyInfo={setMyInfo}
       />
     );
   }
@@ -64,6 +68,9 @@ const MyInfo = () => {
       $justifyContent="center"
       $alignItems="center"
     >
+      <SettingContainer onClick={onClickSetting}>
+        <Setting />
+      </SettingContainer>
       <MyInfoImg src={user.imageUrl} />
       <Space size={5} />
       <Box>
@@ -71,7 +78,7 @@ const MyInfo = () => {
           <Text color="black" $fontSize="medium" $fontWeight="bold">
             {user.nickName}
           </Text>
-          <Button variant="primary" onClick={onClickLogout}>
+          <Button variant="custom" onClick={onClickLogout}>
             로그아웃
           </Button>
         </Flex>
@@ -93,6 +100,13 @@ const MyInfoImg = styled.img`
   height: 80px;
 
   border-radius: 50%;
+`;
+
+const SettingContainer = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 `;
 
 export default MyInfo;
