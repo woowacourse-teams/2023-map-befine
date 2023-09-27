@@ -130,6 +130,8 @@ const Wrapper = styled.section<{ width: '372px' | '100vw' }>`
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  margin: 0 auto;
 `;
 
 const WrapperWhenEmpty = styled.section<{ width: '372px' | '100vw' }>`
@@ -139,11 +141,13 @@ const WrapperWhenEmpty = styled.section<{ width: '372px' | '100vw' }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  margin: 0 auto;
 `;
 
 const ButtonsWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
 `;
 
