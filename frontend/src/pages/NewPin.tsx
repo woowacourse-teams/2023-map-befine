@@ -37,7 +37,8 @@ const NewPin = () => {
   const [topic, setTopic] = useState<any>(null);
   const [selectedTopic, setSelectedTopic] = useState<any>(null);
   const [showedImages, setShowedImages] = useState<string[]>([]);
-  const { clickedMarker } = useContext(MarkerContext);
+  const { clickedMarker, markers, removeMarkers, removeInfowindows } =
+    useContext(MarkerContext);
   const { clickedCoordinate, setClickedCoordinate } =
     useContext(CoordinatesContext);
   const { formValues, errorMessages, onChangeInput } =
@@ -228,6 +229,11 @@ const NewPin = () => {
       }
     };
 
+    if (!topicId && markers && markers.length > 0) {
+      removeMarkers();
+      removeInfowindows();
+    }
+
     getTopicId();
   }, []);
 
@@ -307,7 +313,6 @@ const NewPin = () => {
             onChangeInput={onChangeInput}
             tabIndex={1}
             errorMessage={errorMessages.name}
-            autoFocus
             maxLength={50}
           />
 
@@ -364,6 +369,7 @@ const NewPin = () => {
               추가하기
             </Button>
           </Flex>
+          <Space size={7} />
         </Wrapper>
       </form>
 
