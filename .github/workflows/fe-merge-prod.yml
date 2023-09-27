@@ -31,6 +31,8 @@ jobs:
         working-directory: frontend
 
       - name: Build project
+        env:
+          APP_URL: "https://mapbefine.com/api"
         run: npm run build
         working-directory: frontend
         env:
@@ -65,7 +67,7 @@ jobs:
 
         uses: 8398a7/action-slack@v3
         with:
-          mention: 'here'
+          mention: "here"
           if_mention: always
           status: ${{ job.status }}
           fields: workflow,job,commit,message,ref,author,took
