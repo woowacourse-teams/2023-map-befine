@@ -32,4 +32,5 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
     List<Pin> findAllByCreatorId(Long creatorId);
 
+
 }

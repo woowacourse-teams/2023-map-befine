@@ -21,7 +21,6 @@ import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithoutImage;
-import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
@@ -29,15 +28,16 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 class TopicIntegrationTest extends IntegrationTest {
 
@@ -414,6 +414,8 @@ class TopicIntegrationTest extends IntegrationTest {
         Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(bestOneTopic, member);
         bookmarkRepository.save(bookmark);
 
+        topicRepository.save(bestOneTopic);
+
         // when
         List<TopicResponse> expect = List.of(
                 TopicResponse.from(bestOneTopic, Boolean.FALSE, Boolean.TRUE),
@@ -460,6 +462,7 @@ class TopicIntegrationTest extends IntegrationTest {
         );
 
         pinRepository.saveAll(pins);
+        topicRepository.saveAll(List.of(topic1, topic2, topic3));
 
         // when
         ExtractableResponse<Response> response = RestAssured

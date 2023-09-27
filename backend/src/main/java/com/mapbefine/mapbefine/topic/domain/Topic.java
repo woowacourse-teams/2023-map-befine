@@ -24,9 +24,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -52,14 +50,18 @@ public class Topic extends BaseTimeEntity {
     private Set<Permission> permissions = new HashSet<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
-    private List<Pin> pins = new ArrayList<>();
+    private Set<Pin> pins = new HashSet<>();
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<Bookmark> bookmarks = new HashSet<>();
 
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     private int pinCount = 0;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    private int bookmarkCount = 0;
 
     @Column(nullable = false)
     @ColumnDefault(value = "false")
@@ -127,6 +129,7 @@ public class Topic extends BaseTimeEntity {
 
     public void addBookmark(Bookmark bookmark) {
         bookmarks.add(bookmark);
+        bookmarkCount++;
     }
 
     public void addMemberTopicPermission(Permission permission) {
@@ -134,17 +137,19 @@ public class Topic extends BaseTimeEntity {
     }
 
     public int countBookmarks() {
-        return bookmarks.size();
+        return bookmarkCount;
     }
 
     public Publicity getPublicity() {
         return topicStatus.getPublicity();
     }
+
     public void removeImage() {
         this.topicInfo = topicInfo.removeImage();
     }
 
-    public void setPinCount(int count){
-        this.pinCount = count;
+    public void removeBookmark(Bookmark bookmark) {
+        bookmarks.remove(bookmark);
+        bookmarkCount--;
     }
 }

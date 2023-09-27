@@ -8,10 +8,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
+    @EntityGraph(attributePaths = {"creator", "permissions", "bookmarks"})
+    Optional<Topic> findById(Long id);
+
+    @EntityGraph(attributePaths = {"creator", "permissions"})
     List<Topic> findByIdIn(List<Long> ids);
 
     boolean existsById(Long id);
@@ -33,4 +38,5 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Query("update Topic t set t.isDeleted = true where t.creator.id = :memberId")
     void deleteAllByMemberId(@Param("memberId") Long memberId);
 
+    List<Topic> findTopicsByBookmarksMemberId(Long memberId);
 }
