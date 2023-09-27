@@ -49,7 +49,7 @@ class PinTest {
         );
 
         List<Pin> pinsInLocation = location.getPins();
-        Set<Pin> pinsInTopic = topic.getPins();
+        List<Pin> pinsInTopic = topic.getPins();
         List<Pin> pinsInMember = member.getCreatedPins();
 
         // then
