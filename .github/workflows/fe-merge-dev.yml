@@ -23,14 +23,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
-          cache-dependency-path: 'frontend'
+          cache: "npm"
+          cache-dependency-path: "frontend"
 
       - name: Install npm
         run: npm install
         working-directory: frontend
 
       - name: Build project
+        env:
+          APP_URL: "https://mapbefine.kro.kr/api"
         run: npm run build
         working-directory: frontend
 
@@ -63,7 +65,7 @@ jobs:
 
         uses: 8398a7/action-slack@v3
         with:
-          mention: 'here'
+          mention: "here"
           if_mention: always
           status: ${{ job.status }}
           fields: workflow,job,commit,message,ref,author,took

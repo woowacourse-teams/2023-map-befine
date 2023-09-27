@@ -14,6 +14,7 @@ const TopicListContainer = lazy(
 );
 
 const Home = () => {
+  console.log(`${process.env.APP_URL}`, '환경변수 테스트');
   const { routingHandlers } = useNavigator();
   const { goToPopularTopics, goToLatestTopics, goToNearByMeTopics } =
     routingHandlers;
