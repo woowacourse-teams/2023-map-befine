@@ -76,7 +76,11 @@ const AddSeeTogether = ({
   const onChangeIsInAtlas = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    setSeeTogetherTopics((prev) => [...prev, id]);
+    if (seeTogetherTopics?.includes(id))
+      setSeeTogetherTopics(
+        seeTogetherTopics.filter((topicId) => topicId !== id),
+      );
+    else setSeeTogetherTopics((prev) => [...prev, id]);
 
     onClickAtlas();
   };
