@@ -19,13 +19,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -47,13 +46,13 @@ public class Topic extends BaseTimeEntity {
     private Member creator;
 
     @OneToMany(mappedBy = "topic")
-    private Set<Permission> permissions = new HashSet<>();
+    private Set<Permission> permissions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
-    private Set<Pin> pins = new HashSet<>();
+    private Set<Pin> pins = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private Set<Bookmark> bookmarks = new HashSet<>();
+    private Set<Bookmark> bookmarks = new LinkedHashSet<>();
 
     @Column(nullable = false)
     @ColumnDefault(value = "0")
