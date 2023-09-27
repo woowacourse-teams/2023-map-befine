@@ -50,7 +50,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   };
 
   const goToSeeTogether = () => {
-    routePage(`/topics/${seeTogetherTopics?.join(',')}`);
+    routePage(`/topics/${seeTogetherTopics?.length===0 ? -1 : seeTogetherTopics?.join(',')}`);
   };
 
   const onClickAddMapOrPin = () => {
