@@ -63,7 +63,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         clickedCoordinate.latitude,
         clickedCoordinate.longitude,
       ),
-      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_a.png',
+      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_m.png',
       map,
     });
     marker.id = 'clickedMarker';
