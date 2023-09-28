@@ -85,8 +85,6 @@ const SelectedTopic = () => {
   };
 
   useEffect(() => {
-    getAndSetDataFromServer();
-
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
@@ -98,6 +96,7 @@ const SelectedTopic = () => {
   }, [searchParams]);
 
   useEffect(() => {
+    getAndSetDataFromServer();
     setTags([]);
   }, []);
 
@@ -146,7 +145,6 @@ const SelectedTopic = () => {
           <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
             <PinDetail
               width={width}
-              topicId={topicId}
               pinId={selectedPinId}
               isEditPinDetail={isEditPinDetail}
               setIsEditPinDetail={setIsEditPinDetail}
