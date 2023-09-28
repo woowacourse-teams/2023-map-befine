@@ -19,6 +19,7 @@ interface UpdatedTopicInfoProp {
   name: string;
   description: string;
   setIsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+  setTopicsFromServer: () => void;
 }
 
 interface FormValues {
@@ -32,6 +33,7 @@ const UpdatedTopicInfo = ({
   name,
   description,
   setIsUpdate,
+  setTopicsFromServer,
 }: UpdatedTopicInfoProp) => {
   const { fetchPost } = usePost();
   const { fetchGet } = useGet();
@@ -78,6 +80,7 @@ const UpdatedTopicInfo = ({
 
       showToast('info', '지도를 수정하였습니다.');
       setIsUpdate(false);
+      setTopicsFromServer();
     } catch {}
   };
 
