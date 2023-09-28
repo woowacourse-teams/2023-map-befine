@@ -8,9 +8,24 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PinRepository extends JpaRepository<Pin, Long> {
+
+    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
+    List<Pin> findAllByIsDeletedFalse();
+
+    Optional<Pin> findByIdAndIsDeletedFalse(Long pinId);
+
+    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
+    List<Pin> findAllByTopicId(Long topicId);
+
+    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
+    List<Pin> findAllByCreatorIdAndIsDeletedFalse(Long creatorId);
+
+    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
+    List<Pin> findAllByCreatorId(Long creatorId);
 
     @Modifying(clearAutomatically = true)
     @Query("update Pin p set p.isDeleted = true where p.topic.id = :topicId")
@@ -23,14 +38,5 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update Pin p set p.isDeleted = true where p.creator.id = :memberId")
     void deleteAllByMemberId(@Param("memberId") Long memberId);
-
-    List<Pin> findAll();
-
-    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
-    List<Pin> findAllByTopicId(Long topicId);
-
-    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
-    List<Pin> findAllByCreatorId(Long creatorId);
-
 
 }

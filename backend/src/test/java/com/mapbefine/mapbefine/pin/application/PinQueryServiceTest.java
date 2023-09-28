@@ -24,12 +24,13 @@ import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ServiceTest
 class PinQueryServiceTest {
@@ -112,10 +113,15 @@ class PinQueryServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 핀의 Id 를 넘기면 예외를 발생시킨다.")
+    @DisplayName("존재하지 않는 핀의 Id로 조회 시 예외를 발생시킨다. (soft delete 반영)")
     void findDetailById_FailByNonExisting() {
-        // given, when, then
-        assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, 1L))
+        // given
+        Pin pin = pinRepository.save(PinFixture.create(location, publicUser1Topic, user1));
+        Long softDeletedPin = pin.getId();
+        pinRepository.deleteById(softDeletedPin);
+
+        // when, then
+        assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, softDeletedPin))
                 .isInstanceOf(PinNotFoundException.class);
     }
 

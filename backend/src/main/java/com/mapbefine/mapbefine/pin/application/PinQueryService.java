@@ -11,9 +11,10 @@ import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional(readOnly = true)
 @Service
@@ -25,18 +26,16 @@ public class PinQueryService {
         this.pinRepository = pinRepository;
     }
 
-    // TODO: 2023/08/08 isDeleted 제외하고 조회하기
     public List<PinResponse> findAllReadable(AuthMember member) {
-        return pinRepository.findAll()
+        return pinRepository.findAllByIsDeletedFalse()
                 .stream()
                 .filter(pin -> member.canRead(pin.getTopic()))
                 .map(PinResponse::from)
                 .toList();
     }
 
-    // TODO: 2023/08/08 isDeleted 제외하고 조회하기
     public PinDetailResponse findDetailById(AuthMember member, Long pinId) {
-        Pin pin = pinRepository.findById(pinId)
+        Pin pin = pinRepository.findByIdAndIsDeletedFalse(pinId)
                 .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
         validateReadAuth(member, pin.getTopic());
 
@@ -52,7 +51,7 @@ public class PinQueryService {
     }
 
     public List<PinResponse> findAllPinsByMemberId(AuthMember authMember, Long memberId) {
-        return pinRepository.findAllByCreatorId(memberId)
+        return pinRepository.findAllByCreatorIdAndIsDeletedFalse(memberId)
                 .stream()
                 .filter(pin -> authMember.canRead(pin.getTopic()))
                 .map(PinResponse::from)

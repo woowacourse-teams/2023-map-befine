@@ -146,7 +146,7 @@ public class PinCommandService {
     }
 
     private Pin findPin(Long pinId) {
-        return pinRepository.findById(pinId)
+        return pinRepository.findByIdAndIsDeletedFalse(pinId)
                 .orElseThrow(() -> new PinBadRequestException(ILLEGAL_PIN_ID));
     }
 
