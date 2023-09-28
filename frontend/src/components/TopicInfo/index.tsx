@@ -15,7 +15,7 @@ import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 import { styled } from 'styled-components';
 import Box from '../common/Box';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
@@ -66,10 +66,6 @@ const TopicInfo = ({
     }
   };
 
-  useEffect(() => {
-    if (!isUpdate) setTopicsFromServer();
-  }, [isUpdate]);
-
   if (isUpdate) {
     return (
       <UpdatedTopicInfo
@@ -78,6 +74,7 @@ const TopicInfo = ({
         name={topicTitle}
         description={topicDescription}
         setIsUpdate={setIsUpdate}
+        setTopicsFromServer={setTopicsFromServer}
       />
     );
   }
