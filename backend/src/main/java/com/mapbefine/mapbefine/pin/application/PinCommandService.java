@@ -182,7 +182,7 @@ public class PinCommandService {
     }
 
     private PinImage findPinImage(Long pinImageId) {
-        return pinImageRepository.findById(pinImageId)
+        return pinImageRepository.findByIdAndIsDeletedFalse(pinImageId)
                 .orElseThrow(() -> new PinBadRequestException(ILLEGAL_PIN_IMAGE_ID));
     }
 
