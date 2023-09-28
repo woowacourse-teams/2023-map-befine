@@ -51,7 +51,7 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestTopicResponses(AuthMember authMember) {
-        return topicRepository.findAll()
+        return topicRepository.findAllByIsDeletedFalse()
                 .stream()
                 .filter(authMember::canRead)
                 .map(TopicResponse::fromGuestQuery)
@@ -61,7 +61,7 @@ public class TopicQueryService {
     private List<TopicResponse> getUserTopicResponses(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        return topicRepository.findAll().stream()
+        return topicRepository.findAllByIsDeletedFalse().stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
                         topic,
@@ -103,7 +103,7 @@ public class TopicQueryService {
     }
 
     private Topic findTopic(Long id) {
-        return topicRepository.findById(id)
+        return topicRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND, List.of(id)));
     }
 
@@ -116,7 +116,7 @@ public class TopicQueryService {
     }
 
     public List<TopicDetailResponse> findDetailsByIds(AuthMember authMember, List<Long> ids) {
-        List<Topic> topics = topicRepository.findByIdIn(ids);
+        List<Topic> topics = topicRepository.findByIdInAndIsDeletedFalse(ids);
 
         validateTopicsCount(ids, topics);
         validateReadableTopics(authMember, topics);
@@ -163,7 +163,7 @@ public class TopicQueryService {
     public List<TopicResponse> findAllTopicsByMemberId(AuthMember authMember, Long memberId) {
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return topicRepository.findAllByCreatorId(memberId)
+            return topicRepository.findAllByCreatorIdAndIsDeletedFalse(memberId)
                     .stream()
                     .filter(authMember::canRead)
                     .map(TopicResponse::fromGuestQuery)
@@ -172,7 +172,7 @@ public class TopicQueryService {
 
         Member member = findMemberById(authMember.getMemberId());
 
-        return topicRepository.findAllByCreatorId(memberId)
+        return topicRepository.findAllByCreatorIdAndIsDeletedFalse(memberId)
                 .stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
@@ -193,7 +193,7 @@ public class TopicQueryService {
     private List<TopicResponse> getUserNewestTopicResponse(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        return topicRepository.findAllByOrderByLastPinUpdatedAtDesc()
+        return topicRepository.findAllByIsDeletedFalseOrderByLastPinUpdatedAtDesc()
                 .stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
@@ -205,7 +205,7 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestNewestTopicResponse(AuthMember authMember) {
-        return topicRepository.findAllByOrderByLastPinUpdatedAtDesc()
+        return topicRepository.findAllByIsDeletedFalseOrderByLastPinUpdatedAtDesc()
                 .stream()
                 .filter(authMember::canRead)
                 .map(TopicResponse::fromGuestQuery)
@@ -220,7 +220,7 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestBestTopicResponse(AuthMember authMember) {
-        return topicRepository.findAll()
+        return topicRepository.findAllByIsDeletedFalse()
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
@@ -231,7 +231,7 @@ public class TopicQueryService {
     private List<TopicResponse> getUserBestTopicResponse(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        return topicRepository.findAll()
+        return topicRepository.findAllByIsDeletedFalse()
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())

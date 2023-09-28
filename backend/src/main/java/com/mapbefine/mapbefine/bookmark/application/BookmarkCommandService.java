@@ -53,7 +53,7 @@ public class BookmarkCommandService {
     }
 
     private Topic getTopicById(Long topicId) {
-        return topicRepository.findById(topicId)
+        return topicRepository.findByIdAndIsDeletedFalse(topicId)
                 .orElseThrow(() -> new BookmarkBadRequestException(ILLEGAL_TOPIC_ID));
     }
 

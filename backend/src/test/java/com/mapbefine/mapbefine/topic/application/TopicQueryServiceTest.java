@@ -27,12 +27,13 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
+import java.util.List;
 
 @ServiceTest
 class TopicQueryServiceTest {
@@ -91,7 +92,6 @@ class TopicQueryServiceTest {
         //given
         saveAllReadableTopicOfCount(1);
         saveOnlyMemberReadableTopicOfCount(10);
-
         //when
         AuthMember guest = new Guest();
 
@@ -113,6 +113,32 @@ class TopicQueryServiceTest {
     void saveOnlyMemberReadableTopicOfCount(int count) {
         for (int i = 0; i < count; i++) {
             topicRepository.save(TopicFixture.createPrivateAndGroupOnlyTopic(member));
+        }
+    }
+
+    @Test
+    @DisplayName("Topic 목록 조회 시 삭제된 것은 제외하고 조회한다. (soft delete 반영)")
+    void findAllReadable_IsDeletedFalse_Success() {
+        //given
+        saveAllReadableTopicOfCount(1);
+        saveSoftDeletedTopicOfCount(3);
+
+        //when
+        AuthMember guest = new Guest();
+
+        List<TopicResponse> topics = topicQueryService.findAllReadable(guest);
+
+        //then
+        assertThat(topics).hasSize(1);
+        assertThat(topics).extractingResultOf("name")
+                .containsExactlyInAnyOrder("아무나 읽을 수 있는 토픽");
+    }
+
+    void saveSoftDeletedTopicOfCount(int count) {
+        for (int i = 0; i < count; i++) {
+            Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+            topicRepository.save(topic);
+            topicRepository.deleteById(topic.getId());
         }
     }
 
@@ -236,7 +262,7 @@ class TopicQueryServiceTest {
     }
 
     @Test
-    @DisplayName("조회하려는 토픽 중 존재하지 않는 ID가 존재하면, 예외가 발생한다.")
+    @DisplayName("조회하려는 토픽 중 존재하지 않는 ID가 존재하면, 예외가 발생한다. (soft delete 반영)")
     void findDetailByIds_Fail2() {
         //given
         Topic topic1 = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -244,10 +270,11 @@ class TopicQueryServiceTest {
 
         topicRepository.save(topic1);
         topicRepository.save(topic2);
+        topicRepository.deleteById(topic2.getId());
 
         //when then
         AuthMember user = MemberFixture.createUser(member);
-        List<Long> topicIds = List.of(topic1.getId(), topic2.getId(), Long.MAX_VALUE);
+        List<Long> topicIds = List.of(topic1.getId(), topic2.getId());
 
         assertThatThrownBy(() -> topicQueryService.findDetailsByIds(user, topicIds))
                 .isInstanceOf(TopicNotFoundException.class);

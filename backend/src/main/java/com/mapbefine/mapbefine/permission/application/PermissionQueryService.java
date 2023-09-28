@@ -14,9 +14,10 @@ import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.domain.TopicStatus;
 import com.mapbefine.mapbefine.topic.exception.TopicErrorCode;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,7 +43,7 @@ public class PermissionQueryService {
     }
 
     private Publicity findTopicPublicityById(Long topicId) {
-        return topicRepository.findById(topicId)
+        return topicRepository.findByIdAndIsDeletedFalse(topicId)
                 .map(Topic::getTopicStatus)
                 .map(TopicStatus::getPublicity)
                 .orElseThrow(() -> new TopicNotFoundException(TopicErrorCode.TOPIC_NOT_FOUND, topicId));
