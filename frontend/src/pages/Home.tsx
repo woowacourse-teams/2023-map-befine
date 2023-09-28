@@ -14,6 +14,8 @@ const TopicListContainer = lazy(
 );
 
 const Home = () => {
+  console.log(process.env.APP_URL);
+
   const { routingHandlers } = useNavigator();
   const { goToPopularTopics, goToLatestTopics, goToNearByMeTopics } =
     routingHandlers;
