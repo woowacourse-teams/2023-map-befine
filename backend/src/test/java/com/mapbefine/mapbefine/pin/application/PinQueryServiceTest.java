@@ -95,7 +95,26 @@ class PinQueryServiceTest {
     }
 
     @Test
-    @DisplayName("핀의 Id 를 넘기면 핀을 가져온다.")
+    @DisplayName("현재 권한에서 조회 가능한 핀 목록을 가져올 때 삭제된 핀은 제외한다. (soft delete 반영)")
+    void findAllReadable_WithOutSoftDeleted_Success() {
+        // given
+        Pin notExpected = PinFixture.create(location, privateUser2Topic, user2);
+        pinRepository.save(notExpected);
+        pinRepository.deleteById(notExpected.getId());
+
+        Pin expected = PinFixture.create(location, publicUser1Topic, user1);
+        pinRepository.save(expected);
+
+        // when
+        List<PinResponse> actual = pinQueryService.findAllReadable(authMemberUser1);
+
+        // then
+        assertThat(actual).doesNotContain(PinResponse.from(notExpected))
+                .containsOnly(PinResponse.from(expected));
+    }
+
+    @Test
+    @DisplayName("핀의 상세 정보를 조회할 수 있다.")
     void findDetailById_Success() {
         // given
         Pin pin = PinFixture.create(location, publicUser1Topic, user1);
@@ -126,7 +145,7 @@ class PinQueryServiceTest {
     }
 
     @Test
-    @DisplayName("현재 권한에서 조회할 수 없는 핀의 Id 를 넘기면 예외를 발생시킨다.")
+    @DisplayName("현재 회원의 조회 권한이 없는 핀의 상세 정보 조회 시 예외를 발생시킨다.")
     void findDetailById_FailByForbidden() {
         // given
         Pin pin = pinRepository.save(PinFixture.create(location, privateUser2Topic, user2));
@@ -134,6 +153,18 @@ class PinQueryServiceTest {
         // when, then
         assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, pin.getId()))
                 .isInstanceOf(PinForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("현재 삭제된 핀의 상세 정보 조회 시 예외를 발생시킨다. (soft delete 반영)")
+    void findDetailById_FailByNotFound() {
+        // given
+        Pin pin = pinRepository.save(PinFixture.create(location, publicUser1Topic, user1));
+        pinRepository.deleteById(pin.getId());
+
+        // when, then
+        assertThatThrownBy(() -> pinQueryService.findDetailById(authMemberUser1, pin.getId()))
+                .isInstanceOf(PinNotFoundException.class);
     }
 
     @Test
