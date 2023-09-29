@@ -8,13 +8,13 @@ import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_T
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_TOPIC_ID;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.image.application.ImageService;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
-import com.mapbefine.mapbefine.image.application.ImageService;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -22,13 +22,14 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
@@ -55,7 +56,7 @@ public class TopicCommandService {
         Topic topic = convertToTopic(member, request);
         List<Long> pinIds = request.pins();
 
-        if (0 < pinIds.size()) {
+        if (!pinIds.isEmpty()) {
             copyPinsToTopic(member, topic, pinIds);
         }
 
@@ -159,7 +160,7 @@ public class TopicCommandService {
     }
 
     private List<Topic> findAllTopics(List<Long> topicIds) {
-        List<Topic> findTopics = topicRepository.findAllById(topicIds);
+        List<Topic> findTopics = topicRepository.findByIdInAndIsDeletedFalse(topicIds);
 
         if (topicIds.size() != findTopics.size()) {
             throw new TopicBadRequestException(ILLEGAL_TOPIC_ID);
@@ -195,7 +196,7 @@ public class TopicCommandService {
     }
 
     private Topic findTopic(Long topicId) {
-        return topicRepository.findById(topicId)
+        return topicRepository.findByIdAndIsDeletedFalse(topicId)
                 .orElseThrow(() -> new TopicBadRequestException(ILLEGAL_TOPIC_ID));
     }
 

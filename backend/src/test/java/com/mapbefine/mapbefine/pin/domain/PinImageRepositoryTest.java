@@ -14,13 +14,13 @@ import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 @DataJpaTest
 class PinImageRepositoryTest {
@@ -62,11 +62,8 @@ class PinImageRepositoryTest {
         pinImageRepository.deleteById(pinImageId);
 
         //then
-        pinImageRepository.findById(pinImageId)
-                .ifPresentOrElse(
-                        found -> assertThat(found.isDeleted()).isTrue(),
-                        Assertions::fail
-                );
+        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pinImageId))
+                .isEmpty();
     }
 
     @Test
@@ -84,9 +81,8 @@ class PinImageRepositoryTest {
         pinImageRepository.deleteAllByPinId(pin.getId());
 
         //then
-        assertThat(pinImageRepository.findAllByPinId(pin.getId()))
-                .extractingResultOf("isDeleted")
-                .containsOnly(true);
+        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pin.getId()))
+                .isEmpty();
     }
 
     @Test
@@ -103,15 +99,13 @@ class PinImageRepositoryTest {
         //when
         assertThat(pinImage1.isDeleted()).isFalse();
         assertThat(pinImage2.isDeleted()).isFalse();
-        pinImageRepository.deleteAllByPinIds(List.of(pin.getId(),otherPin.getId()));
+        pinImageRepository.deleteAllByPinIds(List.of(pin.getId(), otherPin.getId()));
 
         //then
-        assertThat(pinImageRepository.findAllByPinId(pin.getId()))
-                .extractingResultOf("isDeleted")
-                .containsOnly(true);
-        assertThat(pinImageRepository.findAllByPinId(otherPin.getId()))
-                .extractingResultOf("isDeleted")
-                .containsOnly(true);
+        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pin.getId()))
+                .isEmpty();
+        assertThat(pinImageRepository.findAllByPinIdAndIsDeletedFalse(otherPin.getId()))
+                .isEmpty();
     }
 
 }
