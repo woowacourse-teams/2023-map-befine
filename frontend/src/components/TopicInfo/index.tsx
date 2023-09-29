@@ -20,7 +20,6 @@ import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
   topicId: string;
-  idx: number;
   topicImage: string;
   topicTitle: string;
   topicCreator: string;
@@ -36,7 +35,6 @@ export interface TopicInfoProps {
 
 const TopicInfo = ({
   topicId,
-  idx,
   topicImage,
   topicTitle,
   topicCreator,
@@ -150,7 +148,7 @@ const TopicInfo = ({
       <ButtonsWrapper>
         <AddSeeTogether
           isInAtlas={isInAtlas}
-          id={Number(topicId.split(',')[idx])}
+          id={Number(topicId)}
           getTopicsFromServer={setTopicsFromServer}
         >
           {isInAtlas ? (
@@ -162,7 +160,7 @@ const TopicInfo = ({
         <Space size={5} />
         <AddFavorite
           isBookmarked={isBookmarked}
-          id={Number(topicId.split(',')[idx])}
+          id={Number(topicId)}
           getTopicsFromServer={setTopicsFromServer}
         >
           {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
