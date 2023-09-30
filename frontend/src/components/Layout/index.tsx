@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Map from '../Map';
 import Flex from '../common/Flex';
 import Logo from './Logo';
@@ -20,9 +20,25 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
+const initViewPortHeight = () => {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+};
+
 const Layout = ({ children }: LayoutProps) => {
   const { width } = useContext(LayoutWidthContext);
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
+
+  useEffect(() => {
+    initViewPortHeight();
+
+    window.addEventListener('resize', initViewPortHeight);
+
+    return () => {
+      window.removeEventListener('resize', initViewPortHeight);
+    };
+  }, []);
+
   return (
     <ToastProvider>
       <ModalProvider>
@@ -37,7 +53,7 @@ const Layout = ({ children }: LayoutProps) => {
                   <LayoutFlex
                     $flexDirection="column"
                     $minWidth={width}
-                    height="100vh"
+                    height="calc(var(--vh, 1vh) * 100)"
                     $backgroundColor="white"
                     $layoutWidth={width}
                   >
@@ -96,7 +112,7 @@ const MediaWrapper = styled.section<{
   width: 100vw;
   overflow: hidden;
   @media (max-width: 1076px) {
-    flex-direction: ${({ $isAddPage, $layoutWidth }) => {
+    flex-direction: ${({ $layoutWidth }) => {
       if ($layoutWidth === '372px') return 'column-reverse';
     }};
   }
@@ -104,8 +120,10 @@ const MediaWrapper = styled.section<{
 
 const LayoutFlex = styled(Flex)<{ $layoutWidth: '372px' | '100vw' }>`
   transition: all ease 0.3s;
+
   @media (max-width: 1076px) {
-    height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
+    height: ${({ $layoutWidth }) =>
+      $layoutWidth === '372px' && 'calc(var(--vh, 1vh) * 50)'};
     transition: none;
   }
 `;

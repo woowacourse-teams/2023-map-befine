@@ -17,7 +17,7 @@ const NotFound = () => {
       $justifyContent="center"
       $alignItems="center"
       width="100vw"
-      height="100vh"
+      height="calc(var(--vh, 1vh) * 100)"
     >
       <NotFoundIcon />
       <Space size={6} />

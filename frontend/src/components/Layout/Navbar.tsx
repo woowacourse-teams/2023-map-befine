@@ -90,7 +90,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         width="252px"
         height="64px"
         $dimmedColor="rgba(0,0,0,0)"
-        top="calc(100vh - 100px)"
+        top="calc(var(--vh, 1vh) * 100 - 100px)"
         left={$layoutWidth === '100vw' ? '' : `${372 / 2}px`}
       >
         <Flex $justifyContent="center" width="100%">

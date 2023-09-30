@@ -49,7 +49,7 @@ const Map = () => {
       flex="1"
       id="map"
       ref={mapContainer}
-      height="100vh"
+      height="calc(var(--vh, 1vh) * 100)"
       $minWidth={width}
     />
   );
@@ -64,7 +64,7 @@ const MapFlex = styled(Flex)`
   }
 
   @media (max-width: 1076px) {
-    max-height: 50vh;
+    max-height: calc(var(--vh, 1vh) * 50);
   }
 `;
 
