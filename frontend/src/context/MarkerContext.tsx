@@ -63,7 +63,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         clickedCoordinate.latitude,
         clickedCoordinate.longitude,
       ),
-      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_a.png',
+      icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_m.png',
       map,
     });
     marker.id = 'clickedMarker';
@@ -105,8 +105,9 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
 
       const infoWindow = new Tmapv3.InfoWindow({
         position: new Tmapv3.LatLng(coordinate.latitude, coordinate.longitude),
-
-        content: `<div style="padding: 4px 12px; display:flex; justify-contents: center; align-items: center; height:32px; font-size:14px; color:#ffffff; background-color: ${
+        border: 0,
+        background: 'transparent',
+        content: `<div style="padding: 4px 12px; display:flex; border-radius: 20px; justify-contents: center; align-items: center; height:32px; font-size:14px; color:#ffffff; background-color: ${
           pinColors[markerType + 1]
         };" >${coordinate.pinName}</div>`,
         offset: new Tmapv3.Point(0, -60),

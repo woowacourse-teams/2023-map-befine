@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Text from '../components/common/Text';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
@@ -18,6 +18,7 @@ import usePost from '../apiHooks/usePost';
 import AuthorityRadioContainer from '../components/AuthorityRadioContainer';
 import styled from 'styled-components';
 import useCompressImage from '../hooks/useCompressImage';
+import { MarkerContext } from '../context/MarkerContext';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
@@ -36,6 +37,8 @@ const NewTopic = () => {
       image: '',
     });
   const { compressImage } = useCompressImage();
+  const { markers, removeMarkers, removeInfowindows } =
+    useContext(MarkerContext);
 
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
   const [isAllPermissioned, setIsAllPermissioned] = useState(true); // 모두 : 지정 인원
@@ -137,10 +140,17 @@ const NewTopic = () => {
     setShowImage(URL.createObjectURL(file));
   };
 
+  useEffect(() => {
+    if (!pulledPinIds && markers && markers.length > 0) {
+      removeMarkers();
+      removeInfowindows();
+    }
+  }, []);
+
   return (
     <form onSubmit={onSubmit}>
       <Space size={4} />
-      <Flex
+      <Wrapper
         width={`calc(${width} - ${LAYOUT_PADDING})`}
         $flexDirection="column"
       >
@@ -237,10 +247,24 @@ const NewTopic = () => {
             생성하기
           </Button>
         </Flex>
-      </Flex>
+        <Space size={7} />
+      </Wrapper>
     </form>
   );
 };
+
+const Wrapper = styled(Flex)`
+  margin: 0 auto;
+
+  @media (max-width: 1076px) {
+    width: calc(50vw - 40px);
+  }
+
+  @media (max-width: 744px) {
+    width: ${({ width }) => width};
+    margin: 0 auto;
+  }
+`;
 
 const ImageInputLabel = styled.label`
   height: 40px;

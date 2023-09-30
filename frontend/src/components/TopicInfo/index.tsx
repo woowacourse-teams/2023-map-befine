@@ -15,12 +15,11 @@ import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 import { styled } from 'styled-components';
 import Box from '../common/Box';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
   topicId: string;
-  idx: number;
   topicImage: string;
   topicTitle: string;
   topicCreator: string;
@@ -36,7 +35,6 @@ export interface TopicInfoProps {
 
 const TopicInfo = ({
   topicId,
-  idx,
   topicImage,
   topicTitle,
   topicCreator,
@@ -66,10 +64,6 @@ const TopicInfo = ({
     }
   };
 
-  useEffect(() => {
-    if (!isUpdate) setTopicsFromServer();
-  }, [isUpdate]);
-
   if (isUpdate) {
     return (
       <UpdatedTopicInfo
@@ -78,6 +72,7 @@ const TopicInfo = ({
         name={topicTitle}
         description={topicDescription}
         setIsUpdate={setIsUpdate}
+        setTopicsFromServer={setTopicsFromServer}
       />
     );
   }
@@ -153,7 +148,7 @@ const TopicInfo = ({
       <ButtonsWrapper>
         <AddSeeTogether
           isInAtlas={isInAtlas}
-          id={Number(topicId.split(',')[idx])}
+          id={Number(topicId)}
           getTopicsFromServer={setTopicsFromServer}
         >
           {isInAtlas ? (
@@ -165,7 +160,7 @@ const TopicInfo = ({
         <Space size={5} />
         <AddFavorite
           isBookmarked={isBookmarked}
-          id={Number(topicId.split(',')[idx])}
+          id={Number(topicId)}
           getTopicsFromServer={setTopicsFromServer}
         >
           {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}

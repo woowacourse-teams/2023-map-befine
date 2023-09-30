@@ -122,7 +122,6 @@ const getModalPosition = (position: 'center' | 'bottom') => {
 };
 
 const addMapOrPinPostion = (modalKey: string) => {
-  console.log(modalKey);
   if (modalKey === 'addMapOrPin') {
     return css`
       width: 252px;
