@@ -95,8 +95,8 @@ const LogoWrapper = styled.section<{
     ${({ $layoutWidth }) =>
       $layoutWidth === '372px' &&
       css`
-        width: 100vw;
-        background-color: white;
+        width: max-content;
+        background-color: transparent;
         position: fixed;
         top: 0;
         z-index: 1;
