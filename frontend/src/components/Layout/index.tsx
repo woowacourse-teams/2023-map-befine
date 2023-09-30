@@ -30,6 +30,8 @@ const Layout = ({ children }: LayoutProps) => {
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
 
   useEffect(() => {
+    initViewPortHeight();
+
     window.addEventListener('resize', initViewPortHeight);
 
     return () => {
