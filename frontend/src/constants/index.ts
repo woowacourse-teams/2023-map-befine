@@ -8,4 +8,4 @@ export const DEFAULT_TOPIC_IMAGE =
   'https://velog.velcdn.com/images/semnil5202/post/37f3bcb9-0b07-4100-85f6-f1d5ad037c14/image.svg';
 
 export const DEFAULT_PROD_URL =
-  process.env.APP_URL || 'https://mapbefine.com/api';
+  process.env.APP_URL || 'https://mapbefine.kro.kr/api';
