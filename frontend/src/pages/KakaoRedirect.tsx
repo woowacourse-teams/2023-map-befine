@@ -54,7 +54,7 @@ const KakaoRedirectPageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 `;
 
 const spin = keyframes`
