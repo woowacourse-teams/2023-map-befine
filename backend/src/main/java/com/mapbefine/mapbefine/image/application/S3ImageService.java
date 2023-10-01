@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.image.application;
 
-import com.mapbefine.mapbefine.image.domain.S3Client;
+import com.mapbefine.mapbefine.image.domain.ImageUploader;
 import com.mapbefine.mapbefine.image.domain.UploadFile;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,17 +14,17 @@ public class S3ImageService implements ImageService {
 
     @Value("${prefix.upload.path}")
     private String prefixUploadPath;
-    private final S3Client s3Client;
+    private final ImageUploader imageUploader;
 
-    public S3ImageService(S3Client s3Client) {
-        this.s3Client = s3Client;
+    public S3ImageService(ImageUploader imageUploader) {
+        this.imageUploader = imageUploader;
     }
 
     @Override
     public String upload(MultipartFile multipartFile) {
         try {
             UploadFile uploadFile = UploadFile.from(multipartFile);
-            s3Client.upload(uploadFile);
+            imageUploader.upload(uploadFile);
             return getUploadPath(uploadFile);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
