@@ -121,7 +121,7 @@ const getModalPosition = (position: 'center' | 'bottom') => {
   }
 };
 
-const addMapOrPinPostion = (modalKey: string) => {
+const addMapOrPinPosition = (modalKey: string) => {
   if (modalKey === 'addMapOrPin') {
     return css`
       width: 252px;
@@ -151,7 +151,7 @@ const Wrapper = styled.div<ModalWrapperType>`
     ${getModalPosition('bottom')};
     width: 100%;
     height: inherit;
-    ${({ modalKey }) => addMapOrPinPostion(modalKey)};
+    ${({ modalKey }) => addMapOrPinPosition(modalKey)};
   }
 `;
 
