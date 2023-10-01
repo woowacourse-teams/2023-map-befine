@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.common.exception.BadRequestException.ImageBadRequestException;
+import com.mapbefine.mapbefine.image.domain.Image;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

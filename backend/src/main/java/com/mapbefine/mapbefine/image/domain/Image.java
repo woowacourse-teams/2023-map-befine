@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.common.entity;
+package com.mapbefine.mapbefine.image.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 

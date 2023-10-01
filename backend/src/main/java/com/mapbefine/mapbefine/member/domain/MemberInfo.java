@@ -6,7 +6,7 @@ import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_N
 import static com.mapbefine.mapbefine.member.exception.MemberErrorCode.ILLEGAL_NICKNAME_NULL;
 import static lombok.AccessLevel.PROTECTED;
 
-import com.mapbefine.mapbefine.common.entity.Image;
+import com.mapbefine.mapbefine.image.domain.Image;
 import com.mapbefine.mapbefine.common.util.RegexUtil;
 import com.mapbefine.mapbefine.member.exception.MemberException.MemberBadRequestException;
 import jakarta.persistence.Column;

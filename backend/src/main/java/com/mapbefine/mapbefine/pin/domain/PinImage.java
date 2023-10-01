@@ -1,7 +1,7 @@
 package com.mapbefine.mapbefine.pin.domain;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import com.mapbefine.mapbefine.common.entity.Image;
+import com.mapbefine.mapbefine.image.domain.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

@@ -6,7 +6,7 @@ import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_NAM
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_NAME_NULL;
 import static lombok.AccessLevel.PROTECTED;
 
-import com.mapbefine.mapbefine.common.entity.Image;
+import com.mapbefine.mapbefine.image.domain.Image;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
