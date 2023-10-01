@@ -1,6 +1,9 @@
 interface Window {
   Tmapv3: {
-    Map: new (element: HTMLElement, options?: { center?: LatLng }) => TMap;
+    Map: new (
+      element: HTMLElement,
+      options?: { center?: LatLng; scaleBar: boolean },
+    ) => TMap;
     LatLng: new (lat: number, lng: number) => LatLng;
     LatLngBounds: new () => LatLngBounds;
     Marker: new (options?: MarkerOptions) => Marker;

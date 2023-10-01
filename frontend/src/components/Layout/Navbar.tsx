@@ -65,10 +65,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
   return (
     <>
-      <Wrapper
-        $isAddPage={navbarHighlights.addMapOrPin}
-        $layoutWidth={$layoutWidth}
-      >
+      <Wrapper $layoutWidth={$layoutWidth}>
         {NAV_ITEMS.map((item) => {
           return (
             <NavbarItem
@@ -116,7 +113,6 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
 };
 
 const Wrapper = styled.nav<{
-  $isAddPage: boolean;
   $layoutWidth: '100vw' | '372px';
 }>`
   width: 100%;
@@ -131,13 +127,8 @@ const Wrapper = styled.nav<{
 
   @media (max-width: 1076px) {
     justify-content: space-around;
-
-    ${({ $isAddPage }) =>
-      $isAddPage &&
-      css`
-        position: fixed;
-        bottom: 0;
-      `}
+    position: fixed;
+    bottom: 0;
   }
 `;
 

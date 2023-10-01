@@ -261,7 +261,8 @@ const Wrapper = styled.section<{
   @media (max-width: 1076px) {
     width: 50vw;
     margin-top: calc(var(--vh, 1vh) * 50);
-    height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
+    height: ${({ $layoutWidth }) =>
+      $layoutWidth === '372px' && 'calc(var(--vh, 1vh) * 50)'};
     left: ${({ $selectedPinId }) => $selectedPinId && '50vw'};
   }
 
