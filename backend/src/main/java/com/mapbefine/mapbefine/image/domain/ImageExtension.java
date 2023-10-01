@@ -3,32 +3,23 @@ package com.mapbefine.mapbefine.image.domain;
 import static com.mapbefine.mapbefine.image.exception.ImageErrorCode.ILLEGAL_IMAGE_FILE_EXTENSION;
 
 import com.mapbefine.mapbefine.image.exception.ImageException.ImageBadRequestException;
-import java.util.Arrays;
 
 public enum ImageExtension {
 
-    JPEG(".jpeg"),
-    JPG(".jpg"),
-    JFIF(".jfif"),
-    PNG(".png"),
-    SVG(".svg"),
+    JPEG, JPG, JFIF, PNG, SVG,
     ;
 
-    private final String extension;
+    public static String extract(String fileName) {
+        int index = fileName.lastIndexOf(".") + 1;
+        String extension = fileName.substring(index);
 
-    ImageExtension(final String extension) {
-        this.extension = extension;
-    }
+        try {
+            ImageExtension imageExtension = valueOf(extension.toUpperCase());
 
-    public static ImageExtension from(String imageFileName) {
-        return Arrays.stream(values())
-                .filter(imageExtension -> imageFileName.endsWith(imageExtension.getExtension()))
-                .findFirst()
-                .orElseThrow(() -> new ImageBadRequestException(ILLEGAL_IMAGE_FILE_EXTENSION));
-    }
-
-    public String getExtension() {
-        return extension;
+            return imageExtension.name().toLowerCase();
+        } catch (IllegalArgumentException e) {
+            throw new ImageBadRequestException(ILLEGAL_IMAGE_FILE_EXTENSION);
+        }
     }
 
 }

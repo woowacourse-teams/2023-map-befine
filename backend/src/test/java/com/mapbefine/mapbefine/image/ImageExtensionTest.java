@@ -16,8 +16,7 @@ class ImageExtensionTest {
     @ValueSource(strings = {"image.jpeg", "image.jpg", "image.jfif", "image.png", "image.svg"})
     void createImageExtensionByFileName_Success(String fileName) {
         // given when
-        String extension = ImageExtension.from(fileName)
-                .getExtension();
+        String extension = ImageExtension.extract(fileName);
 
         // then
         assertThat(fileName).contains(extension);
@@ -28,7 +27,7 @@ class ImageExtensionTest {
     @ValueSource(strings = {"image.pppng", "image.jpeeg", "image.gi"})
     void createImageExtensionByFileName_Fail(String fileName) {
         // given when then
-        assertThatThrownBy(() -> ImageExtension.from(fileName))
+        assertThatThrownBy(() -> ImageExtension.extract(fileName))
                 .isInstanceOf(ImageBadRequestException.class);
     }
 

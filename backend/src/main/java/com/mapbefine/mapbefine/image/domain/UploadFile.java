@@ -24,10 +24,10 @@ public class UploadFile implements MultipartFile {
     public static UploadFile from(
             MultipartFile multipartFile
     ) throws IOException {
-        ImageName imageName = ImageName.from(multipartFile.getOriginalFilename());
+        String imageName = ImageNameGenerator.generate(multipartFile.getOriginalFilename());
         byte[] multipartFileBytes = multipartFile.getBytes();
 
-        return new UploadFile(imageName.getFileName(), multipartFileBytes);
+        return new UploadFile(imageName, multipartFileBytes);
     }
 
     @Override
