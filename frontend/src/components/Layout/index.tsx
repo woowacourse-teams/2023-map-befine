@@ -64,8 +64,8 @@ const Layout = ({ children }: LayoutProps) => {
                       </Box>
                     </LogoWrapper>
                     <Flex
-                      height="calc(100vh - 48px)"
                       $flexDirection="column"
+                      height="inherit"
                       overflow="auto"
                       padding="0 20px 20px 20px"
                     >
@@ -111,6 +111,8 @@ const MediaWrapper = styled.section<{
   display: flex;
   width: 100vw;
   overflow: hidden;
+  height: calc(var(--vh, 1vh) * 100);
+
   @media (max-width: 1076px) {
     flex-direction: ${({ $layoutWidth }) => {
       if ($layoutWidth === '372px') return 'column-reverse';
