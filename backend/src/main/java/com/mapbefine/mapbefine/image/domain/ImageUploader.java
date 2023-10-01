@@ -1,12 +1,11 @@
 package com.mapbefine.mapbefine.image.domain;
 
-import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageUploader {
 
-    void upload(MultipartFile multipartFile) throws IOException;
+    Image upload(MultipartFile multipartFile);
 
-    void delete(String key);
+    void delete(String imageName);
 
 }
