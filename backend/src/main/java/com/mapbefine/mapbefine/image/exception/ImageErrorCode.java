@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ImageErrorCode {
 
     ILLEGAL_IMAGE_FILE_EXTENSION("10000", "지원하지 않는 이미지 파일입니다."),
-    IMAGE_FILE_IS_NULL("10001", "이미지가 선택되지 않았습니다.")
+    IMAGE_FILE_IS_NULL("10001", "이미지가 선택되지 않았습니다."),
+    UNKNOWN_SERVER_ERROR("10002", "이미지 업로드를 실패했습니다.")
     ;
 
     private final String code;
