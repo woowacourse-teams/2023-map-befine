@@ -23,6 +23,7 @@ const Map = () => {
 
     const map = new Tmapv3.Map(mapContainer.current, {
       center: new Tmapv3.LatLng(37.5154, 127.1029),
+      scaleBar: false,
     });
 
     if (!map) return;
