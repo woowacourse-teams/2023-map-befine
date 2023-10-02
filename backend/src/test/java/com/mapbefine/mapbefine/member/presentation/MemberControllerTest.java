@@ -31,13 +31,11 @@ class MemberControllerTest extends RestDocsIntegration {
         List<MemberResponse> memberResponses = List.of(
                 new MemberResponse(
                         1L,
-                        "member1",
-                        "member1@member.com"
+                        "member1"
                 ),
                 new MemberResponse(
                         2L,
-                        "member2",
-                        "member2@member.com"
+                        "member2"
                 )
         );
 
