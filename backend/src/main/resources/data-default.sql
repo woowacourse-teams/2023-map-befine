@@ -5,7 +5,7 @@ VALUES ('dummyMember', 'dummy@gmail.com', 'https://map-befine-official.github.io
         1L, 'KAKAO',
         now(), now());
 
-INSERT INTO topic (name, image_url, description,가
+INSERT INTO topic (name, image_url, description,
                    permission_type, publicity,
                    member_id,
                    created_at, updated_at, last_pin_updated_at)
