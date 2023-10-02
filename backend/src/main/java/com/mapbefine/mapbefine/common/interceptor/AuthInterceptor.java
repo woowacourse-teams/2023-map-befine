@@ -40,7 +40,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
             return true;
         }
-        if (isAuthMemberNotRequired(handlerMethod)) {
+        if (isAuthMemberNotRequired(handlerMethod) && isLoginNotRequired(handlerMethod)) {
             return true;
         }
 
@@ -58,6 +58,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     private boolean isAuthMemberNotRequired(HandlerMethod handlerMethod) {
         return Arrays.stream(handlerMethod.getMethodParameters())
                 .noneMatch(parameter -> parameter.getParameterType().equals(AuthMember.class));
+    }
+
+    private boolean isLoginNotRequired(HandlerMethod handlerMethod) {
+        return !isLoginRequired(handlerMethod);
     }
 
     private boolean isLoginRequired(HandlerMethod handlerMethod) {
