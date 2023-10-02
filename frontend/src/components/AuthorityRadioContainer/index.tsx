@@ -40,7 +40,11 @@ const AuthorityRadioContainer = ({
   const viewPrevAuthorMembersCondition =
     authorizedMemberIds.length === 0 && !isAllPermissioned;
 
-  useEffect(() => {
+  const onChangeInitAuthMembers = () => {
+    setIsAllPermissioned(false);
+    openModal('newTopic');
+    setAuthorizedMemberIds([]);
+
     fetchGet<TopicAuthorMember[]>(
       '/members',
       '사용자 목록을 가져오는데 실패했습니다.',
@@ -48,12 +52,6 @@ const AuthorityRadioContainer = ({
         setMembers(response);
       },
     );
-  }, []);
-
-  const onChangeInitAuthMembers = () => {
-    setIsAllPermissioned(false);
-    openModal('newTopic');
-    setAuthorizedMemberIds([]);
   };
 
   const onChangeInitAuthMembersWithSetIsAllPermissioned = () => {
