@@ -52,8 +52,8 @@ class PermissionControllerTest extends RestDocsIntegration {
     @DisplayName("특정 토픽 접근 정보 조회(권한 회원 목록, 공개 여부)")
     void findTopicAccessDetailByTopicId() throws Exception {
         List<PermissionedMemberResponse> permissionedMembers = List.of(
-                new PermissionedMemberResponse(1L, new MemberResponse(1L, "member", "member@naver.com")),
-                new PermissionedMemberResponse(1L, new MemberResponse(2L, "memberr", "memberr@naver.com"))
+                new PermissionedMemberResponse(1L, new MemberResponse(1L, "member")),
+                new PermissionedMemberResponse(1L, new MemberResponse(2L, "memberr"))
         );
         TopicAccessDetailResponse response = new TopicAccessDetailResponse(Publicity.PUBLIC, permissionedMembers);
 

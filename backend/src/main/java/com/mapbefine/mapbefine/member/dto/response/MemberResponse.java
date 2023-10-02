@@ -3,10 +3,9 @@ package com.mapbefine.mapbefine.member.dto.response;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberInfo;
 
-public record MemberResponse (
+public record MemberResponse(
         Long id,
-        String nickName,
-        String email
+        String nickName
 ) {
 
     public static MemberResponse from(Member member) {
@@ -14,8 +13,7 @@ public record MemberResponse (
 
         return new MemberResponse(
                 member.getId(),
-                memberInfo.getNickName(),
-                memberInfo.getEmail()
+                memberInfo.getNickName()
         );
     }
 
