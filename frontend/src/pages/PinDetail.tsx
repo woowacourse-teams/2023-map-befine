@@ -1,7 +1,7 @@
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import { useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { PinProps } from '../types/Pin';
 import { getApi } from '../apis/getApi';
 import { useSearchParams } from 'react-router-dom';
@@ -172,15 +172,19 @@ const PinDetail = ({
 
       <Space size={2} />
 
-      <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
-      <ImageInputButton
-        id="file"
-        type="file"
-        name="image"
-        onChange={onPinImageFileChange}
-      />
+      {userToken && (
+        <Fragment>
+          <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+          <ImageInputButton
+            id="file"
+            type="file"
+            name="image"
+            onChange={onPinImageFileChange}
+          />
 
-      <PinImageContainer images={pin.images} />
+          <PinImageContainer images={pin.images} />
+        </Fragment>
+      )}
 
       <Space size={6} />
 
