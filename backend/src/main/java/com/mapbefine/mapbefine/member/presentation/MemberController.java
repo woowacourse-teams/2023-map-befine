@@ -40,8 +40,8 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/{memberId}")
-    public ResponseEntity<MemberDetailResponse> findMemberById(@PathVariable Long memberId) {
-        MemberDetailResponse response = memberQueryService.findById(memberId);
+    public ResponseEntity<MemberDetailResponse> findMemberById(AuthMember authMember, @PathVariable Long memberId) {
+        MemberDetailResponse response = memberQueryService.findById(authMember, memberId);
 
         return ResponseEntity.ok(response);
     }

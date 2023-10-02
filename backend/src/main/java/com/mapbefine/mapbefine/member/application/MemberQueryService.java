@@ -9,6 +9,7 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.member.exception.MemberErrorCode;
+import com.mapbefine.mapbefine.member.exception.MemberException.MemberForbiddenException;
 import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -40,10 +41,12 @@ public class MemberQueryService {
         this.topicRepository = topicRepository;
     }
 
-    public MemberDetailResponse findById(Long id) {
-        Member member = findMemberById(id);
-
-        return MemberDetailResponse.from(member);
+    public MemberDetailResponse findById(AuthMember authMember, Long id) {
+        if (authMember.isSameMember(id)) {
+            Member member = findMemberById(id);
+            return MemberDetailResponse.from(member);
+        }
+        throw new MemberForbiddenException(MemberErrorCode.FORBIDDEN_ACCESS, id);
     }
 
     private Member findMemberById(Long id) {

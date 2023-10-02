@@ -1,8 +1,8 @@
 package com.mapbefine.mapbefine.auth.domain;
 
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AuthMember {
 
@@ -27,11 +27,13 @@ public abstract class AuthMember {
     public abstract boolean canTopicUpdate(Topic topic);
 
     public abstract boolean canPinCreateOrUpdate(Topic topic);
-
-    public abstract boolean isRole(Role role);
-
+    
     public Long getMemberId() {
         return memberId;
+    }
+
+    public boolean isSameMember(Long memberId) {
+        return Objects.equals(memberId, this.memberId);
     }
 
 }
