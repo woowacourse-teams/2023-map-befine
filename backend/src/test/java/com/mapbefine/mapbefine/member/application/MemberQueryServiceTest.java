@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.member.application;
 
+import static com.mapbefine.mapbefine.member.domain.Role.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -19,7 +20,7 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
+import com.mapbefine.mapbefine.member.exception.MemberException.MemberForbiddenException;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -81,10 +82,10 @@ class MemberQueryServiceTest {
     void findAllMember() {
         // given
         Member member2 = memberRepository.save(
-                MemberFixture.create("member2", "member2@member.com", Role.USER)
+                MemberFixture.create("member2", "member2@member.com", USER)
         );
         Member member3 = memberRepository.save(
-                MemberFixture.create("member3", "member3@member.com", Role.USER)
+                MemberFixture.create("member3", "member3@member.com", USER)
         );
 
         // when
@@ -103,12 +104,8 @@ class MemberQueryServiceTest {
     @DisplayName("회원을 단일 조회한다.")
     void findMemberById() {
         // given
-        Member member = memberRepository.save(
-                MemberFixture.create("member", "member@naver.com", Role.USER)
-        );
-
         // when
-        MemberDetailResponse response = memberQueryService.findById(member.getId());
+        MemberDetailResponse response = memberQueryService.findById(authMember, member.getId());
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -116,13 +113,20 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("조회하려는 회원이 없는 경우 예외를 반환한다.")
+    @DisplayName("조회하려는 회원이 없는 경우 본인이 아니므로 예외를 반환한다.")
     void findMemberById_whenNoneExists_thenFail() {
         // given when then
-        assertThatThrownBy(() -> memberQueryService.findById(Long.MAX_VALUE))
-                .isInstanceOf(MemberNotFoundException.class);
+        assertThatThrownBy(() -> memberQueryService.findById(authMember, Long.MAX_VALUE))
+                .isInstanceOf(MemberForbiddenException.class);
     }
 
+    @Test
+    @DisplayName("조회하려는 회원이 본인이 아닌 경우 예외를 반환한다.")
+    void findMemberById_whenNotSameMember_thenFail() {
+        // given when then
+        assertThatThrownBy(() -> memberQueryService.findById(authMember, Long.MAX_VALUE))
+                .isInstanceOf(MemberForbiddenException.class);
+    }
 
     @Test
     @DisplayName("즐겨찾기 목록에 추가 된 토픽을 조회할 수 있다")
@@ -158,7 +162,7 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("로그인한 회원의 모든 지도를 가져올 수 있다.")
     void findMyAllTopics_Success() {
         //when
         List<TopicResponse> myAllTopics = memberQueryService.findMyAllTopics(authMember);
@@ -198,5 +202,5 @@ class MemberQueryServiceTest {
                 .isEqualTo(pinIds);
 
     }
-    
+
 }
