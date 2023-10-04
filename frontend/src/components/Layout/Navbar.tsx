@@ -4,7 +4,6 @@ import useNavigator from '../../hooks/useNavigator';
 import Flex from '../common/Flex';
 import Button from '../common/Button';
 import Space from '../common/Space';
-import Text from '../common/Text';
 import Home from '../../assets/nav_home.svg';
 import SeeTogether from '../../assets/nav_seeTogether.svg';
 import Favorite from '../../assets/nav_favorite.svg';
@@ -16,155 +15,71 @@ import FocusFavorite from '../../assets/nav_favorite_focus.svg';
 import FocusAddMapOrPin from '../../assets/nav_addMapOrPin_focus.svg';
 import FocusProfile from '../../assets/nav_profile_focus.svg';
 import Modal from '../Modal';
-import { ModalContext } from '../../context/ModalContext';
-import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
-import { useParams } from 'react-router-dom';
-import SeeTogetherCounter from '../SeeTogetherCounter';
-import useKeyDown from '../../hooks/useKeyDown';
-import { SeeTogetherContext } from '../../context/SeeTogetherContext';
+import {
+  NavbarHighlightKeys,
+  NavbarHighlightsContext,
+} from '../../context/NavbarHighlightsContext';
+import NavbarItem from './NavbarItem';
 
 interface NavBarProps {
   $layoutWidth: '100vw' | '372px';
 }
 
+interface NavbarItemProps {
+  key: NavbarHighlightKeys;
+  label: string;
+  icon: React.FunctionComponent;
+  focusIcon: React.FunctionComponent;
+}
+
+const NAV_ITEMS: NavbarItemProps[] = [
+  { key: 'home', label: '홈', icon: Home, focusIcon: FocusHome },
+  {
+    key: 'seeTogether',
+    label: '모아보기',
+    icon: SeeTogether,
+    focusIcon: FocusSeeTogether,
+  },
+  {
+    key: 'addMapOrPin',
+    label: '추가하기',
+    icon: AddMapOrPin,
+    focusIcon: FocusAddMapOrPin,
+  },
+  {
+    key: 'favorite',
+    label: '즐겨찾기',
+    icon: Favorite,
+    focusIcon: FocusFavorite,
+  },
+  {
+    key: 'profile',
+    label: '내 정보',
+    icon: Profile,
+    focusIcon: FocusProfile,
+  },
+];
+
 const Navbar = ({ $layoutWidth }: NavBarProps) => {
-  const { routePage } = useNavigator();
-  const { topicId } = useParams();
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { routingHandlers } = useNavigator();
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
-  const { elementRef: firstElement, onElementKeyDown: firstKeyDown } =
-    useKeyDown<HTMLDivElement>();
-  const { elementRef: secondElement, onElementKeyDown: secondKeyDown } =
-    useKeyDown<HTMLDivElement>();
-  const { elementRef: thirdElement, onElementKeyDown: thirdKeyDown } =
-    useKeyDown<HTMLDivElement>();
-  const { elementRef: fourElement, onElementKeyDown: fourKeyDown } =
-    useKeyDown<HTMLDivElement>();
-  const { elementRef: FifthElement, onElementKeyDown: FifthKeyDown } =
-    useKeyDown<HTMLDivElement>();
-    const { seeTogetherTopics } =
-    useContext(SeeTogetherContext);
-
-  const goToHome = () => {
-    routePage('/');
-  };
-
-  const goToSeeTogether = () => {
-    routePage(`/topics/${seeTogetherTopics?.length===0 ? -1 : seeTogetherTopics?.join(',')}`);
-  };
-
-  const onClickAddMapOrPin = () => {
-    openModal('addMapOrPin');
-  };
-
-  const goToFavorite = () => {
-    routePage('/favorite');
-  };
-
-  const goToProfile = () => {
-    routePage('/my-page');
-  };
-
-  const goToNewTopic = () => {
-    routePage('/new-topic');
-    closeModal('addMapOrPin');
-  };
-
-  const goToNewPin = () => {
-    routePage('/new-pin', topicId);
-    closeModal('addMapOrPin');
-  };
-
   return (
-    <Wrapper
-      $isAddPage={navbarHighlights.addMapOrPin}
-      $layoutWidth={$layoutWidth}
-    >
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={goToHome}
-        tabIndex={10}
-        ref={firstElement}
-        onKeyDown={firstKeyDown}
-      >
-        {navbarHighlights.home ? <FocusHome /> : <Home />}
-        <Text
-          color={navbarHighlights.home ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
-        >
-          홈
-        </Text>
-      </IconWrapper>
-
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={goToSeeTogether}
-        tabIndex={10}
-        ref={secondElement}
-        onKeyDown={secondKeyDown}
-      >
-        {navbarHighlights.seeTogether ? <FocusSeeTogether /> : <SeeTogether />}
-        <Text
-          color={navbarHighlights.seeTogether ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
-        >
-          모아보기
-        </Text>
-        <SeeTogetherCounter />
-      </IconWrapper>
-
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={onClickAddMapOrPin}
-        tabIndex={10}
-        ref={thirdElement}
-        onKeyDown={thirdKeyDown}
-      >
-        {navbarHighlights.addMapOrPin ? <FocusAddMapOrPin /> : <AddMapOrPin />}
-        <Text
-          color={navbarHighlights.addMapOrPin ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
-        >
-          추가하기
-        </Text>
-      </IconWrapper>
-
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={goToFavorite}
-        tabIndex={11}
-        ref={fourElement}
-        onKeyDown={fourKeyDown}
-      >
-        {navbarHighlights.favorite ? <FocusFavorite /> : <Favorite />}
-        <Text
-          color={navbarHighlights.favorite ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
-        >
-          즐겨찾기
-        </Text>
-      </IconWrapper>
-
-      <IconWrapper
-        $layoutWidth={$layoutWidth}
-        onClick={goToProfile}
-        tabIndex={11}
-        ref={FifthElement}
-        onKeyDown={FifthKeyDown}
-      >
-        {navbarHighlights.profile ? <FocusProfile /> : <Profile />}
-        <Text
-          color={navbarHighlights.profile ? 'primary' : 'darkGray'}
-          $fontSize="extraSmall"
-          $fontWeight="normal"
-        >
-          내 정보
-        </Text>
-      </IconWrapper>
+    <>
+      <Wrapper $layoutWidth={$layoutWidth}>
+        {NAV_ITEMS.map((item) => {
+          return (
+            <NavbarItem
+              key={item.key}
+              label={item.label}
+              icon={item.icon}
+              focusIcon={item.focusIcon}
+              isHighlighted={navbarHighlights[item.key]}
+              onClick={() => routingHandlers[item.key]()}
+              $layoutWidth={$layoutWidth}
+            />
+          );
+        })}
+      </Wrapper>
 
       <Modal
         modalKey="addMapOrPin"
@@ -172,25 +87,32 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         width="252px"
         height="64px"
         $dimmedColor="rgba(0,0,0,0)"
-        top="calc(100vh - 100px)"
+        top="calc(var(--vh, 1vh) * 100 - 100px)"
         left={$layoutWidth === '100vw' ? '' : `${372 / 2}px`}
       >
         <Flex $justifyContent="center" width="100%">
-          <RouteButton variant="primary" onClick={goToNewTopic} tabIndex={10}>
+          <RouteButton
+            variant="primary"
+            onClick={routingHandlers['newTopic']}
+            tabIndex={10}
+          >
             지도 추가하기
           </RouteButton>
           <Space size={4} />
-          <RouteButton variant="primary" onClick={goToNewPin} tabIndex={10}>
+          <RouteButton
+            variant="primary"
+            onClick={routingHandlers['newPin']}
+            tabIndex={10}
+          >
             핀 추가하기
           </RouteButton>
         </Flex>
       </Modal>
-    </Wrapper>
+    </>
   );
 };
 
 const Wrapper = styled.nav<{
-  $isAddPage: boolean;
   $layoutWidth: '100vw' | '372px';
 }>`
   width: 100%;
@@ -205,32 +127,8 @@ const Wrapper = styled.nav<{
 
   @media (max-width: 1076px) {
     justify-content: space-around;
-
-    ${({ $isAddPage }) =>
-      $isAddPage &&
-      css`
-        position: fixed;
-        bottom: 0;
-      `}
-  }
-`;
-
-const IconWrapper = styled.div<{ $layoutWidth: '100vw' | '372px' }>`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 52px;
-  cursor: pointer;
-  margin-right: ${({ $layoutWidth }) =>
-    $layoutWidth === '100vw' ? '48px' : '0'};
-
-  &:last-of-type {
-    margin-right: 0;
-  }
-
-  @media (max-width: 1076px) {
-    margin-right: 0;
+    position: fixed;
+    bottom: 0;
   }
 `;
 
