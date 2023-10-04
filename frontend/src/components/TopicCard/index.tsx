@@ -47,7 +47,8 @@ const TopicCard = ({
   const { routePage } = useNavigator();
   const { closeModal } = useContext(ModalContext);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
-  const [atlas, setAtlas] = useState<boolean>(isInAtlas);
+  const [isInNonMemberAtlas, setIsInNonMemberAtlas] =
+    useState<boolean>(isInAtlas);
 
   const goToSelectedTopic = () => {
     routePage(`/topics/${id}`, [id]);
@@ -61,8 +62,8 @@ const TopicCard = ({
     closeModal('newPin');
   };
 
-  const onChangeIsInAtlas = () => {
-    setAtlas(!atlas);
+  const onClickIsInAtlas = () => {
+    setIsInNonMemberAtlas(!isInNonMemberAtlas);
   };
   return (
     <Wrapper
@@ -143,11 +144,15 @@ const TopicCard = ({
             <ButtonWrapper>
               <AddSeeTogether
                 isInAtlas={isInAtlas}
-                onClickAtlas={onChangeIsInAtlas}
+                onClickAtlas={onClickIsInAtlas}
                 id={id}
                 getTopicsFromServer={getTopicsFromServer}
               >
-                {atlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
+                {isInNonMemberAtlas ? (
+                  <SeeTogetherSVG />
+                ) : (
+                  <SeeTogetherNotFilledSVG />
+                )}
               </AddSeeTogether>
               <AddFavorite
                 isBookmarked={isBookmarked}
