@@ -12,7 +12,6 @@ const SeeAllPopularTopics = lazy(() => import('./pages/SeeAllPopularTopics'));
 const SeeAllNearTopics = lazy(() => import('./pages/SeeAllNearTopics'));
 const SeeAllLatestTopics = lazy(() => import('./pages/SeeAllLatestTopics'));
 const KakaoRedirect = lazy(() => import('./pages/KakaoRedirect'));
-const SeeTogetherTopics = lazy(() => import('./pages/SeeTogetherTopics'));
 const Profile = lazy(() => import('./pages/Profile'));
 const AskLogin = lazy(() => import('./pages/AskLogin'));
 const Bookmark = lazy(() => import('./pages/Bookmark'));
