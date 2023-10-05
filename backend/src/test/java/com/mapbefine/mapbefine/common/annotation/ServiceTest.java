@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
                 ),
                 @Filter(
                         type = FilterType.REGEX,
-                        pattern = "com.mapbefine.mapbefine.auth.application.*"
+                        pattern = "com.mapbefine.mapbefine.auth.application.TokenService"
                 )
         }
 )
