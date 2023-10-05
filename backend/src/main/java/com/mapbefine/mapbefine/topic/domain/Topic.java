@@ -147,6 +147,10 @@ public class Topic extends BaseTimeEntity {
         this.topicInfo = topicInfo.removeImage();
     }
 
+    public void decrementPinCount() {
+        pinCount--;
+    }
+
     public void removeBookmark(Bookmark bookmark) {
         bookmarks.remove(bookmark);
         bookmarkCount--;

@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.admin.application;
 
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.PIN_NOT_FOUND;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
 
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
@@ -11,14 +12,14 @@ import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -96,7 +97,13 @@ public class AdminCommandService {
     }
 
     public void deletePin(Long pinId) {
-        pinRepository.deleteById(pinId);
+        Pin pin = pinRepository.findByIdAndIsDeletedFalse(pinId)
+                .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
+
+        /// TODO: 2023/10/05 soft delete를 @Query로 구현하면서, pinCount 반영을 통합할 수 없음
+        pin.decrementTopicPinCount();
+        pinRepository.deleteById(pin.getId());
+        /// TODO: 2023/10/05  pinImage는?
     }
 
     public void deletePinImage(Long pinImageId) {

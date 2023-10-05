@@ -22,14 +22,13 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
@@ -94,7 +93,8 @@ public class TopicCommandService {
         }
 
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + memberId));
+                .orElseThrow(
+                        () -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + memberId));
     }
 
     private void copyPinsToTopic(
@@ -239,6 +239,7 @@ public class TopicCommandService {
         validateDeleteAuth(member, topic);
 
         pinRepository.deleteAllByTopicId(topicId);
+        /// TODO: 2023/10/05  topic의 pinCount는?
         topicRepository.deleteById(topicId);
     }
 
