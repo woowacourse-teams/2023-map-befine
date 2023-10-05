@@ -97,7 +97,7 @@ public class AdminCommandService {
     }
 
     public void deletePin(Long pinId) {
-        Pin pin = pinRepository.findByIdAndIsDeletedFalse(pinId)
+        Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
 
         /// TODO: 2023/10/05 soft delete를 @Query로 구현하면서, pinCount 반영을 통합할 수 없음

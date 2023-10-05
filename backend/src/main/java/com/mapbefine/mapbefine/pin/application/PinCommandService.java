@@ -27,13 +27,12 @@ import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
@@ -146,7 +145,7 @@ public class PinCommandService {
     }
 
     private Pin findPin(Long pinId) {
-        return pinRepository.findByIdAndIsDeletedFalse(pinId)
+        return pinRepository.findById(pinId)
                 .orElseThrow(() -> new PinBadRequestException(ILLEGAL_PIN_ID));
     }
 
