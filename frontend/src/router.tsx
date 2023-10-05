@@ -5,6 +5,7 @@ import RootPage from './pages/RootPage';
 import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './pages/NotFound';
+import Search from './pages/Search';
 
 const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
 const NewPin = lazy(() => import('./pages/NewPin'));
@@ -145,6 +146,11 @@ const routes: routeElement[] = [
             <KakaoRedirect />
           </SuspenseComp>
         ),
+        withAuth: false,
+      },
+      {
+        path: '/search',
+        element: <Search />,
         withAuth: false,
       },
     ],
