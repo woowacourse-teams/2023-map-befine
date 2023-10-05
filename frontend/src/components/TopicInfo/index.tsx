@@ -158,7 +158,7 @@ const TopicInfo = ({
         <AddSeeTogether
           isInAtlas={isInAtlas}
           onClickAtlas={onChangeIsInAtlas}
-          id={Number(topicId.split(',')[idx])}
+          id={Number(topicId)}
           getTopicsFromServer={setTopicsFromServer}
         >
           {isInAtlas ? (
@@ -170,7 +170,7 @@ const TopicInfo = ({
         <Space size={5} />
         <AddFavorite
           isBookmarked={isBookmarked}
-          id={Number(topicId.split(',')[idx])}
+          id={Number(topicId)}
           getTopicsFromServer={setTopicsFromServer}
         >
           {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
