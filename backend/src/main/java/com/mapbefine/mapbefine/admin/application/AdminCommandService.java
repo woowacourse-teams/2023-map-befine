@@ -16,8 +16,6 @@ import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
@@ -27,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AdminCommandService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
     private final MemberRepository memberRepository;
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
@@ -67,9 +63,11 @@ public class AdminCommandService {
         Long memberId = member.getId();
 
         permissionRepository.deleteAllByMemberId(memberId);
+        permissionRepository.flush();
         atlasRepository.deleteAllByMemberId(memberId);
+        atlasRepository.flush();
         bookmarkRepository.deleteAllByMemberId(memberId);
-        entityManager.flush();
+        bookmarkRepository.flush();
         pinImageRepository.deleteAllByPinIds(pinIds);
         pinRepository.deleteAllByMemberId(memberId);
         topicRepository.deleteAllByMemberId(memberId);
