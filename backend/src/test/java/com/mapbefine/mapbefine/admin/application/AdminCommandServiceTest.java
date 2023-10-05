@@ -107,13 +107,12 @@ class AdminCommandServiceTest {
 
         //then
         Topic deletedTopic = topicRepository.findById(topic.getId()).get();
-        Pin deletedPin = pinRepository.findById(pin.getId()).get();
         PinImage deletedPinImage = pinImageRepository.findById(pinImage.getId()).get();
 
         assertAll(() -> {
             assertThat(member.getMemberInfo().getStatus()).isEqualTo(Status.BLOCKED);
             assertThat(deletedTopic.isDeleted()).isTrue();
-            assertThat(deletedPin.isDeleted()).isTrue();
+            assertThat(pinRepository.existsById(pin.getId())).isFalse();
             assertThat(deletedPinImage.isDeleted()).isTrue();
             assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
             assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
@@ -167,9 +166,7 @@ class AdminCommandServiceTest {
         adminCommandService.deletePin(pin.getId());
 
         //then
-        Pin deletedPin = pinRepository.findById(pin.getId()).get();
-
-        assertThat(deletedPin.isDeleted()).isTrue();
+        assertThat(pinRepository.existsById(pin.getId())).isFalse();
     }
 
     @DisplayName("Admin인 경우, 핀 이미지를 삭제할 수 있다.")
