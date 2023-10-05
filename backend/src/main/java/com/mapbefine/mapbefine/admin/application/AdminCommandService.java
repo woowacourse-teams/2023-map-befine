@@ -86,8 +86,25 @@ public class AdminCommandService {
     }
 
     public void deleteTopic(Long topicId) {
-        /// TODO: 2023/10/06 pin, pinImage 삭제
+        Topic topic = findTopicById(topicId);
+        List<Long> pinIds = extractPinIdsByTopic(topic);
+
+        permissionRepository.deleteAllByTopicId(topicId);
+        permissionRepository.flush();
+        atlasRepository.deleteAllByTopicId(topicId);
+        atlasRepository.flush();
+        bookmarkRepository.deleteAllByTopicId(topicId);
+        bookmarkRepository.flush();
+        pinImageRepository.deleteAllByPinIds(pinIds);
+        pinRepository.deleteAllByTopicId(topicId);
         topicRepository.deleteById(topicId);
+    }
+
+    private List<Long> extractPinIdsByTopic(Topic topic) {
+        return topic.getPins()
+                .stream()
+                .map(Pin::getId)
+                .toList();
     }
 
     public void deleteTopicImage(Long topicId) {
@@ -104,10 +121,9 @@ public class AdminCommandService {
         Pin pin = pinRepository.findById(pinId)
                 .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
 
-        /// TODO: 2023/10/05 soft delete를 @Query로 구현하면서, pinCount 반영을 통합할 수 없음
         pin.decreaseTopicPinCount();
+        pinImageRepository.deleteAllByPinId(pinId);
         pinRepository.deleteById(pin.getId());
-        /// TODO: 2023/10/05  pinImage는?
     }
 
     public void deletePinImage(Long pinImageId) {

@@ -11,4 +11,6 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     void deleteAllByMemberId(Long memberId);
 
+    void deleteAllByTopicId(Long topicId);
+
 }
