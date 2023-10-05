@@ -56,8 +56,7 @@ public class PermissionController {
         return ResponseEntity.ok(response);
     }
 
-    // TODO 이 API를 쓰는 곳이 있나? + 결국 특정 회원을 조회하는 건데 어떤 API인지 알기 어렵다..
-    //  회원 정보 조회는 /members 에서 하는 걸로 충분하지 않나? 재사용성이 떨어진다. 테스트의 DisplayName도 매칭이 안된다.
+    @Deprecated(since = "2023.10.06")
     @LoginRequired
     @GetMapping("/{permissionId}")
     public ResponseEntity<PermissionMemberDetailResponse> findPermissionById(@PathVariable Long permissionId) {
