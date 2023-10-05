@@ -30,11 +30,13 @@ public class AuthService {
         }
     }
 
-    // TODO 테스트가 필요하긴 한데, MemberQueryService와 너무 중복되는 내용이다. 엔티티 테스트로 중복을 없앨 수 있으면 좋겠다.
     public AuthMember findAuthMemberByMemberId(Long memberId) {
-        return memberRepository.findById(memberId)
-                .map(this::convertToAuthMember)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("findAuthMemberByMemberId; memberId= " + memberId));
+        if (member.isNormalStatus()) {
+            return convertToAuthMember(member);
+        }
+        throw new AuthUnauthorizedException(AuthErrorCode.ILLEGAL_MEMBER_ID);
     }
 
     private AuthMember convertToAuthMember(Member member) {
