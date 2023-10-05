@@ -94,7 +94,8 @@ public class TopicCommandService {
 
         return memberRepository.findById(memberId)
                 .orElseThrow(
-                        () -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + memberId));
+                        () -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + memberId)
+                );
     }
 
     private void copyPinsToTopic(
