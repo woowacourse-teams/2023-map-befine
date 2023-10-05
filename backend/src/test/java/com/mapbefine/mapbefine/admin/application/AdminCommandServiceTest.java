@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @ServiceTest
 class AdminCommandServiceTest {
@@ -63,6 +64,9 @@ class AdminCommandServiceTest {
     @Autowired
     private BookmarkRepository bookmarkRepository;
 
+    @Autowired
+    TestEntityManager testEntityManager;
+
     private Location location;
     private Member admin;
     private Member member;
@@ -92,32 +96,36 @@ class AdminCommandServiceTest {
         atlasRepository.save(atlas);
         permissionRepository.save(permission);
 
-        assertAll(() -> {
-            assertThat(member.getMemberInfo().getStatus()).isEqualTo(Status.NORMAL);
-            assertThat(topic.isDeleted()).isFalse();
-            assertThat(pin.isDeleted()).isFalse();
-            assertThat(pinImage.isDeleted()).isFalse();
-            assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
-            assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
-            assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId())).isTrue();
-        });
+        assertAll(
+                () -> assertThat(member.getMemberInfo().getStatus()).isEqualTo(Status.NORMAL),
+                () -> assertThat(topic.isDeleted()).isFalse(),
+                () -> assertThat(pin.isDeleted()).isFalse(),
+                () -> assertThat(pinImage.isDeleted()).isFalse(),
+                () -> assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue(),
+                () -> assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue(),
+                () -> assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId()))
+                        .isTrue()
+        );
 
         //when
+        testEntityManager.clear();
         adminCommandService.blockMember(member.getId());
 
         //then
-        Topic deletedTopic = topicRepository.findById(topic.getId()).get();
         PinImage deletedPinImage = pinImageRepository.findById(pinImage.getId()).get();
+        Member blockedMember = memberRepository.findById(member.getId()).get();
 
-        assertAll(() -> {
-            assertThat(member.getMemberInfo().getStatus()).isEqualTo(Status.BLOCKED);
-            assertThat(deletedTopic.isDeleted()).isTrue();
-            assertThat(pinRepository.existsById(pin.getId())).isFalse();
-            assertThat(deletedPinImage.isDeleted()).isTrue();
-            assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
-            assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
-            assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId())).isFalse();
-        });
+        assertAll(
+                () -> assertThat(blockedMember.getMemberInfo().getStatus()).isEqualTo(Status.BLOCKED),
+                () -> assertThat(topicRepository.existsById(topic.getId())).isFalse(),
+                () -> assertThat(pinRepository.existsById(pin.getId())).isFalse(),
+                () -> assertThat(deletedPinImage.isDeleted()).isTrue(),
+                () -> assertThat(
+                        bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse(),
+                () -> assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse(),
+                () -> assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId()))
+                        .isFalse()
+        );
     }
 
     @DisplayName("Admin은 토픽을 삭제시킬 수 있다.")
@@ -127,12 +135,11 @@ class AdminCommandServiceTest {
         assertThat(topic.isDeleted()).isFalse();
 
         //when
-        adminCommandService.deleteTopic(topic.getId());
+        Long topicId = topic.getId();
+        adminCommandService.deleteTopic(topicId);
 
         //then
-        Topic deletedTopic = topicRepository.findById(topic.getId()).get();
-
-        assertThat(deletedTopic.isDeleted()).isTrue();
+        assertThat(topicRepository.existsById(topicId)).isFalse();
     }
 
     @DisplayName("Admin은 토픽 이미지를 삭제할 수 있다.")

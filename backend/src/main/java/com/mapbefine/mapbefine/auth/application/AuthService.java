@@ -11,7 +11,6 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +30,7 @@ public class AuthService {
         }
     }
 
+    // TODO 테스트가 필요하긴 한데, MemberQueryService와 너무 중복되는 내용이다. 엔티티 테스트로 중복을 없앨 수 있으면 좋겠다.
     public AuthMember findAuthMemberByMemberId(Long memberId) {
         return memberRepository.findById(memberId)
                 .map(this::convertToAuthMember)
@@ -61,17 +61,6 @@ public class AuthService {
                 .stream()
                 .map(Topic::getId)
                 .toList();
-    }
-
-    public boolean isAdmin(Long memberId) {
-        if (Objects.isNull(memberId)) {
-            return false;
-        }
-
-        Optional<Member> member = memberRepository.findById(memberId);
-
-        return member.map(Member::isAdmin)
-                .orElse(false);
     }
 
 }

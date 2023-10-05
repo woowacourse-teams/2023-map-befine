@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-
 @DataJpaTest
 class TopicRepositoryTest {
 
@@ -43,8 +41,7 @@ class TopicRepositoryTest {
         topicRepository.deleteById(topic.getId());
 
         //then
-        Topic deletedTopic = topicRepository.findById(topic.getId()).get();
-        assertThat(deletedTopic.isDeleted()).isTrue();
+        assertThat(topicRepository.existsById(topic.getId())).isFalse();
     }
 
     @Test
@@ -62,9 +59,7 @@ class TopicRepositoryTest {
         topicRepository.deleteAllByMemberId(member.getId());
 
         //then
-        List<Topic> deletedTopics = topicRepository.findAllByCreatorId(member.getId());
-        assertThat(deletedTopics).hasSize(10)
-                .extractingResultOf("isDeleted")
-                .containsOnly(true);
+        assertThat(topicRepository.findAllByCreatorId(member.getId()))
+                .isEmpty();
     }
 }

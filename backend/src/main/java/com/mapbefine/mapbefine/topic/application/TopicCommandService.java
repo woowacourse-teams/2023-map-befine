@@ -160,7 +160,7 @@ public class TopicCommandService {
     }
 
     private List<Topic> findAllTopics(List<Long> topicIds) {
-        List<Topic> findTopics = topicRepository.findByIdInAndIsDeletedFalse(topicIds);
+        List<Topic> findTopics = topicRepository.findByIdIn(topicIds);
 
         if (topicIds.size() != findTopics.size()) {
             throw new TopicBadRequestException(ILLEGAL_TOPIC_ID);
@@ -196,7 +196,7 @@ public class TopicCommandService {
     }
 
     private Topic findTopic(Long topicId) {
-        return topicRepository.findByIdAndIsDeletedFalse(topicId)
+        return topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicBadRequestException(ILLEGAL_TOPIC_ID));
     }
 

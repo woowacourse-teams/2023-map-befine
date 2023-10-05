@@ -99,7 +99,7 @@ public class PinCommandService {
         if (Objects.isNull(topicId)) {
             throw new TopicBadRequestException(ILLEGAL_TOPIC_ID);
         }
-        return topicRepository.findByIdAndIsDeletedFalse(topicId)
+        return topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicBadRequestException(ILLEGAL_TOPIC_ID));
     }
 

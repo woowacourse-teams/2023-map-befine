@@ -178,6 +178,26 @@ class MemberQueryServiceTest {
     }
 
     @Test
+    @DisplayName("로그인한 회원의 모든 지도를 가져올 때, 삭제된 지도는 제외한다. (soft delete 반영)")
+    void findMyAllTopics_Success_notContainingSoftDeleted() {
+        // given
+        List<Long> topicIds = topics.stream()
+                .map(Topic::getId)
+                .toList();
+
+        // when
+        Long deleted = topicIds.get(0);
+        topicRepository.deleteById(deleted);
+        topicRepository.flush();
+        List<TopicResponse> myAllTopics = memberQueryService.findMyAllTopics(authMember);
+
+        // then
+        assertThat(myAllTopics).hasSize(topics.size() - 1);
+        assertThat(myAllTopics).extractingResultOf("id")
+                .doesNotContain(deleted);
+    }
+
+    @Test
     @DisplayName("로그인한 회원이 생성한 모든 핀을 가져올 수 있다.")
     void findMyAllPins_Success() {
         // given
