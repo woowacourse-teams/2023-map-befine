@@ -90,7 +90,6 @@ public class MemberQueryService {
 
     public List<TopicResponse> findAllTopicsInAtlas(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
-
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
         return topicsInAtlas.stream()
@@ -107,7 +106,6 @@ public class MemberQueryService {
     }
 
     public List<TopicResponse> findMyAllTopics(AuthMember authMember) {
-
         Long memberId = authMember.getMemberId();
         Member member = findMemberById(memberId);
 
