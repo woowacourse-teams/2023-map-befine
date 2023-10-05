@@ -86,6 +86,7 @@ public class AdminCommandService {
     }
 
     public void deleteTopic(Long topicId) {
+        /// TODO: 2023/10/06 pin, pinImage 삭제
         topicRepository.deleteById(topicId);
     }
 

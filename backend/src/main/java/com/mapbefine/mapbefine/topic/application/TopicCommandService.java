@@ -238,8 +238,8 @@ public class TopicCommandService {
 
         validateDeleteAuth(member, topic);
 
+        /// TODO: 2023/10/06 PinImage 삭제
         pinRepository.deleteAllByTopicId(topicId);
-        /// TODO: 2023/10/05  topic의 pinCount는?
         topicRepository.deleteById(topicId);
     }
 
