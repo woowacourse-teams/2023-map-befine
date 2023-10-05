@@ -123,7 +123,7 @@ class LocationQueryServiceTest {
         /// TODO: 2023/10/05 Topic의 pinCount를 줄이는 로직을 삭제 로직과 통합하지 못해 테스트에서 세부 구현이 드러나는 문제가 있음
         for (int i = 0; i < deleteCounts; i++) {
             Pin delete = topic.getPins().get(i);
-            delete.decrementTopicPinCount();
+            delete.decreaseTopicPinCount();
             pinRepository.deleteById(delete.getId());
         }
     }

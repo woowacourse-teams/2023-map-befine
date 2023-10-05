@@ -104,8 +104,8 @@ public class Pin extends BaseTimeEntity {
         pinInfo = PinInfo.of(name, description);
     }
 
-    public void decrementTopicPinCount() {
-        topic.decrementPinCount();
+    public void decreaseTopicPinCount() {
+        topic.decreasePinCount();
     }
 
     public void copyToTopic(Member creator, Topic topic) {
