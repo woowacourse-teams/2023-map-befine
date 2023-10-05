@@ -201,7 +201,7 @@ class PinCommandServiceTest {
         // then
         assertThat(pinRepository.findById(pinId))
                 .isEmpty();
-        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pinId))
+        assertThat(pinImageRepository.findById(pinId))
                 .isEmpty();
     }
 
@@ -267,7 +267,7 @@ class PinCommandServiceTest {
         pinCommandService.removeImageById(authMember, pinImageId);
 
         // then
-        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pinImageId))
+        assertThat(pinImageRepository.findById(pinImageId))
                 .isEmpty();
     }
 

@@ -112,16 +112,15 @@ class AdminCommandServiceTest {
         adminCommandService.blockMember(member.getId());
 
         //then
-        PinImage deletedPinImage = pinImageRepository.findById(pinImage.getId()).get();
         Member blockedMember = memberRepository.findById(member.getId()).get();
 
         assertAll(
                 () -> assertThat(blockedMember.getMemberInfo().getStatus()).isEqualTo(Status.BLOCKED),
                 () -> assertThat(topicRepository.existsById(topic.getId())).isFalse(),
                 () -> assertThat(pinRepository.existsById(pin.getId())).isFalse(),
-                () -> assertThat(deletedPinImage.isDeleted()).isTrue(),
-                () -> assertThat(
-                        bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse(),
+                () -> assertThat(pinImageRepository.existsById(pinImage.getId())).isFalse(),
+                () -> assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId()))
+                        .isFalse(),
                 () -> assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse(),
                 () -> assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId()))
                         .isFalse()
@@ -186,9 +185,7 @@ class AdminCommandServiceTest {
         adminCommandService.deletePinImage(pinImage.getId());
 
         //then
-        PinImage deletedPinImage = pinImageRepository.findById(pinImage.getId()).get();
-
-        assertThat(deletedPinImage.isDeleted()).isTrue();
+        assertThat(pinImageRepository.findById(pinImage.getId())).isEmpty();
     }
 
 }
