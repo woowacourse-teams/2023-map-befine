@@ -234,16 +234,17 @@ public class TopicCommandService {
         throw new TopicForbiddenException(FORBIDDEN_TOPIC_UPDATE);
     }
 
+    @Deprecated(since = "2023.10.06")
     public void delete(AuthMember member, Long topicId) {
         Topic topic = findTopic(topicId);
-
         validateDeleteAuth(member, topic);
 
-        /// TODO: 2023/10/06 PinImage 삭제
+        /// TODO: 2023/10/06 연관관계 다 삭제해야 하는데, 관리자 API와 중복 로직이며 관리자 API에서만 사용됨
         pinRepository.deleteAllByTopicId(topicId);
         topicRepository.deleteById(topicId);
     }
 
+    @Deprecated(since = "2023.10.06")
     private void validateDeleteAuth(AuthMember member, Topic topic) {
         if (member.canDelete(topic)) {
             return;
