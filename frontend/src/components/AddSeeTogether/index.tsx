@@ -12,7 +12,7 @@ interface AddSeeTogetherProps {
   id: number;
   children: React.ReactNode;
   getTopicsFromServer: () => void;
-  onClickAtlas: () => void;
+  onClickAtlas: () => boolean;
 }
 
 const AddSeeTogether = ({
@@ -76,13 +76,15 @@ const AddSeeTogether = ({
   const onChangeIsInAtlas = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
 
-    if (seeTogetherTopics?.includes(id))
-      setSeeTogetherTopics(
-        seeTogetherTopics.filter((topicId) => topicId !== id),
-      );
-    else setSeeTogetherTopics((prev) => [...prev, id]);
+    const isChangeAtlas = onClickAtlas();
 
-    onClickAtlas();
+    if (isChangeAtlas) {
+      if (seeTogetherTopics?.includes(id))
+        setSeeTogetherTopics(
+          seeTogetherTopics.filter((topicId) => topicId !== id),
+        );
+      else setSeeTogetherTopics((prev) => [...prev, id]);
+    }
   };
 
   if (accessToken === null) {

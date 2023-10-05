@@ -68,9 +68,10 @@ const TopicCard = ({
     setIsInNonMemberAtlas(!isInNonMemberAtlas);
     if (!isInNonMemberAtlas) {
       showToast('info', '모아보기에 추가했습니다.');
-      return;
+      return true;
     }
     showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
+    return true;
   };
   return (
     <Wrapper

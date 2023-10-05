@@ -68,6 +68,7 @@ const TopicInfo = ({
 
   const onChangeIsInAtlas = () => {
     showToast('warning', '비회원은 홈에서만 모아보기에 담을 수 있습니다.');
+    return false;
   };
 
   useEffect(() => {
