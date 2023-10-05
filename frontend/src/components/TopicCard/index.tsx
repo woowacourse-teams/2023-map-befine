@@ -18,6 +18,7 @@ import AddFavorite from '../AddFavorite';
 import { TopicCardProps } from '../../types/Topic';
 import useKeyDown from '../../hooks/useKeyDown';
 import { ModalContext } from '../../context/ModalContext';
+import useToast from '../../hooks/useToast';
 
 interface OnClickDesignatedProps {
   topicId: number;
@@ -49,6 +50,7 @@ const TopicCard = ({
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
   const [isInNonMemberAtlas, setIsInNonMemberAtlas] =
     useState<boolean>(isInAtlas);
+  const { showToast } = useToast();
 
   const goToSelectedTopic = () => {
     routePage(`/topics/${id}`, [id]);
@@ -64,6 +66,11 @@ const TopicCard = ({
 
   const onClickIsInAtlas = () => {
     setIsInNonMemberAtlas(!isInNonMemberAtlas);
+    if (!isInNonMemberAtlas) {
+      showToast('info', '모아보기에 추가했습니다.');
+      return;
+    }
+    showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
   };
   return (
     <Wrapper
