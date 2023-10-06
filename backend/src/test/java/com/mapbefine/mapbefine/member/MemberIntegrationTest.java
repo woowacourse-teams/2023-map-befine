@@ -94,13 +94,13 @@ class MemberIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("회원을 단일 조회한다.")
-    void findMemberById() {
+    @DisplayName("로그인 회원의 상세 정보를 단일 조회한다.")
+    void findMyProfile() {
         // given, when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, user1AuthHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/" + user1.getId())
+                .when().get("/members/my/profiles")
                 .then().log().all()
                 .extract();
 
@@ -192,5 +192,5 @@ class MemberIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
-    
+
 }

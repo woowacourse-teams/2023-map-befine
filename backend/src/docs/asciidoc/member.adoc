@@ -4,9 +4,9 @@
 
 operation::member-controller-test/find-all-member[snippets='http-request,http-response']
 
-=== 회원 단일 조회
+=== 회원의 나의 프로필 조회
 
-operation::member-controller-test/find-member-by-id[snippets='http-request,http-response']
+operation::member-controller-test/find-my-profile[snippets='http-request,http-response']
 
 === 회원의 나의 지도 목록 조회
 
