@@ -1,6 +1,6 @@
 import Space from '../components/common/Space';
 import useNavigator from '../hooks/useNavigator';
-import { css, styled } from 'styled-components';
+import { styled } from 'styled-components';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
@@ -8,6 +8,7 @@ import { Suspense, lazy, useContext, useEffect } from 'react';
 import { MarkerContext } from '../context/MarkerContext';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { setFullScreenResponsive } from '../constants/responsive';
+import SearchBar from '../components/SearchBar/SearchBar';
 
 const TopicListContainer = lazy(
   () => import('../components/TopicCardContainer'),
@@ -33,7 +34,9 @@ const Home = () => {
 
   return (
     <Wrapper>
-      <Space size={5} />
+      <Space size={1} />
+      <SearchBar />
+      <Space size={1} />
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
           url="/topics/bests"
