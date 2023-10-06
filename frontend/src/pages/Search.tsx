@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { setFullScreenResponsive } from '../constants/responsive';
 import Space from '../components/common/Space';
 import SearchBar from '../components/SearchBar/SearchBar';
-import { Fragment, memo, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Flex from '../components/common/Flex';
 import Box from '../components/common/Box';
 import Text from '../components/common/Text';
@@ -114,7 +114,7 @@ const Search = () => {
   );
 };
 
-export default memo(Search);
+export default Search;
 
 const Wrapper = styled.article`
   width: 1036px;
