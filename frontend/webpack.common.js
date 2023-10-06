@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ProvidePlugin, EnvironmentPlugin } = require('webpack');
+const { ProvidePlugin, DefinePlugin } = require('webpack');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
@@ -21,7 +21,9 @@ module.exports = {
       process: 'process/browser.js',
     }),
 
-    new Dotenv(),
+    new DefinePlugin({
+      'process.env.APP_URL': JSON.stringify(process.env.APP_URL),
+    }),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],

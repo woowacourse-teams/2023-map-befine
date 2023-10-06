@@ -29,12 +29,13 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
+import java.util.List;
 
 @ServiceTest
 class TopicCommandServiceTest {
@@ -311,7 +312,7 @@ class TopicCommandServiceTest {
 
         // then
         List<Pin> targetPins = target.getPins();
-        Pin targetPin = targetPins.get(0);
+        Pin targetPin = targetPins.iterator().next();
         Pin sourcePin = sourcePins.get(0);
 
         assertThat(targetPins).hasSize(sourcePins.size());

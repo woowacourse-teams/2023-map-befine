@@ -248,7 +248,7 @@ const Wrapper = styled.section<{
   display: flex;
   flex-direction: column;
   width: ${({ $layoutWidth }) => $layoutWidth};
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   overflow: auto;
   position: absolute;
   top: 0;
@@ -260,8 +260,9 @@ const Wrapper = styled.section<{
 
   @media (max-width: 1076px) {
     width: 50vw;
-    margin-top: 50vh;
-    height: ${({ $layoutWidth }) => $layoutWidth === '372px' && '50vh'};
+    margin-top: calc(var(--vh, 1vh) * 50);
+    height: ${({ $layoutWidth }) =>
+      $layoutWidth === '372px' && 'calc(var(--vh, 1vh) * 50)'};
     left: ${({ $selectedPinId }) => $selectedPinId && '50vw'};
   }
 

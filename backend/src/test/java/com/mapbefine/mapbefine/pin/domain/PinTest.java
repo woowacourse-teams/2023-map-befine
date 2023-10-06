@@ -9,11 +9,13 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Set;
 
 class PinTest {
 
@@ -56,7 +58,7 @@ class PinTest {
         assertThat(pinsInMember).hasSize(1);
         assertThat(pinsInLocation.get(0)).usingRecursiveComparison()
                 .isEqualTo(pin);
-        assertThat(pinsInTopic.get(0)).usingRecursiveComparison()
+        assertThat(pinsInTopic.iterator().next()).usingRecursiveComparison()
                 .isEqualTo(pin);
         assertThat(pinsInMember.get(0)).usingRecursiveComparison()
                 .isEqualTo(pin);
@@ -79,7 +81,7 @@ class PinTest {
 
         // when
         original.copyToTopic(memberForCopy, topicForCopy);
-        Pin actual = topicForCopy.getPins().get(0);
+        Pin actual = topicForCopy.getPins().iterator().next();
 
         // then
         assertThat(original).usingRecursiveComparison()

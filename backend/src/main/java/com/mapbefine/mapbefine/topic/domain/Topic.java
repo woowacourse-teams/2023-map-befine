@@ -11,6 +11,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,7 +41,7 @@ public class Topic extends BaseTimeEntity {
     @Embedded
     private TopicStatus topicStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member creator;
 
@@ -50,8 +51,16 @@ public class Topic extends BaseTimeEntity {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Bookmark> bookmarks = new ArrayList<>();
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    private int pinCount = 0;
+
+    @Column(nullable = false)
+    @ColumnDefault(value = "0")
+    private int bookmarkCount = 0;
 
     @Column(nullable = false)
     @ColumnDefault(value = "false")
@@ -109,15 +118,17 @@ public class Topic extends BaseTimeEntity {
     }
 
     public int countPins() {
-        return pins.size();
+        return pinCount;
     }
 
     public void addPin(Pin pin) {
         pins.add(pin);
+        pinCount++;
     }
 
     public void addBookmark(Bookmark bookmark) {
         bookmarks.add(bookmark);
+        bookmarkCount++;
     }
 
     public void addMemberTopicPermission(Permission permission) {
@@ -125,14 +136,19 @@ public class Topic extends BaseTimeEntity {
     }
 
     public int countBookmarks() {
-        return bookmarks.size();
+        return bookmarkCount;
     }
 
     public Publicity getPublicity() {
         return topicStatus.getPublicity();
     }
+
     public void removeImage() {
         this.topicInfo = topicInfo.removeImage();
     }
 
+    public void removeBookmark(Bookmark bookmark) {
+        bookmarks.remove(bookmark);
+        bookmarkCount--;
+    }
 }

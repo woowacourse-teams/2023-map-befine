@@ -1,27 +1,24 @@
 package com.mapbefine.mapbefine.admin.application;
 
-import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.PERMISSION_FORBIDDEN_BY_NOT_ADMIN;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
 
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
-import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.domain.Status;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
-import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException;
-import java.util.List;
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -53,9 +50,7 @@ public class AdminCommandService {
         this.bookmarkRepository = bookmarkRepository;
     }
 
-    public void blockMember(AuthMember authMember, Long memberId) {
-        validateAdminPermission(authMember);
-
+    public void blockMember(Long memberId) {
         Member member = findMemberById(memberId);
         member.updateStatus(Status.BLOCKED);
 
@@ -79,14 +74,6 @@ public class AdminCommandService {
                 .orElseThrow(() -> new NoSuchElementException("findMemberByAuthMember; member not found; id=" + id));
     }
 
-    private void validateAdminPermission(AuthMember authMember) {
-        if (authMember.isRole(Role.ADMIN)) {
-            return;
-        }
-
-        throw new PermissionForbiddenException(PERMISSION_FORBIDDEN_BY_NOT_ADMIN);
-    }
-
     private List<Long> extractPinIdsByMember(Member member) {
         return member.getCreatedPins()
                 .stream()
@@ -94,33 +81,25 @@ public class AdminCommandService {
                 .toList();
     }
 
-    public void deleteTopic(AuthMember authMember, Long topicId) {
-        validateAdminPermission(authMember);
-
+    public void deleteTopic(Long topicId) {
         topicRepository.deleteById(topicId);
     }
 
-    public void deleteTopicImage(AuthMember authMember, Long topicId) {
-        validateAdminPermission(authMember);
-
+    public void deleteTopicImage(Long topicId) {
         Topic topic = findTopicById(topicId);
         topic.removeImage();
     }
 
     private Topic findTopicById(Long topicId) {
-        return topicRepository.findById(topicId)
+        return topicRepository.findByIdAndIsDeletedFalse(topicId)
                 .orElseThrow(() -> new TopicException.TopicNotFoundException(TOPIC_NOT_FOUND, List.of(topicId)));
     }
 
-    public void deletePin(AuthMember authMember, Long pinId) {
-        validateAdminPermission(authMember);
-
+    public void deletePin(Long pinId) {
         pinRepository.deleteById(pinId);
     }
 
-    public void deletePinImage(AuthMember authMember, Long pinImageId) {
-        validateAdminPermission(authMember);
-
+    public void deletePinImage(Long pinImageId) {
         pinImageRepository.deleteById(pinImageId);
     }
 

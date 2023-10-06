@@ -100,8 +100,6 @@ const SelectedTopic = () => {
   };
 
   useEffect(() => {
-    getAndSetDataFromServer();
-
     const queryParams = new URLSearchParams(location.search);
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
@@ -113,6 +111,7 @@ const SelectedTopic = () => {
   }, [searchParams]);
 
   useEffect(() => {
+    getAndSetDataFromServer();
     setTags([]);
   }, []);
 
@@ -163,7 +162,6 @@ const SelectedTopic = () => {
           <Fragment key={topicDetail.id}>
             <PinsOfTopic
               topicId={topicId.split(',')[idx]}
-              idx={idx}
               topicDetail={topicDetail}
               setSelectedPinId={setSelectedPinId}
               setIsEditPinDetail={setIsEditPinDetail}

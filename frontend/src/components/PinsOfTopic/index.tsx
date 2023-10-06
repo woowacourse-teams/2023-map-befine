@@ -5,7 +5,6 @@ import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
   topicId: string;
-  idx: number;
   topicDetail: TopicDetailProps;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,7 +13,6 @@ interface PinsOfTopicProps {
 
 const PinsOfTopic = ({
   topicId,
-  idx,
   topicDetail,
   setSelectedPinId,
   setIsEditPinDetail,
@@ -24,7 +22,6 @@ const PinsOfTopic = ({
     <Wrapper>
       <TopicInfo
         topicId={topicId}
-        idx={idx}
         topicImage={topicDetail.image}
         topicTitle={topicDetail.name}
         topicCreator={topicDetail.creator}

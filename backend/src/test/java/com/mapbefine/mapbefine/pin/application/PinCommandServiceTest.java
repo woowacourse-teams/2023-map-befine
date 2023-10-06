@@ -29,13 +29,14 @@ import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @ServiceTest
 class PinCommandServiceTest {
@@ -199,14 +200,10 @@ class PinCommandServiceTest {
         pinCommandService.removeById(authMember, pinId);
 
         // then
-        pinRepository.findById(pinId)
-                .ifPresentOrElse(
-                        found -> assertThat(found.isDeleted()).isTrue(),
-                        Assertions::fail
-                );
-        assertThat(pinImageRepository.findAllByPinId(pinId))
-                .extractingResultOf("isDeleted")
-                .containsOnly(true);
+        assertThat(pinRepository.findByIdAndIsDeletedFalse(pinId))
+                .isEmpty();
+        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pinId))
+                .isEmpty();
     }
 
     @Test
@@ -271,11 +268,8 @@ class PinCommandServiceTest {
         pinCommandService.removeImageById(authMember, pinImageId);
 
         // then
-        pinImageRepository.findById(pinImageId)
-                .ifPresentOrElse(
-                        found -> assertThat(found.isDeleted()).isTrue(),
-                        Assertions::fail
-                );
+        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pinImageId))
+                .isEmpty();
     }
 
     private long savePinImageAndGetId(long pinId) {
@@ -289,9 +283,11 @@ class PinCommandServiceTest {
     @Test
     @DisplayName("권한이 없는 토픽의 핀 이미지를 삭제하면 예외를 발생시킨다.")
     void removeImageById_FailByForbidden() {
+        // given
         long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
         long pinImageId = savePinImageAndGetId(pinId);
 
+        // when, then
         assertThatThrownBy(() -> pinCommandService.removeImageById(new Guest(), pinImageId))
                 .isInstanceOf(PinForbiddenException.class);
     }

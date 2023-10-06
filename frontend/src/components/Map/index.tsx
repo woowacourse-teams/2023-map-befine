@@ -23,6 +23,7 @@ const Map = () => {
 
     const map = new Tmapv3.Map(mapContainer.current, {
       center: new Tmapv3.LatLng(37.5154, 127.1029),
+      scaleBar: false,
     });
 
     if (!map) return;
@@ -49,7 +50,7 @@ const Map = () => {
       flex="1"
       id="map"
       ref={mapContainer}
-      height="100vh"
+      height="calc(var(--vh, 1vh) * 100)"
       $minWidth={width}
     />
   );
@@ -64,7 +65,7 @@ const MapFlex = styled(Flex)`
   }
 
   @media (max-width: 1076px) {
-    max-height: 50vh;
+    max-height: calc(var(--vh, 1vh) * 50);
   }
 `;
 

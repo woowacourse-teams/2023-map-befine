@@ -35,6 +35,7 @@ const useNavigator = () => {
         routePage('/new-pin', topicId);
         closeModal('addMapOrPin');
       },
+      search: (searchTerm: string) => routePage(`/search?${searchTerm}`),
       goToPopularTopics: () => routePage('see-all/popularity'),
       goToNearByMeTopics: () => routePage('see-all/near'),
       goToLatestTopics: () => routePage('see-all/latest'),

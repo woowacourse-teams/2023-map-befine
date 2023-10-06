@@ -15,12 +15,11 @@ import AddSeeTogether from '../AddSeeTogether';
 import AddFavorite from '../AddFavorite';
 import { styled } from 'styled-components';
 import Box from '../common/Box';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
   topicId: string;
-  idx: number;
   topicImage: string;
   topicTitle: string;
   topicCreator: string;
@@ -36,7 +35,6 @@ export interface TopicInfoProps {
 
 const TopicInfo = ({
   topicId,
-  idx,
   topicImage,
   topicTitle,
   topicCreator,
@@ -65,7 +63,7 @@ const TopicInfo = ({
       showToast('error', '토픽 링크를 복사하는데 실패했습니다.');
     }
   };
-
+  
   const onChangeIsInAtlas = () => {
     showToast('warning', '비회원은 홈에서만 모아보기에 담을 수 있습니다.');
     return false;
@@ -83,6 +81,7 @@ const TopicInfo = ({
         name={topicTitle}
         description={topicDescription}
         setIsUpdate={setIsUpdate}
+        setTopicsFromServer={setTopicsFromServer}
       />
     );
   }

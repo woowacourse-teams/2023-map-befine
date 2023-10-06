@@ -13,10 +13,11 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -72,7 +73,7 @@ public class AtlasCommandService {
     }
 
     private Topic findTopicById(Long topicId) {
-        return topicRepository.findById(topicId)
+        return topicRepository.findByIdAndIsDeletedFalse(topicId)
                 .orElseThrow(() -> new AtlasBadRequestException(ILLEGAL_TOPIC_ID));
     }
 

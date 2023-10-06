@@ -15,9 +15,10 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -52,7 +53,7 @@ public class BookmarkCommandService {
     }
 
     private Topic getTopicById(Long topicId) {
-        return topicRepository.findById(topicId)
+        return topicRepository.findByIdAndIsDeletedFalse(topicId)
                 .orElseThrow(() -> new BookmarkBadRequestException(ILLEGAL_TOPIC_ID));
     }
 
@@ -84,7 +85,17 @@ public class BookmarkCommandService {
     public void deleteTopicInBookmark(AuthMember authMember, Long topicId) {
         validateBookmarkDeletingPermission(authMember, topicId);
 
-        bookmarkRepository.deleteByMemberIdAndTopicId(authMember.getMemberId(), topicId);
+        Bookmark bookmark = findBookmarkByMemberIdAndTopicId(authMember.getMemberId(), topicId);
+        Topic topic = getTopicById(topicId);
+
+        topic.removeBookmark(bookmark);
+    }
+
+    private Bookmark findBookmarkByMemberIdAndTopicId(Long memberId, Long topicId) {
+        return bookmarkRepository.findByMemberIdAndTopicId(memberId, topicId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "findBookmarkByMemberIdAndTopicId; memberId=" + memberId + " topicId=" + topicId
+                ));
     }
 
     private void validateBookmarkDeletingPermission(AuthMember authMember, Long topicId) {
@@ -95,6 +106,7 @@ public class BookmarkCommandService {
         throw new BookmarkForbiddenException(FORBIDDEN_TOPIC_DELETE);
     }
 
+    @Deprecated
     public void deleteAllBookmarks(AuthMember authMember) {
         bookmarkRepository.deleteAllByMemberId(authMember.getMemberId());
     }

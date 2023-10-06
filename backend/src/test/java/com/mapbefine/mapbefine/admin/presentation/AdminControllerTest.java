@@ -86,7 +86,7 @@ class AdminControllerTest extends RestDocsIntegration {
                 new AdminMemberResponse(2L, "세인", "semin@naver.com", "https://semin.png", LocalDateTime.now())
         );
 
-        given(adminQueryService.findAllMemberDetails(any())).willReturn(response);
+        given(adminQueryService.findAllMemberDetails()).willReturn(response);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/admin/members")
@@ -107,7 +107,7 @@ class AdminControllerTest extends RestDocsIntegration {
                 LocalDateTime.now()
         );
 
-        given(adminQueryService.findMemberDetail(any(), any())).willReturn(response);
+        given(adminQueryService.findMemberDetail(any())).willReturn(response);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/admin/members/1")
@@ -118,7 +118,7 @@ class AdminControllerTest extends RestDocsIntegration {
     @DisplayName("멤버 차단(블랙리스트)")
     @Test
     void deleteMember() throws Exception {
-        doNothing().when(adminCommandService).blockMember(any(), any());
+        doNothing().when(adminCommandService).blockMember(any());
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/admin/members/1")
@@ -129,7 +129,7 @@ class AdminControllerTest extends RestDocsIntegration {
     @DisplayName("토픽 삭제")
     @Test
     void deleteTopic() throws Exception {
-        doNothing().when(adminCommandService).deleteTopic(any(), any());
+        doNothing().when(adminCommandService).deleteTopic(any());
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/admin/topics/1")
@@ -140,7 +140,7 @@ class AdminControllerTest extends RestDocsIntegration {
     @DisplayName("토픽 이미지 삭제")
     @Test
     void deleteTopicImage() throws Exception {
-        doNothing().when(adminCommandService).deleteTopicImage(any(), any());
+        doNothing().when(adminCommandService).deleteTopicImage(any());
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/admin/topics/1/images")
@@ -151,7 +151,7 @@ class AdminControllerTest extends RestDocsIntegration {
     @DisplayName("핀 삭제")
     @Test
     void deletePin() throws Exception {
-        doNothing().when(adminCommandService).deletePin(any(), any());
+        doNothing().when(adminCommandService).deletePin(any());
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/admin/pins/1")
@@ -162,7 +162,7 @@ class AdminControllerTest extends RestDocsIntegration {
     @DisplayName("토픽 이미지 삭제")
     @Test
     void deletePinImage() throws Exception {
-        doNothing().when(adminCommandService).deletePinImage(any(), any());
+        doNothing().when(adminCommandService).deletePinImage(any());
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/admin/pins/images/1")

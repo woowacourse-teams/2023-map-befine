@@ -3,9 +3,9 @@ package com.mapbefine.mapbefine.topic.application;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_READ;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
 
-import com.mapbefine.mapbefine.atlas.domain.Atlas;
+import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -14,12 +14,13 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,13 +28,19 @@ public class TopicQueryService {
 
     private final TopicRepository topicRepository;
     private final MemberRepository memberRepository;
+    private final AtlasRepository atlasRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     public TopicQueryService(
             TopicRepository topicRepository,
-            MemberRepository memberRepository
+            MemberRepository memberRepository,
+            AtlasRepository atlasRepository,
+            BookmarkRepository bookmarkRepository
     ) {
         this.topicRepository = topicRepository;
         this.memberRepository = memberRepository;
+        this.atlasRepository = atlasRepository;
+        this.bookmarkRepository = bookmarkRepository;
     }
 
     public List<TopicResponse> findAllReadable(AuthMember authMember) {
@@ -44,7 +51,7 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestTopicResponses(AuthMember authMember) {
-        return topicRepository.findAll()
+        return topicRepository.findAllByIsDeletedFalse()
                 .stream()
                 .filter(authMember::canRead)
                 .map(TopicResponse::fromGuestQuery)
@@ -54,15 +61,12 @@ public class TopicQueryService {
     private List<TopicResponse> getUserTopicResponses(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
-        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
-
-        return topicRepository.findAll().stream()
+        return topicRepository.findAllByIsDeletedFalse().stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
                         topic,
-                        isInAtlas(topicsInAtlas, topic),
-                        isBookMarked(topicsInBookMark, topic)
+                        isInAtlas(member.getId(), topic.getId()),
+                        isBookMarked(member.getId(), topic.getId())
                 ))
                 .toList();
     }
@@ -72,26 +76,12 @@ public class TopicQueryService {
                 .orElseThrow(() -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + id));
     }
 
-    private List<Topic> findTopicsInAtlas(Member member) {
-        return member.getAtlantes()
-                .stream()
-                .map(Atlas::getTopic)
-                .toList();
+    private boolean isInAtlas(Long memberId, Long topicId) {
+        return atlasRepository.existsByMemberIdAndTopicId(memberId, topicId);
     }
 
-    private List<Topic> findBookMarkedTopics(Member member) {
-        return member.getBookmarks()
-                .stream()
-                .map(Bookmark::getTopic)
-                .toList();
-    }
-
-    private boolean isInAtlas(List<Topic> topicsInAtlas, Topic topic) {
-        return topicsInAtlas.contains(topic);
-    }
-
-    private boolean isBookMarked(List<Topic> bookMarkedTopics, Topic topic) {
-        return bookMarkedTopics.contains(topic);
+    private boolean isBookMarked(Long memberId, Long topicId) {
+        return bookmarkRepository.existsByMemberIdAndTopicId(memberId, topicId);
     }
 
     public TopicDetailResponse findDetailById(AuthMember authMember, Long topicId) {
@@ -104,19 +94,16 @@ public class TopicQueryService {
 
         Member member = findMemberById(authMember.getMemberId());
 
-        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
-        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
-
         return TopicDetailResponse.of(
                 topic,
-                isInAtlas(topicsInAtlas, topic),
-                isBookMarked(topicsInBookMark, topic),
+                isInAtlas(member.getId(), topic.getId()),
+                isBookMarked(member.getId(), topic.getId()),
                 authMember.canTopicUpdate(topic)
         );
     }
 
     private Topic findTopic(Long id) {
-        return topicRepository.findById(id)
+        return topicRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND, List.of(id)));
     }
 
@@ -129,7 +116,7 @@ public class TopicQueryService {
     }
 
     public List<TopicDetailResponse> findDetailsByIds(AuthMember authMember, List<Long> ids) {
-        List<Topic> topics = topicRepository.findByIdIn(ids);
+        List<Topic> topics = topicRepository.findByIdInAndIsDeletedFalse(ids);
 
         validateTopicsCount(ids, topics);
         validateReadableTopics(authMember, topics);
@@ -142,16 +129,11 @@ public class TopicQueryService {
     }
 
     private List<TopicDetailResponse> getUserTopicDetailResponses(AuthMember authMember, List<Topic> topics) {
-        Member member = findMemberById(authMember.getMemberId());
-
-        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
-        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
-
         return topics.stream()
                 .map(topic -> TopicDetailResponse.of(
                         topic,
-                        isInAtlas(topicsInAtlas, topic),
-                        isBookMarked(topicsInBookMark, topic),
+                        isInAtlas(authMember.getMemberId(), topic.getId()),
+                        isBookMarked(authMember.getMemberId(), topic.getId()),
                         authMember.canTopicUpdate(topic)
                 ))
                 .toList();
@@ -181,7 +163,7 @@ public class TopicQueryService {
     public List<TopicResponse> findAllTopicsByMemberId(AuthMember authMember, Long memberId) {
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return topicRepository.findAllByCreatorId(memberId)
+            return topicRepository.findAllByCreatorIdAndIsDeletedFalse(memberId)
                     .stream()
                     .filter(authMember::canRead)
                     .map(TopicResponse::fromGuestQuery)
@@ -190,19 +172,15 @@ public class TopicQueryService {
 
         Member member = findMemberById(authMember.getMemberId());
 
-        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
-        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
-
-        return topicRepository.findAllByCreatorId(memberId)
+        return topicRepository.findAllByCreatorIdAndIsDeletedFalse(memberId)
                 .stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
                         topic,
-                        isInAtlas(topicsInAtlas, topic),
-                        isBookMarked(topicsInBookMark, topic)
+                        isInAtlas(member.getId(), topic.getId()),
+                        isBookMarked(member.getId(), topic.getId())
                 )).
                 toList();
-
     }
 
     public List<TopicResponse> findAllByOrderByUpdatedAtDesc(AuthMember authMember) {
@@ -215,22 +193,19 @@ public class TopicQueryService {
     private List<TopicResponse> getUserNewestTopicResponse(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
-        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
-
-        return topicRepository.findAllByOrderByLastPinUpdatedAtDesc()
+        return topicRepository.findAllByIsDeletedFalseOrderByLastPinUpdatedAtDesc()
                 .stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
                         topic,
-                        isInAtlas(topicsInAtlas, topic),
-                        isBookMarked(topicsInBookMark, topic)
+                        isInAtlas(member.getId(), topic.getId()),
+                        isBookMarked(member.getId(), topic.getId())
                 )).
                 toList();
     }
 
     private List<TopicResponse> getGuestNewestTopicResponse(AuthMember authMember) {
-        return topicRepository.findAllByOrderByLastPinUpdatedAtDesc()
+        return topicRepository.findAllByIsDeletedFalseOrderByLastPinUpdatedAtDesc()
                 .stream()
                 .filter(authMember::canRead)
                 .map(TopicResponse::fromGuestQuery)
@@ -245,7 +220,7 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestBestTopicResponse(AuthMember authMember) {
-        return topicRepository.findAll()
+        return topicRepository.findAllByIsDeletedFalse()
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
@@ -256,18 +231,15 @@ public class TopicQueryService {
     private List<TopicResponse> getUserBestTopicResponse(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        List<Topic> topicsInAtlas = findTopicsInAtlas(member);
-        List<Topic> topicsInBookMark = findBookMarkedTopics(member);
-
-        return topicRepository.findAll()
+        return topicRepository.findAllByIsDeletedFalse()
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
                 .map(topic -> TopicResponse.from(
                         topic,
-                        isInAtlas(topicsInAtlas, topic),
-                        isBookMarked((topicsInBookMark), topic))
-                ).toList();
+                        isInAtlas(member.getId(), topic.getId()),
+                        isBookMarked(member.getId(), topic.getId())
+                )).toList();
     }
 
 }
