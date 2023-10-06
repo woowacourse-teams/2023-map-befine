@@ -49,7 +49,7 @@ export const ModalPortal = (props: ModalPortalProps) => {
     >
       {props.children}
     </ModalContainer>,
-    $modalRoot ? $modalRoot : document.body,
+    $modalRoot || document.body,
   );
 };
 
@@ -87,7 +87,7 @@ export const useModalContext = () => {
 
 export const ModalContext = React.createContext<ModalContextType | null>(null);
 
-const ModalContextProvider = (props: { children: React.ReactNode }) => {
+function ModalContextProvider(props: { children: React.ReactNode }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -109,6 +109,6 @@ const ModalContextProvider = (props: { children: React.ReactNode }) => {
       {props.children}
     </ModalContext.Provider>
   );
-};
+}
 
 export default ModalContextProvider;

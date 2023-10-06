@@ -25,6 +25,17 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-use-before-define': 'off',
     'react/require-default-props': 'off',
+    'react/destructuring-assignment': 'off',
+    'react/jsx-no-constructed-context-values': 'off',
+    'no-restricted-globals': 'off',
+    'no-shadow': 'off',
+    'consistent-return': 'off',
+    'no-restricted-syntax': 'off',
+    'no-await-in-loop': 'off',
+    'no-param-reassign': 'off',
+    'jsx-a11y/tabindex-no-positive': 'off',
+    'react/no-array-index-key': 'off',
+    'react/jsx-no-useless-fragment': 'off',
   },
   settings: {
     'import/resolver': {

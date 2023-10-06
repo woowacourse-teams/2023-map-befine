@@ -1,21 +1,22 @@
-import Space from '../components/common/Space';
-import useNavigator from '../hooks/useNavigator';
+import { lazy, Suspense, useContext, useEffect } from 'react';
 import { styled } from 'styled-components';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { FULLSCREEN } from '../constants';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import { Suspense, lazy, useContext, useEffect } from 'react';
-import { MarkerContext } from '../context/MarkerContext';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { setFullScreenResponsive } from '../constants/responsive';
-import { SeeTogetherContext } from '../context/SeeTogetherContext';
+
+import Space from '../components/common/Space';
 import SearchBar from '../components/SearchBar/SearchBar';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import { FULLSCREEN } from '../constants';
+import { setFullScreenResponsive } from '../constants/responsive';
+import { MarkerContext } from '../context/MarkerContext';
+import { SeeTogetherContext } from '../context/SeeTogetherContext';
+import useNavigator from '../hooks/useNavigator';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const TopicListContainer = lazy(
   () => import('../components/TopicCardContainer'),
 );
 
-const Home = () => {
+function Home() {
   const { routingHandlers } = useNavigator();
   const { goToPopularTopics, goToLatestTopics, goToNearByMeTopics } =
     routingHandlers;
@@ -80,7 +81,7 @@ const Home = () => {
       <Space size={5} />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.article`
   width: 1036px;

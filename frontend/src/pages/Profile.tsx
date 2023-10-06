@@ -1,20 +1,21 @@
+import { lazy, Suspense } from 'react';
 import { styled } from 'styled-components';
+
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
-import MyInfo from '../components/MyInfo';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { FULLSCREEN } from '../constants';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { Suspense, lazy } from 'react';
 import Text from '../components/common/Text';
-import useNavigator from '../hooks/useNavigator';
+import MyInfo from '../components/MyInfo';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import { FULLSCREEN } from '../constants';
 import { setFullScreenResponsive } from '../constants/responsive';
+import useNavigator from '../hooks/useNavigator';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
-const Profile = () => {
+function Profile() {
   const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('profile');
@@ -66,7 +67,7 @@ const Profile = () => {
       </Suspense>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled(Box)`
   width: 1036px;

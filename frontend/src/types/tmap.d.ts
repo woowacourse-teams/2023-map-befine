@@ -7,8 +7,8 @@ interface LatLngBounds {
 interface evt {
   data: {
     lngLat: {
-      _lat: number;
-      _lng: number;
+      lat: number;
+      lng: number;
     };
   };
 }

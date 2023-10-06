@@ -6,30 +6,31 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { styled } from 'styled-components';
-import Space from '../components/common/Space';
-import { TopicDetailProps } from '../types/Topic';
 import { useParams, useSearchParams } from 'react-router-dom';
-import PinDetail from './PinDetail';
+import { styled } from 'styled-components';
+
 import { getApi } from '../apis/getApi';
+import SeeTogetherNotFilledSVG from '../assets/seeTogetherBtn_notFilled.svg';
+import Button from '../components/common/Button';
+import Flex from '../components/common/Flex';
+import Space from '../components/common/Space';
+import Text from '../components/common/Text';
 import PullPin from '../components/PullPin';
+import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import { CoordinatesContext } from '../context/CoordinatesContext';
+import { SeeTogetherContext } from '../context/SeeTogetherContext';
+import { TagContext } from '../context/TagContext';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
-import { TagContext } from '../context/TagContext';
 import { PinProps } from '../types/Pin';
-import { SeeTogetherContext } from '../context/SeeTogetherContext';
-import Flex from '../components/common/Flex';
-import Button from '../components/common/Button';
-import SeeTogetherNotFilledSVG from '../assets/seeTogetherBtn_notFilled.svg';
-import Text from '../components/common/Text';
+import { TopicDetailProps } from '../types/Topic';
+import PinDetail from './PinDetail';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
-const SelectedTopic = () => {
+function SelectedTopic() {
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
   const [topicDetails, setTopicDetails] = useState<TopicDetailProps[] | null>(
@@ -189,7 +190,7 @@ const SelectedTopic = () => {
       )}
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.section<{
   width: 'calc(100vw - 40px)' | 'calc(372px - 40px)';

@@ -1,18 +1,19 @@
+import { lazy, Suspense } from 'react';
 import { styled } from 'styled-components';
+
+import Box from '../components/common/Box';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
+import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
+import { setFullScreenResponsive } from '../constants/responsive';
+import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import Box from '../components/common/Box';
-import { Suspense, lazy } from 'react';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import useNavigator from '../hooks/useNavigator';
-import { setFullScreenResponsive } from '../constants/responsive';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
-const SeeAllLatestTopics = () => {
+function SeeAllLatestTopics() {
   const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
@@ -41,7 +42,7 @@ const SeeAllLatestTopics = () => {
       </Suspense>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled(Box)`
   width: 1036px;

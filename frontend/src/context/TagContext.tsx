@@ -1,10 +1,11 @@
 import {
+  createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
-  createContext,
   useState,
 } from 'react';
+
 import { TagProps } from '../types/Tag';
 
 interface TagContextProps {
@@ -21,7 +22,7 @@ export const TagContext = createContext<TagContextProps>({
   setTags: () => {},
 });
 
-const TagProvider = ({ children }: TagProviderProps) => {
+function TagProvider({ children }: TagProviderProps) {
   const [tags, setTags] = useState<TagProps[]>([]);
 
   return (
@@ -34,6 +35,6 @@ const TagProvider = ({ children }: TagProviderProps) => {
       {children}
     </TagContext.Provider>
   );
-};
+}
 
 export default TagProvider;
