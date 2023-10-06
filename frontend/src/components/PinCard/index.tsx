@@ -1,34 +1,17 @@
 import { styled } from 'styled-components';
-import Text from '../common/Text';
-import useNavigator from '../../hooks/useNavigator';
+
 import Box from '../common/Box';
-import Image from '../common/Image';
-import { SyntheticEvent } from 'react';
-import Space from '../common/Space';
 import Flex from '../common/Flex';
-import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
-import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
-import SmallTopicPin from '../../assets/smallTopicPin.svg';
-import SmallTopicStar from '../../assets/smallTopicStar.svg';
-import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import AddSeeTogether from '../AddSeeTogether';
-import AddFavorite from '../AddFavorite';
+import Space from '../common/Space';
+import Text from '../common/Text';
 
 export interface PinCardProps {
-  pinId: number;
   pinTitle: string;
   pinAddress: string;
   pinDescription: string;
 }
 
-const PinCard = ({
-  pinId,
-  pinTitle,
-  pinAddress,
-  pinDescription,
-}: PinCardProps) => {
-  const { routePage } = useNavigator();
-
+function PinCard({ pinTitle, pinAddress, pinDescription }: PinCardProps) {
   return (
     <Wrapper>
       <Flex position="relative">
@@ -53,7 +36,7 @@ const PinCard = ({
       </Flex>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.li`
   width: 332px;

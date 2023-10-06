@@ -1,7 +1,7 @@
 const getCurrentLocation = () => {
   const onSuccess = (pos: GeolocationPosition) => {
-    const latitude = pos.coords.latitude;
-    const longitude = pos.coords.longitude;
+    const { latitude } = pos.coords;
+    const { longitude } = pos.coords;
   };
 
   const onFail = () => {

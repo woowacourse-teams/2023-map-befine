@@ -1,19 +1,20 @@
-import { styled } from 'styled-components';
-import Flex from '../common/Flex';
-import Box from '../common/Box';
-import Text from '../common/Text';
-import Space from '../common/Space';
 import { useState } from 'react';
-import { ProfileProps } from '../../types/Profile';
-import UpdateMyInfo from './UpdateMyInfo';
-import Button from '../common/Button';
-import useToast from '../../hooks/useToast';
-import { DEFAULT_PROD_URL } from '../../constants';
+import { styled } from 'styled-components';
+
 import Setting from '../../assets/setting.svg';
+import { DEFAULT_PROD_URL } from '../../constants';
+import useToast from '../../hooks/useToast';
+import { ProfileProps } from '../../types/Profile';
+import Box from '../common/Box';
+import Button from '../common/Button';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Text from '../common/Text';
+import UpdateMyInfo from './UpdateMyInfo';
 
 const accessToken = localStorage.getItem('userToken');
 
-const MyInfo = () => {
+function MyInfo() {
   const { showToast } = useToast();
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -28,7 +29,7 @@ const MyInfo = () => {
     setIsModifyMyInfo(true);
   };
 
-  const onClickLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickLogout = async () => {
     try {
       fetch(`${DEFAULT_PROD_URL}/logout`, {
         method: 'POST',
@@ -37,7 +38,7 @@ const MyInfo = () => {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          accessToken: accessToken,
+          accessToken,
         }),
       });
 
@@ -88,7 +89,7 @@ const MyInfo = () => {
       </Box>
     </MyInfoContainer>
   );
-};
+}
 
 const MyInfoContainer = styled(Flex)`
   position: relative;

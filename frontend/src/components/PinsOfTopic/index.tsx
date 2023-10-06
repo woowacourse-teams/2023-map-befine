@@ -1,4 +1,5 @@
 import { styled } from 'styled-components';
+
 import { TopicDetailProps } from '../../types/Topic';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
@@ -11,13 +12,13 @@ interface PinsOfTopicProps {
   setTopicsFromServer: () => void;
 }
 
-const PinsOfTopic = ({
+function PinsOfTopic({
   topicId,
   topicDetail,
   setSelectedPinId,
   setIsEditPinDetail,
   setTopicsFromServer,
-}: PinsOfTopicProps) => {
+}: PinsOfTopicProps) {
   return (
     <Wrapper>
       <TopicInfo
@@ -50,7 +51,7 @@ const PinsOfTopic = ({
       ))}
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.ul``;
 

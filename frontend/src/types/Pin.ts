@@ -1,3 +1,8 @@
+export interface ImageProps {
+  id: number;
+  imageUrl: string;
+}
+
 export interface PinProps {
   id: number;
   name: string;
@@ -9,9 +14,4 @@ export interface PinProps {
   canUpdate: boolean;
   updatedAt: string;
   images: ImageProps[];
-}
-
-export interface ImageProps {
-  id: number;
-  imageUrl: string;
 }

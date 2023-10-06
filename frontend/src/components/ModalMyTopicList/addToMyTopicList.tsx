@@ -1,19 +1,20 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { TopicCardProps } from '../../types/Topic';
 import { styled } from 'styled-components';
-import TopicCard from '../TopicCard';
-import { ModalContext } from '../../context/ModalContext';
-import useToast from '../../hooks/useToast';
+
 import useGet from '../../apiHooks/useGet';
 import usePost from '../../apiHooks/usePost';
+import { ModalContext } from '../../context/ModalContext';
+import useToast from '../../hooks/useToast';
+import { TopicCardProps } from '../../types/Topic';
 import Space from '../common/Space';
+import TopicCard from '../TopicCard';
 
 interface OnClickDesignatedProps {
   topicId: number;
   topicName: string;
 }
 
-const AddToMyTopicList = ({ pin }: any) => {
+function AddToMyTopicList({ pin }: any) {
   const [myTopics, setMyTopics] = useState<TopicCardProps[] | null>(null);
   const { closeModal } = useContext(ModalContext);
   const { fetchGet } = useGet();
@@ -48,7 +49,7 @@ const AddToMyTopicList = ({ pin }: any) => {
     });
   };
 
-  if (!myTopics) return <></>;
+  if (!myTopics) return null;
 
   return (
     <>
@@ -74,7 +75,7 @@ const AddToMyTopicList = ({ pin }: any) => {
       <Space size={5} />
     </>
   );
-};
+}
 
 const ModalMyTopicListWrapper = styled.ul`
   width: 684px;

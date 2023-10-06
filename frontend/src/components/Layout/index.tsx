@@ -1,20 +1,21 @@
 import { useContext, useEffect } from 'react';
-import Map from '../Map';
-import Flex from '../common/Flex';
-import Logo from './Logo';
-import CoordinatesProvider from '../../context/CoordinatesContext';
-import MarkerProvider from '../../context/MarkerContext';
-import ToastProvider from '../../context/ToastContext';
-import Toast from '../Toast';
 import { css, styled } from 'styled-components';
+
+import CoordinatesProvider from '../../context/CoordinatesContext';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
-import SeeTogetherProvider from '../../context/SeeTogetherContext';
-import Space from '../common/Space';
-import Navbar from './Navbar';
+import MarkerProvider from '../../context/MarkerContext';
 import ModalProvider from '../../context/ModalContext';
 import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
+import SeeTogetherProvider from '../../context/SeeTogetherContext';
 import TagProvider from '../../context/TagContext';
+import ToastProvider from '../../context/ToastContext';
 import Box from '../common/Box';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Map from '../Map';
+import Toast from '../Toast';
+import Logo from './Logo';
+import Navbar from './Navbar';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -25,7 +26,7 @@ const initViewPortHeight = () => {
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 };
 
-const Layout = ({ children }: LayoutProps) => {
+function Layout({ children }: LayoutProps) {
   const { width } = useContext(LayoutWidthContext);
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
 
@@ -83,7 +84,7 @@ const Layout = ({ children }: LayoutProps) => {
       </ModalProvider>
     </ToastProvider>
   );
-};
+}
 
 const LogoWrapper = styled.section<{
   $layoutWidth: '372px' | '100vw';

@@ -1,11 +1,12 @@
-import { Suspense, lazy } from 'react';
+import { lazy, ReactNode, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import Home from './pages/Home';
-import RootPage from './pages/RootPage';
-import { ReactNode } from 'react';
+
 import AuthLayout from './components/Layout/AuthLayout';
+import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import RootPage from './pages/RootPage';
 import Search from './pages/Search';
+
 const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
 const NewPin = lazy(() => import('./pages/NewPin'));
 const NewTopic = lazy(() => import('./pages/NewTopic'));
@@ -30,9 +31,9 @@ interface SuspenseCompProps {
   children: ReactNode;
 }
 
-const SuspenseComp = ({ children }: SuspenseCompProps) => {
+function SuspenseComp({ children }: SuspenseCompProps) {
   return <Suspense fallback={null}>{children}</Suspense>;
-};
+}
 
 const routes: routeElement[] = [
   {

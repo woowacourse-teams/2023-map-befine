@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react';
 import styled from 'styled-components';
+
 import useKeyDown from '../../hooks/useKeyDown';
 import Text from '../common/Text';
 import SeeTogetherCounter from '../SeeTogetherCounter';
@@ -13,14 +14,14 @@ interface NavbarItemProps {
   $layoutWidth: '100vw' | '372px';
 }
 
-const NavbarItem = ({
+function NavbarItem({
   label,
   icon: Icon,
   focusIcon: FocusIcon,
   isHighlighted = false,
   onClick,
   $layoutWidth,
-}: NavbarItemProps) => {
+}: NavbarItemProps) {
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLDivElement>();
 
   return (
@@ -42,7 +43,7 @@ const NavbarItem = ({
       {label === '모아보기' ? <SeeTogetherCounter /> : null}
     </IconWrapper>
   );
-};
+}
 
 const IconWrapper = styled.div<{ $layoutWidth: '100vw' | '372px' }>`
   position: relative;

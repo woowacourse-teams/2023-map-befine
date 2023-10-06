@@ -1,11 +1,12 @@
-import { styled } from 'styled-components';
-import { postApi } from '../../apis/postApi';
-import useToast from '../../hooks/useToast';
 import { useContext } from 'react';
-import { getApi } from '../../apis/getApi';
-import { TopicCardProps } from '../../types/Topic';
-import { SeeTogetherContext } from '../../context/SeeTogetherContext';
+import { styled } from 'styled-components';
+
 import { deleteApi } from '../../apis/deleteApi';
+import { getApi } from '../../apis/getApi';
+import { postApi } from '../../apis/postApi';
+import { SeeTogetherContext } from '../../context/SeeTogetherContext';
+import useToast from '../../hooks/useToast';
+import { TopicCardProps } from '../../types/Topic';
 
 interface AddSeeTogetherProps {
   isInAtlas: boolean;
@@ -15,13 +16,13 @@ interface AddSeeTogetherProps {
   onClickAtlas: () => boolean;
 }
 
-const AddSeeTogether = ({
+function AddSeeTogether({
   isInAtlas,
   id,
   children,
   getTopicsFromServer,
   onClickAtlas,
-}: AddSeeTogetherProps) => {
+}: AddSeeTogetherProps) {
   const { showToast } = useToast();
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
@@ -96,7 +97,7 @@ const AddSeeTogether = ({
       {children}
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   cursor: pointer;

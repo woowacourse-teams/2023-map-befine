@@ -1,16 +1,17 @@
 import { Fragment, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import { TopicCardProps } from '../../types/Topic';
-import TopicCard from '../TopicCard';
-import Space from '../common/Space';
+
 import useGet from '../../apiHooks/useGet';
+import { TopicCardProps } from '../../types/Topic';
+import Space from '../common/Space';
+import TopicCard from '../TopicCard';
 
 interface ModalMyTopicListProps {
   topicId: string;
   topicClick: any;
 }
 
-const ModalMyTopicList = ({ topicId, topicClick }: ModalMyTopicListProps) => {
+function ModalMyTopicList({ topicId, topicClick }: ModalMyTopicListProps) {
   const [myTopics, setMyTopics] = useState<TopicCardProps[] | null>(null);
   const { fetchGet } = useGet();
 
@@ -40,7 +41,7 @@ const ModalMyTopicList = ({ topicId, topicClick }: ModalMyTopicListProps) => {
     getMyTopicFromServer();
   }, []);
 
-  if (!myTopics) return <></>;
+  if (!myTopics) return null;
 
   return (
     <>
@@ -66,7 +67,7 @@ const ModalMyTopicList = ({ topicId, topicClick }: ModalMyTopicListProps) => {
       <Space size={5} />
     </>
   );
-};
+}
 
 const ModalMyTopicListWrapper = styled.ul`
   width: 684px;

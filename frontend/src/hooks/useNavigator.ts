@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { ModalContext } from '../context/ModalContext';
 import { SeeTogetherContext } from '../context/SeeTogetherContext';
 

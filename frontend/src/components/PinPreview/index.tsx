@@ -1,12 +1,13 @@
+import { KeyboardEvent, useContext, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
+
+import { TagContext } from '../../context/TagContext';
+import useNavigator from '../../hooks/useNavigator';
+import theme from '../../themes';
+import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Text from '../common/Text';
-import useNavigator from '../../hooks/useNavigator';
-import { useEffect, useRef, useState, KeyboardEvent, useContext } from 'react';
-import theme from '../../themes';
-import Box from '../common/Box';
-import { TagContext } from '../../context/TagContext';
 
 export interface PinPreviewProps {
   idx: number;
@@ -19,7 +20,7 @@ export interface PinPreviewProps {
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PinPreview = ({
+function PinPreview({
   idx,
   pinTitle,
   pinLocation,
@@ -28,7 +29,7 @@ const PinPreview = ({
   pinId,
   topicId,
   setIsEditPinDetail,
-}: PinPreviewProps) => {
+}: PinPreviewProps) {
   const { routePage } = useNavigator();
   const { tags, setTags } = useContext(TagContext);
   const [announceText, setAnnounceText] = useState<string>('토픽 핀 선택');
@@ -131,10 +132,10 @@ const PinPreview = ({
         id="live-region"
         aria-live="assertive"
         style={{ position: 'absolute', left: '-9999px' }}
-      ></div>
+      />
     </Flex>
   );
-};
+}
 
 const MultiSelectButton = styled.input`
   width: 24px;

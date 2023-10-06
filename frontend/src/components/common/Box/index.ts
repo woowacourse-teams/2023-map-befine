@@ -1,8 +1,9 @@
 import { styled } from 'styled-components';
+
 import theme from '../../../themes';
 import { colorThemeKey } from '../../../themes/color';
-import { SpaceThemeKeys } from '../../../themes/spacing';
 import { radiusKey } from '../../../themes/radius';
+import { SpaceThemeKeys } from '../../../themes/spacing';
 
 export interface BoxProps {
   display?: string;

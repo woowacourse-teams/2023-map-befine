@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
@@ -25,7 +26,7 @@ class ApiErrorBoundary extends Component<Props, State> {
   }
 
   public render() {
-    const { hasError, info } = this.state;  
+    const { hasError, info } = this.state;
     const { children } = this.props;
     if (hasError) {
       return <this.props.fallback error={info} />;

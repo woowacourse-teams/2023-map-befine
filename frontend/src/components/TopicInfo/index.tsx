@@ -1,21 +1,22 @@
-import Flex from '../common/Flex';
-import Text from '../common/Text';
-import Image from '../common/Image';
-import Space from '../common/Space';
-import useToast from '../../hooks/useToast';
+import { useEffect, useState } from 'react';
+import { styled } from 'styled-components';
+
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
-import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
 import FavoriteSVG from '../../assets/topicInfo_favoriteBtn_filled.svg';
 import FavoriteNotFilledSVG from '../../assets/topicInfo_favoriteBtn_notFilled.svg';
-import SeeTogetherNotFilledSVG from '../../assets/topicInfo_seeTogetherBtn_notFilled.svg';
 import SeeTogetherSVG from '../../assets/topicInfo_seeTogetherBtn_filled.svg';
+import SeeTogetherNotFilledSVG from '../../assets/topicInfo_seeTogetherBtn_notFilled.svg';
+import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import AddSeeTogether from '../AddSeeTogether';
+import useToast from '../../hooks/useToast';
 import AddFavorite from '../AddFavorite';
-import { styled } from 'styled-components';
+import AddSeeTogether from '../AddSeeTogether';
 import Box from '../common/Box';
-import { useState } from 'react';
+import Flex from '../common/Flex';
+import Image from '../common/Image';
+import Space from '../common/Space';
+import Text from '../common/Text';
 import UpdatedTopicInfo from './UpdatedTopicInfo';
 
 export interface TopicInfoProps {
@@ -33,7 +34,7 @@ export interface TopicInfoProps {
   setTopicsFromServer: () => void;
 }
 
-const TopicInfo = ({
+function TopicInfo({
   topicId,
   topicImage,
   topicTitle,
@@ -46,7 +47,7 @@ const TopicInfo = ({
   isInAtlas,
   isBookmarked,
   setTopicsFromServer,
-}: TopicInfoProps) => {
+}: TopicInfoProps) {
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const { showToast } = useToast();
 
@@ -63,7 +64,7 @@ const TopicInfo = ({
       showToast('error', '토픽 링크를 복사하는데 실패했습니다.');
     }
   };
-  
+
   const onChangeIsInAtlas = () => {
     showToast('warning', '비회원은 홈에서만 모아보기에 담을 수 있습니다.');
     return false;
@@ -182,7 +183,7 @@ const TopicInfo = ({
       <Space size={3} />
     </Flex>
   );
-};
+}
 
 const ButtonsWrapper = styled.div`
   display: flex;

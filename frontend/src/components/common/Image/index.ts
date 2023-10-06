@@ -1,4 +1,4 @@
-import { ImgHTMLAttributes, SyntheticEvent } from 'react';
+import { ImgHTMLAttributes } from 'react';
 import { styled } from 'styled-components';
 
 interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {

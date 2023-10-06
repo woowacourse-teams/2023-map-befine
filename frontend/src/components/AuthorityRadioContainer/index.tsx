@@ -1,20 +1,22 @@
+/* eslint-disable react/require-default-props */
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
-import Text from '../common/Text';
-import Space from '../common/Space';
-import Flex from '../common/Flex';
-import { useContext, useEffect, useState } from 'react';
+
+import useGet from '../../apiHooks/useGet';
+import { ModalContext } from '../../context/ModalContext';
 import {
   TopicAuthorMember,
   TopicAuthorMemberWithAuthorId,
 } from '../../types/Topic';
-import { ModalContext } from '../../context/ModalContext';
 import Box from '../common/Box';
-import Modal from '../Modal';
 import Button from '../common/Button';
 import Checkbox from '../common/CheckBox';
-import useGet from '../../apiHooks/useGet';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Text from '../common/Text';
+import Modal from '../Modal';
 
-interface AuthorityRadioContainer {
+interface AuthorityRadioContainerProps {
   isPrivate: boolean;
   isAllPermissioned: boolean;
   authorizedMemberIds: number[];
@@ -24,7 +26,7 @@ interface AuthorityRadioContainer {
   permissionedMembers?: TopicAuthorMemberWithAuthorId[];
 }
 
-const AuthorityRadioContainer = ({
+function AuthorityRadioContainer({
   isPrivate,
   isAllPermissioned,
   authorizedMemberIds,
@@ -32,7 +34,7 @@ const AuthorityRadioContainer = ({
   setIsAllPermissioned,
   setAuthorizedMemberIds,
   permissionedMembers,
-}: AuthorityRadioContainer) => {
+}: AuthorityRadioContainerProps) {
   const { openModal, closeModal } = useContext(ModalContext);
   const { fetchGet } = useGet();
 
@@ -204,7 +206,7 @@ const AuthorityRadioContainer = ({
       >
         <ModalContentsWrapper>
           <Flex
-            padding={'12px'}
+            padding="12px"
             position="sticky"
             top="0"
             $justifyContent="space-between"
@@ -233,7 +235,7 @@ const AuthorityRadioContainer = ({
 
           <Space size={1} />
 
-          <Flex $justifyContent="end" padding={'12px'} bottom="0px">
+          <Flex $justifyContent="end" padding="12px" bottom="0px">
             <Button
               tabIndex={6}
               type="button"
@@ -264,7 +266,7 @@ const AuthorityRadioContainer = ({
       </Modal>
     </>
   );
-};
+}
 
 const ModalContentsWrapper = styled.div`
   width: 100%;

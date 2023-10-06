@@ -1,17 +1,17 @@
-import styled from 'styled-components';
-import InputContainer from '../InputContainer';
-import useFormValues from '../../hooks/useFormValues';
-import Space from '../common/Space';
-import Flex from '../common/Flex';
-import Button from '../common/Button';
 import { useEffect, useState } from 'react';
-import useGet from '../../apiHooks/useGet';
-import { TopicAuthorInfo } from '../../types/Topic';
-import AuthorityRadioContainer from '../AuthorityRadioContainer';
-import usePost from '../../apiHooks/usePost';
+import styled from 'styled-components';
+
 import useDelete from '../../apiHooks/useDelete';
+import useGet from '../../apiHooks/useGet';
+import usePost from '../../apiHooks/usePost';
 import usePut from '../../apiHooks/usePut';
+import useFormValues from '../../hooks/useFormValues';
 import useToast from '../../hooks/useToast';
+import { TopicAuthorInfo } from '../../types/Topic';
+import Button from '../common/Button';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import InputContainer from '../InputContainer';
 
 interface UpdatedTopicInfoProp {
   id: number;
@@ -27,14 +27,14 @@ interface FormValues {
   description: string;
 }
 
-const UpdatedTopicInfo = ({
+function UpdatedTopicInfo({
   id,
   image,
   name,
   description,
   setIsUpdate,
   setTopicsFromServer,
-}: UpdatedTopicInfoProp) => {
+}: UpdatedTopicInfoProp) {
   const { fetchPost } = usePost();
   const { fetchGet } = useGet();
   const { fetchDelete } = useDelete();
@@ -128,7 +128,7 @@ const UpdatedTopicInfo = ({
       <InputContainer
         tagType="input"
         containerTitle="지도 이름"
-        isRequired={true}
+        isRequired
         name="name"
         value={formValues.name}
         placeholder="20자 이내로 지도의 이름을 입력해주세요."
@@ -143,7 +143,7 @@ const UpdatedTopicInfo = ({
       <InputContainer
         tagType="textarea"
         containerTitle="한 줄 설명"
-        isRequired={true}
+        isRequired
         name="description"
         value={formValues.description}
         placeholder="100글자 이내로 지도에 대해서 설명해주세요."
@@ -183,7 +183,7 @@ const UpdatedTopicInfo = ({
       <Space size={6} />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.section``;
 
