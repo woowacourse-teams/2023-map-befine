@@ -42,7 +42,9 @@ const SelectedTopic = () => {
   const { setCoordinates } = useContext(CoordinatesContext);
   const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
+  const { navbarHighlights: __ } = useSetNavbarHighlight(
+    topicId && topicId.split(',').length > 1 ? 'seeTogether' : 'home',
+  );
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
 
