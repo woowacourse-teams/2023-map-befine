@@ -16,7 +16,7 @@ const SeeTogetherCounter = () => {
       if (!userToken) return;
 
       const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
-      setSeeTogetherTopics(topics);
+      setSeeTogetherTopics(topics.map((topic) => topic.id));
     } catch {
       showToast(
         'error',

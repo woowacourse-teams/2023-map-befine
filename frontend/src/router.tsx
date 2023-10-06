@@ -6,7 +6,6 @@ import { ReactNode } from 'react';
 import AuthLayout from './components/Layout/AuthLayout';
 import NotFound from './pages/NotFound';
 import Search from './pages/Search';
-
 const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
 const NewPin = lazy(() => import('./pages/NewPin'));
 const NewTopic = lazy(() => import('./pages/NewTopic'));
@@ -14,7 +13,6 @@ const SeeAllPopularTopics = lazy(() => import('./pages/SeeAllPopularTopics'));
 const SeeAllNearTopics = lazy(() => import('./pages/SeeAllNearTopics'));
 const SeeAllLatestTopics = lazy(() => import('./pages/SeeAllLatestTopics'));
 const KakaoRedirect = lazy(() => import('./pages/KakaoRedirect'));
-const SeeTogetherTopics = lazy(() => import('./pages/SeeTogetherTopics'));
 const Profile = lazy(() => import('./pages/Profile'));
 const AskLogin = lazy(() => import('./pages/AskLogin'));
 const Bookmark = lazy(() => import('./pages/Bookmark'));
@@ -102,15 +100,6 @@ const routes: routeElement[] = [
           </SuspenseComp>
         ),
         withAuth: false,
-      },
-      {
-        path: 'see-together',
-        element: (
-          <SuspenseComp>
-            <SeeTogetherTopics />
-          </SuspenseComp>
-        ),
-        withAuth: true,
       },
       {
         path: 'favorite',

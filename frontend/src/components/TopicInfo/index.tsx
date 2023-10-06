@@ -63,6 +63,15 @@ const TopicInfo = ({
       showToast('error', '토픽 링크를 복사하는데 실패했습니다.');
     }
   };
+  
+  const onChangeIsInAtlas = () => {
+    showToast('warning', '비회원은 홈에서만 모아보기에 담을 수 있습니다.');
+    return false;
+  };
+
+  useEffect(() => {
+    if (!isUpdate) setTopicsFromServer();
+  }, [isUpdate]);
 
   if (isUpdate) {
     return (
@@ -148,6 +157,7 @@ const TopicInfo = ({
       <ButtonsWrapper>
         <AddSeeTogether
           isInAtlas={isInAtlas}
+          onClickAtlas={onChangeIsInAtlas}
           id={Number(topicId)}
           getTopicsFromServer={setTopicsFromServer}
         >

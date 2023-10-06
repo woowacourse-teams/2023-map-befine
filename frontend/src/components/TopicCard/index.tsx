@@ -3,7 +3,7 @@ import Text from '../common/Text';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
 import Image from '../common/Image';
-import { SyntheticEvent, useContext } from 'react';
+import { SyntheticEvent, useContext, useState } from 'react';
 import Space from '../common/Space';
 import Flex from '../common/Flex';
 import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
@@ -18,6 +18,7 @@ import AddFavorite from '../AddFavorite';
 import { TopicCardProps } from '../../types/Topic';
 import useKeyDown from '../../hooks/useKeyDown';
 import { ModalContext } from '../../context/ModalContext';
+import useToast from '../../hooks/useToast';
 
 interface OnClickDesignatedProps {
   topicId: number;
@@ -47,6 +48,9 @@ const TopicCard = ({
   const { routePage } = useNavigator();
   const { closeModal } = useContext(ModalContext);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
+  const [isInNonMemberAtlas, setIsInNonMemberAtlas] =
+    useState<boolean>(isInAtlas);
+  const { showToast } = useToast();
 
   const goToSelectedTopic = () => {
     routePage(`/topics/${id}`, [id]);
@@ -60,6 +64,15 @@ const TopicCard = ({
     closeModal('newPin');
   };
 
+  const onClickIsInAtlas = () => {
+    setIsInNonMemberAtlas(!isInNonMemberAtlas);
+    if (!isInNonMemberAtlas) {
+      showToast('info', '모아보기에 추가했습니다.');
+      return true;
+    }
+    showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
+    return true;
+  };
   return (
     <Wrapper
       data-cy="topic-card"
@@ -139,10 +152,15 @@ const TopicCard = ({
             <ButtonWrapper>
               <AddSeeTogether
                 isInAtlas={isInAtlas}
+                onClickAtlas={onClickIsInAtlas}
                 id={id}
                 getTopicsFromServer={getTopicsFromServer}
               >
-                {isInAtlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
+                {isInNonMemberAtlas ? (
+                  <SeeTogetherSVG />
+                ) : (
+                  <SeeTogetherNotFilledSVG />
+                )}
               </AddSeeTogether>
               <AddFavorite
                 isBookmarked={isBookmarked}

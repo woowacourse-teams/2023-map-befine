@@ -21,6 +21,11 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { TagContext } from '../context/TagContext';
 import { PinProps } from '../types/Pin';
+import { SeeTogetherContext } from '../context/SeeTogetherContext';
+import Flex from '../components/common/Flex';
+import Button from '../components/common/Button';
+import SeeTogetherNotFilledSVG from '../assets/seeTogetherBtn_notFilled.svg';
+import Text from '../components/common/Text';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
@@ -37,9 +42,19 @@ const SelectedTopic = () => {
   const { setCoordinates } = useContext(CoordinatesContext);
   const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
+  const { navbarHighlights: __ } = useSetNavbarHighlight(
+    topicId && topicId.split(',').length > 1 ? 'seeTogether' : 'home',
+  );
+  const { seeTogetherTopics, setSeeTogetherTopics } =
+    useContext(SeeTogetherContext);
+
+  const goToHome = () => {
+    routePage('/');
+  };
 
   const getAndSetDataFromServer = async () => {
+    if (topicId === '-1') return;
+
     const data = await getApi<TopicDetailProps[]>(`/topics/ids?ids=${topicId}`);
 
     const topicHashmap = new Map([]);
@@ -103,6 +118,27 @@ const SelectedTopic = () => {
   const togglePinDetail = () => {
     setIsOpen(!isOpen);
   };
+
+  if (!seeTogetherTopics) return <></>;
+
+  if (seeTogetherTopics.length === 0 && topicId === '-1') {
+    return (
+      <WrapperWhenEmpty width={width}>
+        <Flex $alignItems="center">
+          <SeeTogetherNotFilledSVG />
+          <Space size={1} />
+          <Text color="black" $fontSize="default" $fontWeight="normal">
+            버튼을 눌러 지도를 추가해보세요.
+          </Text>
+          <Space size={4} />
+        </Flex>
+        <Space size={5} />
+        <Button variant="primary" onClick={goToHome}>
+          메인페이지로 가기
+        </Button>
+      </WrapperWhenEmpty>
+    );
+  }
 
   if (!topicDetails) return <></>;
   if (!topicId) return <></>;
@@ -214,6 +250,17 @@ const ToggleButton = styled.button<{
   @media (max-width: 1076px) {
     display: none;
   }
+`;
+
+const WrapperWhenEmpty = styled.section<{ width: '372px' | '100vw' }>`
+  width: ${({ width }) => `calc(${width} - 40px)`};
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0 auto;
 `;
 
 export default SelectedTopic;
