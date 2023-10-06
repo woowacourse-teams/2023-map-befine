@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import useNavigator from '../../hooks/useNavigator';
-import SearchIcon from '../../assets/search.svg';
 
-const SearchBar = () => {
+import SearchIcon from '../../assets/search.svg';
+import useNavigator from '../../hooks/useNavigator';
+
+function SearchBar() {
   const { routingHandlers } = useNavigator();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,7 +28,7 @@ const SearchBar = () => {
       />
     </SearchBarWrapper>
   );
-};
+}
 export default SearchBar;
 
 const SearchBarWrapper = styled.form`

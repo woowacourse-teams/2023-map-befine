@@ -1,15 +1,16 @@
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
-import Flex from '../common/Flex';
-import { MarkerContext } from '../../context/MarkerContext';
-import useMapClick from '../../hooks/useMapClick';
-import useClickedCoordinate from '../../hooks/useClickedCoordinate';
-import useUpdateCoordinates from '../../hooks/useUpdateCoordinates';
-import useFocusToMarker from '../../hooks/useFocusToMarkers';
-import useAnimateClickedPin from '../../hooks/useAnimateClickedPin';
 import { styled } from 'styled-components';
-import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 
-const Map = () => {
+import { LayoutWidthContext } from '../../context/LayoutWidthContext';
+import { MarkerContext } from '../../context/MarkerContext';
+import useAnimateClickedPin from '../../hooks/useAnimateClickedPin';
+import useClickedCoordinate from '../../hooks/useClickedCoordinate';
+import useFocusToMarker from '../../hooks/useFocusToMarkers';
+import useMapClick from '../../hooks/useMapClick';
+import useUpdateCoordinates from '../../hooks/useUpdateCoordinates';
+import Flex from '../common/Flex';
+
+function Map() {
   const { Tmapv3 } = window;
 
   const { markers } = useContext(MarkerContext);
@@ -32,6 +33,7 @@ const Map = () => {
 
     setMapInstance(map);
 
+    // eslint-disable-next-line consistent-return
     return () => {
       map.destroy();
     };
@@ -54,7 +56,7 @@ const Map = () => {
       $minWidth={width}
     />
   );
-};
+}
 
 const MapFlex = styled(Flex)`
   & {

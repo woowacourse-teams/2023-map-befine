@@ -1,4 +1,5 @@
 import { styled } from 'styled-components';
+
 import Box from '../common/Box';
 import Text from '../common/Text';
 
@@ -7,7 +8,7 @@ interface TagProps {
   tabIndex?: number;
 }
 
-const Tag = ({ children, tabIndex }: TagProps) => {
+function Tag({ children, tabIndex }: TagProps) {
   return (
     <Box
       height="36px"
@@ -21,7 +22,7 @@ const Tag = ({ children, tabIndex }: TagProps) => {
       </EllipsisText>
     </Box>
   );
-};
+}
 
 const EllipsisText = styled(Text)`
   width: 100%;

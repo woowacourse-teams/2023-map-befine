@@ -3,26 +3,20 @@ const REG_EXP_CURSES =
 const REG_EXP_POLITICALLY =
   /(괴뢰|빨갱이|왜놈|일베|조센징|쪽바리|짱깨|월북|매국노|메갈|섹스|쎅쓰|쎅스|섹쓰)/;
 
-export const validateCurse = (userInput: string) => {
-  return REG_EXP_CURSES.test(userInput);
-};
+export const validateCurse = (userInput: string) =>
+  REG_EXP_CURSES.test(userInput);
 
-export const validatePolitically = (userInput: string) => {
-  return REG_EXP_POLITICALLY.test(userInput);
-};
+export const validatePolitically = (userInput: string) =>
+  REG_EXP_POLITICALLY.test(userInput);
 
-export const hasErrorMessage = <T extends object>(errorMessages: T) => {
-  return Object.values(errorMessages).some(
-    (errorMessage) => errorMessage.length > 0,
-  );
-};
+export const hasErrorMessage = <T extends object>(errorMessages: T) =>
+  Object.values(errorMessages).some((errorMessage) => errorMessage.length > 0);
 
 export const hasNullValue = <T extends object>(
   formValues: T,
   notRequiredKey?: keyof T,
-) => {
-  return Object.entries(formValues).some(([key, value]) => {
+) =>
+  Object.entries(formValues).some(([key, value]) => {
     if (notRequiredKey && key === notRequiredKey) return false;
     return value.length === 0;
   });
-};

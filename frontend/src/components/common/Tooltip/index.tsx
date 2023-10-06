@@ -73,13 +73,13 @@ interface TooltipProps {
   children: ReactNode;
 }
 
-const Tooltip = ({ children, content, position = 'top' }: TooltipProps) => {
+function Tooltip({ children, content, position = 'top' }: TooltipProps) {
   return (
     <TooltipContainer>
       {children}
       <TooltipText position={position}>{content}</TooltipText>
     </TooltipContainer>
   );
-};
+}
 
 export default Tooltip;

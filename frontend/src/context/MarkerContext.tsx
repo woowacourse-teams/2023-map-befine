@@ -1,8 +1,9 @@
 import { createContext, useContext, useState } from 'react';
-import { Coordinate, CoordinatesContext } from './CoordinatesContext';
 import { useParams } from 'react-router-dom';
-import useNavigator from '../hooks/useNavigator';
+
 import { pinColors, pinImageMap } from '../constants/pinImage';
+import useNavigator from '../hooks/useNavigator';
+import { Coordinate, CoordinatesContext } from './CoordinatesContext';
 
 type MarkerContextType = {
   markers: Marker[];
@@ -32,7 +33,7 @@ interface Props {
   children: JSX.Element | JSX.Element[];
 }
 
-const MarkerProvider = ({ children }: Props): JSX.Element => {
+function MarkerProvider({ children }: Props): JSX.Element {
   const { Tmapv3 } = window;
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [infoWindows, setInfoWindows] = useState<InfoWindow[] | null>(null);
@@ -45,13 +46,12 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
     coordinate: Coordinate,
     map: TMap,
     markerType: number,
-  ) => {
-    return new Tmapv3.Marker({
+  ) =>
+    new Tmapv3.Marker({
       position: new Tmapv3.LatLng(coordinate.latitude, coordinate.longitude),
       icon: pinImageMap[markerType + 1],
       map,
     });
-  };
 
   // 현재 클릭된 좌표의 마커 생성
   const displayClickedMarker = (map: TMap) => {
@@ -70,17 +70,17 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
     setClickedMarker(marker);
   };
 
-  //coordinates를 받아서 marker를 생성하고, marker를 markers 배열에 추가
+  // coordinates를 받아서 marker를 생성하고, marker를 markers 배열에 추가
   const createMarkers = (map: TMap) => {
     let markerType = -1;
     let currentTopicId = '-1';
 
-    let newMarkers = coordinates.map((coordinate: any) => {
+    const newMarkers = coordinates.map((coordinate: any) => {
       if (currentTopicId !== coordinate.topicId) {
         markerType = (markerType + 1) % 7;
         currentTopicId = coordinate.topicId;
       }
-      let marker = createMarker(coordinate, map, markerType);
+      const marker = createMarker(coordinate, map, markerType);
       marker.id = String(coordinate.id);
       return marker;
     });
@@ -112,7 +112,7 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
         };" >${coordinate.pinName}</div>`,
         offset: new Tmapv3.Point(0, -60),
         type: 2,
-        map: map,
+        map,
       });
       return infoWindow;
     });
@@ -145,6 +145,6 @@ const MarkerProvider = ({ children }: Props): JSX.Element => {
       {children}
     </MarkerContext.Provider>
   );
-};
+}
 
 export default MarkerProvider;

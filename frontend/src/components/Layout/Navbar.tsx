@@ -1,24 +1,25 @@
 import { useContext } from 'react';
-import { css, styled } from 'styled-components';
-import useNavigator from '../../hooks/useNavigator';
-import Flex from '../common/Flex';
-import Button from '../common/Button';
-import Space from '../common/Space';
-import Home from '../../assets/nav_home.svg';
-import SeeTogether from '../../assets/nav_seeTogether.svg';
-import Favorite from '../../assets/nav_favorite.svg';
-import Profile from '../../assets/nav_profile.svg';
+import { styled } from 'styled-components';
+
 import AddMapOrPin from '../../assets/nav_addMapOrPin.svg';
-import FocusHome from '../../assets/nav_home_focus.svg';
-import FocusSeeTogether from '../../assets/nav_seeTogether_focus.svg';
-import FocusFavorite from '../../assets/nav_favorite_focus.svg';
 import FocusAddMapOrPin from '../../assets/nav_addMapOrPin_focus.svg';
+import Favorite from '../../assets/nav_favorite.svg';
+import FocusFavorite from '../../assets/nav_favorite_focus.svg';
+import Home from '../../assets/nav_home.svg';
+import FocusHome from '../../assets/nav_home_focus.svg';
+import Profile from '../../assets/nav_profile.svg';
 import FocusProfile from '../../assets/nav_profile_focus.svg';
-import Modal from '../Modal';
+import SeeTogether from '../../assets/nav_seeTogether.svg';
+import FocusSeeTogether from '../../assets/nav_seeTogether_focus.svg';
 import {
   NavbarHighlightKeys,
   NavbarHighlightsContext,
 } from '../../context/NavbarHighlightsContext';
+import useNavigator from '../../hooks/useNavigator';
+import Button from '../common/Button';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Modal from '../Modal';
 import NavbarItem from './NavbarItem';
 
 interface NavBarProps {
@@ -60,25 +61,23 @@ const NAV_ITEMS: NavbarItemProps[] = [
   },
 ];
 
-const Navbar = ({ $layoutWidth }: NavBarProps) => {
+function Navbar({ $layoutWidth }: NavBarProps) {
   const { routingHandlers } = useNavigator();
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
   return (
     <>
       <Wrapper $layoutWidth={$layoutWidth}>
-        {NAV_ITEMS.map((item) => {
-          return (
-            <NavbarItem
-              key={item.key}
-              label={item.label}
-              icon={item.icon}
-              focusIcon={item.focusIcon}
-              isHighlighted={navbarHighlights[item.key]}
-              onClick={() => routingHandlers[item.key]()}
-              $layoutWidth={$layoutWidth}
-            />
-          );
-        })}
+        {NAV_ITEMS.map((item) => (
+          <NavbarItem
+            key={item.key}
+            label={item.label}
+            icon={item.icon}
+            focusIcon={item.focusIcon}
+            isHighlighted={navbarHighlights[item.key]}
+            onClick={() => routingHandlers[item.key]()}
+            $layoutWidth={$layoutWidth}
+          />
+        ))}
       </Wrapper>
 
       <Modal
@@ -93,7 +92,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
         <Flex $justifyContent="center" width="100%">
           <RouteButton
             variant="primary"
-            onClick={routingHandlers['newTopic']}
+            onClick={routingHandlers.newTopic}
             tabIndex={10}
           >
             지도 추가하기
@@ -101,7 +100,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
           <Space size={4} />
           <RouteButton
             variant="primary"
-            onClick={routingHandlers['newPin']}
+            onClick={routingHandlers.newPin}
             tabIndex={10}
           >
             핀 추가하기
@@ -110,7 +109,7 @@ const Navbar = ({ $layoutWidth }: NavBarProps) => {
       </Modal>
     </>
   );
-};
+}
 
 const Wrapper = styled.nav<{
   $layoutWidth: '100vw' | '372px';

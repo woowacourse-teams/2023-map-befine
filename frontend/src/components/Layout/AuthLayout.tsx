@@ -1,4 +1,5 @@
 import { ReactNode, useEffect } from 'react';
+
 import useNavigator from '../../hooks/useNavigator';
 
 interface RedirectLayoutProps {
@@ -7,19 +8,17 @@ interface RedirectLayoutProps {
   to?: string;
 }
 
-const getUserTokenInLocalStorage = () => {
-  return localStorage.getItem('userToken');
-};
+const getUserTokenInLocalStorage = () => localStorage.getItem('userToken');
 
-const AuthLayout = ({
+function AuthLayout({
   children,
   withAuth,
   to = '/askLogin',
-}: RedirectLayoutProps) => {
+}: RedirectLayoutProps) {
   const { routePage } = useNavigator();
 
   useEffect(() => {
-    let curAuth: boolean = getUserTokenInLocalStorage() === null ? false : true;
+    const curAuth: boolean = getUserTokenInLocalStorage() !== null;
 
     if (withAuth) {
       if (!curAuth) routePage(to);
@@ -31,6 +30,6 @@ const AuthLayout = ({
   });
 
   return <>{children}</>;
-};
+}
 
 export default AuthLayout;

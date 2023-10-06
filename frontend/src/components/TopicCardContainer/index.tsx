@@ -1,13 +1,14 @@
-import { styled } from 'styled-components';
-import Flex from '../common/Flex';
-import Text from '../common/Text';
-import Box from '../common/Box';
-import Space from '../common/Space';
 import { Fragment, useEffect, useState } from 'react';
-import { TopicCardProps } from '../../types/Topic';
-import useKeyDown from '../../hooks/useKeyDown';
-import TopicCard from '../TopicCard';
+import { styled } from 'styled-components';
+
 import useGet from '../../apiHooks/useGet';
+import useKeyDown from '../../hooks/useKeyDown';
+import { TopicCardProps } from '../../types/Topic';
+import Box from '../common/Box';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Text from '../common/Text';
+import TopicCard from '../TopicCard';
 
 interface TopicCardContainerProps {
   url: string;
@@ -16,12 +17,12 @@ interface TopicCardContainerProps {
   routeWhenSeeAll: () => void;
 }
 
-const TopicCardContainer = ({
+function TopicCardContainer({
   url,
   containerTitle,
   containerDescription,
   routeWhenSeeAll,
-}: TopicCardContainerProps) => {
+}: TopicCardContainerProps) {
   const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLSpanElement>();
   const { fetchGet } = useGet();
@@ -81,8 +82,8 @@ const TopicCardContainer = ({
 
       <TopicsWrapper>
         {topics &&
-          topics.map((topic, index) => {
-            return (
+          topics.map(
+            (topic, index) =>
               index < 6 && (
                 <Fragment key={topic.id}>
                   <TopicCard
@@ -99,13 +100,12 @@ const TopicCardContainer = ({
                     getTopicsFromServer={setTopicsFromServer}
                   />
                 </Fragment>
-              )
-            );
-          })}
+              ),
+          )}
       </TopicsWrapper>
     </section>
   );
-};
+}
 
 const PointerText = styled(Text)`
   cursor: pointer;

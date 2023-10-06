@@ -1,10 +1,11 @@
 import { styled } from 'styled-components';
+
+import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Input from '../common/Input';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import Textarea from '../common/Textarea';
-import Box from '../common/Box';
 
 interface InputContainerProps {
   tagType: 'input' | 'textarea';
@@ -25,7 +26,7 @@ interface InputContainerProps {
   maxLength?: number;
 }
 
-const InputContainer = ({
+function InputContainer({
   tagType,
   containerTitle,
   isRequired,
@@ -38,7 +39,7 @@ const InputContainer = ({
   readOnly,
   autoFocus,
   maxLength,
-}: InputContainerProps) => {
+}: InputContainerProps) {
   const onChangeUserInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -107,7 +108,7 @@ const InputContainer = ({
       <ErrorText>{errorMessage}</ErrorText>
     </>
   );
-};
+}
 const ErrorText = styled.span`
   display: block;
   min-height: 20px;

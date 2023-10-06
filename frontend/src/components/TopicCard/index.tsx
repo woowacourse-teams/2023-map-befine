@@ -1,11 +1,6 @@
-import { styled } from 'styled-components';
-import Text from '../common/Text';
-import useNavigator from '../../hooks/useNavigator';
-import Box from '../common/Box';
-import Image from '../common/Image';
 import { SyntheticEvent, useContext, useState } from 'react';
-import Space from '../common/Space';
-import Flex from '../common/Flex';
+import { styled } from 'styled-components';
+
 import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
 import FavoriteNotFilledSVG from '../../assets/favoriteBtn_notFilled.svg';
 import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
@@ -13,12 +8,18 @@ import SeeTogetherNotFilledSVG from '../../assets/seeTogetherBtn_notFilled.svg';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import AddSeeTogether from '../AddSeeTogether';
-import AddFavorite from '../AddFavorite';
-import { TopicCardProps } from '../../types/Topic';
-import useKeyDown from '../../hooks/useKeyDown';
 import { ModalContext } from '../../context/ModalContext';
+import useKeyDown from '../../hooks/useKeyDown';
+import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
+import { TopicCardProps } from '../../types/Topic';
+import AddFavorite from '../AddFavorite';
+import AddSeeTogether from '../AddSeeTogether';
+import Box from '../common/Box';
+import Flex from '../common/Flex';
+import Image from '../common/Image';
+import Space from '../common/Space';
+import Text from '../common/Text';
 
 interface OnClickDesignatedProps {
   topicId: number;
@@ -31,7 +32,7 @@ interface TopicCardExtendedProps extends TopicCardProps {
   getTopicsFromServer?: () => void;
 }
 
-const TopicCard = ({
+function TopicCard({
   cardType,
   id,
   image,
@@ -44,7 +45,7 @@ const TopicCard = ({
   isBookmarked,
   onClickDesignated,
   getTopicsFromServer,
-}: TopicCardExtendedProps) => {
+}: TopicCardExtendedProps) {
   const { routePage } = useNavigator();
   const { closeModal } = useContext(ModalContext);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
@@ -175,7 +176,7 @@ const TopicCard = ({
       </Flex>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.li`
   width: 332px;

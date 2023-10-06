@@ -1,4 +1,5 @@
-import { StoryObj, Meta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
+
 import Box from '.';
 
 const meta = {
@@ -141,7 +142,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-//make a Default has background Color
+// make a Default has background Color
 
 export const Default: Story = {
   args: {

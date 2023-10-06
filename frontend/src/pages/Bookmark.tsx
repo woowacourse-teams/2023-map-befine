@@ -1,20 +1,21 @@
+import { lazy, Suspense } from 'react';
 import { styled } from 'styled-components';
+
+import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
 import Box from '../components/common/Box';
-import Text from '../components/common/Text';
-import { FULLSCREEN } from '../constants';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
-import { Suspense, lazy } from 'react';
+import Text from '../components/common/Text';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import useNavigator from '../hooks/useNavigator';
-import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
+import { FULLSCREEN } from '../constants';
 import { setFullScreenResponsive } from '../constants/responsive';
+import useNavigator from '../hooks/useNavigator';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
-const Bookmark = () => {
+function Bookmark() {
   const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('favorite');
@@ -63,7 +64,7 @@ const Bookmark = () => {
       </Suspense>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.article`
   width: 1036px;

@@ -1,9 +1,10 @@
 import { styled } from 'styled-components';
+
+import { TagProps } from '../../types/Tag';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
 import Tag from '../Tag';
-import { TagProps } from '../../types/Tag';
 
 export interface MergeOrSeeTogetherProps {
   tags: TagProps[];
@@ -12,13 +13,13 @@ export interface MergeOrSeeTogetherProps {
   onClickClose: () => void;
 }
 
-const PullPin = ({
+function PullPin({
   tags,
   confirmButton,
   onClickConfirm,
   onClickClose,
-}: MergeOrSeeTogetherProps) => {
-  if (tags.length === 0) return <></>;
+}: MergeOrSeeTogetherProps) {
+  if (tags.length === 0) return null;
 
   return (
     <Wrapper>
@@ -39,9 +40,9 @@ const PullPin = ({
             <Tag tabIndex={6}>외 {String(tags.length - 5)}개</Tag>
           </>
         ) : (
-          tags.map((tag, index) => (
+          tags.map((tag) => (
             <Tag
-              key={`${index}-${tag.title}`}
+              key={`${tag.id}-${tag.title}`}
               tabIndex={1}
               aria-label={
                 confirmButton === '같이보기'
@@ -85,7 +86,7 @@ const PullPin = ({
       <Space size={4} />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.section`
   width: 332px;

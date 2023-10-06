@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
