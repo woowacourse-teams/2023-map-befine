@@ -14,13 +14,12 @@ import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.List;
 
 @DataJpaTest
 class PinImageRepositoryTest {
@@ -62,7 +61,7 @@ class PinImageRepositoryTest {
         pinImageRepository.deleteById(pinImageId);
 
         //then
-        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pinImageId))
+        assertThat(pinImageRepository.findById(pinImageId))
                 .isEmpty();
     }
 
@@ -81,7 +80,7 @@ class PinImageRepositoryTest {
         pinImageRepository.deleteAllByPinId(pin.getId());
 
         //then
-        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pin.getId()))
+        assertThat(pinImageRepository.findById(pin.getId()))
                 .isEmpty();
     }
 
@@ -102,9 +101,9 @@ class PinImageRepositoryTest {
         pinImageRepository.deleteAllByPinIds(List.of(pin.getId(), otherPin.getId()));
 
         //then
-        assertThat(pinImageRepository.findByIdAndIsDeletedFalse(pin.getId()))
+        assertThat(pinImageRepository.findById(pin.getId()))
                 .isEmpty();
-        assertThat(pinImageRepository.findAllByPinIdAndIsDeletedFalse(otherPin.getId()))
+        assertThat(pinImageRepository.findAllByPinId(otherPin.getId()))
                 .isEmpty();
     }
 

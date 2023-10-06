@@ -78,7 +78,9 @@ public class TopicController {
 
     @LoginRequired
     @PostMapping("/{topicId}/copy")
-    public ResponseEntity<Void> copyPin(AuthMember member, @PathVariable Long topicId, @RequestParam List<Long> pinIds) {
+    public ResponseEntity<Void> copyPin(
+            AuthMember member, @PathVariable Long topicId, @RequestParam List<Long> pinIds
+    ) {
         topicCommandService.copyPin(member, topicId, pinIds);
 
         return ResponseEntity.ok().build();
@@ -137,19 +139,20 @@ public class TopicController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/bests")
+    public ResponseEntity<List<TopicResponse>> findAllBestTopics(AuthMember authMember) {
+        List<TopicResponse> responses = topicQueryService.findAllBestTopics(authMember);
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @Deprecated(since = "2023.10.06")
     @LoginRequired
     @DeleteMapping("/{topicId}")
     public ResponseEntity<Void> delete(AuthMember member, @PathVariable Long topicId) {
         topicCommandService.delete(member, topicId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/bests")
-    public ResponseEntity<List<TopicResponse>> findAllBestTopics(AuthMember authMember) {
-        List<TopicResponse> responses = topicQueryService.findAllBestTopics(authMember);
-
-        return ResponseEntity.ok(responses);
     }
 
 }

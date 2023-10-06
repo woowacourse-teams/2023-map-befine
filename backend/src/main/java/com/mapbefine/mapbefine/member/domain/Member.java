@@ -104,10 +104,14 @@ public class Member extends BaseTimeEntity {
                 .substring(0, DEFAULT_NICKNAME_SUFFIX_LENGTH);
     }
 
-    public void update(
+    public void updateNickName(
             String nickName
     ) {
         memberInfo = memberInfo.createUpdatedMemberInfo(nickName);
+    }
+
+    public void updateStatus(Status status) {
+        memberInfo = memberInfo.createUpdatedMemberInfo(status);
     }
 
     public void addTopic(Topic topic) {
@@ -146,15 +150,5 @@ public class Member extends BaseTimeEntity {
 
     public boolean isNormalStatus() {
         return memberInfo.getStatus() == Status.NORMAL;
-    }
-
-    public void updateStatus(Status status) {
-        memberInfo = MemberInfo.of(
-                memberInfo.getNickName(),
-                memberInfo.getEmail(),
-                memberInfo.getImageUrl(),
-                memberInfo.getRole(),
-                status
-        );
     }
 }

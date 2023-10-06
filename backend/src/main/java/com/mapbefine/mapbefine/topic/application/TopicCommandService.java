@@ -22,14 +22,13 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
@@ -94,7 +93,9 @@ public class TopicCommandService {
         }
 
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + memberId));
+                .orElseThrow(
+                        () -> new NoSuchElementException("findCreatorByAuthMember; member not found; id=" + memberId)
+                );
     }
 
     private void copyPinsToTopic(
@@ -160,7 +161,7 @@ public class TopicCommandService {
     }
 
     private List<Topic> findAllTopics(List<Long> topicIds) {
-        List<Topic> findTopics = topicRepository.findByIdInAndIsDeletedFalse(topicIds);
+        List<Topic> findTopics = topicRepository.findByIdIn(topicIds);
 
         if (topicIds.size() != findTopics.size()) {
             throw new TopicBadRequestException(ILLEGAL_TOPIC_ID);
@@ -196,7 +197,7 @@ public class TopicCommandService {
     }
 
     private Topic findTopic(Long topicId) {
-        return topicRepository.findByIdAndIsDeletedFalse(topicId)
+        return topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicBadRequestException(ILLEGAL_TOPIC_ID));
     }
 
@@ -233,15 +234,17 @@ public class TopicCommandService {
         throw new TopicForbiddenException(FORBIDDEN_TOPIC_UPDATE);
     }
 
+    @Deprecated(since = "2023.10.06")
     public void delete(AuthMember member, Long topicId) {
         Topic topic = findTopic(topicId);
-
         validateDeleteAuth(member, topic);
 
+        /// TODO: 2023/10/06 연관관계 다 삭제해야 하는데, 관리자 API와 중복 로직이며 관리자 API에서만 사용됨
         pinRepository.deleteAllByTopicId(topicId);
         topicRepository.deleteById(topicId);
     }
 
+    @Deprecated(since = "2023.10.06")
     private void validateDeleteAuth(AuthMember member, Topic topic) {
         if (member.canDelete(topic)) {
             return;

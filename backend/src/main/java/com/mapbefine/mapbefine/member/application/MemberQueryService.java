@@ -66,7 +66,7 @@ public class MemberQueryService {
     public List<TopicResponse> findAllTopicsInBookmark(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        List<Topic> bookMarkedTopics = topicRepository.findTopicsByBookmarksMemberIdAndIsDeletedFalse(
+        List<Topic> bookMarkedTopics = topicRepository.findTopicsByBookmarksMemberId(
                 authMember.getMemberId());
         return bookMarkedTopics.stream()
                 .map(topic -> TopicResponse.from(
@@ -90,7 +90,6 @@ public class MemberQueryService {
 
     public List<TopicResponse> findAllTopicsInAtlas(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
-
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
         return topicsInAtlas.stream()
@@ -107,7 +106,6 @@ public class MemberQueryService {
     }
 
     public List<TopicResponse> findMyAllTopics(AuthMember authMember) {
-
         Long memberId = authMember.getMemberId();
         Member member = findMemberById(memberId);
 

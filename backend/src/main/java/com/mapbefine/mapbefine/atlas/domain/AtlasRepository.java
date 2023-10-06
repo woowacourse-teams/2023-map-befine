@@ -7,7 +7,10 @@ import org.springframework.stereotype.Repository;
 public interface AtlasRepository extends JpaRepository<Atlas, Long> {
 
     boolean existsByMemberIdAndTopicId(Long memberId, Long topicId);
+
     void deleteByMemberIdAndTopicId(Long memberId, Long topicId);
 
     void deleteAllByMemberId(Long memberId);
+
+    void deleteAllByTopicId(Long topicId);
 }

@@ -1,11 +1,9 @@
 package com.mapbefine.mapbefine.admin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.admin.dto.AdminMemberDetailResponse;
 import com.mapbefine.mapbefine.admin.dto.AdminMemberResponse;
-import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
@@ -14,7 +12,6 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -72,6 +69,7 @@ class AdminQueryServiceTest {
                 .ignoringFields("updatedAt")
                 .isEqualTo(AdminMemberDetailResponse.of(member, List.of(topic), List.of(pin)));
     }
+    
     @Test
     @DisplayName("모든 사용자와 관련된 세부 정보를 모두 조회할 수 있다.")
     void findAllMemberDetails_Success() {

@@ -26,7 +26,7 @@ public class MemberCommandService {
 
         validateNicknameDuplicated(nickName);
 
-        member.update(nickName);
+        member.updateNickName(nickName);
     }
 
     private Member findMemberById(Long memberId) {
