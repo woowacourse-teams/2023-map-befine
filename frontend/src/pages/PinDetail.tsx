@@ -1,23 +1,24 @@
+import { useContext, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { styled } from 'styled-components';
+
+import { getApi } from '../apis/getApi';
+import { postApi } from '../apis/postApi';
+import Box from '../components/common/Box';
+import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import { useContext, useEffect, useState } from 'react';
-import { PinProps } from '../types/Pin';
-import { getApi } from '../apis/getApi';
-import { useSearchParams } from 'react-router-dom';
-import Box from '../components/common/Box';
-import UpdatedPinDetail from './UpdatedPinDetail';
-import useFormValues from '../hooks/useFormValues';
-import { ModifyPinFormProps } from '../types/FormValues';
-import useToast from '../hooks/useToast';
-import Button from '../components/common/Button';
 import Modal from '../components/Modal';
-import { styled } from 'styled-components';
-import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
-import { postApi } from '../apis/postApi';
 import PinImageContainer from '../components/PinImageContainer';
+import { ModalContext } from '../context/ModalContext';
 import useCompressImage from '../hooks/useCompressImage';
+import useFormValues from '../hooks/useFormValues';
+import useToast from '../hooks/useToast';
+import { ModifyPinFormProps } from '../types/FormValues';
+import { PinProps } from '../types/Pin';
+import UpdatedPinDetail from './UpdatedPinDetail';
 
 interface PinDetailProps {
   width: '372px' | '100vw';
@@ -28,12 +29,12 @@ interface PinDetailProps {
 
 const userToken = localStorage.getItem('userToken');
 
-const PinDetail = ({
+function PinDetail({
   width,
   pinId,
   isEditPinDetail,
   setIsEditPinDetail,
-}: PinDetailProps) => {
+}: PinDetailProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinProps | null>(null);
   const { showToast } = useToast();
@@ -239,7 +240,7 @@ const PinDetail = ({
       </Modal>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.section<{
   $layoutWidth: '372px' | '100vw';

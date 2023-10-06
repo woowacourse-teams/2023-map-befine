@@ -2,7 +2,7 @@ import { DEFAULT_PROD_URL } from '../constants';
 import withTokenRefresh from './utils';
 
 export const getApi = async <T>(url: string) => {
-  return await withTokenRefresh(async () => {
+  const data = await withTokenRefresh(async () => {
     const apiUrl = `${DEFAULT_PROD_URL + url}`;
     const userToken = localStorage.getItem('userToken');
     const headers: any = {
@@ -10,7 +10,7 @@ export const getApi = async <T>(url: string) => {
     };
 
     if (userToken) {
-      headers['Authorization'] = `Bearer ${userToken}`;
+      headers.Authorization = `Bearer ${userToken}`;
     }
 
     const response = await fetch(apiUrl, { method: 'GET', headers });
@@ -22,4 +22,6 @@ export const getApi = async <T>(url: string) => {
     const responseData: T = await response.json();
     return responseData;
   });
+
+  return data;
 };

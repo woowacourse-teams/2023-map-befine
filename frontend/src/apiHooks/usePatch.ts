@@ -35,6 +35,8 @@ const usePatch = () => {
 
       if (isThrow) throw e;
     }
+
+    return null;
   };
 
   return { fetchPatch };

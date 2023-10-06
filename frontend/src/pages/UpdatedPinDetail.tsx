@@ -1,15 +1,16 @@
+import { SetURLSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+
+import usePut from '../apiHooks/usePut';
+import { putApi } from '../apis/putApi';
+import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import { putApi } from '../apis/putApi';
-import { SetURLSearchParams } from 'react-router-dom';
-import { ModifyPinFormProps } from '../types/tmap';
 import InputContainer from '../components/InputContainer';
-import { hasErrorMessage, hasNullValue } from '../validations';
 import useToast from '../hooks/useToast';
-import Button from '../components/common/Button';
-import styled from 'styled-components';
-import usePut from '../apiHooks/usePut';
+import { ModifyPinFormProps } from '../types/FormValues';
+import { hasErrorMessage, hasNullValue } from '../validations';
 
 interface UpdatedPinDetailProps {
   searchParams: URLSearchParams;
@@ -26,7 +27,7 @@ interface UpdatedPinDetailProps {
   ) => void;
 }
 
-const UpdatedPinDetail = ({
+function UpdatedPinDetail({
   searchParams,
   pinId,
   formValues,
@@ -35,7 +36,7 @@ const UpdatedPinDetail = ({
   setIsEditing,
   updatePinDetailAfterEditing,
   onChangeInput,
-}: UpdatedPinDetailProps) => {
+}: UpdatedPinDetailProps) {
   const { showToast } = useToast();
   const { fetchPut } = usePut();
 
@@ -46,7 +47,7 @@ const UpdatedPinDetail = ({
   };
 
   const onClickUpdatePin = async () => {
-    if (hasErrorMessage(errorMessages) || hasNullValue(formValues, 'images')) {
+    if (hasErrorMessage(errorMessages) || hasNullValue(formValues)) {
       showToast('error', '입력하신 항목들을 다시 한 번 확인해주세요.');
       return;
     }
@@ -98,7 +99,7 @@ const UpdatedPinDetail = ({
       <InputContainer
         tagType="input"
         containerTitle="장소 이름"
-        isRequired={true}
+        isRequired
         name="name"
         value={formValues.name}
         placeholder="50글자 이내로 장소의 이름을 입력해주세요."
@@ -114,7 +115,7 @@ const UpdatedPinDetail = ({
       <InputContainer
         tagType="textarea"
         containerTitle="장소 설명"
-        isRequired={true}
+        isRequired
         name="description"
         value={formValues.description}
         placeholder="1000자 이내로 장소에 대한 의견을 남겨주세요."
@@ -140,7 +141,7 @@ const UpdatedPinDetail = ({
       <Space size={8} />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   margin: 0 auto;

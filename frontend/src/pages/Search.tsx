@@ -1,17 +1,18 @@
-import styled from 'styled-components';
-import { setFullScreenResponsive } from '../constants/responsive';
-import Space from '../components/common/Space';
-import SearchBar from '../components/SearchBar/SearchBar';
 import { Fragment, useEffect, useState } from 'react';
-import Flex from '../components/common/Flex';
-import Box from '../components/common/Box';
-import Text from '../components/common/Text';
-import TopicCard from '../components/TopicCard';
-import { TopicCardProps } from '../types/Topic';
 import { useLocation } from 'react-router-dom';
-import useGet from '../apiHooks/useGet';
+import styled from 'styled-components';
 
-const Search = () => {
+import useGet from '../apiHooks/useGet';
+import Box from '../components/common/Box';
+import Flex from '../components/common/Flex';
+import Space from '../components/common/Space';
+import Text from '../components/common/Text';
+import SearchBar from '../components/SearchBar/SearchBar';
+import TopicCard from '../components/TopicCard';
+import { setFullScreenResponsive } from '../constants/responsive';
+import { TopicCardProps } from '../types/Topic';
+
+function Search() {
   const { fetchGet } = useGet();
 
   const [originalTopics, setOriginalTopics] = useState<TopicCardProps[] | null>(
@@ -83,8 +84,7 @@ const Search = () => {
           <Flex $alignItems="center">
             <Space size={1} />
             <Text color="black" $fontSize="default" $fontWeight="normal">
-              '{searchQuery}'에 대한
-              {'검색 결과가 없습니다.'}
+              {`'${searchQuery}'에 대한 검색 결과가 없습니다.`}
             </Text>
             <Space size={4} />
           </Flex>
@@ -112,7 +112,7 @@ const Search = () => {
       )}
     </Wrapper>
   );
-};
+}
 
 export default Search;
 

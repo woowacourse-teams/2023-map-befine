@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { keyframes, styled } from 'styled-components';
-import useNavigator from '../hooks/useNavigator';
-import { DEFAULT_PROD_URL } from '../constants';
+
 import { getLoginApi } from '../apis/getLoginApi';
+import { DEFAULT_PROD_URL } from '../constants';
+import useNavigator from '../hooks/useNavigator';
 
 // const API_URL =
 //   process.env.NODE_ENV === 'production'
@@ -19,11 +20,11 @@ export const handleOAuthKakao = async (code: string) => {
     localStorage.setItem('user', JSON.stringify(data.member));
     location.reload();
   } catch (error) {
-    window.alert('로그인에 실패하였습니다. 이메일 수집을 동의해주세요.');
+    window.alert('로그인에 실패하였습니다. 로그아웃 후 다시 진행해주세요.');
   }
 };
 
-const KakaoRedirect = () => {
+function KakaoRedirect() {
   const { routePage } = useNavigator();
 
   const routerLocation = useLocation();
@@ -46,7 +47,7 @@ const KakaoRedirect = () => {
       <Loader />
     </KakaoRedirectPageWrapper>
   );
-};
+}
 
 export default KakaoRedirect;
 

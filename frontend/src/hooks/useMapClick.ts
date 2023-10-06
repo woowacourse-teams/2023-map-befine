@@ -11,13 +11,13 @@ export default function useMapClick(map: TMap | null) {
   const clickHandler = async (evt: evt) => {
     try {
       const roadName = await getAddressFromServer(
-        evt.data.lngLat._lat,
-        evt.data.lngLat._lng,
+        evt.data.lngLat.lat,
+        evt.data.lngLat.lng,
       );
 
       setClickedCoordinate({
-        latitude: evt.data.lngLat._lat,
-        longitude: evt.data.lngLat._lng,
+        latitude: evt.data.lngLat.lat,
+        longitude: evt.data.lngLat.lng,
         address: roadName,
       });
     } catch (e) {

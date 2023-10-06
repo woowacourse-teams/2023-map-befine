@@ -1,14 +1,15 @@
 import { styled } from 'styled-components';
+
 import NotFoundIcon from '../assets/NotFoundIcon.svg';
-import useNavigator from '../hooks/useNavigator';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { FULLSCREEN } from '../constants';
+import useNavigator from '../hooks/useNavigator';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 
-const NotFound = () => {
+function NotFound() {
   const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
 
@@ -39,7 +40,7 @@ const NotFound = () => {
       </Flex>
     </NotFoundContainer>
   );
-};
+}
 
 const NotFoundContainer = styled(Flex)`
   flex-direction: row;
@@ -49,7 +50,7 @@ const NotFoundContainer = styled(Flex)`
 `;
 
 const NotFoundButton = styled(Button)`
-  font-weight: ${({ theme }) => theme.fontWeight['bold']};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
 
   &:hover {
     color: ${({ theme }) => theme.color.white};

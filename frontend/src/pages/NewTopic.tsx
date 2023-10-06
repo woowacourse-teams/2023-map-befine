@@ -1,28 +1,29 @@
 import { useContext, useEffect, useState } from 'react';
-import Text from '../components/common/Text';
-import Flex from '../components/common/Flex';
-import Space from '../components/common/Space';
-import Button from '../components/common/Button';
-import useNavigator from '../hooks/useNavigator';
-import { NewTopicFormProps } from '../types/FormValues';
-import useFormValues from '../hooks/useFormValues';
 import { useLocation } from 'react-router-dom';
-import useToast from '../hooks/useToast';
-import InputContainer from '../components/InputContainer';
-import { hasErrorMessage, hasNullValue } from '../validations';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { LAYOUT_PADDING, SIDEBAR } from '../constants';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import { TagContext } from '../context/TagContext';
+import styled from 'styled-components';
+
 import usePost from '../apiHooks/usePost';
 import AuthorityRadioContainer from '../components/AuthorityRadioContainer';
-import styled from 'styled-components';
-import useCompressImage from '../hooks/useCompressImage';
+import Button from '../components/common/Button';
+import Flex from '../components/common/Flex';
+import Space from '../components/common/Space';
+import Text from '../components/common/Text';
+import InputContainer from '../components/InputContainer';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import { MarkerContext } from '../context/MarkerContext';
+import { TagContext } from '../context/TagContext';
+import useCompressImage from '../hooks/useCompressImage';
+import useFormValues from '../hooks/useFormValues';
+import useNavigator from '../hooks/useNavigator';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import useToast from '../hooks/useToast';
+import { NewTopicFormProps } from '../types/FormValues';
+import { hasErrorMessage, hasNullValue } from '../validations';
 
 type NewTopicFormValuesType = Omit<NewTopicFormProps, 'topics'>;
 
-const NewTopic = () => {
+function NewTopic() {
   const { routePage } = useNavigator();
   const { state: pulledPinIds } = useLocation();
   const { showToast } = useToast();
@@ -170,8 +171,7 @@ const NewTopic = () => {
         <Flex>
           {showImage && (
             <>
-              <ShowImage src={showImage} alt={`사진 이미지`} />{' '}
-              <Space size={2} />{' '}
+              <ShowImage src={showImage} alt="사진 이미지" /> <Space size={2} />{' '}
             </>
           )}
 
@@ -189,7 +189,7 @@ const NewTopic = () => {
         <InputContainer
           tagType="input"
           containerTitle="지도 이름"
-          isRequired={true}
+          isRequired
           name="name"
           value={formValues.name}
           placeholder="20자 이내로 지도의 이름을 입력해주세요."
@@ -204,7 +204,7 @@ const NewTopic = () => {
         <InputContainer
           tagType="textarea"
           containerTitle="한 줄 설명"
-          isRequired={true}
+          isRequired
           name="description"
           value={formValues.description}
           placeholder="100글자 이내로 지도에 대해서 설명해주세요."
@@ -251,7 +251,7 @@ const NewTopic = () => {
       </Wrapper>
     </form>
   );
-};
+}
 
 const Wrapper = styled(Flex)`
   margin: 0 auto;
