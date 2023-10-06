@@ -24,10 +24,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
+@Where(clause = "is_deleted = false")
 public class Pin extends BaseTimeEntity {
 
     @Id
@@ -100,6 +102,10 @@ public class Pin extends BaseTimeEntity {
 
     public void updatePinInfo(String name, String description) {
         pinInfo = PinInfo.of(name, description);
+    }
+
+    public void decreaseTopicPinCount() {
+        topic.decreasePinCount();
     }
 
     public void copyToTopic(Member creator, Topic topic) {

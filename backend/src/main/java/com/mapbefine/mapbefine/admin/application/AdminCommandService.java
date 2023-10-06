@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.admin.application;
 
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.PIN_NOT_FOUND;
 import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
 
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
@@ -11,14 +12,14 @@ import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -61,12 +62,15 @@ public class AdminCommandService {
         List<Long> pinIds = extractPinIdsByMember(member);
         Long memberId = member.getId();
 
-        pinImageRepository.deleteAllByPinIds(pinIds);
-        topicRepository.deleteAllByMemberId(memberId);
-        pinRepository.deleteAllByMemberId(memberId);
         permissionRepository.deleteAllByMemberId(memberId);
+        permissionRepository.flush();
         atlasRepository.deleteAllByMemberId(memberId);
+        atlasRepository.flush();
         bookmarkRepository.deleteAllByMemberId(memberId);
+        bookmarkRepository.flush();
+        pinImageRepository.deleteAllByPinIds(pinIds);
+        pinRepository.deleteAllByMemberId(memberId);
+        topicRepository.deleteAllByMemberId(memberId);
     }
 
     private Member findMemberById(Long id) {
@@ -82,7 +86,25 @@ public class AdminCommandService {
     }
 
     public void deleteTopic(Long topicId) {
+        Topic topic = findTopicById(topicId);
+        List<Long> pinIds = extractPinIdsByTopic(topic);
+
+        permissionRepository.deleteAllByTopicId(topicId);
+        permissionRepository.flush();
+        atlasRepository.deleteAllByTopicId(topicId);
+        atlasRepository.flush();
+        bookmarkRepository.deleteAllByTopicId(topicId);
+        bookmarkRepository.flush();
+        pinImageRepository.deleteAllByPinIds(pinIds);
+        pinRepository.deleteAllByTopicId(topicId);
         topicRepository.deleteById(topicId);
+    }
+
+    private List<Long> extractPinIdsByTopic(Topic topic) {
+        return topic.getPins()
+                .stream()
+                .map(Pin::getId)
+                .toList();
     }
 
     public void deleteTopicImage(Long topicId) {
@@ -91,12 +113,17 @@ public class AdminCommandService {
     }
 
     private Topic findTopicById(Long topicId) {
-        return topicRepository.findByIdAndIsDeletedFalse(topicId)
+        return topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicException.TopicNotFoundException(TOPIC_NOT_FOUND, List.of(topicId)));
     }
 
     public void deletePin(Long pinId) {
-        pinRepository.deleteById(pinId);
+        Pin pin = pinRepository.findById(pinId)
+                .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
+
+        pin.decreaseTopicPinCount();
+        pinImageRepository.deleteAllByPinId(pinId);
+        pinRepository.deleteById(pin.getId());
     }
 
     public void deletePinImage(Long pinImageId) {

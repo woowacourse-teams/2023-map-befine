@@ -27,13 +27,12 @@ import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
@@ -100,7 +99,7 @@ public class PinCommandService {
         if (Objects.isNull(topicId)) {
             throw new TopicBadRequestException(ILLEGAL_TOPIC_ID);
         }
-        return topicRepository.findByIdAndIsDeletedFalse(topicId)
+        return topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicBadRequestException(ILLEGAL_TOPIC_ID));
     }
 
@@ -146,7 +145,7 @@ public class PinCommandService {
     }
 
     private Pin findPin(Long pinId) {
-        return pinRepository.findByIdAndIsDeletedFalse(pinId)
+        return pinRepository.findById(pinId)
                 .orElseThrow(() -> new PinBadRequestException(ILLEGAL_PIN_ID));
     }
 
@@ -182,7 +181,7 @@ public class PinCommandService {
     }
 
     private PinImage findPinImage(Long pinImageId) {
-        return pinImageRepository.findByIdAndIsDeletedFalse(pinImageId)
+        return pinImageRepository.findById(pinImageId)
                 .orElseThrow(() -> new PinBadRequestException(ILLEGAL_PIN_IMAGE_ID));
     }
 

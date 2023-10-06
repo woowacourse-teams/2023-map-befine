@@ -113,6 +113,11 @@ public class MemberInfo {
         return MemberInfo.of(nickName, this.email, this.imageUrl.getImageUrl(), this.role, this.status);
     }
 
+    public MemberInfo createUpdatedMemberInfo(Status status) {
+
+        return MemberInfo.of(this.nickName, this.email, this.imageUrl.getImageUrl(), this.role, status);
+    }
+
     public String getImageUrl() {
         return imageUrl.getImageUrl();
     }

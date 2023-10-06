@@ -14,3 +14,6 @@ VALUES ('dummyTopic', 'https://map-befine-official.github.io/favicon.png', 'desc
         1L,
         now(), now(), now())
 ;
+
+INSERT INTO bookmark (member_id, topic_id)
+VALUES (1L, 1L);

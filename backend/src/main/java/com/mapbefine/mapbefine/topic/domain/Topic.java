@@ -25,10 +25,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
+@Where(clause = "is_deleted = false")
 public class Topic extends BaseTimeEntity {
 
     @Id
@@ -145,6 +147,10 @@ public class Topic extends BaseTimeEntity {
 
     public void removeImage() {
         this.topicInfo = topicInfo.removeImage();
+    }
+
+    public void decreasePinCount() {
+        pinCount--;
     }
 
     public void removeBookmark(Bookmark bookmark) {

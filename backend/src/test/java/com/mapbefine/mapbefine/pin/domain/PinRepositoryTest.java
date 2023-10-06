@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.pin.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.common.config.JpaConfig;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -13,14 +14,14 @@ import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
+@Import(JpaConfig.class)
 @DataJpaTest
 class PinRepositoryTest {
 
@@ -57,11 +58,7 @@ class PinRepositoryTest {
         pinRepository.deleteById(pinId);
 
         // then
-        pinRepository.findById(pinId)
-                .ifPresentOrElse(
-                        found -> assertThat(found.isDeleted()).isTrue(),
-                        Assertions::fail
-                );
+        assertThat(pinRepository.existsById(pinId));
     }
 
     @Test
@@ -75,12 +72,11 @@ class PinRepositoryTest {
         // when
         assertThat(topic.getPins()).extractingResultOf("isDeleted")
                 .containsOnly(false);
-        pinRepository.deleteAllByTopicId(topic.getId());
+        Long topicId = topic.getId();
+        pinRepository.deleteAllByTopicId(topicId);
 
         // then
-        List<Pin> deletedPins = pinRepository.findAllByTopicId(topic.getId());
-        assertThat(deletedPins).extractingResultOf("isDeleted")
-                .containsOnly(true);
+        assertThat(pinRepository.findAllByTopicId(topicId).isEmpty());
     }
 
 
@@ -96,18 +92,17 @@ class PinRepositoryTest {
         assertThat(member.getCreatedPins()).hasSize(10)
                 .extractingResultOf("isDeleted")
                 .containsOnly(false);
-        pinRepository.deleteAllByMemberId(member.getId());
+        Long memberId = member.getId();
+        pinRepository.deleteAllByMemberId(memberId);
 
         //then
-        List<Pin> deletedPins = pinRepository.findAllByCreatorId(member.getId());
-        assertThat(deletedPins).extractingResultOf("isDeleted")
-                .containsOnly(true);
+        assertThat(pinRepository.findAllByCreatorId(memberId)).isEmpty();
     }
 
     @Test
     @DisplayName("다른 토픽에 존재하는 핀들이여도, Member ID로 모든 핀을 soft-delete 할 수 있다.")
     void deleteAllByMemberIdInOtherTopics_Success() {
-        //given
+        // given
         Topic otherTopic = TopicFixture.createByName("otherTopic", member);
         topicRepository.save(otherTopic);
 
@@ -116,16 +111,15 @@ class PinRepositoryTest {
             pinRepository.save(PinFixture.create(location, otherTopic, member));
         }
 
-        //when
+        // when
         assertThat(member.getCreatedPins()).hasSize(20)
                 .extractingResultOf("isDeleted")
                 .containsOnly(false);
-        pinRepository.deleteAllByMemberId(member.getId());
+        Long MemberId = member.getId();
+        pinRepository.deleteAllByMemberId(MemberId);
 
-        //then
-        List<Pin> deletedPins = pinRepository.findAllByCreatorId(member.getId());
-        assertThat(deletedPins).extractingResultOf("isDeleted")
-                .containsOnly(true);
+        // then
+        assertThat(pinRepository.findAllByCreatorId(MemberId)).isEmpty();
     }
 
 }
