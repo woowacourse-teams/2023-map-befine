@@ -12,7 +12,6 @@ export default function Banner() {
       $tabBoxPosition="bottom"
       swipeable
       swiper
-      $tabColor="#454545"
       autoplay
     >
       <Tab label="붕어빵 지도">

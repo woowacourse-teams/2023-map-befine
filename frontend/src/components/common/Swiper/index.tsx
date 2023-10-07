@@ -143,9 +143,9 @@ function Swiper({
       </TabSectionWrapper>
 
       {swiper && (
-        <SwiperButtonWrapper>
-          <SwiperLeftBtnSVG onClick={decreasePos} />
-          <SwiperRightBtnSVG onClick={increasePos} />
+        <SwiperButtonWrapper $tabBoxHeight={$tabBoxHeight}>
+          <SwiperLeftBtnSVG onClick={decreasePos} cursor="pointer" />
+          <SwiperRightBtnSVG onClick={increasePos} cursor="pointer" />
         </SwiperButtonWrapper>
       )}
 
@@ -313,27 +313,14 @@ const TabBox = styled.button<{
     `}
 `;
 
-const SwiperButtonWrapper = styled.div`
+const SwiperButtonWrapper = styled.div<{ $tabBoxHeight: number }>`
   width: 100%;
   display: flex;
   justify-content: space-between;
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-`;
-
-const SwiperButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-  color: rgba(149, 149, 149, 0.8);
-  border: 1px solid rgba(149, 149, 149, 0.8);
-  font-size: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
+  top: ${({ $tabBoxHeight }) => `calc(50% + ${$tabBoxHeight}px / 2)`};
+  transform: ${({ $tabBoxHeight }) =>
+    `translateY(calc(-50% - ${$tabBoxHeight}px))`};
 `;
 
 const AutoplayButtonWrapper = styled.div`
