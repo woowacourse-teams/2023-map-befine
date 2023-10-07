@@ -7,6 +7,8 @@ import { TopicCardProps } from '../../types/Topic';
 import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
+import Swiper from '../common/Swiper';
+import Tab from '../common/Swiper/Tab';
 import Text from '../common/Text';
 import TopicCard from '../TopicCard';
 
@@ -80,29 +82,41 @@ function TopicCardContainer({
 
       <Space size={4} />
 
-      <TopicsWrapper>
+      <Swiper
+        as="ul"
+        width={1140}
+        height={300}
+        $elementsOneTab={5}
+        swiper
+        swipeable
+        $isNotTabBoxShow
+      >
         {topics &&
           topics.map(
             (topic, index) =>
-              index < 6 && (
-                <Fragment key={topic.id}>
-                  <TopicCard
-                    cardType="default"
-                    id={topic.id}
-                    image={topic.image}
-                    name={topic.name}
-                    creator={topic.creator}
-                    updatedAt={topic.updatedAt}
-                    pinCount={topic.pinCount}
-                    bookmarkCount={topic.bookmarkCount}
-                    isInAtlas={topic.isInAtlas}
-                    isBookmarked={topic.isBookmarked}
-                    getTopicsFromServer={setTopicsFromServer}
-                  />
-                </Fragment>
+              index < 10 && (
+                <Tab label={`${index}`} key={topic.id}>
+                  <Flex>
+                    <CustomSpace />
+                    <TopicCard
+                      cardType="default"
+                      id={topic.id}
+                      image={topic.image}
+                      name={topic.name}
+                      creator={topic.creator}
+                      updatedAt={topic.updatedAt}
+                      pinCount={topic.pinCount}
+                      bookmarkCount={topic.bookmarkCount}
+                      isInAtlas={topic.isInAtlas}
+                      isBookmarked={topic.isBookmarked}
+                      getTopicsFromServer={setTopicsFromServer}
+                    />
+                    <CustomSpace />
+                  </Flex>
+                </Tab>
               ),
           )}
-      </TopicsWrapper>
+      </Swiper>
     </section>
   );
 }
@@ -111,11 +125,9 @@ const PointerText = styled(Text)`
   cursor: pointer;
 `;
 
-const TopicsWrapper = styled.ul`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
+const CustomSpace = styled.div`
+  min-width: 10px;
+  min-height: 10px;
 `;
 
 export default TopicCardContainer;
