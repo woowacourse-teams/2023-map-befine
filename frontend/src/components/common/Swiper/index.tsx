@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
+import SwiperLeftBtnSVG from '../../../assets/swiper_left_button.svg';
+import SwiperRightBtnSVG from '../../../assets/swiper_right_button.svg';
 import useAutoplay from './hooks/useAutoplay';
 import useSwipeable from './hooks/useSwipeable';
 
@@ -142,8 +144,8 @@ function Swiper({
 
       {swiper && (
         <SwiperButtonWrapper>
-          <SwiperButton onClick={decreasePos}>◀️</SwiperButton>
-          <SwiperButton onClick={increasePos}>▶️</SwiperButton>
+          <SwiperLeftBtnSVG onClick={decreasePos} />
+          <SwiperRightBtnSVG onClick={increasePos} />
         </SwiperButtonWrapper>
       )}
 
@@ -327,6 +329,7 @@ const SwiperButton = styled.button`
   background-color: transparent;
   color: rgba(149, 149, 149, 0.8);
   border: 1px solid rgba(149, 149, 149, 0.8);
+  font-size: 20px;
   width: 40px;
   height: 40px;
   border-radius: 50%;
