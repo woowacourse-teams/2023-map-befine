@@ -81,12 +81,17 @@ function TopicCard({
       ref={elementRef}
       onKeyDown={onElementKeyDown}
     >
-      <Flex position="relative" tabIndex={0} role="button">
+      <Flex
+        $flexDirection="column"
+        position="relative"
+        tabIndex={0}
+        role="button"
+      >
         <TopicImage
-          height="138px"
-          width="138px"
+          width="210px"
+          height="132px"
           src={image}
-          alt="사진 이미지"
+          alt="지도 이미지"
           $objectFit="cover"
           onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
             e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
@@ -179,10 +184,9 @@ function TopicCard({
 }
 
 const Wrapper = styled.li`
-  width: 332px;
-  height: 140px;
+  width: 212px;
+  height: 296px;
   cursor: pointer;
-  border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
 `;
 
@@ -192,12 +196,13 @@ const ButtonWrapper = styled.div`
   position: absolute;
   width: 72px;
 
-  top: 100px;
-  left: 60px;
+  top: 92px;
+  right: 12px;
 `;
 
 const TopicImage = styled(Image)`
-  border-radius: ${({ theme }) => theme.radius.small};
+  border-top-left-radius: ${({ theme }) => theme.radius.small};
+  border-top-right-radius: ${({ theme }) => theme.radius.small};
 `;
 
 export default TopicCard;
