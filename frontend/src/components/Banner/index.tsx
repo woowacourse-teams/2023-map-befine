@@ -6,7 +6,7 @@ import Tab from '../common/Swiper/Tab';
 export default function Banner() {
   return (
     <Swiper
-      width={1036}
+      width={1140}
       height={352}
       $simpleTab
       $tabBoxPosition="bottom"
