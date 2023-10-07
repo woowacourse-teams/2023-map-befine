@@ -107,7 +107,7 @@ class MemberQueryServiceTest {
     void findMyProfile() {
         // given
         // when
-        MemberDetailResponse response = memberQueryService.findProfile(authMember);
+        MemberDetailResponse response = memberQueryService.findMemberDetail(authMember);
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -121,7 +121,7 @@ class MemberQueryServiceTest {
         AuthMember otherAuthMember = new User(Long.MAX_VALUE, Collections.emptyList(), Collections.emptyList());
 
         // when then
-        assertThatThrownBy(() -> memberQueryService.findProfile(otherAuthMember))
+        assertThatThrownBy(() -> memberQueryService.findMemberDetail(otherAuthMember))
                 .isInstanceOf(MemberNotFoundException.class);
     }
 

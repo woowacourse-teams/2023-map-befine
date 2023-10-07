@@ -40,9 +40,9 @@ public class MemberQueryService {
         this.topicRepository = topicRepository;
     }
 
-    public MemberDetailResponse findProfile(AuthMember authMember) {
+    public MemberDetailResponse findMemberDetail(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
-        
+
         return MemberDetailResponse.from(member);
     }
 

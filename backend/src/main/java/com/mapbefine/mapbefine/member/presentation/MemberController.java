@@ -40,7 +40,7 @@ public class MemberController {
     @LoginRequired
     @GetMapping("/my/profiles")
     public ResponseEntity<MemberDetailResponse> findMyProfile(AuthMember authMember) {
-        MemberDetailResponse response = memberQueryService.findProfile(authMember);
+        MemberDetailResponse response = memberQueryService.findMemberDetail(authMember);
 
         return ResponseEntity.ok(response);
     }

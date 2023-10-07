@@ -58,7 +58,7 @@ class MemberControllerTest extends RestDocsIntegration {
                 LocalDateTime.now()
         );
 
-        given(memberQueryService.findProfile(any())).willReturn(memberDetailResponse);
+        given(memberQueryService.findMemberDetail(any())).willReturn(memberDetailResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/members/my/profiles")
