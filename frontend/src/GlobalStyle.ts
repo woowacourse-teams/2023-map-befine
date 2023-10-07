@@ -9,19 +9,19 @@ const GlobalStyle = createGlobalStyle`
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   }
   
-  a{
+  a {
     text-decoration:none;
     color: #000;
     transition: all 0.3s ease-in-out;
   }
 
-  ul{
+  ul {
     padding-left: 0;
     margin:0;
     list-style-type: none;
   }
 
-  *{
+  * {
     box-sizing:border-box;
   }
 
@@ -29,6 +29,10 @@ const GlobalStyle = createGlobalStyle`
   input[type='number']::-webkit-inner-spin-button {
     appearance: none;
     margin: 0;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
   }
   `;
 
