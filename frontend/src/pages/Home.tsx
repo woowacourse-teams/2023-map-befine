@@ -46,7 +46,7 @@ function Home() {
   return (
     <Wrapper>
       <SearchBar />
-      <Space size={6} />
+      <Space size={4} />
 
       <Banner />
       <Space size={6} />
@@ -88,7 +88,7 @@ function Home() {
 }
 
 const Wrapper = styled.article`
-  width: 1036px;
+  width: 1140px;
   margin: 0 auto;
   position: relative;
 
