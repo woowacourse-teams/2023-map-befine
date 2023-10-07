@@ -29,6 +29,7 @@ interface Props {
   autoplay?: boolean;
   $autoplayTime?: number;
   $autoplayButton?: boolean;
+  as?: string;
 }
 
 const getTabsColor = (indexOfTab: number, $tabColor: string | string[]) => {
@@ -65,6 +66,7 @@ function Swiper({
   autoplay = false,
   $autoplayTime = 5000,
   $autoplayButton = false,
+  as = 'div',
   children,
 }: Props) {
   const childrenList = React.Children.toArray(
@@ -99,6 +101,7 @@ function Swiper({
 
   return (
     <Wrapper
+      as={as}
       width={width}
       responsive={responsive}
       $tabBoxPosition={$tabBoxPosition}
