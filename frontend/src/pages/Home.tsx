@@ -1,6 +1,7 @@
 import { lazy, Suspense, useContext, useEffect } from 'react';
 import { styled } from 'styled-components';
 
+import Banner from '../components/Banner';
 import Space from '../components/common/Space';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
@@ -44,9 +45,12 @@ function Home() {
 
   return (
     <Wrapper>
-      <Space size={1} />
       <SearchBar />
-      <Space size={1} />
+      <Space size={6} />
+
+      <Banner />
+      <Space size={6} />
+
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
           url="/topics/bests"
