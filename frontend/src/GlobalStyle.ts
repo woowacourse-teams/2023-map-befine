@@ -30,10 +30,6 @@ const GlobalStyle = createGlobalStyle`
     appearance: none;
     margin: 0;
   }
-
-  *::-webkit-scrollbar {
-    display: none;
-  }
   `;
 
 export default GlobalStyle;
