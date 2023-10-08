@@ -19,7 +19,7 @@ import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Image from '../common/Image';
 import Space from '../common/Space';
-import Text from '../common/Text';
+import MediaText from '../common/Text/mediaText';
 
 interface OnClickDesignatedProps {
   topicId: number;
@@ -100,30 +100,30 @@ function TopicCard({
 
         <Box width="192px" padding={1}>
           <Box height="52px">
-            <Text
+            <MediaText
               color="black"
               $fontSize="default"
               $fontWeight="bold"
               aria-label={`토픽 이름 ${name}`}
             >
               {name}
-            </Text>
+            </MediaText>
           </Box>
 
-          <Text
+          <MediaText
             color="black"
             $fontSize="small"
             $fontWeight="normal"
             aria-label={`작성자 ${creator}`}
           >
             {creator}
-          </Text>
+          </MediaText>
 
           <Space size={0} />
 
-          <Text color="gray" $fontSize="small" $fontWeight="normal">
+          <MediaText color="gray" $fontSize="small" $fontWeight="normal">
             {updatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
-          </Text>
+          </MediaText>
 
           <Space size={0} />
 
@@ -131,26 +131,26 @@ function TopicCard({
             <Flex $alignItems="center" width="64px">
               <SmallTopicPin />
               <Space size={0} />
-              <Text
+              <MediaText
                 color="black"
                 $fontSize="extraSmall"
                 $fontWeight="normal"
                 aria-label={`핀 갯수 ${pinCount}개`}
               >
                 {pinCount > 999 ? '+999' : pinCount}개
-              </Text>
+              </MediaText>
             </Flex>
             <Flex $alignItems="center" width="64px">
               <SmallTopicStar />
               <Space size={0} />
-              <Text
+              <MediaText
                 color="black"
                 $fontSize="extraSmall"
                 $fontWeight="normal"
                 aria-label={`즐겨찾기 ${bookmarkCount}명`}
               >
                 {bookmarkCount > 999 ? '+999' : bookmarkCount}명
-              </Text>
+              </MediaText>
             </Flex>
           </Flex>
 
