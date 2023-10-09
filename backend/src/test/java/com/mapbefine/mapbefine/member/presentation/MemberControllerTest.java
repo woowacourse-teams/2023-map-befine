@@ -48,8 +48,8 @@ class MemberControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("회원 단일 조회")
-    void findMemberById() throws Exception {
+    @DisplayName("회원 상세 정보 조회")
+    void findMyProfile() throws Exception {
         MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
                 1L,
                 "member",
@@ -58,10 +58,10 @@ class MemberControllerTest extends RestDocsIntegration {
                 LocalDateTime.now()
         );
 
-        given(memberQueryService.findById(any(), any())).willReturn(memberDetailResponse);
+        given(memberQueryService.findMemberDetail(any())).willReturn(memberDetailResponse);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/1")
+                MockMvcRequestBuilders.get("/members/my/profiles")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
         ).andDo(restDocs.document());
     }
