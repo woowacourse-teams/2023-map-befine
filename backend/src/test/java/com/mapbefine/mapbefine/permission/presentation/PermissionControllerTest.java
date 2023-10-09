@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 class PermissionControllerTest extends RestDocsIntegration {
 
@@ -31,21 +32,21 @@ class PermissionControllerTest extends RestDocsIntegration {
     void addPermission() throws Exception {
         PermissionRequest request = new PermissionRequest(1L, List.of(1L, 2L, 3L));
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/permissions")
+        mockMvc.perform(MockMvcRequestBuilders.post("/permissions")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        ).andDo(restDocs.document());
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("권한 삭제")
     void deletePermission() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/permissions/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/permissions/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -59,10 +60,10 @@ class PermissionControllerTest extends RestDocsIntegration {
 
         given(permissionQueryService.findTopicAccessDetailById(any())).willReturn(response);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/permissions/topics/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/permissions/topics/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -82,10 +83,10 @@ class PermissionControllerTest extends RestDocsIntegration {
 
         given(permissionQueryService.findPermissionById(any())).willReturn(permissionMemberDetailResponse);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/permissions/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/permissions/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
 }

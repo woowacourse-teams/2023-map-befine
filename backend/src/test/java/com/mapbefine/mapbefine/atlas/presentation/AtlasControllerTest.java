@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 class AtlasControllerTest extends RestDocsIntegration {
 
@@ -23,10 +24,10 @@ class AtlasControllerTest extends RestDocsIntegration {
         doNothing().when(atlasCommandService).addTopic(any(), any());
 
         // then
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/atlas/topics?id=1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.post("/atlas/topics?id=1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -35,10 +36,10 @@ class AtlasControllerTest extends RestDocsIntegration {
         doNothing().when(atlasCommandService).removeTopic(any(), any());
 
         // then
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/atlas/topics?id=1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/atlas/topics?id=1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
 }
