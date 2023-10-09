@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
+import com.mapbefine.mapbefine.permission.application.PermissionCommandService;
 import com.mapbefine.mapbefine.permission.application.PermissionQueryService;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionMemberDetailResponse;
@@ -26,6 +27,9 @@ class PermissionControllerTest extends RestDocsIntegration {
 
     @MockBean
     private PermissionQueryService permissionQueryService;
+    @MockBean
+    private PermissionCommandService permissionCommandService;
+
 
     @Test
     @DisplayName("권한 추가")
