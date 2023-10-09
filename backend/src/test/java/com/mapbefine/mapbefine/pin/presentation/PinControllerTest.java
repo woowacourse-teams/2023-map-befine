@@ -3,8 +3,9 @@ package com.mapbefine.mapbefine.pin.presentation;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
@@ -14,16 +15,15 @@ import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 class PinControllerTest extends RestDocsIntegration {
@@ -37,16 +37,11 @@ class PinControllerTest extends RestDocsIntegration {
     private PinQueryService pinQueryService;
 
     @Test
-    @DisplayName("핀 추가")
+    @DisplayName("핀 생성")
     void add() throws Exception {
         given(pinCommandService.save(any(), any(), any())).willReturn(1L);
-        File mockFile = new File(getClass()
-                .getClassLoader()
-                .getResource("test.png")
-                .getPath());
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
 
-        PinCreateRequest pinCreateRequest = new PinCreateRequest(
+        PinCreateRequest request = new PinCreateRequest(
                 1L,
                 "매튜의 산스장",
                 "매튜가 사랑하는 산스장",
@@ -55,16 +50,17 @@ class PinControllerTest extends RestDocsIntegration {
                 37,
                 127
         );
+        MockMultipartFile requestJson = new MockMultipartFile("request", "request", APPLICATION_JSON_VALUE,
+                objectMapper.writeValueAsBytes(request));
+        MockMultipartFile image = new MockMultipartFile("image", "test.png", IMAGE_PNG_VALUE, "data".getBytes());
 
-        param.add("images", List.of(mockFile));
-        param.add("request", pinCreateRequest);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/pins")
+        mockMvc.perform(MockMvcRequestBuilders.multipart(POST, "/pins")
+                        .file(image)
+                        .file(requestJson)
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .content(objectMapper.writeValueAsString(param))
-        ).andDo(restDocs.document());
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -75,21 +71,21 @@ class PinControllerTest extends RestDocsIntegration {
                 "매튜가 다신 안 갈 집"
         );
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.put("/pins/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/pins/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(pinUpdateRequest))
-        ).andDo(restDocs.document());
+                        .content(objectMapper.writeValueAsString(pinUpdateRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("핀 삭제")
     void delete() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/pins/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/pins/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -107,16 +103,12 @@ class PinControllerTest extends RestDocsIntegration {
                 LocalDateTime.now(),
                 List.of(new PinImageResponse(1L, BASE_IMAGES.get(0)))
         );
-
         given(pinQueryService.findDetailById(any(), any())).willReturn(pinDetailResponse);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/pins/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document(
-                requestHeaders(
-                        headerWithName(AUTHORIZATION).optional().description("Optional")
-                )));
+        mockMvc.perform(MockMvcRequestBuilders.get("/pins/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
 
@@ -145,42 +137,36 @@ class PinControllerTest extends RestDocsIntegration {
 
         given(pinQueryService.findAllReadable(any())).willReturn(pinResponses);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/pins")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document(
-                requestHeaders(
-                        headerWithName(AUTHORIZATION).optional().description("Optional")
-                )));
+        mockMvc.perform(MockMvcRequestBuilders.get("/pins")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("핀 이미지 추가")
     void addImage() throws Exception {
-        String imageFilePath = getClass().getClassLoader()
-                .getResource("test.png")
-                .getPath();
-        File mockFile = new File(imageFilePath);
+        MockMultipartFile requestJson = new MockMultipartFile("pinId", "pinId", APPLICATION_JSON_VALUE,
+                objectMapper.writeValueAsBytes(1));
+        MockMultipartFile image = new MockMultipartFile("image", "test.png", IMAGE_PNG_VALUE, "data".getBytes());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/pins/images")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(1L))
-                        .content(objectMapper.writeValueAsString(mockFile))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.multipart(POST, "/pins/images")
+                        .file(image)
+                        .file(requestJson)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("핀 이미지 삭제")
     void removeImage() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/pins/images/1")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/pins/images/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andDo(restDocs.document());
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
-
 
     @Test
     @DisplayName("회원 Id를 입력하면 해당 회원이 만든 핀 목록을 조회할 수 있다.")
@@ -207,11 +193,10 @@ class PinControllerTest extends RestDocsIntegration {
 
         given(pinQueryService.findAllPinsByMemberId(any(), any())).willReturn(pinResponses);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/pins/members?id=1")
-
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/pins/members?id=1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
 }
