@@ -77,6 +77,18 @@ public class TopicController {
     }
 
     @LoginRequired
+    @PutMapping("/{topicId}")
+    public ResponseEntity<Void> update(
+            AuthMember member,
+            @PathVariable Long topicId,
+            @RequestBody TopicUpdateRequest request
+    ) {
+        topicCommandService.updateTopicInfo(member, topicId, request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @LoginRequired
     @PostMapping("/{topicId}/copy")
     public ResponseEntity<Void> copyPin(
             AuthMember member, @PathVariable Long topicId, @RequestParam List<Long> pinIds
@@ -125,18 +137,6 @@ public class TopicController {
         List<TopicResponse> responses = topicQueryService.findAllByOrderByUpdatedAtDesc(member);
 
         return ResponseEntity.ok(responses);
-    }
-
-    @LoginRequired
-    @PutMapping("/{topicId}")
-    public ResponseEntity<Void> update(
-            AuthMember member,
-            @PathVariable Long topicId,
-            @RequestBody TopicUpdateRequest request
-    ) {
-        topicCommandService.updateTopicInfo(member, topicId, request);
-
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/bests")
