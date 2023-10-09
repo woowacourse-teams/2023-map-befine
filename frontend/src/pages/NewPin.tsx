@@ -24,6 +24,7 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useToast from '../hooks/useToast';
 import { NewPinFormProps } from '../types/FormValues';
+import { Poi } from '../types/Poi';
 import { TopicCardProps } from '../types/Topic';
 import { hasErrorMessage, hasNullValue } from '../validations';
 
@@ -213,13 +214,13 @@ function NewPin() {
     setShowedImages(imageUrlLists);
   };
 
-  const onSuggestionSelected = (suggestion: any) => {
+  const onSuggestionSelected = (suggestion: Poi) => {
     const { noorLat, noorLon } = suggestion;
     const address = `${suggestion.upperAddrName} ${suggestion.middleAddrName} ${suggestion.roadName}[${suggestion.name}]`;
 
     setClickedCoordinate({
-      latitude: noorLat,
-      longitude: noorLon,
+      latitude: Number(noorLat),
+      longitude: Number(noorLon),
       address,
     });
   };

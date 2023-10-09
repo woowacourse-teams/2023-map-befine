@@ -1,4 +1,6 @@
-export const getPoiApi = async <T>(query: string) => {
+import { PoiApiResponse } from '../types/Poi';
+
+export const getPoiApi = async (query: string): Promise<PoiApiResponse> => {
   const response = await fetch(
     `https://apis.openapi.sk.com/tmap/pois?version=1&format=json&callback=result&searchKeyword=${query}&resCoordType=WGS84GEO&reqCoordType=WGS84GEO&count=10`,
     {
@@ -11,8 +13,7 @@ export const getPoiApi = async <T>(query: string) => {
     throw new Error('[POI] GET 요청에 실패했습니다.');
   }
 
-  const responseData: T = await response.json();
+  const responseData = await response.json();
 
-  const { searchPoiInfo } = responseData;
-  return searchPoiInfo;
+  return responseData;
 };

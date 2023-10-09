@@ -3,24 +3,25 @@ import { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { getPoiApi } from '../../../apis/getPoiApi';
+import { Poi } from '../../../types/Poi';
 import Input from '.';
 
-interface AutocompleteProps<T> {
+interface AutocompleteProps {
   defaultValue?: string;
-  onSuggestionSelected: (suggestion: T) => void;
+  onSuggestionSelected: (suggestion: Poi) => void;
 }
 
-const Autocomplete = <T,>({
+const Autocomplete = ({
   defaultValue,
   onSuggestionSelected,
-}: AutocompleteProps<T>) => {
+}: AutocompleteProps) => {
   const [inputValue, setInputValue] = useState<string | undefined>(
     defaultValue,
   );
-  const [suggestions, setSuggestions] = useState<any>([]);
-  const [selectedSuggestion, setSelectedSuggestion] = useState<any | null>(
-    null,
-  );
+  const [suggestions, setSuggestions] = useState<Poi[]>([]);
+  const [selectedSuggestion, setSelectedSuggestion] = useState<
+    Poi['name'] | null
+  >(null);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.trim() === '') {
@@ -31,7 +32,7 @@ const Autocomplete = <T,>({
     setInputValue(e.target.value);
   };
 
-  const onClickSuggestion = (suggestion: any) => {
+  const onClickSuggestion = (suggestion: Poi) => {
     const { name } = suggestion;
     setInputValue(name);
     setSelectedSuggestion(name);
@@ -41,9 +42,10 @@ const Autocomplete = <T,>({
   async function fetchData() {
     try {
       const fetchedSuggestions = await getPoiApi(inputValue || '');
+      console.log(fetchedSuggestions);
       if (!fetchedSuggestions)
         throw new Error('추천 검색어를 불러오지 못했습니다.');
-      setSuggestions(fetchedSuggestions.pois?.poi);
+      setSuggestions(fetchedSuggestions.searchPoiInfo.pois.poi);
     } catch (error) {
       setSuggestions([]);
       console.error(error);
@@ -72,7 +74,7 @@ const Autocomplete = <T,>({
 
       {!selectedSuggestion && (
         <SuggestionsList>
-          {suggestions?.map((suggestion: any, index: number) => (
+          {suggestions?.map((suggestion: Poi, index: number) => (
             <SuggestionItem
               key={index}
               onClick={() => {
