@@ -90,7 +90,7 @@ class AdminControllerTest extends RestDocsIntegration {
         given(adminQueryService.findAllMemberDetails()).willReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/members")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                        .header(AUTHORIZATION, "testKey"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(restDocs.document());
     }
@@ -111,7 +111,7 @@ class AdminControllerTest extends RestDocsIntegration {
         given(adminQueryService.findMemberDetail(any())).willReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/members/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                        .header(AUTHORIZATION, "testKey"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(restDocs.document());
     }
@@ -122,7 +122,7 @@ class AdminControllerTest extends RestDocsIntegration {
         doNothing().when(adminCommandService).blockMember(any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/admin/members/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                        .header(AUTHORIZATION, "testKey"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(restDocs.document());
     }
@@ -133,7 +133,7 @@ class AdminControllerTest extends RestDocsIntegration {
         doNothing().when(adminCommandService).deleteTopic(any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/admin/topics/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                        .header(AUTHORIZATION, "testKey"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(restDocs.document());
     }
@@ -144,7 +144,7 @@ class AdminControllerTest extends RestDocsIntegration {
         doNothing().when(adminCommandService).deleteTopicImage(any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/admin/topics/1/images")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                        .header(AUTHORIZATION, "testKey"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(restDocs.document());
     }
@@ -155,7 +155,7 @@ class AdminControllerTest extends RestDocsIntegration {
         doNothing().when(adminCommandService).deletePin(any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/admin/pins/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                        .header(AUTHORIZATION, "testKey"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(restDocs.document());
     }
@@ -166,7 +166,7 @@ class AdminControllerTest extends RestDocsIntegration {
         doNothing().when(adminCommandService).deletePinImage(any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/admin/pins/images/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                        .header(AUTHORIZATION, "testKey"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(restDocs.document());
     }
