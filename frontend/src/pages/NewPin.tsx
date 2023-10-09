@@ -1,13 +1,13 @@
+/* eslint-disable no-nested-ternary */
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import { getApi } from '../apis/getApi';
-import { getMapApi } from '../apis/getMapApi';
 import { postApi } from '../apis/postApi';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
-import Input from '../components/common/Input';
+import Autocomplete from '../components/common/Input/Autocomplete';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import InputContainer from '../components/InputContainer';
@@ -51,7 +51,7 @@ function NewPin() {
   const { routePage } = useNavigator();
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { openModal } = useContext(ModalContext);
   const { compressImageList } = useCompressImage();
 
   const [formImages, setFormImages] = useState<File[]>([]);
@@ -131,12 +131,10 @@ function NewPin() {
         return;
       }
       let postTopicId = topic?.id;
-      let postName = formValues.name;
 
       if (!topic) {
         // 토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
         postTopicId = selectedTopic?.topicId;
-        postName = selectedTopic?.topicName;
       }
 
       if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
@@ -148,38 +146,38 @@ function NewPin() {
     }
   };
 
-  const onClickAddressInput = (
-    e:
-      | React.MouseEvent<HTMLInputElement>
-      | React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (!(e.type === 'click') && e.currentTarget.value) return;
+  // const onClickAddressInput = (
+  //   e:
+  //     | React.MouseEvent<HTMLInputElement>
+  //     | React.KeyboardEvent<HTMLInputElement>,
+  // ) => {
+  //   if (!(e.type === 'click') && e.currentTarget.value) return;
 
-    const width = 500; // 팝업의 너비
-    const height = 600; // 팝업의 높이
-    new window.daum.Postcode({
-      width, // 생성자에 크기 값을 명시적으로 지정해야 합니다.
-      height,
-      async onComplete(data: any) {
-        const addr = data.roadAddress; // 주소 변수
+  //   const width = 500; // 팝업의 너비
+  //   const height = 600; // 팝업의 높이
+  //   new window.daum.Postcode({
+  //     width, // 생성자에 크기 값을 명시적으로 지정해야 합니다.
+  //     height,
+  //     async onComplete(data: any) {
+  //       const addr = data.roadAddress; // 주소 변수
 
-        // data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getMapApi<any>(
-          `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
-        );
-        const lat = ConvertAdd.oldLat;
-        const lng = ConvertAdd.oldLon;
+  //       // data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
+  //       const { ConvertAdd } = await getMapApi<any>(
+  //         `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
+  //       );
+  //       const lat = ConvertAdd.oldLat;
+  //       const lng = ConvertAdd.oldLon;
 
-        setClickedCoordinate({
-          latitude: lat,
-          longitude: lng,
-          address: addr,
-        });
-      },
-    }).open({
-      popupKey: 'postPopUp',
-    });
-  };
+  //       setClickedCoordinate({
+  //         latitude: lat,
+  //         longitude: lng,
+  //         address: addr,
+  //       });
+  //     },
+  //   }).open({
+  //     popupKey: 'postPopUp',
+  //   });
+  // };
 
   const onPinImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -213,6 +211,17 @@ function NewPin() {
 
     setFormImages([...formImages, ...compressedImageList]);
     setShowedImages(imageUrlLists);
+  };
+
+  const onSuggestionSelected = (suggestion: any) => {
+    const { noorLat, noorLon } = suggestion;
+    const address = `${suggestion.upperAddrName} ${suggestion.middleAddrName} ${suggestion.roadName}[${suggestion.name}]`;
+
+    setClickedCoordinate({
+      latitude: noorLat,
+      longitude: noorLon,
+      address,
+    });
   };
 
   useEffect(() => {
@@ -329,6 +338,25 @@ function NewPin() {
             </Text>
           </Flex>
           <Space size={0} />
+          <Autocomplete
+            defaultValue={clickedCoordinate.address}
+            onSuggestionSelected={onSuggestionSelected}
+          />
+
+          <Space size={5} />
+
+          {/* <Space size={1} />
+
+          <Flex>
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              장소 위치
+            </Text>
+            <Space size={0} />
+            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
+              *
+            </Text>
+          </Flex>
+          <Space size={0} />
           <Input
             name="address"
             readOnly
@@ -339,7 +367,7 @@ function NewPin() {
             placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
           />
 
-          <Space size={5} />
+          <Space size={5} /> */}
 
           <InputContainer
             tagType="textarea"
