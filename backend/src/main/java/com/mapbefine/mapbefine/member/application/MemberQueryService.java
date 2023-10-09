@@ -74,13 +74,6 @@ public class MemberQueryService {
                 .toList();
     }
 
-    private List<Topic> findTopicsInAtlas(Member member) {
-        return member.getAtlantes()
-                .stream()
-                .map(Atlas::getTopic)
-                .toList();
-    }
-
     private boolean isInAtlas(Long memberId, Long topicId) {
         return atlasRepository.existsByMemberIdAndTopicId(memberId, topicId);
     }
@@ -95,6 +88,13 @@ public class MemberQueryService {
                         true,
                         isInBookmark(authMember.getMemberId(), topic.getId())
                 ))
+                .toList();
+    }
+
+    private List<Topic> findTopicsInAtlas(Member member) {
+        return member.getAtlantes()
+                .stream()
+                .map(Atlas::getTopic)
                 .toList();
     }
 
