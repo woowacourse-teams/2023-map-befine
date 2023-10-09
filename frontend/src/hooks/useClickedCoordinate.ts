@@ -10,10 +10,12 @@ export default function useClickedCoordinate(map: TMap | null) {
 
   useEffect(() => {
     if (!map) return;
+    const currentZoom = map.getZoom();
     if (clickedCoordinate.address) displayClickedMarker(map);
 
     // 선택된 좌표가 있으면 해당 좌표로 지도의 중심을 이동
     if (clickedCoordinate.latitude && clickedCoordinate.longitude) {
+      map.setZoom(currentZoom);
       map.panTo(
         new Tmapv3.LatLng(
           clickedCoordinate.latitude,
