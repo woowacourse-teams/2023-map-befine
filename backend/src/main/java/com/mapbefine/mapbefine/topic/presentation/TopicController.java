@@ -146,7 +146,7 @@ public class TopicController {
         return ResponseEntity.ok(responses);
     }
 
-    @Deprecated(since = "2023.10.06")
+    @Deprecated(since = "2023.10.06 (연관관계 삭제 불완전, 사용되지 않는 API)")
     @LoginRequired
     @DeleteMapping("/{topicId}")
     public ResponseEntity<Void> delete(AuthMember member, @PathVariable Long topicId) {
