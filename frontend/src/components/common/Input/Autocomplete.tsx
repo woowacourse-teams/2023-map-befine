@@ -1,5 +1,5 @@
 /* eslint-disable react/function-component-definition */
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { getPoiApi } from '../../../apis/getPoiApi';
@@ -23,13 +23,39 @@ const Autocomplete = ({
     Poi['name'] | null
   >(null);
 
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const fetchData = async (value: string) => {
+    try {
+      const fetchedSuggestions = await getPoiApi(value);
+
+      if (!fetchedSuggestions)
+        throw new Error('추천 검색어를 불러오지 못했습니다.');
+
+      setSuggestions(fetchedSuggestions.searchPoiInfo.pois.poi);
+    } catch (error) {
+      setSuggestions([]);
+      console.error(error);
+    }
+  };
+
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.trim() === '') {
       setSuggestions([]);
       setInputValue('');
       return;
     }
+
     setInputValue(e.target.value);
+
+    if (debounceTimeoutRef.current !== null) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
+    debounceTimeoutRef.current = setTimeout(
+      () => fetchData(e.target.value),
+      500,
+    );
   };
 
   const onClickSuggestion = (suggestion: Poi) => {
@@ -38,25 +64,6 @@ const Autocomplete = ({
     setSelectedSuggestion(name);
     onSuggestionSelected(suggestion);
   };
-
-  async function fetchData() {
-    try {
-      const fetchedSuggestions = await getPoiApi(inputValue || '');
-      console.log(fetchedSuggestions);
-      if (!fetchedSuggestions)
-        throw new Error('추천 검색어를 불러오지 못했습니다.');
-      setSuggestions(fetchedSuggestions.searchPoiInfo.pois.poi);
-    } catch (error) {
-      setSuggestions([]);
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    if (!inputValue) return;
-
-    fetchData();
-  }, [inputValue]);
 
   useEffect(() => {
     setInputValue(defaultValue);
