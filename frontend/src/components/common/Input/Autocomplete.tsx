@@ -5,15 +5,15 @@ import styled from 'styled-components';
 import { getPoiApi } from '../../../apis/getPoiApi';
 import Input from '.';
 
-interface AutocompleteProps {
+interface AutocompleteProps<T> {
   defaultValue?: string;
-  onSuggestionSelected: (suggestion: any) => void;
+  onSuggestionSelected: (suggestion: T) => void;
 }
 
-const Autocomplete = ({
+const Autocomplete = <T,>({
   defaultValue,
   onSuggestionSelected,
-}: AutocompleteProps) => {
+}: AutocompleteProps<T>) => {
   const [inputValue, setInputValue] = useState<string | undefined>(
     defaultValue,
   );
@@ -39,15 +39,15 @@ const Autocomplete = ({
   };
 
   async function fetchData() {
-    let fetchedSuggestions;
-
     try {
-      fetchedSuggestions = await getPoiApi(inputValue || '');
+      const fetchedSuggestions = await getPoiApi(inputValue || '');
+      if (!fetchedSuggestions)
+        throw new Error('추천 검색어를 불러오지 못했습니다.');
+      setSuggestions(fetchedSuggestions.pois?.poi);
     } catch (error) {
-      fetchedSuggestions = [];
+      setSuggestions([]);
+      console.error(error);
     }
-    if (!fetchedSuggestions) return;
-    setSuggestions(fetchedSuggestions.pois?.poi);
   }
 
   useEffect(() => {
