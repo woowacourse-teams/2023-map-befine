@@ -23,8 +23,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
-          cache-dependency-path: 'frontend'
+          cache: "npm"
+          cache-dependency-path: "frontend"
 
       - name: Install npm
         run: npm install
@@ -35,7 +35,8 @@ jobs:
         working-directory: frontend
         env:
           REACT_APP_GOOGLE_ANALYTICS: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS }}
-          APP_URL: 'https://mapbefine.kro.kr/api'
+          APP_URL: "https://mapbefine.kro.kr/api"
+          TMAP_API_KEY: ${{ secrets.TMAP_API_KEY }}
 
       - name: upload to artifact
         uses: actions/upload-artifact@v3
@@ -66,7 +67,7 @@ jobs:
 
         uses: 8398a7/action-slack@v3
         with:
-          mention: 'here'
+          mention: "here"
           if_mention: always
           status: ${{ job.status }}
           fields: workflow,job,commit,message,ref,author,took
