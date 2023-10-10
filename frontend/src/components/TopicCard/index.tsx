@@ -88,8 +88,7 @@ function TopicCard({
         role="button"
       >
         <TopicImage
-          width="210px"
-          height="132px"
+          width="100%"
           src={image}
           alt="지도 이미지"
           $objectFit="cover"
@@ -98,7 +97,7 @@ function TopicCard({
           }}
         />
 
-        <Box width="192px" padding={1}>
+        <Box width="100%" padding={1}>
           <Box height="52px">
             <MediaText
               color="black"
@@ -203,6 +202,7 @@ const ButtonWrapper = styled.div`
 const TopicImage = styled(Image)`
   border-top-left-radius: ${({ theme }) => theme.radius.small};
   border-top-right-radius: ${({ theme }) => theme.radius.small};
+  aspect-ratio: 1.6 / 1;
 `;
 
 export default TopicCard;
