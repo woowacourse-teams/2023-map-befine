@@ -230,6 +230,7 @@ const TabSectionWrapper = styled.div<{
     css`
       @media (max-width: ${width}px) {
         width: calc(100vw * ${$childrenLength});
+        height: auto;
         transform: translateX(calc(-100vw * ${pos}));
       }
     `}
