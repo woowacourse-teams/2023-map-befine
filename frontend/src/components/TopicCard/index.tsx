@@ -97,7 +97,7 @@ function TopicCard({
           }}
         />
 
-        <Box width="100%" padding={1}>
+        <Box width="100%" $maxWidth="212px" padding={1}>
           <Box height="52px">
             <MediaText
               color="black"
@@ -201,7 +201,12 @@ const TopicImage = styled(Image)`
   border-top-left-radius: ${({ theme }) => theme.radius.small};
   border-top-right-radius: ${({ theme }) => theme.radius.small};
   aspect-ratio: 1.6 / 1;
-  max-width: 252px;
+  min-width: 212px;
+
+  @media (max-width: 744px) {
+    width: 100%;
+    min-width: 154px;
+  }
 `;
 
 export default TopicCard;
