@@ -68,7 +68,7 @@ function Layout({ children }: LayoutProps) {
                       $flexDirection="column"
                       height="inherit"
                       overflow="auto"
-                      padding="0 20px 20px 20px"
+                      padding="0"
                     >
                       {children}
                     </Flex>
