@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import SwiperLeftBtnSVG from '../../../assets/swiper_left_button.svg';
 import SwiperRightBtnSVG from '../../../assets/swiper_right_button.svg';
 import useAutoplay from './hooks/useAutoplay';
+import useMediaQuery from './hooks/useMatchMedia';
 import useSwipeable from './hooks/useSwipeable';
 
 type TabBoxPositionType = 'top' | 'bottom';
@@ -29,6 +30,7 @@ interface Props {
   autoplay?: boolean;
   $autoplayTime?: number;
   $autoplayButton?: boolean;
+  $elementsMediaQueries?: number[];
   as?: string;
 }
 
@@ -66,6 +68,7 @@ function Swiper({
   autoplay = false,
   $autoplayTime = 5000,
   $autoplayButton = false,
+  $elementsMediaQueries = [],
   as = 'div',
   children,
 }: Props) {
@@ -74,6 +77,10 @@ function Swiper({
   ) as React.ReactElement<TabProps>[];
 
   const [pos, setPos] = useState<number>(0);
+  const { elementsCount } = useMediaQuery(
+    $elementsMediaQueries,
+    $elementsOneTab,
+  );
   const {
     increasePos,
     decreasePos,
@@ -83,7 +90,7 @@ function Swiper({
   } = useSwipeable({
     childrenListLength: calculateTabCountUsingElements(
       childrenList,
-      $elementsOneTab,
+      elementsCount,
     ).length,
     pos,
     setPos,
@@ -93,7 +100,7 @@ function Swiper({
     $autoplayTime,
     childrenListLength: calculateTabCountUsingElements(
       childrenList,
-      $elementsOneTab,
+      elementsCount,
     ).length,
     pos,
     setPos,
@@ -108,7 +115,7 @@ function Swiper({
     >
       {!$isNotTabBoxShow && (
         <TabBoxWrapper $simpleTab={$simpleTab} $tabBoxHeight={$tabBoxHeight}>
-          {calculateTabCountUsingElements(childrenList, $elementsOneTab).map(
+          {calculateTabCountUsingElements(childrenList, elementsCount).map(
             (children, idx) =>
               children && (
                 <TabBox
@@ -119,7 +126,7 @@ function Swiper({
                   $focusColor={$focusColor}
                   width={width}
                   $tabBoxHeight={$tabBoxHeight}
-                  $childrenLength={calculateTabCountUsingElements.length}
+                  $childrenLength={childrenList.length}
                   $simpleTab={$simpleTab}
                   onClick={() => moveToSettedPos(idx)}
                 >
@@ -140,7 +147,7 @@ function Swiper({
         $childrenLength={childrenList.length}
         pos={pos}
         responsive={responsive}
-        $elementsOneTab={$elementsOneTab}
+        $elementsOneTab={elementsCount}
       >
         {children}
       </TabSectionWrapper>
