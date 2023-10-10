@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
 import useGet from '../../apiHooks/useGet';
@@ -87,6 +87,7 @@ function TopicCardContainer({
         width={1140}
         height={300}
         $elementsOneTab={5}
+        $elementsMediaQueries={[1180, 900, 660, 320]}
         swiper
         swipeable
         $isNotTabBoxShow
