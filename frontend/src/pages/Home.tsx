@@ -92,7 +92,9 @@ const Wrapper = styled.article`
   margin: 0 auto;
   position: relative;
 
-  ${setFullScreenResponsive()}
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
 `;
 
 export default Home;

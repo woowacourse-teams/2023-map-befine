@@ -117,11 +117,13 @@ function Search() {
 export default Search;
 
 const Wrapper = styled.article`
-  width: 1036px;
+  width: 1140px;
   margin: 0 auto;
   position: relative;
 
-  ${setFullScreenResponsive()}
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
 `;
 
 const CardListWrapper = styled.ul`
