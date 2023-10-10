@@ -183,8 +183,6 @@ function TopicCard({
 }
 
 const Wrapper = styled.li`
-  width: 212px;
-  height: 296px;
   cursor: pointer;
   border-radius: ${({ theme }) => theme.radius.small};
 `;
@@ -195,14 +193,15 @@ const ButtonWrapper = styled.div`
   position: absolute;
   width: 72px;
 
-  top: 92px;
-  right: 12px;
+  top: 4%;
+  right: 4%;
 `;
 
 const TopicImage = styled(Image)`
   border-top-left-radius: ${({ theme }) => theme.radius.small};
   border-top-right-radius: ${({ theme }) => theme.radius.small};
   aspect-ratio: 1.6 / 1;
+  max-width: 252px;
 `;
 
 export default TopicCard;
