@@ -331,6 +331,10 @@ const SwiperButtonWrapper = styled.div<{ $tabBoxHeight: number }>`
   top: ${({ $tabBoxHeight }) => `calc(50% + ${$tabBoxHeight}px / 2)`};
   transform: ${({ $tabBoxHeight }) =>
     `translateY(calc(-50% - ${$tabBoxHeight}px))`};
+
+  @media (max-width: 744px) {
+    display: none;
+  }
 `;
 
 const AutoplayButtonWrapper = styled.div`
