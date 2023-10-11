@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { getPoiApi } from '../../../apis/getPoiApi';
 import { Poi } from '../../../types/Poi';
 import Input from '.';
+import Text from '../Text';
 
 interface AutocompleteProps {
   defaultValue?: string;
@@ -12,12 +13,10 @@ interface AutocompleteProps {
 }
 
 const Autocomplete = ({
-  defaultValue,
+  defaultValue = '',
   onSuggestionSelected,
 }: AutocompleteProps) => {
-  const [inputValue, setInputValue] = useState<string | undefined>(
-    defaultValue,
-  );
+  const [inputValue, setInputValue] = useState<string>(defaultValue);
   const [suggestions, setSuggestions] = useState<Poi[]>([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState<
     Poi['name'] | null
@@ -25,9 +24,9 @@ const Autocomplete = ({
 
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchData = async (value: string) => {
+  const fetchData = async (query: string) => {
     try {
-      const fetchedSuggestions = await getPoiApi(value);
+      const fetchedSuggestions = await getPoiApi(query);
 
       if (!fetchedSuggestions)
         throw new Error('추천 검색어를 불러오지 못했습니다.');
@@ -89,7 +88,7 @@ const Autocomplete = ({
               }}
             >
               {suggestion.name}
-              <Address>
+              <Address $fontSize="small" color="gray" $fontWeight="normal">
                 {suggestion.upperAddrName} {suggestion.middleAddrName}{' '}
                 {suggestion.roadName}
               </Address>
@@ -110,6 +109,7 @@ const AutocompleteInput = styled(Input)`
 
 const SuggestionsList = styled.ul`
   border: 1px solid #ccc;
+  border-top: none;
   border-radius: 4px;
   box-shadow: 0px 4px 5px -2px rgba(0, 0, 0, 0.3);
 `;
@@ -123,12 +123,11 @@ const SuggestionItem = styled.li`
   }
 `;
 
-const Address = styled.div`
-  font-size: ${({ theme }) => theme.fontSize.small};
-  color: ${({ theme }) => theme.color.gray};
-`;
+const Address = styled(Text)``;
 
 const Description = styled.div`
+  font-size: ${({ theme }) => theme.fontSize.small};
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

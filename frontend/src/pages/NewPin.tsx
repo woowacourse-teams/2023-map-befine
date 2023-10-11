@@ -147,39 +147,6 @@ function NewPin() {
     }
   };
 
-  // const onClickAddressInput = (
-  //   e:
-  //     | React.MouseEvent<HTMLInputElement>
-  //     | React.KeyboardEvent<HTMLInputElement>,
-  // ) => {
-  //   if (!(e.type === 'click') && e.currentTarget.value) return;
-
-  //   const width = 500; // 팝업의 너비
-  //   const height = 600; // 팝업의 높이
-  //   new window.daum.Postcode({
-  //     width, // 생성자에 크기 값을 명시적으로 지정해야 합니다.
-  //     height,
-  //     async onComplete(data: any) {
-  //       const addr = data.roadAddress; // 주소 변수
-
-  //       // data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-  //       const { ConvertAdd } = await getMapApi<any>(
-  //         `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
-  //       );
-  //       const lat = ConvertAdd.oldLat;
-  //       const lng = ConvertAdd.oldLon;
-
-  //       setClickedCoordinate({
-  //         latitude: lat,
-  //         longitude: lng,
-  //         address: addr,
-  //       });
-  //     },
-  //   }).open({
-  //     popupKey: 'postPopUp',
-  //   });
-  // };
-
   const onPinImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -345,30 +312,6 @@ function NewPin() {
           />
 
           <Space size={5} />
-
-          {/* <Space size={1} />
-
-          <Flex>
-            <Text color="black" $fontSize="default" $fontWeight="normal">
-              장소 위치
-            </Text>
-            <Space size={0} />
-            <Text color="primary" $fontSize="extraSmall" $fontWeight="normal">
-              *
-            </Text>
-          </Flex>
-          <Space size={0} />
-          <Input
-            name="address"
-            readOnly
-            value={clickedCoordinate.address}
-            onClick={onClickAddressInput}
-            onKeyDown={onClickAddressInput}
-            tabIndex={2}
-            placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
-          />
-
-          <Space size={5} /> */}
 
           <InputContainer
             tagType="textarea"
