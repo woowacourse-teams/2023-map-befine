@@ -175,7 +175,7 @@ function PinDetail({
         onChange={onPinImageFileChange}
       />
 
-      <PinImageContainer images={pin.images} />
+      <PinImageContainer images={pin.images} getPinData={getPinData} />
 
       <Space size={6} />
 

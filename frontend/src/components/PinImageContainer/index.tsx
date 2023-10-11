@@ -8,12 +8,12 @@ import useToast from '../../hooks/useToast';
 
 interface PinImageContainerProps {
   images: ImageProps[];
-}
+  getPinData: () => void;
+  
+}const NOT_FOUND_IMAGE =
+'https://dr702blqc4x5d.cloudfront.net/2023-map-be-fine/icon/notFound_image.svg';
 
-const NOT_FOUND_IMAGE =
-  'https://dr702blqc4x5d.cloudfront.net/2023-map-be-fine/icon/notFound_image.svg';
-
-const PinImageContainer = ({ images }: PinImageContainerProps) => {
+const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
   const { fetchDelete } = useDelete();
   const { showToast } = useToast();
 
@@ -27,6 +27,7 @@ const PinImageContainer = ({ images }: PinImageContainerProps) => {
         isThrow: true,
         onSuccess: () => {
           showToast('info', '핀에서 이미지가 삭제 되었습니다.');
+          getPinData();
         },
       });
     }
