@@ -16,6 +16,7 @@ import { postApi } from '../../apis/postApi';
 import useCompressImage from '../../hooks/useCompressImage';
 import Image from '../common/Image';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import { putApi } from '../../apis/putApi';
 
 interface UpdatedTopicInfoProp {
   id: number;
@@ -146,22 +147,10 @@ function UpdatedTopicInfo({
 
     formData.append('image', compressedFile);
 
-    const data = JSON.stringify(id);
-    const jsonBlob = new Blob([data], { type: 'application/json' });
+    await putApi(`/topics/images/${id}`, formData);
 
-    formData.append('topicId', jsonBlob);
-
-    await postApi('/topic/images', formData);
-
-    // getTopicImage();
+    setTopicsFromServer();
   };
-
-  // const [topicImage, setTopicImage] = useState<string | null>(null);
-
-  // const getTopicImage = async () => {
-  //   const newTopicImage = await getApi<string>(`/topic/${id}`);
-  //   setTopicImage(newTopicImage);
-  // };
 
   return (
     <Wrapper>
