@@ -105,10 +105,9 @@ public class Topic extends BaseTimeEntity {
 
     public void updateTopicInfo(
             String name,
-            String description,
-            String imageUrl
+            String description
     ) {
-        this.topicInfo = TopicInfo.of(name, description, imageUrl);
+        this.topicInfo = TopicInfo.of(name, description, topicInfo.getImageUrl());
     }
 
     public void updateLastPinUpdatedAt(LocalDateTime lastPinUpdatedAt) {
@@ -117,6 +116,10 @@ public class Topic extends BaseTimeEntity {
 
     public void updateTopicStatus(Publicity publicity, PermissionType permissionType) {
         topicStatus.update(publicity, permissionType);
+    }
+
+    public void updateTopicImageUrl(String imageUrl) {
+        this.topicInfo = TopicInfo.of(topicInfo.getName(), topicInfo.getDescription(), imageUrl);
     }
 
     public int countPins() {

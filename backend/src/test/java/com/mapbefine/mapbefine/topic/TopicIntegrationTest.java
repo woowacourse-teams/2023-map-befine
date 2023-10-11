@@ -279,7 +279,6 @@ class TopicIntegrationTest extends IntegrationTest {
         // when
         TopicUpdateRequest 송파_데이트코스 = new TopicUpdateRequest(
                 "송파 데이트코스",
-                "https://map-befine-official.github.io/favicon.png",
                 "수정한 토픽",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS

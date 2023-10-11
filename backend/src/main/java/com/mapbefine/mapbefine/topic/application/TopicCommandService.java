@@ -223,7 +223,7 @@ public class TopicCommandService {
 
         validateUpdateAuth(member, topic);
 
-        topic.updateTopicInfo(request.name(), request.description(), request.image());
+        topic.updateTopicInfo(request.name(), request.description());
         topic.updateTopicStatus(request.publicity(), request.permissionType());
     }
 
@@ -250,6 +250,15 @@ public class TopicCommandService {
             return;
         }
         throw new TopicForbiddenException(FORBIDDEN_TOPIC_DELETE);
+    }
+
+    public void updateTopicImage(AuthMember member, Long topicId, MultipartFile image) {
+        Topic topic = findTopic(topicId);
+
+        validateUpdateAuth(member, topic);
+
+        String imageUrl = imageService.upload(image);
+        topic.updateTopicImageUrl(imageUrl);
     }
 
 }

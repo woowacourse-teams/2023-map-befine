@@ -333,7 +333,6 @@ class TopicCommandServiceTest {
         AuthMember user = MemberFixture.createUser(member);
         TopicUpdateRequest request = new TopicUpdateRequest(
                 "수정된 이름",
-                "https://map-befine-official.github.io/favicon.png",
                 "수정된 설명",
                 Publicity.PRIVATE,
                 PermissionType.GROUP_ONLY
@@ -365,7 +364,6 @@ class TopicCommandServiceTest {
         //when then
         TopicUpdateRequest request = new TopicUpdateRequest(
                 "수정된 이름",
-                "https://map-befine-official.github.io/favicon.png",
                 "수정된 설명",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS

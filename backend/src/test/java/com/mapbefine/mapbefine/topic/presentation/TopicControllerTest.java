@@ -119,7 +119,6 @@ class TopicControllerTest extends RestDocsIntegration {
     void update() throws Exception {
         TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest(
                 "준팍의 안갈집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS

@@ -147,7 +147,7 @@ class AdminCommandServiceTest {
         //given
         TopicInfo topicInfo = topic.getTopicInfo();
 
-        topic.updateTopicInfo(topicInfo.getName(), topicInfo.getDescription(), "https://imageUrl.png");
+        topic.updateTopicImageUrl("https://imageUrl.png");
 
         assertThat(topic.getTopicInfo().getImageUrl()).isEqualTo("https://imageUrl.png");
 

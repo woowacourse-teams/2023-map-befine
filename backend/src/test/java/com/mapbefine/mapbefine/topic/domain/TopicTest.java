@@ -40,21 +40,20 @@ class TopicTest {
         //given
         String name = "New Topic";
         String description = "New Description";
-        String imageUrl = "https://example.com/image.png";
 
         //when
         topic.updateTopicInfo(
                 name,
-                description,
-                imageUrl
+                description
         );
         TopicInfo topicInfo = topic.getTopicInfo();
 
         //then
         assertThat(topicInfo.getName()).isEqualTo(name);
         assertThat(topicInfo.getDescription()).isEqualTo(description);
-        assertThat(topicInfo.getImageUrl()).isEqualTo(imageUrl);
     }
+
+    // TODO: 2023/10/11 TOPIC Image 를 변경하는 Test 를 추가적으로 짠다.
 
     @Test
     @DisplayName("토픽 상태를 변경한다.")
