@@ -5,7 +5,7 @@ export const getPoiApi = async (query: string): Promise<PoiApiResponse> => {
     `https://apis.openapi.sk.com/tmap/pois?version=1&format=json&callback=result&searchKeyword=${query}&resCoordType=WGS84GEO&reqCoordType=WGS84GEO&count=10`,
     {
       method: 'GET',
-      headers: { appKey: process.env.TMAP_API_KEY || '' },
+      headers: { appKey: process.env.REACT_APP_TMAP_API_KEY || '' },
     },
   );
 

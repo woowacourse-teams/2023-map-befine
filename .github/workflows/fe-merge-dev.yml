@@ -35,8 +35,8 @@ jobs:
         working-directory: frontend
         env:
           REACT_APP_GOOGLE_ANALYTICS: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS }}
+          REACT_APP_TMAP_API_KEY: ${{ secrets.REACT_APP_TMAP_API_KEY }}
           APP_URL: "https://mapbefine.kro.kr/api"
-          TMAP_API_KEY: ${{ secrets.TMAP_API_KEY }}
 
       - name: upload to artifact
         uses: actions/upload-artifact@v3
