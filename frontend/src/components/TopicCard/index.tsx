@@ -202,6 +202,7 @@ const TopicImage = styled(Image)`
   border-top-right-radius: ${({ theme }) => theme.radius.small};
   aspect-ratio: 1.6 / 1;
   min-width: 212px;
+  max-width: 280px;
 
   @media (max-width: 744px) {
     width: 100%;
