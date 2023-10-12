@@ -173,6 +173,8 @@ function SelectedTopic() {
         ))}
       </Suspense>
 
+      <Space size={8} />
+
       {selectedPinId && (
         <>
           <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>

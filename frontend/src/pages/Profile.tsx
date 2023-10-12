@@ -65,6 +65,8 @@ function Profile() {
           routePage={goToNewTopic}
         />
       </Suspense>
+
+      <Space size={8} />
     </Wrapper>
   );
 }

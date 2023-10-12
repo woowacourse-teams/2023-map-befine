@@ -62,6 +62,8 @@ function Bookmark() {
           <FavoriteNotFilledSVG />
         </TopicCardList>
       </Suspense>
+
+      <Space size={8} />
     </Wrapper>
   );
 }

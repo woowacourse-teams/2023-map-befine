@@ -40,6 +40,8 @@ function SeeAllNearTopics() {
           routePage={goToHome}
         />
       </Suspense>
+
+      <Space size={8} />
     </Wrapper>
   );
 }

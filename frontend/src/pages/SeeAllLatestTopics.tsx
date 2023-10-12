@@ -40,6 +40,8 @@ function SeeAllLatestTopics() {
           routePage={goToHome}
         />
       </Suspense>
+
+      <Space size={8} />
     </Wrapper>
   );
 }

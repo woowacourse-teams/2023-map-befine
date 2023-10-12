@@ -121,6 +121,7 @@ function Search() {
           ))}
         </Grid>
       )}
+      <Space size={8} />
     </Wrapper>
   );
 }
