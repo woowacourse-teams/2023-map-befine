@@ -5,7 +5,7 @@ import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
-import MediaText from '../components/common/Text/mediaText';
+import MediaText from '../components/common/Text/MediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';

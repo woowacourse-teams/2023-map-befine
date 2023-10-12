@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
-import MediaText from '../components/common/Text/mediaText';
+import MediaText from '../components/common/Text/MediaText';
 import MyInfo from '../components/MyInfo';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';

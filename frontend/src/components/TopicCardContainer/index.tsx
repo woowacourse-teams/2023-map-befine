@@ -10,7 +10,7 @@ import Space from '../common/Space';
 import Swiper from '../common/Swiper';
 import Tab from '../common/Swiper/Tab';
 import Text from '../common/Text';
-import MediaText from '../common/Text/mediaText';
+import MediaText from '../common/Text/MediaText';
 import TopicCard from '../TopicCard';
 
 interface TopicCardContainerProps {

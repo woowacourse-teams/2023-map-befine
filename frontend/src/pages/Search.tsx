@@ -7,7 +7,7 @@ import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Grid from '../components/common/Grid';
 import Space from '../components/common/Space';
-import MediaText from '../components/common/Text/mediaText';
+import MediaText from '../components/common/Text/MediaText';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCard from '../components/TopicCard';
 import { TopicCardProps } from '../types/Topic';
