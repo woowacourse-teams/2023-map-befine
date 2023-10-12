@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 
-import Setting from '../../assets/setting.svg';
+import Setting from '../../assets/updateBtn.svg';
 import { DEFAULT_PROD_URL } from '../../constants';
 import useToast from '../../hooks/useToast';
 import { ProfileProps } from '../../types/Profile';

@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 
 import { getApi } from '../apis/getApi';
 import { postApi } from '../apis/postApi';
+import UpdateBtnSVG from '../assets/updateBtn.svg';
 import Box from '../components/common/Box';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
@@ -153,14 +154,7 @@ function PinDetail({
         <Flex $flexDirection="column" $alignItems="flex-end">
           {pin.canUpdate ? (
             <Box cursor="pointer">
-              <Text
-                color="primary"
-                $fontSize="default"
-                $fontWeight="normal"
-                onClick={onClickEditPin}
-              >
-                수정하기
-              </Text>
+              <UpdateBtnSVG onClick={onClickEditPin} />
             </Box>
           ) : (
             <Space size={5} />

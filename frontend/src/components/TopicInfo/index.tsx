@@ -8,6 +8,7 @@ import FavoriteNotFilledSVG from '../../assets/topicInfo_favoriteBtn_notFilled.s
 import SeeTogetherSVG from '../../assets/topicInfo_seeTogetherBtn_filled.svg';
 import SeeTogetherNotFilledSVG from '../../assets/topicInfo_seeTogetherBtn_notFilled.svg';
 import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
+import UpdateBtnSVG from '../../assets/updateBtn.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import useToast from '../../hooks/useToast';
 import AddFavorite from '../AddFavorite';
@@ -128,9 +129,7 @@ function TopicInfo({
         </Flex>
         {canUpdate && (
           <Box cursor="pointer" onClick={updateTopicInfo}>
-            <Text color="primary" $fontSize="default" $fontWeight="normal">
-              수정하기
-            </Text>
+            <UpdateBtnSVG />
           </Box>
         )}
       </Flex>
