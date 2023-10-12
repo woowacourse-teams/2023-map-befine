@@ -3,6 +3,7 @@ import { styled } from 'styled-components';
 
 import Box from '../components/common/Box';
 import Space from '../components/common/Space';
+import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
@@ -28,7 +29,7 @@ function SeeAllTopics() {
         인기 급상승할 지도?
       </MediaText>
 
-      <Space size={5} />
+      <MediaSpace size={6} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicCardList

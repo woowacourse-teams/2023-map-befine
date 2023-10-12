@@ -3,6 +3,7 @@ import { styled } from 'styled-components';
 
 import Banner from '../components/Banner';
 import Space from '../components/common/Space';
+import MediaSpace from '../components/common/Space/MediaSpace';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
@@ -59,7 +60,7 @@ function Home() {
         />
       </Suspense>
 
-      <Space size={9} />
+      <MediaSpace size={9} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
@@ -70,7 +71,7 @@ function Home() {
         />
       </Suspense>
 
-      <Space size={9} />
+      <MediaSpace size={9} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
@@ -81,7 +82,7 @@ function Home() {
         />
       </Suspense>
 
-      <Space size={5} />
+      <Space size={8} />
     </Wrapper>
   );
 }
