@@ -167,13 +167,6 @@ function TopicCard({
                   <SeeTogetherNotFilledSVG />
                 )}
               </AddSeeTogether>
-              <AddFavorite
-                isBookmarked={isBookmarked}
-                id={id}
-                getTopicsFromServer={getTopicsFromServer}
-              >
-                {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
-              </AddFavorite>
             </ButtonWrapper>
           )}
         </Box>
@@ -191,7 +184,7 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   position: absolute;
-  width: 72px;
+  width: 32px;
 
   top: 4%;
   right: 4%;
