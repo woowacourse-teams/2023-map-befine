@@ -7,6 +7,8 @@ interface Props {
 }
 
 let isAcceleratingPos = false;
+const CAN_SWIPE = 10;
+const OPPOSITE_DIRECTION_CAN_SWIPE = 4;
 
 const useSwipeable = ({ childrenListLength, pos, setPos }: Props) => {
   const [prevTouch, setPrevTouch] = useState<React.Touch | null>(null);
@@ -15,12 +17,12 @@ const useSwipeable = ({ childrenListLength, pos, setPos }: Props) => {
   const acceleratePos = (diff: number) => {
     if (isAcceleratingPos) return;
 
-    if (pos < childrenListLength - 1 && diff < -10) {
+    if (pos < childrenListLength - 1 && diff < -CAN_SWIPE) {
       isAcceleratingPos = true;
       setPos(pos + 1);
     }
 
-    if (pos > 0 && diff > 10) {
+    if (pos > 0 && diff > CAN_SWIPE) {
       isAcceleratingPos = true;
       setPos(pos - 1);
     }
@@ -58,7 +60,7 @@ const useSwipeable = ({ childrenListLength, pos, setPos }: Props) => {
     const diff = touch.pageX - prevTouch.pageX;
     const otherPos = touch.pageY - prevTouch.pageY;
 
-    if (Math.abs(otherPos) > 4) return;
+    if (Math.abs(otherPos) > OPPOSITE_DIRECTION_CAN_SWIPE) return;
 
     acceleratePos(diff);
   };
