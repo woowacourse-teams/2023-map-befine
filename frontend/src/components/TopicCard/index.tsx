@@ -85,7 +85,7 @@ function TopicCard({
         <TopicImage
           height="138px"
           width="138px"
-          src={image}
+          src={image || DEFAULT_TOPIC_IMAGE}
           alt="사진 이미지"
           $objectFit="cover"
           onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import { styled } from 'styled-components';
 
 import Setting from '../../assets/updateBtn.svg';
-import { DEFAULT_PROD_URL } from '../../constants';
+import { DEFAULT_PROD_URL, DEFAULT_PROFILE_IMAGE } from '../../constants';
 import useToast from '../../hooks/useToast';
 import { ProfileProps } from '../../types/Profile';
 import Box from '../common/Box';
@@ -72,7 +72,12 @@ function MyInfo() {
       <SettingContainer onClick={onClickSetting}>
         <Setting />
       </SettingContainer>
-      <MyInfoImg src={user.imageUrl} />
+      <MyInfoImg
+        src={user.imageUrl || DEFAULT_PROFILE_IMAGE}
+        onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+          e.currentTarget.src = DEFAULT_PROFILE_IMAGE;
+        }}
+      />
       <Space size={5} />
       <Box>
         <Flex $justifyContent="space-between" $alignItems="center">
