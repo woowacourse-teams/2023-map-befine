@@ -6,7 +6,6 @@ import Space from '../components/common/Space';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
-import { setFullScreenResponsive } from '../constants/responsive';
 import { MarkerContext } from '../context/MarkerContext';
 import { SeeTogetherContext } from '../context/SeeTogetherContext';
 import useNavigator from '../hooks/useNavigator';
