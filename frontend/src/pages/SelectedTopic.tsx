@@ -199,18 +199,15 @@ const Wrapper = styled.section<{
   display: flex;
   flex-direction: column;
   width: ${({ width }) => width};
-  margin: ${({ $selectedPinId }) => $selectedPinId === null && '0 auto'};
+  margin: 0 auto;
 
   @media (max-width: 1076px) {
-    width: calc(50vw - 40px);
+    width: ${({ $selectedPinId }) => ($selectedPinId ? '49vw' : '50vw')};
+    margin: ${({ $selectedPinId }) => $selectedPinId && '0'};
   }
 
   @media (max-width: 744px) {
     width: 100%;
-  }
-
-  @media (max-width: 372px) {
-    width: ${({ width }) => width};
   }
 `;
 
