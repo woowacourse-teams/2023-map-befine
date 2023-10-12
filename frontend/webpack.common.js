@@ -24,6 +24,7 @@ module.exports = {
     new DefinePlugin({
       'process.env.APP_URL': JSON.stringify(process.env.APP_URL),
     }),
+    new Dotenv(),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
