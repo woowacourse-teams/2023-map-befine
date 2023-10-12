@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import useGet from '../apiHooks/useGet';
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
+import Grid from '../components/common/Grid';
 import Space from '../components/common/Space';
 import MediaText from '../components/common/Text/mediaText';
 import SearchBar from '../components/SearchBar/SearchBar';
@@ -53,7 +54,7 @@ function Search() {
     <Wrapper>
       <Space size={1} />
       <SearchBar />
-      <Space size={1} />
+      <Space size={5} />
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
           <MediaText
@@ -90,7 +91,18 @@ function Search() {
           <Space size={5} />
         </EmptyWrapper>
       ) : (
-        <CardListWrapper>
+        <Grid
+          as="ul"
+          rows="auto"
+          columns={5}
+          gap={20}
+          $mediaQueries={[
+            [1180, 4],
+            [900, 3],
+            [660, 2],
+            [320, 1],
+          ]}
+        >
           {displayedTopics?.map((topic) => (
             <Fragment key={topic.id}>
               <TopicCard
@@ -107,7 +119,7 @@ function Search() {
               />
             </Fragment>
           ))}
-        </CardListWrapper>
+        </Grid>
       )}
     </Wrapper>
   );
@@ -123,12 +135,6 @@ const Wrapper = styled.article`
   @media (max-width: 1180px) {
     width: 100%;
   }
-`;
-
-const CardListWrapper = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
 `;
 
 const EmptyWrapper = styled.section`
