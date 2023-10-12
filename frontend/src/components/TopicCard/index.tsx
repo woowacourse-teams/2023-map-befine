@@ -1,8 +1,6 @@
 import { SyntheticEvent, useContext, useState } from 'react';
 import { styled } from 'styled-components';
 
-import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
-import FavoriteNotFilledSVG from '../../assets/favoriteBtn_notFilled.svg';
 import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
 import SeeTogetherNotFilledSVG from '../../assets/seeTogetherBtn_notFilled.svg';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
@@ -13,7 +11,6 @@ import useKeyDown from '../../hooks/useKeyDown';
 import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
 import { TopicCardProps } from '../../types/Topic';
-import AddFavorite from '../AddFavorite';
 import AddSeeTogether from '../AddSeeTogether';
 import Box from '../common/Box';
 import Flex from '../common/Flex';
