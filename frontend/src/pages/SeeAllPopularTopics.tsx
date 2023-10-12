@@ -3,10 +3,9 @@ import { styled } from 'styled-components';
 
 import Box from '../components/common/Box';
 import Space from '../components/common/Space';
-import Text from '../components/common/Text';
+import MediaText from '../components/common/Text/mediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
-import { setFullScreenResponsive } from '../constants/responsive';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
@@ -25,9 +24,9 @@ function SeeAllTopics() {
   return (
     <Wrapper>
       <Space size={5} />
-      <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+      <MediaText color="black" $fontSize="extraLarge" $fontWeight="bold">
         인기 급상승할 지도?
-      </Text>
+      </MediaText>
 
       <Space size={5} />
 

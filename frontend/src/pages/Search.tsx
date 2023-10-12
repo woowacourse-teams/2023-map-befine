@@ -6,10 +6,9 @@ import useGet from '../apiHooks/useGet';
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
-import Text from '../components/common/Text';
+import MediaText from '../components/common/Text/mediaText';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCard from '../components/TopicCard';
-import { setFullScreenResponsive } from '../constants/responsive';
 import { TopicCardProps } from '../types/Topic';
 
 function Search() {
@@ -57,23 +56,23 @@ function Search() {
       <Space size={1} />
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
-          <Text
+          <MediaText
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
             tabIndex={0}
           >
             찾았을 지도?
-          </Text>
+          </MediaText>
           <Space size={0} />
-          <Text
+          <MediaText
             color="gray"
             $fontSize="default"
             $fontWeight="normal"
             tabIndex={1}
           >
-            검색한 지도를 확인해보세요.
-          </Text>
+            {`${searchQuery} 검색 결과입니다.`}
+          </MediaText>
         </Box>
       </Flex>
       <Space size={6} />
@@ -83,9 +82,9 @@ function Search() {
         <EmptyWrapper>
           <Flex $alignItems="center">
             <Space size={1} />
-            <Text color="black" $fontSize="default" $fontWeight="normal">
+            <MediaText color="black" $fontSize="default" $fontWeight="normal">
               {`'${searchQuery}'에 대한 검색 결과가 없습니다.`}
-            </Text>
+            </MediaText>
             <Space size={4} />
           </Flex>
           <Space size={5} />
