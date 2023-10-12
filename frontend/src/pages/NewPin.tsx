@@ -1,13 +1,13 @@
+/* eslint-disable no-nested-ternary */
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import { getApi } from '../apis/getApi';
-import { getMapApi } from '../apis/getMapApi';
 import { postApi } from '../apis/postApi';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
-import Input from '../components/common/Input';
+import Autocomplete from '../components/common/Input/Autocomplete';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import InputContainer from '../components/InputContainer';
@@ -24,6 +24,7 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useToast from '../hooks/useToast';
 import { NewPinFormProps } from '../types/FormValues';
+import { Poi } from '../types/Poi';
 import { TopicCardProps } from '../types/Topic';
 import { hasErrorMessage, hasNullValue } from '../validations';
 
@@ -51,7 +52,7 @@ function NewPin() {
   const { routePage } = useNavigator();
   const { showToast } = useToast();
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { openModal, closeModal } = useContext(ModalContext);
+  const { openModal } = useContext(ModalContext);
   const { compressImageList } = useCompressImage();
 
   const [formImages, setFormImages] = useState<File[]>([]);
@@ -131,12 +132,10 @@ function NewPin() {
         return;
       }
       let postTopicId = topic?.id;
-      let postName = formValues.name;
 
       if (!topic) {
         // 토픽이 없으면 selectedTopic을 통해 토픽을 생성한다.
         postTopicId = selectedTopic?.topicId;
-        postName = selectedTopic?.topicName;
       }
 
       if (postTopicId) routePage(`/topics/${postTopicId}`, [postTopicId]);
@@ -146,39 +145,6 @@ function NewPin() {
         '핀을 추가할 수 있는 권한이 없거나 지도를 선택하지 않았습니다.',
       );
     }
-  };
-
-  const onClickAddressInput = (
-    e:
-      | React.MouseEvent<HTMLInputElement>
-      | React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (!(e.type === 'click') && e.currentTarget.value) return;
-
-    const width = 500; // 팝업의 너비
-    const height = 600; // 팝업의 높이
-    new window.daum.Postcode({
-      width, // 생성자에 크기 값을 명시적으로 지정해야 합니다.
-      height,
-      async onComplete(data: any) {
-        const addr = data.roadAddress; // 주소 변수
-
-        // data를 통해 받아온 값을 Tmap api를 통해 위도와 경도를 구한다.
-        const { ConvertAdd } = await getMapApi<any>(
-          `https://apis.openapi.sk.com/tmap/geo/convertAddress?version=1&format=json&callback=result&searchTypCd=NtoO&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo&coordType=WGS84GEO&reqAdd=${addr}`,
-        );
-        const lat = ConvertAdd.oldLat;
-        const lng = ConvertAdd.oldLon;
-
-        setClickedCoordinate({
-          latitude: lat,
-          longitude: lng,
-          address: addr,
-        });
-      },
-    }).open({
-      popupKey: 'postPopUp',
-    });
   };
 
   const onPinImageChange = async (
@@ -213,6 +179,17 @@ function NewPin() {
 
     setFormImages([...formImages, ...compressedImageList]);
     setShowedImages(imageUrlLists);
+  };
+
+  const onSuggestionSelected = (suggestion: Poi) => {
+    const { noorLat, noorLon } = suggestion;
+    const address = `${suggestion.upperAddrName} ${suggestion.middleAddrName} ${suggestion.roadName}[${suggestion.name}]`;
+
+    setClickedCoordinate({
+      latitude: Number(noorLat),
+      longitude: Number(noorLon),
+      address,
+    });
   };
 
   useEffect(() => {
@@ -329,14 +306,9 @@ function NewPin() {
             </Text>
           </Flex>
           <Space size={0} />
-          <Input
-            name="address"
-            readOnly
-            value={clickedCoordinate.address}
-            onClick={onClickAddressInput}
-            onKeyDown={onClickAddressInput}
-            tabIndex={2}
-            placeholder="지도를 클릭하거나 장소의 위치를 입력해주세요."
+          <Autocomplete
+            defaultValue={clickedCoordinate.address}
+            onSuggestionSelected={onSuggestionSelected}
           />
 
           <Space size={5} />

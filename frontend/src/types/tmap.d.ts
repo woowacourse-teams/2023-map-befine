@@ -20,6 +20,7 @@ interface TMap {
   fitBounds(bounds: LatLngBounds): void;
   setCenter(latLng: LatLng): void;
   setZoom(zoomLevel: number): void;
+  getZoom(): number;
   on(eventType: string, callback: (event: evt) => void): void;
   removeListener(eventType: string, callback: (event: evt) => void): void;
 }
