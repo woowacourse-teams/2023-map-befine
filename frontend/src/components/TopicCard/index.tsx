@@ -82,15 +82,14 @@ function TopicCard({
       onKeyDown={onElementKeyDown}
     >
       <Flex position="relative" tabIndex={0} role="button">
-        <TopicImage
+        <Image
           height="138px"
           width="138px"
           src={image || DEFAULT_TOPIC_IMAGE}
           alt="사진 이미지"
           $objectFit="cover"
-          onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-            e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
-          }}
+          $errorDefaultSrc={DEFAULT_TOPIC_IMAGE}
+          radius="small"
         />
 
         <Box width="192px" padding={1}>
@@ -194,10 +193,6 @@ const ButtonWrapper = styled.div`
 
   top: 100px;
   left: 60px;
-`;
-
-const TopicImage = styled(Image)`
-  border-radius: ${({ theme }) => theme.radius.small};
 `;
 
 export default TopicCard;

@@ -8,6 +8,7 @@ import { ProfileProps } from '../../types/Profile';
 import Box from '../common/Box';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
+import Image from '../common/Image';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import UpdateMyInfo from './UpdateMyInfo';
@@ -72,11 +73,13 @@ function MyInfo() {
       <SettingContainer onClick={onClickSetting}>
         <Setting />
       </SettingContainer>
-      <MyInfoImg
+      <Image
+        width="80px"
+        height="80px"
         src={user.imageUrl || DEFAULT_PROFILE_IMAGE}
-        onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-          e.currentTarget.src = DEFAULT_PROFILE_IMAGE;
-        }}
+        alt="프로필 이미지"
+        $errorDefaultSrc={DEFAULT_PROFILE_IMAGE}
+        radius="50%"
       />
       <Space size={5} />
       <Box>

@@ -7,6 +7,9 @@ interface PinImageContainerProps {
   images: ImageProps[];
 }
 
+const NOT_FOUND_IMAGE =
+  'https://dr702blqc4x5d.cloudfront.net/2023-map-be-fine/icon/notFound_image.svg';
+
 function PinImageContainer({ images }: PinImageContainerProps) {
   return (
     <FilmList>
@@ -19,6 +22,7 @@ function PinImageContainer({ images }: PinImageContainerProps) {
                 height="100px"
                 width="100px"
                 src={image.imageUrl}
+                $errorDefaultSrc={NOT_FOUND_IMAGE}
               />
             </ImageWrapper>
           ),

@@ -100,12 +100,11 @@ function TopicInfo({
       <TopicImage
         height="168px"
         width="100%"
-        src={topicImage}
+        src={topicImage || DEFAULT_TOPIC_IMAGE}
         alt="사진 이미지"
         $objectFit="cover"
-        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-          e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
-        }}
+        radius="medium"
+        $errorDefaultSrc={DEFAULT_TOPIC_IMAGE}
       />
 
       <Space size={1} />
