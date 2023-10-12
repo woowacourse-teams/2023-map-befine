@@ -75,6 +75,8 @@ function Swiper({
   const childrenList = React.Children.toArray(
     children,
   ) as React.ReactElement<TabProps>[];
+  const isShowTabBox =
+    !$isNotTabBoxShow && childrenList.length > $elementsOneTab;
 
   const [pos, setPos] = useState<number>(0);
   const { elementsCount } = useMediaQuery(
@@ -113,7 +115,7 @@ function Swiper({
       responsive={responsive}
       $tabBoxPosition={$tabBoxPosition}
     >
-      {!$isNotTabBoxShow && (
+      {isShowTabBox && (
         <TabBoxWrapper $simpleTab={$simpleTab} $tabBoxHeight={$tabBoxHeight}>
           {calculateTabCountUsingElements(childrenList, elementsCount).map(
             (children, idx) =>
@@ -126,7 +128,9 @@ function Swiper({
                   $focusColor={$focusColor}
                   width={width}
                   $tabBoxHeight={$tabBoxHeight}
-                  $childrenLength={childrenList.length}
+                  $childrenLength={Math.ceil(
+                    childrenList.length / $elementsOneTab,
+                  )}
                   $simpleTab={$simpleTab}
                   onClick={() => moveToSettedPos(idx)}
                 >
