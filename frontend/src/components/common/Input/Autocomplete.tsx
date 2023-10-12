@@ -23,7 +23,6 @@ const Autocomplete = ({
   >(null);
 
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
   const fetchData = async (query: string) => {
     try {
       const fetchedSuggestions = await getPoiApi(query);
@@ -92,7 +91,6 @@ const Autocomplete = ({
                 {suggestion.upperAddrName} {suggestion.middleAddrName}{' '}
                 {suggestion.roadName}
               </Address>
-              <Description>{suggestion.desc}</Description>
             </SuggestionItem>
           ))}
         </SuggestionsList>
@@ -110,6 +108,7 @@ const AutocompleteInput = styled(Input)`
 const SuggestionsList = styled.ul`
   border: 1px solid #ccc;
   border-top: none;
+  border-bottom: none;
   border-radius: 4px;
   box-shadow: 0px 4px 5px -2px rgba(0, 0, 0, 0.3);
 `;
