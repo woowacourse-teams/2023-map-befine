@@ -4,11 +4,10 @@ import { styled } from 'styled-components';
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
-import Text from '../components/common/Text';
+import MediaText from '../components/common/Text/mediaText';
 import MyInfo from '../components/MyInfo';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
-import { setFullScreenResponsive } from '../constants/responsive';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
@@ -34,23 +33,23 @@ function Profile() {
 
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
-          <Text
+          <MediaText
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
             tabIndex={0}
           >
             나의 지도
-          </Text>
+          </MediaText>
           <Space size={0} />
-          <Text
+          <MediaText
             color="gray"
             $fontSize="default"
             $fontWeight="normal"
             tabIndex={1}
           >
             내가 만든 지도를 확인해보세요.
-          </Text>
+          </MediaText>
         </Box>
       </Flex>
 

@@ -10,6 +10,7 @@ import Space from '../common/Space';
 import Swiper from '../common/Swiper';
 import Tab from '../common/Swiper/Tab';
 import Text from '../common/Text';
+import MediaText from '../common/Text/mediaText';
 import TopicCard from '../TopicCard';
 
 interface TopicCardContainerProps {
@@ -47,23 +48,23 @@ function TopicCardContainer({
     <section>
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
-          <Text
+          <MediaText
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
             tabIndex={0}
           >
             {containerTitle}
-          </Text>
+          </MediaText>
           <Space size={0} />
-          <Text
+          <MediaText
             color="gray"
             $fontSize="default"
             $fontWeight="normal"
             tabIndex={0}
           >
             {containerDescription}
-          </Text>
+          </MediaText>
         </Box>
 
         <PointerText
