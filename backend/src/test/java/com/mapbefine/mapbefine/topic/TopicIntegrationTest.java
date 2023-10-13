@@ -516,4 +516,33 @@ class TopicIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @Test
+    @DisplayName("Topic의 이미지를 변경하면 200을 반환한다")
+    void updateTopicImage_Success() {
+        ExtractableResponse<Response> newTopic = createNewTopic(
+                new TopicCreateRequestWithoutImage(
+                        "준팍의 또간집",
+                        "준팍이 두번 간집",
+                        Publicity.PUBLIC,
+                        PermissionType.ALL_MEMBERS,
+                        Collections.emptyList()
+                ),
+                authHeader
+        );
+        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("image", mockFile)
+                .when().put("/topics/images/{id}", topicId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
 }
