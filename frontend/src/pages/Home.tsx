@@ -1,11 +1,12 @@
 import { lazy, Suspense, useContext, useEffect } from 'react';
 import { styled } from 'styled-components';
 
+import Banner from '../components/Banner';
 import Space from '../components/common/Space';
+import MediaSpace from '../components/common/Space/MediaSpace';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
-import { setFullScreenResponsive } from '../constants/responsive';
 import { MarkerContext } from '../context/MarkerContext';
 import { SeeTogetherContext } from '../context/SeeTogetherContext';
 import useNavigator from '../hooks/useNavigator';
@@ -44,9 +45,12 @@ function Home() {
 
   return (
     <Wrapper>
-      <Space size={1} />
       <SearchBar />
-      <Space size={1} />
+      <Space size={4} />
+
+      <Banner />
+      <Space size={6} />
+
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
           url="/topics/bests"
@@ -56,7 +60,7 @@ function Home() {
         />
       </Suspense>
 
-      <Space size={9} />
+      <MediaSpace size={9} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
@@ -67,7 +71,7 @@ function Home() {
         />
       </Suspense>
 
-      <Space size={9} />
+      <MediaSpace size={9} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
@@ -78,17 +82,19 @@ function Home() {
         />
       </Suspense>
 
-      <Space size={5} />
+      <Space size={8} />
     </Wrapper>
   );
 }
 
 const Wrapper = styled.article`
-  width: 1036px;
+  width: 1140px;
   margin: 0 auto;
   position: relative;
 
-  ${setFullScreenResponsive()}
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
 `;
 
 export default Home;

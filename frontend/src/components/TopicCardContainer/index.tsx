@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
 import useGet from '../../apiHooks/useGet';
@@ -7,7 +7,10 @@ import { TopicCardProps } from '../../types/Topic';
 import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
+import Swiper from '../common/Swiper';
+import Tab from '../common/Swiper/Tab';
 import Text from '../common/Text';
+import MediaText from '../common/Text/MediaText';
 import TopicCard from '../TopicCard';
 
 interface TopicCardContainerProps {
@@ -45,23 +48,23 @@ function TopicCardContainer({
     <section>
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
-          <Text
+          <MediaText
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
             tabIndex={0}
           >
             {containerTitle}
-          </Text>
+          </MediaText>
           <Space size={0} />
-          <Text
+          <MediaText
             color="gray"
             $fontSize="default"
             $fontWeight="normal"
             tabIndex={0}
           >
             {containerDescription}
-          </Text>
+          </MediaText>
         </Box>
 
         <PointerText
@@ -80,29 +83,42 @@ function TopicCardContainer({
 
       <Space size={4} />
 
-      <TopicsWrapper>
+      <Swiper
+        as="ul"
+        width={1140}
+        height={300}
+        $elementsOneTab={5}
+        $elementsMediaQueries={[1180, 900, 660, 320]}
+        swiper
+        swipeable
+        $isNotTabBoxShow
+      >
         {topics &&
           topics.map(
             (topic, index) =>
-              index < 6 && (
-                <Fragment key={topic.id}>
-                  <TopicCard
-                    cardType="default"
-                    id={topic.id}
-                    image={topic.image}
-                    name={topic.name}
-                    creator={topic.creator}
-                    updatedAt={topic.updatedAt}
-                    pinCount={topic.pinCount}
-                    bookmarkCount={topic.bookmarkCount}
-                    isInAtlas={topic.isInAtlas}
-                    isBookmarked={topic.isBookmarked}
-                    getTopicsFromServer={setTopicsFromServer}
-                  />
-                </Fragment>
+              index < 10 && (
+                <Tab label={`${index}`} key={topic.id}>
+                  <Flex>
+                    <CustomSpace />
+                    <TopicCard
+                      cardType="default"
+                      id={topic.id}
+                      image={topic.image}
+                      name={topic.name}
+                      creator={topic.creator}
+                      updatedAt={topic.updatedAt}
+                      pinCount={topic.pinCount}
+                      bookmarkCount={topic.bookmarkCount}
+                      isInAtlas={topic.isInAtlas}
+                      isBookmarked={topic.isBookmarked}
+                      getTopicsFromServer={setTopicsFromServer}
+                    />
+                    <CustomSpace />
+                  </Flex>
+                </Tab>
               ),
           )}
-      </TopicsWrapper>
+      </Swiper>
     </section>
   );
 }
@@ -111,11 +127,9 @@ const PointerText = styled(Text)`
   cursor: pointer;
 `;
 
-const TopicsWrapper = styled.ul`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
+const CustomSpace = styled.div`
+  min-width: 10px;
+  min-height: 10px;
 `;
 
 export default TopicCardContainer;

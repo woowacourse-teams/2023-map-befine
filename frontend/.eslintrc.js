@@ -36,6 +36,9 @@ module.exports = {
     'jsx-a11y/tabindex-no-positive': 'off',
     'react/no-array-index-key': 'off',
     'react/jsx-no-useless-fragment': 'off',
+    'no-unused-expressions': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/no-unused-prop-types': 'off',
   },
   settings: {
     'import/resolver': {
