@@ -1,10 +1,6 @@
 package com.mapbefine.mapbefine.location.domain;
 
 import static com.mapbefine.mapbefine.location.exception.LocationErrorCode.ILLEGAL_COORDINATE_RANGE;
-import static java.lang.Math.acos;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import static java.lang.Math.toRadians;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.location.exception.LocationException.LocationBadRequestException;
@@ -12,6 +8,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)
@@ -23,16 +22,18 @@ public class Coordinate {
     private static final double LONGITUDE_LOWER_BOUND = 124;
     private static final double LONGITUDE_UPPER_BOUND = 132;
 
-    @Column(columnDefinition = "Decimal(18,15)")
-    private double latitude;
+    /*
+     * 4326은 데이터베이스에서 사용하는 여러 SRID 값 중, 일반적인 GPS기반의 위/경도 좌표를 저장할 때 쓰이는 값입니다.
+     * */
+    private static final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
-    @Column(columnDefinition = "Decimal(18,15)")
-    private double longitude;
+    @Column(columnDefinition = "geometry SRID 4326")
+    private Point coordinate;
 
     private Coordinate(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.coordinate = geometryFactory.createPoint(new org.locationtech.jts.geom.Coordinate(longitude, latitude));
     }
+
 
     public static Coordinate of(double latitude, double longitude) {
         validateRange(latitude, longitude);
@@ -51,13 +52,12 @@ public class Coordinate {
                 || (longitude < LONGITUDE_LOWER_BOUND || LONGITUDE_UPPER_BOUND < longitude);
     }
 
-    public double calculateDistanceInMeters(Coordinate otherCoordinate) {
-        double earthRadius = 6_371_000;
+    public double getLatitude() {
+        return coordinate.getY();
+    }
 
-        return acos(sin(toRadians(otherCoordinate.latitude)) * sin(toRadians(this.latitude)) + (
-                cos(toRadians(otherCoordinate.latitude)) * cos(toRadians(this.latitude))
-                        * cos(toRadians(otherCoordinate.longitude - this.longitude))
-        )) * earthRadius;
+    public double getLongitude() {
+        return coordinate.getX();
     }
 
 }
