@@ -20,7 +20,6 @@ public class AdminController {
     private final AdminQueryService adminQueryService;
     private final AdminCommandService adminCommandService;
 
-
     public AdminController(AdminQueryService adminQueryService, AdminCommandService adminCommandService) {
         this.adminQueryService = adminQueryService;
         this.adminCommandService = adminCommandService;
