@@ -1,8 +1,6 @@
 import { SyntheticEvent, useContext, useState } from 'react';
 import { styled } from 'styled-components';
 
-import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
-import FavoriteNotFilledSVG from '../../assets/favoriteBtn_notFilled.svg';
 import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
 import SeeTogetherNotFilledSVG from '../../assets/seeTogetherBtn_notFilled.svg';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
@@ -13,13 +11,12 @@ import useKeyDown from '../../hooks/useKeyDown';
 import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
 import { TopicCardProps } from '../../types/Topic';
-import AddFavorite from '../AddFavorite';
 import AddSeeTogether from '../AddSeeTogether';
 import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Image from '../common/Image';
 import Space from '../common/Space';
-import Text from '../common/Text';
+import MediaText from '../common/Text/MediaText';
 
 interface OnClickDesignatedProps {
   topicId: number;
@@ -81,44 +78,48 @@ function TopicCard({
       ref={elementRef}
       onKeyDown={onElementKeyDown}
     >
-      <Flex position="relative" tabIndex={0} role="button">
+      <Flex
+        $flexDirection="column"
+        position="relative"
+        tabIndex={0}
+        role="button"
+      >
         <TopicImage
-          height="138px"
-          width="138px"
+          width="100%"
           src={image}
-          alt="사진 이미지"
+          alt="지도 이미지"
           $objectFit="cover"
           onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
             e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
           }}
         />
 
-        <Box width="192px" padding={1}>
+        <Box width="100%" $maxWidth="212px" padding={1}>
           <Box height="52px">
-            <Text
+            <MediaText
               color="black"
               $fontSize="default"
               $fontWeight="bold"
               aria-label={`토픽 이름 ${name}`}
             >
               {name}
-            </Text>
+            </MediaText>
           </Box>
 
-          <Text
+          <MediaText
             color="black"
             $fontSize="small"
             $fontWeight="normal"
             aria-label={`작성자 ${creator}`}
           >
             {creator}
-          </Text>
+          </MediaText>
 
           <Space size={0} />
 
-          <Text color="gray" $fontSize="small" $fontWeight="normal">
+          <MediaText color="gray" $fontSize="small" $fontWeight="normal">
             {updatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
-          </Text>
+          </MediaText>
 
           <Space size={0} />
 
@@ -126,26 +127,26 @@ function TopicCard({
             <Flex $alignItems="center" width="64px">
               <SmallTopicPin />
               <Space size={0} />
-              <Text
+              <MediaText
                 color="black"
                 $fontSize="extraSmall"
                 $fontWeight="normal"
                 aria-label={`핀 갯수 ${pinCount}개`}
               >
                 {pinCount > 999 ? '+999' : pinCount}개
-              </Text>
+              </MediaText>
             </Flex>
             <Flex $alignItems="center" width="64px">
               <SmallTopicStar />
               <Space size={0} />
-              <Text
+              <MediaText
                 color="black"
                 $fontSize="extraSmall"
                 $fontWeight="normal"
                 aria-label={`즐겨찾기 ${bookmarkCount}명`}
               >
                 {bookmarkCount > 999 ? '+999' : bookmarkCount}명
-              </Text>
+              </MediaText>
             </Flex>
           </Flex>
 
@@ -163,13 +164,6 @@ function TopicCard({
                   <SeeTogetherNotFilledSVG />
                 )}
               </AddSeeTogether>
-              <AddFavorite
-                isBookmarked={isBookmarked}
-                id={id}
-                getTopicsFromServer={getTopicsFromServer}
-              >
-                {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
-              </AddFavorite>
             </ButtonWrapper>
           )}
         </Box>
@@ -179,10 +173,7 @@ function TopicCard({
 }
 
 const Wrapper = styled.li`
-  width: 332px;
-  height: 140px;
   cursor: pointer;
-  border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
 `;
 
@@ -190,14 +181,23 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   position: absolute;
-  width: 72px;
+  width: 32px;
 
-  top: 100px;
-  left: 60px;
+  top: 4%;
+  right: 4%;
 `;
 
 const TopicImage = styled(Image)`
-  border-radius: ${({ theme }) => theme.radius.small};
+  border-top-left-radius: ${({ theme }) => theme.radius.small};
+  border-top-right-radius: ${({ theme }) => theme.radius.small};
+  aspect-ratio: 1.6 / 1;
+  min-width: 212px;
+  max-width: 280px;
+
+  @media (max-width: 744px) {
+    width: 100%;
+    min-width: 154px;
+  }
 `;
 
 export default TopicCard;

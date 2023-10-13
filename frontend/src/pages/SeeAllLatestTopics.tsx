@@ -3,10 +3,10 @@ import { styled } from 'styled-components';
 
 import Box from '../components/common/Box';
 import Space from '../components/common/Space';
-import Text from '../components/common/Text';
+import MediaSpace from '../components/common/Space/MediaSpace';
+import MediaText from '../components/common/Text/MediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
-import { setFullScreenResponsive } from '../constants/responsive';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
@@ -25,11 +25,11 @@ function SeeAllLatestTopics() {
   return (
     <Wrapper>
       <Space size={5} />
-      <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+      <MediaText color="black" $fontSize="extraLarge" $fontWeight="bold">
         새로울 지도?
-      </Text>
+      </MediaText>
 
-      <Space size={5} />
+      <MediaSpace size={6} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicCardList
@@ -40,15 +40,20 @@ function SeeAllLatestTopics() {
           routePage={goToHome}
         />
       </Suspense>
+
+      <Space size={8} />
     </Wrapper>
   );
 }
 
 const Wrapper = styled(Box)`
-  width: 1036px;
+  width: 1140px;
   margin: 0 auto;
+  position: relative;
 
-  ${setFullScreenResponsive()}
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
 `;
 
 export default SeeAllLatestTopics;
