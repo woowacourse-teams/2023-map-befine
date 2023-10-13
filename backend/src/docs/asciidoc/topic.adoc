@@ -40,3 +40,6 @@ operation::topic-controller-test/copy-pin[snippets='http-request,http-response']
 
 operation::topic-controller-test/update[snippets='http-request,http-response']
 
+=== 토픽 이미지 수정
+
+operation::topic-controller-test/update-image[snippets='http-request,http-response']
