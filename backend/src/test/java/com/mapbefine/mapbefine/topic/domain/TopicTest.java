@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.topic.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -35,7 +36,7 @@ class TopicTest {
     }
 
     @Test
-    @DisplayName("토픽 정보를 변경한다.")
+    @DisplayName("이미지를 제외한 토픽 정보를 변경한다.")
     void updateTopicInfo() {
         //given
         String name = "New Topic";
@@ -53,7 +54,27 @@ class TopicTest {
         assertThat(topicInfo.getDescription()).isEqualTo(description);
     }
 
-    // TODO: 2023/10/11 TOPIC Image 를 변경하는 Test 를 추가적으로 짠다.
+    @Test
+    @DisplayName("토픽의 이미지를 변경한다.")
+    void updateTopicImageUrl() {
+        //given
+        String imageUrl = "https://changedImageUrl";
+        String originalName = topic.getTopicInfo().getName();
+        String originalDescription = topic.getTopicInfo().getDescription();
+
+        //when
+        topic.updateTopicImageUrl(
+                imageUrl
+        );
+        TopicInfo topicInfo = topic.getTopicInfo();
+
+        //then
+        assertAll(
+                () -> assertThat(topicInfo.getImageUrl()).isEqualTo(imageUrl),
+                () -> assertThat(topicInfo.getName()).isEqualTo(originalName),
+                () -> assertThat(topicInfo.getDescription()).isEqualTo(originalDescription)
+        );
+    }
 
     @Test
     @DisplayName("토픽 상태를 변경한다.")
