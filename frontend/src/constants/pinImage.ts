@@ -3,13 +3,69 @@ interface PinImageMap {
 }
 
 export const pinImageMap: PinImageMap = {
-  1: 'https://velog.velcdn.com/images/afds4567/post/077287bd-6abb-49b5-843a-0a12d9a197a9/image.svg',
-  2: 'https://velog.velcdn.com/images/afds4567/post/5c849a0c-021b-4cfe-80f9-8fd552fa3987/image.svg',
-  3: 'https://velog.velcdn.com/images/afds4567/post/1281de8f-380e-4ef5-a725-0f8feb1ecd08/image.svg',
-  4: 'https://velog.velcdn.com/images/afds4567/post/d2835034-afe7-4a79-ae62-0e7520bec661/image.svg',
-  5: 'https://velog.velcdn.com/images/afds4567/post/214b712a-f061-4530-ae12-8841224e4dc0/image.svg',
-  6: 'https://velog.velcdn.com/images/afds4567/post/7dbe4728-c40a-4efe-83ac-57e2f066843b/image.svg',
-  7: 'https://velog.velcdn.com/images/afds4567/post/65b642cb-222b-4936-88ce-80dc5ce3fb3f/image.svg',
+  1: `<svg width="40" height="58" viewBox="0 0 40 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.8449 48.4877C9.81988 49.803 7.73559 48.7147 8.22893 47.1219L14.5909 26.5813C14.868 25.6867 15.8879 25.262 16.718 25.6954L23.5743 29.2752C24.4044 29.7086 24.6388 30.7883 24.0632 31.5269L10.8449 48.4877Z" fill="#454545"/>
+<circle cx="23.9766" cy="16" r="16" fill="#E1325C"/>
+<circle cx="17.7548" cy="8.88856" r="3.55556" fill="white" fill-opacity="0.6"/>
+<path d="M28.4206 23.548C30.5005 24.4997 32.8504 23.9094 34.6186 21.9133" stroke="black" stroke-width="1.8" stroke-linecap="round"/>
+<circle cx="32.4193" cy="12.889" r="1.33333" fill="black"/>
+<circle cx="27.0872" cy="17.3333" r="1.33333" fill="black"/>
+</svg>
+`,
+  2: `<svg width="40" height="58" viewBox="0 0 40 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.8449 48.4877C9.81988 49.803 7.73559 48.7147 8.22893 47.1219L14.5909 26.5813C14.868 25.6867 15.8879 25.262 16.718 25.6954L23.5743 29.2752C24.4044 29.7086 24.6388 30.7883 24.0632 31.5269L10.8449 48.4877Z" fill="#454545"/>
+<circle cx="23.9766" cy="16" r="16" fill="#F9CB55"/>
+<circle cx="17.7548" cy="8.88856" r="3.55556" fill="white" fill-opacity="0.6"/>
+<path d="M28.4206 23.548C30.5005 24.4997 32.8504 23.9094 34.6186 21.9133" stroke="black" stroke-width="1.8" stroke-linecap="round"/>
+<circle cx="32.4193" cy="12.889" r="1.33333" fill="black"/>
+<circle cx="27.0872" cy="17.3333" r="1.33333" fill="black"/>
+</svg>
+`,
+  3: `<svg width="40" height="58" viewBox="0 0 40 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.8449 48.4877C9.81988 49.803 7.73559 48.7147 8.22893 47.1219L14.5909 26.5813C14.868 25.6867 15.8879 25.262 16.718 25.6954L23.5743 29.2752C24.4044 29.7086 24.6388 30.7883 24.0632 31.5269L10.8449 48.4877Z" fill="#454545"/>
+<circle cx="23.9766" cy="16" r="16" fill="#4B5CFA"/>
+<circle cx="17.7548" cy="8.88856" r="3.55556" fill="white" fill-opacity="0.6"/>
+<path d="M28.4206 23.548C30.5005 24.4997 32.8504 23.9094 34.6186 21.9133" stroke="black" stroke-width="1.8" stroke-linecap="round"/>
+<circle cx="32.4193" cy="12.889" r="1.33333" fill="black"/>
+<circle cx="27.0872" cy="17.3333" r="1.33333" fill="black"/>
+</svg>
+`,
+  4: `<svg width="40" height="58" viewBox="0 0 40 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.8449 48.4877C9.81988 49.803 7.73559 48.7147 8.22893 47.1219L14.5909 26.5813C14.868 25.6867 15.8879 25.262 16.718 25.6954L23.5743 29.2752C24.4044 29.7086 24.6388 30.7883 24.0632 31.5269L10.8449 48.4877Z" fill="#454545"/>
+<circle cx="23.9766" cy="16" r="16" fill="#57B148"/>
+<circle cx="17.7548" cy="8.88856" r="3.55556" fill="white" fill-opacity="0.6"/>
+<path d="M28.4206 23.548C30.5005 24.4997 32.8504 23.9094 34.6186 21.9133" stroke="black" stroke-width="1.8" stroke-linecap="round"/>
+<circle cx="32.4193" cy="12.889" r="1.33333" fill="black"/>
+<circle cx="27.0872" cy="17.3333" r="1.33333" fill="black"/>
+</svg>
+`,
+  5: `<svg width="40" height="58" viewBox="0 0 40 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.8449 48.4877C9.81988 49.803 7.73559 48.7147 8.22893 47.1219L14.5909 26.5813C14.868 25.6867 15.8879 25.262 16.718 25.6954L23.5743 29.2752C24.4044 29.7086 24.6388 30.7883 24.0632 31.5269L10.8449 48.4877Z" fill="#454545"/>
+<circle cx="23.9766" cy="16" r="16" fill="#2AC1BC"/>
+<circle cx="17.7548" cy="8.88856" r="3.55556" fill="white" fill-opacity="0.6"/>
+<path d="M28.4206 23.548C30.5005 24.4997 32.8504 23.9094 34.6186 21.9133" stroke="black" stroke-width="1.8" stroke-linecap="round"/>
+<circle cx="32.4193" cy="12.889" r="1.33333" fill="black"/>
+<circle cx="27.0872" cy="17.3333" r="1.33333" fill="black"/>
+</svg>
+`,
+  6: `<svg width="40" height="58" viewBox="0 0 40 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.8449 48.4877C9.81988 49.803 7.73559 48.7147 8.22893 47.1219L14.5909 26.5813C14.868 25.6867 15.8879 25.262 16.718 25.6954L23.5743 29.2752C24.4044 29.7086 24.6388 30.7883 24.0632 31.5269L10.8449 48.4877Z" fill="#454545"/>
+<circle cx="23.9766" cy="16" r="16" fill="#FD842D"/>
+<circle cx="17.7548" cy="8.88856" r="3.55556" fill="white" fill-opacity="0.6"/>
+<path d="M28.4206 23.548C30.5005 24.4997 32.8504 23.9094 34.6186 21.9133" stroke="black" stroke-width="1.8" stroke-linecap="round"/>
+<circle cx="32.4193" cy="12.889" r="1.33333" fill="black"/>
+<circle cx="27.0872" cy="17.3333" r="1.33333" fill="black"/>
+</svg>
+`,
+  7: `<svg width="40" height="58" viewBox="0 0 40 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.8449 48.4877C9.81988 49.803 7.73559 48.7147 8.22893 47.1219L14.5909 26.5813C14.868 25.6867 15.8879 25.262 16.718 25.6954L23.5743 29.2752C24.4044 29.7086 24.6388 30.7883 24.0632 31.5269L10.8449 48.4877Z" fill="#454545"/>
+<circle cx="23.9766" cy="16" r="16" fill="#C340B6"/>
+<circle cx="17.7548" cy="8.88856" r="3.55556" fill="white" fill-opacity="0.6"/>
+<path d="M28.4206 23.548C30.5005 24.4997 32.8504 23.9094 34.6186 21.9133" stroke="black" stroke-width="1.8" stroke-linecap="round"/>
+<circle cx="32.4193" cy="12.889" r="1.33333" fill="black"/>
+<circle cx="27.0872" cy="17.3333" r="1.33333" fill="black"/>
+</svg>
+`,
 };
 
 export const pinColors: PinImageMap = {

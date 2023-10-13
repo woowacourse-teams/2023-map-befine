@@ -49,7 +49,7 @@ function MarkerProvider({ children }: Props): JSX.Element {
   ) =>
     new Tmapv3.Marker({
       position: new Tmapv3.LatLng(coordinate.latitude, coordinate.longitude),
-      icon: pinImageMap[markerType + 1],
+      iconHTML: pinImageMap[markerType + 1],
       map,
     });
 

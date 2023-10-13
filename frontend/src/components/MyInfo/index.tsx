@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import { styled } from 'styled-components';
 
-import Setting from '../../assets/setting.svg';
-import { DEFAULT_PROD_URL } from '../../constants';
+import Setting from '../../assets/updateBtn.svg';
+import { DEFAULT_PROD_URL, DEFAULT_PROFILE_IMAGE } from '../../constants';
 import useToast from '../../hooks/useToast';
 import { ProfileProps } from '../../types/Profile';
 import Box from '../common/Box';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
+import Image from '../common/Image';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import UpdateMyInfo from './UpdateMyInfo';
@@ -72,7 +73,14 @@ function MyInfo() {
       <SettingContainer onClick={onClickSetting}>
         <Setting />
       </SettingContainer>
-      <MyInfoImg src={user.imageUrl} />
+      <Image
+        width="80px"
+        height="80px"
+        src={user.imageUrl || DEFAULT_PROFILE_IMAGE}
+        alt="프로필 이미지"
+        $errorDefaultSrc={DEFAULT_PROFILE_IMAGE}
+        radius="50%"
+      />
       <Space size={5} />
       <Box>
         <Flex $justifyContent="space-between" $alignItems="center">

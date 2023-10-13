@@ -16,7 +16,7 @@ import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Image from '../common/Image';
 import Space from '../common/Space';
-import MediaText from '../common/Text/MediaText';
+import MediaText from '../common/Text/MediaQueryText';
 
 interface OnClickDesignatedProps {
   topicId: number;
@@ -78,20 +78,15 @@ function TopicCard({
       ref={elementRef}
       onKeyDown={onElementKeyDown}
     >
-      <Flex
-        $flexDirection="column"
-        position="relative"
-        tabIndex={0}
-        role="button"
-      >
+      <Flex position="relative" tabIndex={0} role="button">
         <TopicImage
-          width="100%"
+          height="138px"
+          width="138px"
           src={image}
-          alt="지도 이미지"
+          alt="사진 이미지"
           $objectFit="cover"
-          onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-            e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
-          }}
+          $errorDefaultSrc={DEFAULT_TOPIC_IMAGE}
+          radius="small"
         />
 
         <Box width="100%" $maxWidth="212px" padding={1}>
@@ -188,16 +183,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const TopicImage = styled(Image)`
-  border-top-left-radius: ${({ theme }) => theme.radius.small};
-  border-top-right-radius: ${({ theme }) => theme.radius.small};
-  aspect-ratio: 1.6 / 1;
-  min-width: 212px;
-  max-width: 280px;
-
-  @media (max-width: 744px) {
-    width: 100%;
-    min-width: 154px;
-  }
+  border-radius: ${({ theme }) => theme.radius.small};
 `;
 
 export default TopicCard;
