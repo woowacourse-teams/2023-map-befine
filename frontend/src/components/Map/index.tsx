@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
@@ -10,6 +10,13 @@ import useMapClick from '../../hooks/useMapClick';
 import useUpdateCoordinates from '../../hooks/useUpdateCoordinates';
 import Flex from '../common/Flex';
 
+const MOBILE_WIDTH = 744;
+
+const getZoomMinLimit = () => {
+  if (window.innerWidth <= MOBILE_WIDTH) return 6;
+  return 7;
+};
+
 function Map() {
   const { Tmapv3 } = window;
 
@@ -19,7 +26,7 @@ function Map() {
 
   const mapContainer = useRef(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!Tmapv3 || !mapContainer.current) return;
 
     const map = new Tmapv3.Map(mapContainer.current, {
@@ -29,7 +36,7 @@ function Map() {
 
     if (!map) return;
 
-    map.setZoomLimit(7, 17);
+    map.setZoomLimit(getZoomMinLimit(), 17);
 
     setMapInstance(map);
 
