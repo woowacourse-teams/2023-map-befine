@@ -12,6 +12,11 @@ import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
 import InputContainer from '../InputContainer';
+import Text from '../common/Text';
+import useCompressImage from '../../hooks/useCompressImage';
+import Image from '../common/Image';
+import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import { putApi } from '../../apis/putApi';
 
 interface UpdatedTopicInfoProp {
   id: number;
@@ -51,6 +56,8 @@ function UpdatedTopicInfo({
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
   const [isAllPermissioned, setIsAllPermissioned] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
+  const [changedImages, setChangedImages] = useState<string | null>(null);
+  const { compressImage } = useCompressImage();
 
   const updateTopicInfo = async () => {
     try {
@@ -123,8 +130,60 @@ function UpdatedTopicInfo({
     );
   }, []);
 
+  const onTopicImageFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files && event.target.files[0];
+    const formData = new FormData();
+
+    if (!file) {
+      showToast(
+        'error',
+        '이미지를 선택하지 않았거나 추가하신 이미지를 찾을 수 없습니다. 다시 선택해 주세요.',
+      );
+      return;
+    }
+
+    const compressedFile = await compressImage(file);
+    formData.append('image', compressedFile);
+
+    await putApi(`/topics/images/${id}`, formData);
+
+    const updatedImageUrl = URL.createObjectURL(compressedFile);
+    setChangedImages(updatedImageUrl);
+  };
+
   return (
     <Wrapper>
+      <ImageWrapper>
+        <Text color="black" $fontSize="default" $fontWeight="normal">
+          지도 사진
+        </Text>
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
+          지도를 대표하는 사진을 변경할 수 있습니다.
+        </Text>
+        <Space size={0} />
+        <TopicImage
+          height="168px"
+          width="100%"
+          src={changedImages ? changedImages : image}
+          alt="사진 이미지"
+          $objectFit="cover"
+          onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+            e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
+          }}
+        />
+        <ImageInputLabel htmlFor="file">수정</ImageInputLabel>
+        <ImageInputButton
+          id="file"
+          type="file"
+          name="image"
+          onChange={onTopicImageFileChange}
+        />
+      </ImageWrapper>
+
+      <Space size={5} />
+
       <InputContainer
         tagType="input"
         containerTitle="지도 이름"
@@ -185,6 +244,55 @@ function UpdatedTopicInfo({
   );
 }
 
-const Wrapper = styled.section``;
+const Wrapper = styled.article``;
+
+const ImageWrapper = styled.div`
+  position: relative;
+`;
+
+const ImageInputLabel = styled.label`
+  width: 60px;
+  height: 35px;
+  margin-bottom: 10px;
+  padding: 10px 10px;
+
+  color: ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.lightGray};
+
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  text-align: center;
+
+  border-radius: ${({ theme }) => theme.radius.small};
+  cursor: pointer;
+
+  position: absolute;
+  right: 5px;
+  bottom: -5px;
+
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 5px 0px;
+
+  &:hover {
+    filter: brightness(0.95);
+  }
+
+  @media (max-width: 372px) {
+    width: 40px;
+    height: 30px;
+
+    font-size: 8px;
+  }
+`;
+
+const ImageInputButton = styled.input`
+  display: none;
+`;
+
+const TopicImage = styled(Image)`
+  border-radius: ${({ theme }) => theme.radius.medium};
+`;
 
 export default UpdatedTopicInfo;
+function compressImage(file: File) {
+  throw new Error('Function not implemented.');
+}
