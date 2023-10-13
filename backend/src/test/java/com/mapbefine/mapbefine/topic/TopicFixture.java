@@ -36,6 +36,17 @@ public class TopicFixture {
         );
     }
 
+    public static Topic createPublicAndAllMembersTopic(String imageUrl, Member member) {
+        return Topic.createTopicAssociatedWithCreator(
+                "아무나 읽을 수 있는 토픽",
+                "아무나 읽을 수 있습니다.",
+                imageUrl,
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                member
+        );
+    }
+
     public static Topic createByName(String name, Member member) {
         return Topic.createTopicAssociatedWithCreator(
                 name,
@@ -96,4 +107,5 @@ public class TopicFixture {
                 topicIds
         );
     }
+
 }
