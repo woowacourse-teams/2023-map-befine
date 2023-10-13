@@ -156,6 +156,13 @@ function UpdatedTopicInfo({
   return (
     <Wrapper>
       <ImageWrapper>
+        <Text color="black" $fontSize="default" $fontWeight="normal">
+          지도 사진
+        </Text>
+        <Text color="gray" $fontSize="small" $fontWeight="normal">
+          지도를 대표하는 사진을 변경할 수 있습니다.
+        </Text>
+        <Space size={0} />
         <TopicImage
           height="168px"
           width="100%"

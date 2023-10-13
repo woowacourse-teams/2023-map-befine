@@ -17,7 +17,7 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
   const { fetchDelete } = useDelete();
   const { showToast } = useToast();
 
-  const onRemovePinIcon = (imageId: number) => {
+  const onRemovePinImage = (imageId: number) => {
     const isRemoveImage = confirm('해당 이미지를 삭제하시겠습니까?');
 
     if (isRemoveImage) {
@@ -47,7 +47,7 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
                   $errorDefaultSrc={NOT_FOUND_IMAGE}
                 />
                 <RemoveImageIconWrapper
-                  onClick={() => onRemovePinIcon(image.id)}
+                  onClick={() => onRemovePinImage(image.id)}
                 >
                   <RemoveImageButton />
                 </RemoveImageIconWrapper>
