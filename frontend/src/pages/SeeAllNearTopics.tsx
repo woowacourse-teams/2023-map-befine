@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 import Box from '../components/common/Box';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
-import MediaText from '../components/common/Text/MediaQueryText';
+import MediaText from '../components/common/Text/MediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';

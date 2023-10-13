@@ -16,7 +16,7 @@ import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Image from '../common/Image';
 import Space from '../common/Space';
-import MediaText from '../common/Text/MediaQueryText';
+import MediaText from '../common/Text/MediaText';
 
 interface OnClickDesignatedProps {
   topicId: number;
