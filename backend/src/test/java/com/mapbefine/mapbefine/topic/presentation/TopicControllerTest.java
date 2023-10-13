@@ -4,10 +4,12 @@ import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
+import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
@@ -128,6 +130,29 @@ class TopicControllerTest extends RestDocsIntegration {
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(topicUpdateRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("토픽 이미지 수정")
+    void updateImage() throws Exception {
+        MockMultipartFile image = FileFixture.createFile();
+//
+//        MockMultipartFile image = new MockMultipartFile("image", "test.png", IMAGE_PNG_VALUE, "data".getBytes());
+//
+//        mockMvc.perform(MockMvcRequestBuilders.multipart(POST, "/topics/merge")
+//                        .file(image)
+//                        .file(requestJson)
+//                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+//                .andExpect(MockMvcResultMatchers.status().isCreated())
+//                .andDo(restDocs.document());
+
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart(PUT, "/topics/images/1")
+                        .file(image)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(restDocs.document());
     }
