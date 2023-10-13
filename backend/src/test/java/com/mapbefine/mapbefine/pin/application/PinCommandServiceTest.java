@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
@@ -38,7 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 @ServiceTest
-class PinCommandServiceTest {
+class PinCommandServiceTest extends TestDatabaseContainer {
 
     private static final MultipartFile BASE_IMAGE_FILE = FileFixture.createFile();
     private static final String BASE_IMAGE = "https://mapbefine.github.io/favicon.png";

@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.common.annotation;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.common.config.JpaConfig;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

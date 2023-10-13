@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.auth.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.token.RefreshToken;
 import com.mapbefine.mapbefine.auth.domain.token.RefreshTokenRepository;
 import com.mapbefine.mapbefine.auth.dto.LoginTokens;
@@ -25,7 +26,7 @@ import java.util.Optional;
 
 @ServiceTest
 @TestPropertySource(locations = "classpath:application.yml")
-class TokenServiceTest {
+class TokenServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;

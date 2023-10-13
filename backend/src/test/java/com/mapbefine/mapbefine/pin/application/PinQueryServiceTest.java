@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ServiceTest
-class PinQueryServiceTest {
+class PinQueryServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private PinQueryService pinQueryService;

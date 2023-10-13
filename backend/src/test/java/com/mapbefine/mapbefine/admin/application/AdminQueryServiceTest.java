@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.admin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.admin.dto.AdminMemberDetailResponse;
 import com.mapbefine.mapbefine.admin.dto.AdminMemberResponse;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -26,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-class AdminQueryServiceTest {
+class AdminQueryServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private AdminQueryService adminQueryService;
