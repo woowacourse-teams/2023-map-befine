@@ -157,10 +157,14 @@ function Swiper({
       </TabSectionWrapper>
 
       {swiper && (
-        <SwiperButtonWrapper $tabBoxHeight={$tabBoxHeight}>
-          <SwiperLeftBtnSVG onClick={decreasePos} cursor="pointer" />
-          <SwiperRightBtnSVG onClick={increasePos} cursor="pointer" />
-        </SwiperButtonWrapper>
+        <>
+          <SwiperButtonLeftWrapper $tabBoxHeight={$tabBoxHeight}>
+            <SwiperLeftBtnSVG onClick={decreasePos} cursor="pointer" />
+          </SwiperButtonLeftWrapper>
+          <SwiperButtonRightWrapper $tabBoxHeight={$tabBoxHeight}>
+            <SwiperRightBtnSVG onClick={increasePos} cursor="pointer" />
+          </SwiperButtonRightWrapper>
+        </>
       )}
 
       {$autoplayButton && childrenList.length > 1 && (
@@ -328,12 +332,22 @@ const TabBox = styled.button<{
     `}
 `;
 
-const SwiperButtonWrapper = styled.div<{ $tabBoxHeight: number }>`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+const SwiperButtonLeftWrapper = styled.div<{ $tabBoxHeight: number }>`
   position: absolute;
   top: ${({ $tabBoxHeight }) => `calc(50% + ${$tabBoxHeight}px / 2)`};
+  left: 1%;
+  transform: ${({ $tabBoxHeight }) =>
+    `translateY(calc(-50% - ${$tabBoxHeight}px))`};
+
+  @media (max-width: 744px) {
+    display: none;
+  }
+`;
+
+const SwiperButtonRightWrapper = styled.div<{ $tabBoxHeight: number }>`
+  position: absolute;
+  top: ${({ $tabBoxHeight }) => `calc(50% + ${$tabBoxHeight}px / 2)`};
+  right: 1%;
   transform: ${({ $tabBoxHeight }) =>
     `translateY(calc(-50% - ${$tabBoxHeight}px))`};
 
