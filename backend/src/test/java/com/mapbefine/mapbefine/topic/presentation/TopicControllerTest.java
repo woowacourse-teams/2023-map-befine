@@ -138,16 +138,6 @@ class TopicControllerTest extends RestDocsIntegration {
     @DisplayName("토픽 이미지 수정")
     void updateImage() throws Exception {
         MockMultipartFile image = FileFixture.createFile();
-//
-//        MockMultipartFile image = new MockMultipartFile("image", "test.png", IMAGE_PNG_VALUE, "data".getBytes());
-//
-//        mockMvc.perform(MockMvcRequestBuilders.multipart(POST, "/topics/merge")
-//                        .file(image)
-//                        .file(requestJson)
-//                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
-//                .andExpect(MockMvcResultMatchers.status().isCreated())
-//                .andDo(restDocs.document());
-
 
         mockMvc.perform(MockMvcRequestBuilders.multipart(PUT, "/topics/images/1")
                         .file(image)
