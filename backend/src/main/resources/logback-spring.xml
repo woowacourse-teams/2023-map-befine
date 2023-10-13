@@ -17,12 +17,14 @@
     </springProfile>
 
     <springProfile name="dev">
+        <include resource="logback/console-appender.xml"/>
         <include resource="logback/file-hibernate-appender.xml"/>
         <include resource="logback/file-debug-appender.xml"/>
         <include resource="logback/file-warn-appender.xml"/>
         <include resource="logback/file-error-appender.xml"/>
 
         <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE_WARN"/>
             <appender-ref ref="FILE_ERROR"/>
         </root>
@@ -36,12 +38,14 @@
     </springProfile>
 
     <springProfile name="prod">
+        <include resource="logback/console-appender.xml"/>
         <include resource="logback/file-info-appender.xml"/>
         <include resource="logback/file-warn-appender.xml"/>
         <include resource="logback/file-error-appender.xml"/>
         <include resource="logback/slack-error-appender.xml"/>
 
         <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE_WARN"/>
             <appender-ref ref="FILE_ERROR"/>
             <appender-ref ref="SLACK_ERROR"/>
