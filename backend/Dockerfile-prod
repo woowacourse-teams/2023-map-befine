@@ -1,0 +1,3 @@
+FROM openjdk:17
+COPY build/libs/mapbefine.jar mapbefine.jar
+ENTRYPOINT ["java", "-jar","-Dspring.profiles.active=prod", "mapbefine.jar"]
