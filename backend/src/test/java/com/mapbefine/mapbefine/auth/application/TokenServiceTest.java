@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mapbefine.mapbefine.auth.domain.token.RefreshToken;
 import com.mapbefine.mapbefine.auth.domain.token.RefreshTokenRepository;
 import com.mapbefine.mapbefine.auth.dto.LoginTokens;
+import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -22,7 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
-@DataJpaTest
+@ServiceTest
 @TestPropertySource(locations = "classpath:application.yml")
 class TokenServiceTest {
 
