@@ -71,7 +71,7 @@ jobs:
 
       - name: Docker Compose
         run: |
-	  cd /home/ubuntu/backend
+          cd /home/ubuntu/backend
           sudo sh zero-downtime-deploy.sh
           sudo docker image prune -af
 
