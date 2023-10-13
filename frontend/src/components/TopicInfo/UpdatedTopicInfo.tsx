@@ -267,13 +267,20 @@ const ImageInputLabel = styled.label`
   cursor: pointer;
 
   position: absolute;
-  left: 40%;
-  bottom: -25px;
+  right: 5px;
+  bottom: -5px;
 
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 5px 0px;
 
   &:hover {
     filter: brightness(0.95);
+  }
+
+  @media (max-width: 372px) {
+    width: 40px;
+    height: 30px;
+
+    font-size: 8px;
   }
 `;
 
