@@ -12,7 +12,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Query(
             "SELECT l FROM Location l "
-                    + "WHERE ST_Contains(ST_Buffer(l.coordinate.coordinate, :distance), :coordinate)"
+                    + "WHERE ST_Contains(ST_Buffer(:coordinate, :distance), l.coordinate.coordinate)"
     )
     List<Location> findAllByCoordinateAndDistanceInMeters(
             @Param("coordinate") Point coordinate,

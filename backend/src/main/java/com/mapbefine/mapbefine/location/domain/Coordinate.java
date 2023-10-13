@@ -27,7 +27,7 @@ public class Coordinate {
      * */
     private static final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
-    @Column(columnDefinition = "geometry SRID 4326")
+    @Column(columnDefinition = "geometry SRID 4326", nullable = false)
     private Point coordinate;
 
     private Coordinate(double latitude, double longitude) {
