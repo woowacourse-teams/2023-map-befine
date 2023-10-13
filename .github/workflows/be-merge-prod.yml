@@ -71,7 +71,8 @@ jobs:
 
       - name: Docker Compose
         run: |
-          sudo sh /home/ubuntu/backend/zero-downtime-deploy.sh
+	  cd /home/ubuntu/backend
+          sudo sh zero-downtime-deploy.sh
           sudo docker image prune -af
 
       - name: 슬랙 메시지 보내기
