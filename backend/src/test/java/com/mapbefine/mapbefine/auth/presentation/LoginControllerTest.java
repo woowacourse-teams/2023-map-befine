@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.auth.presentation;
 
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
-import static org.apache.http.cookie.SM.COOKIE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -12,12 +11,14 @@ import com.mapbefine.mapbefine.auth.dto.LoginTokens;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.oauth.application.OauthService;
+import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 class LoginControllerTest extends RestDocsIntegration {
@@ -41,9 +42,9 @@ class LoginControllerTest extends RestDocsIntegration {
         );
 
         // when then
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/oauth/kakao")
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/oauth/kakao"))
+                .andExpect(MockMvcResultMatchers.status().isFound())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -69,42 +70,42 @@ class LoginControllerTest extends RestDocsIntegration {
         given(tokenService.issueTokens(memberDetailResponse.id())).willReturn(loginTokens);
 
         // when then
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/oauth/login/kakao")
-                        .param("code", code)
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/oauth/login/kakao")
+                        .param("code", code))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
+
 
     @Test
     @DisplayName("만료된 Access Token과 유효한 RefreshToken인 경우, 새로운 토큰들을 발행한다.")
     void reissueTokens() throws Exception {
-        AccessToken expiredAccessToken = new AccessToken("만료된 액세스 토큰");
-        String refreshToken = "리프레시 토큰";
+        AccessToken expiredAccessToken = new AccessToken("expired-access-token");
+        String refreshToken = "refresh-token";
 
-        LoginTokens reissuedTokens = new LoginTokens("재발급된 액세스 토큰", "재발급된 리프레시 토큰");
+        LoginTokens reissuedTokens = new LoginTokens("reissued-access-token", "reissued-refresh-token");
 
         given(tokenService.reissueToken(any(), any())).willReturn(reissuedTokens);
 
         // then
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/refresh-token")
-                        .header(COOKIE, refreshToken)
+        mockMvc.perform(MockMvcRequestBuilders.post("/refresh-token")
+                        .cookie(new Cookie("refresh-token", refreshToken))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expiredAccessToken))
-        ).andDo(restDocs.document());
+                        .content(objectMapper.writeValueAsString(expiredAccessToken)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
-    @DisplayName("유효한 Access Token과 유효한 RefreshToken인 경우, RefreshTokenRepository에서 RefreshTokend을 삭제한다")
+    @DisplayName("유효한 Access Token과 유효한 RefreshToken으로 로그아웃을 요청한다.")
     void logout() throws Exception {
-        AccessToken accessToken = new AccessToken("access token");
+        AccessToken accessToken = new AccessToken("access-token");
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/logout")
-                        .header(COOKIE, testAuthHeaderProvider.createRefreshToken())
+        mockMvc.perform(MockMvcRequestBuilders.post("/logout")
+                        .cookie(new Cookie("refresh-token", testAuthHeaderProvider.createRefreshToken()))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(accessToken))
-        ).andDo(restDocs.document());
-
+                        .content(objectMapper.writeValueAsString(accessToken)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 }

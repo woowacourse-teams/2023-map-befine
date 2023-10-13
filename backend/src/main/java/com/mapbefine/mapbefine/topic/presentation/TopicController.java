@@ -77,6 +77,18 @@ public class TopicController {
     }
 
     @LoginRequired
+    @PutMapping("/{topicId}")
+    public ResponseEntity<Void> update(
+            AuthMember member,
+            @PathVariable Long topicId,
+            @RequestBody TopicUpdateRequest request
+    ) {
+        topicCommandService.updateTopicInfo(member, topicId, request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @LoginRequired
     @PostMapping("/{topicId}/copy")
     public ResponseEntity<Void> copyPin(
             AuthMember member, @PathVariable Long topicId, @RequestParam List<Long> pinIds
@@ -127,18 +139,6 @@ public class TopicController {
         return ResponseEntity.ok(responses);
     }
 
-    @LoginRequired
-    @PutMapping("/{topicId}")
-    public ResponseEntity<Void> update(
-            AuthMember member,
-            @PathVariable Long topicId,
-            @RequestBody TopicUpdateRequest request
-    ) {
-        topicCommandService.updateTopicInfo(member, topicId, request);
-
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/bests")
     public ResponseEntity<List<TopicResponse>> findAllBestTopics(AuthMember authMember) {
         List<TopicResponse> responses = topicQueryService.findAllBestTopics(authMember);
@@ -146,7 +146,7 @@ public class TopicController {
         return ResponseEntity.ok(responses);
     }
 
-    @Deprecated(since = "2023.10.06")
+    @Deprecated(since = "2023.10.06 (연관관계 삭제 불완전, 사용되지 않는 API)")
     @LoginRequired
     @DeleteMapping("/{topicId}")
     public ResponseEntity<Void> delete(AuthMember member, @PathVariable Long topicId) {
