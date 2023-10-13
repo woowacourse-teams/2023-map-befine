@@ -12,7 +12,7 @@ import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
 import InputContainer from '../InputContainer';
-import { postApi } from '../../apis/postApi';
+import Text from '../common/Text';
 import useCompressImage from '../../hooks/useCompressImage';
 import Image from '../common/Image';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
@@ -56,6 +56,7 @@ function UpdatedTopicInfo({
   const [isPrivate, setIsPrivate] = useState(false); // 혼자 볼 지도 :  같이 볼 지도
   const [isAllPermissioned, setIsAllPermissioned] = useState(true); // 모두 : 지정 인원
   const [authorizedMemberIds, setAuthorizedMemberIds] = useState<number[]>([]);
+  const [changedImages, setChangedImages] = useState<string | null>(null);
   const { compressImage } = useCompressImage();
 
   const updateTopicInfo = async () => {
@@ -144,12 +145,12 @@ function UpdatedTopicInfo({
     }
 
     const compressedFile = await compressImage(file);
-
     formData.append('image', compressedFile);
 
     await putApi(`/topics/images/${id}`, formData);
 
-    setTopicsFromServer();
+    const updatedImageUrl = URL.createObjectURL(compressedFile);
+    setChangedImages(updatedImageUrl);
   };
 
   return (
@@ -158,7 +159,7 @@ function UpdatedTopicInfo({
         <TopicImage
           height="168px"
           width="100%"
-          src={image}
+          src={changedImages ? changedImages : image}
           alt="사진 이미지"
           $objectFit="cover"
           onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
