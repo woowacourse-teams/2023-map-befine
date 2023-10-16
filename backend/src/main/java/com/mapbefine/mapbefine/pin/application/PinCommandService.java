@@ -208,7 +208,7 @@ public class PinCommandService {
         Pin pin = findPin(request.pinId());
         validatePinCommentCreate(authMember, pin);
         Member member = findMember(authMember.getMemberId());
-        PinComment parentPinComment = findPinComment(request.pinId());
+        PinComment parentPinComment = findPinComment(request.parentPinCommentId());
 
         PinComment pinComment = PinComment.of(pin, parentPinComment, member, request.content());
         pinCommentRepository.save(pinComment);

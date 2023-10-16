@@ -68,21 +68,19 @@ public class PinQueryService {
         List<PinComment> pinComments = pinCommentRepository.findAllByPinId(pinId);
 
         return pinComments.stream()
-                .map(pinComment ->
-                        PinCommentResponse.of(pinComment, canChangePinCommentByAuthMember(member, pinComment))
-                )
+                .map(pinComment -> pinCommentToResponse(member, pinComment))
                 .toList();
     }
 
-    private boolean canChangePinCommentByAuthMember(AuthMember member, PinComment pinComment) {
-        Long creatorId = pinComment.getCreator()
-                .getId();
+    private PinCommentResponse pinCommentToResponse(AuthMember member, PinComment pinComment) {
+        Long creatorId = pinComment.getCreator().getId();
+        boolean canChange = Objects.nonNull(member.getMemberId()) && member.getMemberId().equals(creatorId);
 
-        if (Objects.isNull(member.getMemberId()) || creatorId.equals(member.getMemberId())) {
-            return false;
+        if (pinComment.isParentComment()) {
+            return PinCommentResponse.ofParentComment(pinComment, canChange);
         }
 
-        return true;
+        return PinCommentResponse.ofChildComment(pinComment, canChange);
     }
 
 }
