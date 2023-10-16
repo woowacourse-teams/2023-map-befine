@@ -1,7 +1,7 @@
 import SingleComment from './SingleComment';
 
 function ReplyComment({ props }: any) {
-  const { commentList, parentId, pageTotalCommentList, depth } = props;
+  const { commentList, pageTotalCommentList, depth } = props;
 
   if (depth === 2) return null;
   return (

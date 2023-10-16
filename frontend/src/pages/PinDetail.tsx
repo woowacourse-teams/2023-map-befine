@@ -130,7 +130,7 @@ function PinDetail({
 
   // 댓글 구현 부분
   const setCurrentPageCommentList = async () => {
-    const { data } = await getApi(`/pins/comment/${pinId}`);
+    const data: any[] = await getApi(`/pins/comments/${pinId}`);
     setCommentList(data);
     return data;
   };
@@ -150,9 +150,9 @@ function PinDetail({
         {
           pinId,
           content: newComment,
-          parentCommentId: null,
+          parentPinCommentId: null,
         },
-        'x-www-form-urlencoded',
+        'application/json',
       );
 
       setCurrentPageCommentList();

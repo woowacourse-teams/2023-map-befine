@@ -22,12 +22,12 @@ function SingleComment({ comment, commentList, totalList, depth = 0 }: any) {
     <CommentWrapper depth={depth} key={comment.id}>
       <Flex>
         <ProfileImage
-          src={comment.writer.profileImage}
+          src={comment.creatorImageUrl}
           width="40px"
           height="40px"
         />
         <CommentInfo>
-          <Writer>@{comment.writer.name}</Writer>
+          <Writer>@{comment.creator}</Writer>
           <Content>{comment.content}</Content>
           <div>
             <button type="button" onClick={toggleReplyOpen}>
