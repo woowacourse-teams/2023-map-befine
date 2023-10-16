@@ -9,6 +9,7 @@ import useClickedCoordinate from '../../hooks/useClickedCoordinate';
 import useFocusToMarker from '../../hooks/useFocusToMarkers';
 import useGeoLocation from '../../hooks/useGeolocation';
 import useMapClick from '../../hooks/useMapClick';
+import useToast from '../../hooks/useToast';
 import useUpdateCoordinates from '../../hooks/useUpdateCoordinates';
 import Flex from '../common/Flex';
 
@@ -21,18 +22,16 @@ function Map() {
 
   const mapContainer = useRef(null);
   const location = useGeoLocation();
+  const { showToast } = useToast();
 
   const handleCurrentLocationClick = () => {
     if (!location.loaded) {
-      console.log('위치 정보를 불러오는 중입니다...');
+      showToast('info', '위치 정보를 불러오는 중입니다.');
       return;
     }
 
     if (location.error) {
-      console.error(
-        '위치 정보를 불러오는데 실패했습니다:',
-        location.error.message,
-      );
+      showToast('error', '위치 정보 사용을 허용해주세요.');
       return;
     }
 
@@ -109,7 +108,7 @@ const MapFlex = styled(Flex)`
 const CurrentLocationIcon = styled(CurrentLocation)`
   position: absolute;
   cursor: pointer;
-  bottom: 32px;
+  bottom: 40px;
   right: 12px;
   width: 40px;
   height: 40px;
