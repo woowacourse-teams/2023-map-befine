@@ -15,11 +15,14 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.event.PinBatchDeleteEvent;
+import com.mapbefine.mapbefine.pin.event.PinDeleteEvent;
 import com.mapbefine.mapbefine.pin.event.PinUpdateEvent;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,15 +44,21 @@ class PinUpdateHistoryCommandServiceTest {
     @Autowired
     ApplicationEventPublisher applicationEventPublisher;
 
+    private Member member;
+    private Pin pin;
+
+    @BeforeEach
+    void setUp() {
+        member = memberRepository.save(MemberFixture.create("핀 수정한 사람", "pinUpdateBy@gmail.com", Role.USER));
+        Location location = locationRepository.save(LocationFixture.create());
+        Topic topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
+        pin = pinRepository.save(PinFixture.create(location, topic, member));
+    }
+
     @Test
     @DisplayName("핀 수정 이벤트가 발생하면, 핀을 수정한 사람, 핀 정보를 포함한 수정 이력을 저장한다.")
     void saveHistory_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create("핀 수정한 사람", "pinUpdateBy@gmail.com", Role.USER));
-        Topic topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
-        Location location = locationRepository.save(LocationFixture.create());
-        Pin pin = pinRepository.save(PinFixture.create(location, topic, member));
-
         // when
         applicationEventPublisher.publishEvent(new PinUpdateEvent(pin, member));
 
@@ -59,4 +68,35 @@ class PinUpdateHistoryCommandServiceTest {
                 .ignoringFields("id", "updatedAt")
                 .isEqualTo(new PinUpdateHistory(pin, member));
     }
+
+    @Test
+    @DisplayName("핀 삭제 이벤트가 발생하면, 핀 수정 이력을 삭제 상태로 변경한다.")
+    void deleteHistory_Success() {
+        // given
+        applicationEventPublisher.publishEvent(new PinUpdateEvent(pin, member));
+
+        // when
+        Long pinId = pin.getId();
+        applicationEventPublisher.publishEvent(new PinDeleteEvent(pinId));
+
+        // then
+        assertThat(pinUpdateHistoryRepository.findAllByPinId(pinId))
+                .isEmpty();
+    }
+
+    @Test
+    @DisplayName("핀 다건 삭제 이벤트가 발생하면, 핀 수정 이력을 삭제 상태로 변경한다.")
+    void batchDeleteHistory_Success() {
+        // given
+        applicationEventPublisher.publishEvent(new PinUpdateEvent(pin, member));
+
+        // when
+        Long pinId = pin.getId();
+        applicationEventPublisher.publishEvent(new PinBatchDeleteEvent(List.of(pinId)));
+
+        // then
+        assertThat(pinUpdateHistoryRepository.findAllByPinId(pinId))
+                .isEmpty();
+    }
+
 }

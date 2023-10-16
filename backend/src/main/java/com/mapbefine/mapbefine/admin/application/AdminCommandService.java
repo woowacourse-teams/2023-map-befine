@@ -12,12 +12,15 @@ import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.event.PinBatchDeleteEvent;
+import com.mapbefine.mapbefine.pin.event.PinDeleteEvent;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.exception.TopicException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AdminCommandService {
 
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final MemberRepository memberRepository;
     private final TopicRepository topicRepository;
     private final PinRepository pinRepository;
@@ -34,6 +38,7 @@ public class AdminCommandService {
     private final BookmarkRepository bookmarkRepository;
 
     public AdminCommandService(
+            ApplicationEventPublisher applicationEventPublisher,
             MemberRepository memberRepository,
             TopicRepository topicRepository,
             PinRepository pinRepository,
@@ -42,6 +47,7 @@ public class AdminCommandService {
             AtlasRepository atlasRepository,
             BookmarkRepository bookmarkRepository
     ) {
+        this.applicationEventPublisher = applicationEventPublisher;
         this.memberRepository = memberRepository;
         this.topicRepository = topicRepository;
         this.pinRepository = pinRepository;
@@ -63,11 +69,10 @@ public class AdminCommandService {
         Long memberId = member.getId();
 
         permissionRepository.deleteAllByMemberId(memberId);
-        permissionRepository.flush();
         atlasRepository.deleteAllByMemberId(memberId);
-        atlasRepository.flush();
         bookmarkRepository.deleteAllByMemberId(memberId);
         bookmarkRepository.flush();
+        applicationEventPublisher.publishEvent(new PinBatchDeleteEvent(pinIds));
         pinImageRepository.deleteAllByPinIds(pinIds);
         pinRepository.deleteAllByMemberId(memberId);
         topicRepository.deleteAllByMemberId(memberId);
@@ -90,11 +95,10 @@ public class AdminCommandService {
         List<Long> pinIds = extractPinIdsByTopic(topic);
 
         permissionRepository.deleteAllByTopicId(topicId);
-        permissionRepository.flush();
         atlasRepository.deleteAllByTopicId(topicId);
-        atlasRepository.flush();
         bookmarkRepository.deleteAllByTopicId(topicId);
         bookmarkRepository.flush();
+        applicationEventPublisher.publishEvent(new PinBatchDeleteEvent(pinIds));
         pinImageRepository.deleteAllByPinIds(pinIds);
         pinRepository.deleteAllByTopicId(topicId);
         topicRepository.deleteById(topicId);
@@ -122,6 +126,7 @@ public class AdminCommandService {
                 .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
 
         pin.decreaseTopicPinCount();
+        applicationEventPublisher.publishEvent(new PinDeleteEvent(pinId));
         pinImageRepository.deleteAllByPinId(pinId);
         pinRepository.deleteById(pin.getId());
     }
