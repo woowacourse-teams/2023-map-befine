@@ -16,7 +16,6 @@ import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,7 +73,7 @@ public class PinQueryService {
 
     private PinCommentResponse pinCommentToResponse(AuthMember member, PinComment pinComment) {
         Long creatorId = pinComment.getCreator().getId();
-        boolean canChange = Objects.nonNull(member.getMemberId()) && member.getMemberId().equals(creatorId);
+        boolean canChange = Objects.nonNull(member.getMemberId()) && member.isSameMember(creatorId);
 
         if (pinComment.isParentComment()) {
             return PinCommentResponse.ofParentComment(pinComment, canChange);

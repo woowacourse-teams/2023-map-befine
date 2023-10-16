@@ -5,6 +5,7 @@ import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
 import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
@@ -138,6 +139,28 @@ public class PinController {
         List<PinCommentResponse> allResponse = pinQueryService.findAllPinCommentByPinId(member, pinId);
 
         return ResponseEntity.ok(allResponse);
+    }
+
+    @PutMapping("/comments/{pinCommentId}")
+    public ResponseEntity<Void> updatePinComment(
+            AuthMember member,
+            @PathVariable Long pinCommentId,
+            @RequestBody PinCommentUpdateRequest request
+    )  {
+        pinCommandService.updatePinComment(member, pinCommentId, request);
+
+        return ResponseEntity.created(URI.create("/pins/comments/" + pinCommentId))
+                .build();
+    }
+
+    @DeleteMapping("/comments/{pinCommentId}")
+    public ResponseEntity<Void> removePinComment(
+            AuthMember member,
+            @PathVariable Long pinCommentId
+    ) {
+        pinCommandService.deletePinComment(member, pinCommentId);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -2,6 +2,8 @@ package com.mapbefine.mapbefine.pin.application;
 
 import static com.mapbefine.mapbefine.image.exception.ImageErrorCode.IMAGE_FILE_IS_NULL;
 import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.FORBIDDEN_PIN_COMMENT_CREATE;
+import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.FORBIDDEN_PIN_COMMENT_DELETE;
+import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.FORBIDDEN_PIN_COMMENT_UPDATE;
 import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.PIN_COMMENT_NOT_FOUND;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
@@ -24,6 +26,7 @@ import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
@@ -208,7 +211,7 @@ public class PinCommandService {
         Pin pin = findPin(request.pinId());
         validatePinCommentCreate(authMember, pin);
         Member member = findMember(authMember.getMemberId());
-        PinComment parentPinComment = findPinComment(request.parentPinCommentId());
+        PinComment parentPinComment = findParentPinComment(request.parentPinCommentId());
 
         PinComment pinComment = PinComment.of(pin, parentPinComment, member, request.content());
         pinCommentRepository.save(pinComment);
@@ -224,13 +227,60 @@ public class PinCommandService {
         throw new PinCommentForbiddenException(FORBIDDEN_PIN_COMMENT_CREATE);
     }
 
-    private PinComment findPinComment(Long pinCommentId) {
-        if (Objects.isNull(pinCommentId)) {
+    private PinComment findParentPinComment(Long parentPinComment) {
+        if (Objects.isNull(parentPinComment)) {
             return null;
         }
 
+        return pinCommentRepository.findById(parentPinComment)
+                .orElseThrow(() -> new PinCommentNotFoundException(PIN_COMMENT_NOT_FOUND, parentPinComment));
+    }
+
+    public void updatePinComment(
+            AuthMember member,
+            Long pinCommentId,
+            PinCommentUpdateRequest request
+    ) {
+        PinComment pinComment = findPinComment(pinCommentId);
+
+        validatePinCommentUpdate(member, pinComment);
+
+        pinComment.updateContent(request.content());
+    }
+
+    private void validatePinCommentUpdate(AuthMember authMember, PinComment pinComment) {
+        if (isPinCommentCreator(authMember, pinComment)) {
+            return;
+        }
+
+        throw new PinCommentForbiddenException(FORBIDDEN_PIN_COMMENT_UPDATE);
+    }
+
+    private boolean isPinCommentCreator(final AuthMember authMember, final PinComment pinComment) {
+        Long creatorId = pinComment.getCreator().getId();
+
+        return authMember.isSameMember(creatorId);
+    }
+
+    private PinComment findPinComment(Long pinCommentId) {
         return pinCommentRepository.findById(pinCommentId)
                 .orElseThrow(() -> new PinCommentNotFoundException(PIN_COMMENT_NOT_FOUND, pinCommentId));
+    }
+
+    public void deletePinComment(AuthMember member, Long pinCommentId) {
+        PinComment pinComment = findPinComment(pinCommentId);
+
+        validatePinCommentDelete(member, pinComment);
+
+        pinCommentRepository.delete(pinComment);
+    }
+
+    private void validatePinCommentDelete(AuthMember authMember, PinComment pinComment) {
+        if (isPinCommentCreator(authMember, pinComment)) {
+            return;
+        }
+
+        throw new PinCommentForbiddenException(FORBIDDEN_PIN_COMMENT_DELETE);
     }
 
 }

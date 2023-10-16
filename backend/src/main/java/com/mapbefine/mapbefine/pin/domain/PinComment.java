@@ -79,6 +79,11 @@ public class PinComment extends BaseTimeEntity {
         }
     }
 
+    public void updateContent(String content) {
+        validateContent(content);
+        this.content = content;
+    }
+
     public boolean isParentComment() {
         return Objects.isNull(parentPinComment);
     }
