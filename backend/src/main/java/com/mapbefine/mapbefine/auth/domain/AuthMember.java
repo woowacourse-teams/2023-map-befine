@@ -38,4 +38,10 @@ public abstract class AuthMember {
         return Objects.equals(memberId, this.memberId);
     }
 
+    public abstract boolean isAdmin();
+
+    public abstract boolean isUser();
+
+    public abstract boolean isGuest();
+
 }

@@ -7,7 +7,6 @@ import static lombok.AccessLevel.PROTECTED;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.pin.exception.PinCommentException.PinCommentBadRequestException;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +18,8 @@ import jakarta.persistence.ManyToOne;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -35,12 +36,13 @@ public class PinComment extends BaseTimeEntity {
     @JoinColumn(name = "pin_id")
     private Pin pin;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "parent_comment_id")
+    @ManyToOne
+    @JoinColumn(name = "parent_pin_comment_id")
     private PinComment parentPinComment;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member creator;
 
     @Lob

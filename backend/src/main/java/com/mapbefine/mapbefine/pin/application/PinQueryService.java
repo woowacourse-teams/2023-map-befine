@@ -73,7 +73,10 @@ public class PinQueryService {
 
     private PinCommentResponse pinCommentToResponse(AuthMember member, PinComment pinComment) {
         Long creatorId = pinComment.getCreator().getId();
-        boolean canChange = Objects.nonNull(member.getMemberId()) && member.isSameMember(creatorId);
+
+        boolean canChange = Objects.nonNull(member.getMemberId())
+                && member.isSameMember(creatorId)
+                && member.isAdmin();
 
         if (pinComment.isParentComment()) {
             return PinCommentResponse.ofParentComment(pinComment, canChange);

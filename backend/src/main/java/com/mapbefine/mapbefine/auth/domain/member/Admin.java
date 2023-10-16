@@ -39,4 +39,20 @@ public class Admin extends AuthMember {
         return true;
     }
 
+    @Override
+    public boolean isAdmin() {
+        return true;
+    }
+
+    @Override
+    public boolean isUser() {
+        return false;
+    }
+
+    @Override
+    public boolean isGuest() {
+        return false;
+    }
+
+
 }

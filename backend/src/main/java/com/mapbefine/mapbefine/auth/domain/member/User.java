@@ -50,6 +50,22 @@ public class User extends AuthMember {
         return publicity == Publicity.PUBLIC || isGroup(topic.getId());
     }
 
+
+    @Override
+    public boolean isAdmin() {
+        return false;
+    }
+
+    @Override
+    public boolean isUser() {
+        return true;
+    }
+
+    @Override
+    public boolean isGuest() {
+        return false;
+    }
+
     private boolean isCreator(Long topicId) {
         return createdTopic.contains(topicId);
     }

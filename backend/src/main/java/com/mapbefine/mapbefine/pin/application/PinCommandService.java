@@ -249,17 +249,17 @@ public class PinCommandService {
     }
 
     private void validatePinCommentUpdate(AuthMember authMember, PinComment pinComment) {
-        if (isPinCommentCreator(authMember, pinComment)) {
+        if (isPinCommentCreatorOrAdmin(authMember, pinComment)) {
             return;
         }
 
         throw new PinCommentForbiddenException(FORBIDDEN_PIN_COMMENT_UPDATE);
     }
 
-    private boolean isPinCommentCreator(final AuthMember authMember, final PinComment pinComment) {
+    private boolean isPinCommentCreatorOrAdmin(AuthMember authMember, PinComment pinComment) {
         Long creatorId = pinComment.getCreator().getId();
 
-        return authMember.isSameMember(creatorId);
+        return authMember.isSameMember(creatorId) || authMember.isAdmin();
     }
 
     private PinComment findPinComment(Long pinCommentId) {
@@ -276,7 +276,7 @@ public class PinCommandService {
     }
 
     private void validatePinCommentDelete(AuthMember authMember, PinComment pinComment) {
-        if (isPinCommentCreator(authMember, pinComment)) {
+        if (isPinCommentCreatorOrAdmin(authMember, pinComment)) {
             return;
         }
 
