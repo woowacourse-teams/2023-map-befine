@@ -1,11 +1,26 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
+import { postApi } from '../../../apis/postApi';
+import useToast from '../../../hooks/useToast';
 import ReplyComment from './ReplyComment';
+
+const userToken = localStorage?.getItem('userToken');
+const localStorageUser = localStorage?.getItem('user');
+const user = JSON.parse(localStorageUser || '{}');
 //  { 댓글, 댓글목록, 전체목록, depth = 0 }
-function SingleComment({ comment, commentList, totalList, depth = 0 }: any) {
+function SingleComment({
+  pinId,
+  comment,
+  commentList,
+  totalList,
+  depth = 0,
+}: any) {
   const [replyOpen, setReplyOpen] = useState(false);
   const [seeMore, setSeeMore] = useState(false);
+  const [newComment, setNewComment] = useState<string>('');
+  const { showToast } = useToast();
+
   const toggleReplyOpen = () => {
     setReplyOpen((prev) => !prev);
   };
@@ -18,6 +33,29 @@ function SingleComment({ comment, commentList, totalList, depth = 0 }: any) {
   );
   const replyCount = replyList.length;
 
+  const onClickCommentBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    try {
+      // 댓글 추가
+      // comment 값이랑 추가 정보 body에 담아서 보내기
+      await postApi(
+        `/pins/comments`,
+        {
+          pinId,
+          content: newComment,
+          parentPinCommentId: null,
+        },
+        'application/json',
+      );
+
+      setCurrentPageCommentList();
+
+      showToast('info', '댓글이 추가되었습니다.');
+    } catch {
+      showToast('error', '댓글을 다시 작성해주세요');
+    }
+  };
   return (
     <CommentWrapper depth={depth} key={comment.id}>
       <Flex>
@@ -34,9 +72,48 @@ function SingleComment({ comment, commentList, totalList, depth = 0 }: any) {
               답글남기기
             </button>
             {replyOpen && (
-              <form>
-                <input />
-              </form>
+              <div
+                style={{ display: 'flex', marginBottom: '20px', gap: '12px' }}
+              >
+                <ProfileImage
+                  src={user?.imageUrl || ''}
+                  width="40px"
+                  height="40px"
+                />
+                <div style={{ width: '100%' }}>
+                  <input
+                    style={{
+                      width: '100%',
+                      borderTop: 'none',
+                      borderLeft: 'none',
+                      borderRight: 'none',
+                      fontSize: '16px',
+                    }}
+                    value={newComment}
+                    onChange={(e: any) => setNewComment(e.target.value)}
+                    placeholder="댓글 추가"
+                    // onClick={toggleReplyOpen}
+                  />
+                  <button
+                    style={{
+                      marginTop: '12px',
+                      float: 'right',
+                      width: '40px',
+                      fontSize: '12px',
+                    }}
+                    type="button"
+                    onClick={onClickCommentBtn}
+                  >
+                    등록
+                  </button>
+
+                  {/* {replyOpen && (
+            <form>
+              <input />
+            </form>
+          )} */}
+                </div>
+              </div>
             )}
           </div>
           {replyCount > 0 && (

@@ -33,7 +33,7 @@ interface PinDetailProps {
 
 const userToken = localStorage?.getItem('userToken');
 const localStorageUser = localStorage?.getItem('user');
-const user = JSON.parse(localStorageUser);
+const user = JSON.parse(localStorageUser || '{}');
 
 function PinDetail({
   width,
@@ -146,7 +146,7 @@ function PinDetail({
       // 댓글 추가
       // comment 값이랑 추가 정보 body에 담아서 보내기
       await postApi(
-        `/pins/comment`,
+        `/pins/comments`,
         {
           pinId,
           content: newComment,
@@ -162,7 +162,6 @@ function PinDetail({
       showToast('error', '댓글을 다시 작성해주세요');
     }
   };
-
   if (!pin) return <></>;
 
   if (isEditPinDetail)
@@ -283,12 +282,13 @@ function PinDetail({
       {commentList?.length > 0 &&
         commentList.map(
           (comment: any) =>
-            !comment.replyTo ? (
+            !comment.parentPinCommentId ? (
               <SingleComment
                 key={comment.id}
                 comment={comment}
                 commentList={commentList}
                 totalList={commentList}
+                pinId={pinId}
               />
             ) : null, // <-- comment.replyTo가 존재하는 경우 null 반환
         )}
