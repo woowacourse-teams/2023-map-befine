@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { styled } from 'styled-components';
 
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
@@ -8,6 +8,7 @@ import useClickedCoordinate from '../../hooks/useClickedCoordinate';
 import useFocusToMarker from '../../hooks/useFocusToMarkers';
 import useMapClick from '../../hooks/useMapClick';
 import useUpdateCoordinates from '../../hooks/useUpdateCoordinates';
+import useMapStore from '../../store/mapInstance';
 import Flex from '../common/Flex';
 
 const MOBILE_WIDTH = 744;
@@ -22,7 +23,7 @@ function Map() {
 
   const { markers } = useContext(MarkerContext);
   const { width } = useContext(LayoutWidthContext);
-  const [mapInstance, setMapInstance] = useState<TMap | null>(null);
+  const { mapInstance, setMapInstance } = useMapStore((state) => state);
 
   const mapContainer = useRef(null);
 
