@@ -29,8 +29,6 @@ import org.springframework.context.ApplicationEventPublisher;
 class PinUpdateHistoryCommandServiceTest {
 
     @Autowired
-    private PinUpdateHistoryCommandService pinUpdateHistoryCommandService;
-    @Autowired
     private PinUpdateHistoryRepository pinUpdateHistoryRepository;
     @Autowired
     private TopicRepository topicRepository;

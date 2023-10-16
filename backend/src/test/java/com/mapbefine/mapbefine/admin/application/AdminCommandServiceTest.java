@@ -26,7 +26,6 @@ import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import com.mapbefine.mapbefine.topic.domain.TopicInfo;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -145,8 +144,6 @@ class AdminCommandServiceTest {
     @Test
     void deleteTopicImage_Success() {
         //given
-        TopicInfo topicInfo = topic.getTopicInfo();
-
         topic.updateTopicImageUrl("https://imageUrl.png");
 
         assertThat(topic.getTopicInfo().getImageUrl()).isEqualTo("https://imageUrl.png");
