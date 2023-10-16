@@ -23,6 +23,7 @@ interface TMap {
   getZoom(): number;
   on(eventType: string, callback: (event: evt) => void): void;
   removeListener(eventType: string, callback: (event: evt) => void): void;
+  resize(width: number, height: number): void;
 }
 
 interface Marker {
