@@ -1,12 +1,15 @@
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 
+import CurrentLocation from '../../assets/currentLocationBtn.svg';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 import { MarkerContext } from '../../context/MarkerContext';
 import useAnimateClickedPin from '../../hooks/useAnimateClickedPin';
 import useClickedCoordinate from '../../hooks/useClickedCoordinate';
 import useFocusToMarker from '../../hooks/useFocusToMarkers';
+import useGeoLocation from '../../hooks/useGeolocation';
 import useMapClick from '../../hooks/useMapClick';
+import useToast from '../../hooks/useToast';
 import useUpdateCoordinates from '../../hooks/useUpdateCoordinates';
 import Flex from '../common/Flex';
 
@@ -18,6 +21,30 @@ function Map() {
   const [mapInstance, setMapInstance] = useState<TMap | null>(null);
 
   const mapContainer = useRef(null);
+  const location = useGeoLocation();
+  const { showToast } = useToast();
+
+  const handleCurrentLocationClick = () => {
+    if (!location.loaded) {
+      showToast('info', '위치 정보를 불러오는 중입니다.');
+      return;
+    }
+
+    if (location.error) {
+      showToast('error', '위치 정보 사용을 허용해주세요.');
+      return;
+    }
+
+    if (mapInstance) {
+      mapInstance.setCenter(
+        new Tmapv3.LatLng(
+          Number(location.coordinates.lat),
+          Number(location.coordinates.lng),
+        ),
+      );
+      mapInstance.setZoom(15);
+    }
+  };
 
   useLayoutEffect(() => {
     if (!Tmapv3 || !mapContainer.current) return;
@@ -47,16 +74,23 @@ function Map() {
   useAnimateClickedPin(mapInstance, markers);
 
   return (
-    <MapFlex
-      aria-label="괜찮을지도 지도 이미지"
-      flex="1"
-      id="map"
-      ref={mapContainer}
-      height="calc(var(--vh, 1vh) * 100)"
-      $minWidth={width}
-    />
+    <MapContainer>
+      <MapFlex
+        aria-label="괜찮을지도 지도 이미지"
+        flex="1"
+        id="map"
+        ref={mapContainer}
+        height="calc(var(--vh, 1vh) * 100)"
+        $minWidth={width}
+      />
+      <CurrentLocationIcon onClick={handleCurrentLocationClick} />
+    </MapContainer>
   );
 }
+
+const MapContainer = styled.div`
+  position: relative;
+`;
 
 const MapFlex = styled(Flex)`
   & {
@@ -69,6 +103,16 @@ const MapFlex = styled(Flex)`
   @media (max-width: 1076px) {
     max-height: calc(var(--vh, 1vh) * 50);
   }
+`;
+
+const CurrentLocationIcon = styled(CurrentLocation)`
+  position: absolute;
+  cursor: pointer;
+  bottom: 40px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
 `;
 
 export default Map;
