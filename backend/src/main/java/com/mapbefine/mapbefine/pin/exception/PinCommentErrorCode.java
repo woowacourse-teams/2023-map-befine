@@ -1,5 +1,8 @@
 package com.mapbefine.mapbefine.pin.exception;
 
+import lombok.Getter;
+
+@Getter
 public enum PinCommentErrorCode {
 
     ILLEGAL_CONTENT_NULL("11000", "핀 댓글의 내용은 필수로 입력해야합니다."),
