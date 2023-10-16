@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { getPoiApi } from '../../../apis/getPoiApi';
 import { Poi } from '../../../types/Poi';
-import Input from '.';
 import Text from '../Text';
+import Input from '.';
 
 interface AutocompleteProps {
   defaultValue?: string;
