@@ -12,7 +12,7 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
-import com.mapbefine.mapbefine.history.application.PinUpdateHistoryCommandService;
+import com.mapbefine.mapbefine.history.application.PinHistoryCommandService;
 import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.image.exception.ImageException.ImageBadRequestException;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -53,7 +53,7 @@ class PinCommandServiceTest {
     private static final String BASE_IMAGE = "https://mapbefine.github.io/favicon.png";
 
     @MockBean
-    private PinUpdateHistoryCommandService pinUpdateHistoryCommandService;
+    private PinHistoryCommandService pinHistoryCommandService;
     @Autowired
     private PinCommandService pinCommandService;
     @Autowired
@@ -167,7 +167,7 @@ class PinCommandServiceTest {
         pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
 
         // then
-        verify(pinUpdateHistoryCommandService, times(1)).saveHistory(any(PinUpdateEvent.class));
+        verify(pinHistoryCommandService, times(1)).saveHistory(any(PinUpdateEvent.class));
     }
 
     @Test
@@ -178,14 +178,14 @@ class PinCommandServiceTest {
                 .isInstanceOf(RuntimeException.class);
 
         // then
-        verify(pinUpdateHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
+        verify(pinHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
     }
 
     @Test
     @DisplayName("핀 수정 이력 저장 시 예외가 발생하면, 추가된 핀 정보도 저장하지 않는다.")
     void save_FailBySaveHistoryException() {
         // given
-        doThrow(new RuntimeException()).when(pinUpdateHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
+        doThrow(new RuntimeException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
 
         // when
         // then
@@ -231,7 +231,7 @@ class PinCommandServiceTest {
         pinCommandService.update(authMember, pinId, new PinUpdateRequest("name", "update"));
 
         // then
-        verify(pinUpdateHistoryCommandService, times(2)).saveHistory(any(PinUpdateEvent.class));
+        verify(pinHistoryCommandService, times(2)).saveHistory(any(PinUpdateEvent.class));
     }
 
     @Test
@@ -246,7 +246,7 @@ class PinCommandServiceTest {
         ).isInstanceOf(PinForbiddenException.class);
 
         // then
-        verify(pinUpdateHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
+        verify(pinHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
     }
 
     @Test
@@ -256,7 +256,7 @@ class PinCommandServiceTest {
         long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
 
         // when
-        doThrow(new RuntimeException()).when(pinUpdateHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
+        doThrow(new RuntimeException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
         PinUpdateRequest request = new PinUpdateRequest("name", "update");
 
         // then

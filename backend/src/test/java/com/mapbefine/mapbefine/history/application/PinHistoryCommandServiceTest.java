@@ -3,8 +3,8 @@ package com.mapbefine.mapbefine.history.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
-import com.mapbefine.mapbefine.history.domain.PinUpdateHistory;
-import com.mapbefine.mapbefine.history.domain.PinUpdateHistoryRepository;
+import com.mapbefine.mapbefine.history.domain.PinHistory;
+import com.mapbefine.mapbefine.history.domain.PinHistoryRepository;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -26,10 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
 @ServiceTest
-class PinUpdateHistoryCommandServiceTest {
+class PinHistoryCommandServiceTest {
 
     @Autowired
-    private PinUpdateHistoryRepository pinUpdateHistoryRepository;
+    private PinHistoryRepository pinHistoryRepository;
     @Autowired
     private TopicRepository topicRepository;
     @Autowired
@@ -39,7 +39,7 @@ class PinUpdateHistoryCommandServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Test
     @DisplayName("핀 수정 이벤트가 발생하면, 핀을 수정한 사람, 핀 정보를 포함한 수정 이력을 저장한다.")
@@ -54,9 +54,9 @@ class PinUpdateHistoryCommandServiceTest {
         applicationEventPublisher.publishEvent(new PinUpdateEvent(pin, member));
 
         // then
-        List<PinUpdateHistory> histories = pinUpdateHistoryRepository.findAllByPinId(pin.getId());
+        List<PinHistory> histories = pinHistoryRepository.findAllByPinId(pin.getId());
         assertThat(histories.get(0)).usingRecursiveComparison()
                 .ignoringFields("id", "updatedAt")
-                .isEqualTo(new PinUpdateHistory(pin, member));
+                .isEqualTo(new PinHistory(pin, member));
     }
 }

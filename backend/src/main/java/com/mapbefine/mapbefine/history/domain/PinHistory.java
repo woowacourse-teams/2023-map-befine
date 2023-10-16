@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class PinUpdateHistory {
+public class PinHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class PinUpdateHistory {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public PinUpdateHistory(Pin pin, Member member) {
+    public PinHistory(Pin pin, Member member) {
         this.pin = pin;
         this.member = member;
     }
