@@ -22,6 +22,7 @@ import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.event.PinUpdateEvent;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -30,16 +31,20 @@ import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestExc
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Transactional
 @Service
 public class PinCommandService {
 
     private static final double DUPLICATE_LOCATION_DISTANCE_METERS = 10.0;
 
+    private final ApplicationEventPublisher eventPublisher;
     private final PinRepository pinRepository;
     private final LocationRepository locationRepository;
     private final TopicRepository topicRepository;
@@ -48,6 +53,7 @@ public class PinCommandService {
     private final ImageService imageService;
 
     public PinCommandService(
+            ApplicationEventPublisher eventPublisher,
             PinRepository pinRepository,
             LocationRepository locationRepository,
             TopicRepository topicRepository,
@@ -55,6 +61,7 @@ public class PinCommandService {
             PinImageRepository pinImageRepository,
             ImageService imageService
     ) {
+        this.eventPublisher = eventPublisher;
         this.pinRepository = pinRepository;
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
@@ -138,10 +145,12 @@ public class PinCommandService {
             Long pinId,
             PinUpdateRequest request
     ) {
+        Member member = findMember(authMember.getMemberId());
         Pin pin = findPin(pinId);
         validatePinCreateOrUpdate(authMember, pin.getTopic());
 
         pin.updatePinInfo(request.name(), request.description());
+        eventPublisher.publishEvent(new PinUpdateEvent(pin, member));
     }
 
     private Pin findPin(Long pinId) {

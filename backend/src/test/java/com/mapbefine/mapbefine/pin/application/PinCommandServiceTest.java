@@ -2,11 +2,17 @@ package com.mapbefine.mapbefine.pin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.history.application.PinUpdateHistoryCommandService;
 import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.image.exception.ImageException.ImageBadRequestException;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -25,6 +31,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
+import com.mapbefine.mapbefine.pin.event.PinUpdateEvent;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -35,6 +42,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.multipart.MultipartFile;
 
 @ServiceTest
@@ -43,6 +51,8 @@ class PinCommandServiceTest {
     private static final MultipartFile BASE_IMAGE_FILE = FileFixture.createFile();
     private static final String BASE_IMAGE = "https://mapbefine.github.io/favicon.png";
 
+    @MockBean
+    private PinUpdateHistoryCommandService pinUpdateHistoryCommandService;
     @Autowired
     private PinCommandService pinCommandService;
     @Autowired
@@ -157,7 +167,6 @@ class PinCommandServiceTest {
                 .isInstanceOf(PinForbiddenException.class);
     }
 
-
     @Test
     @DisplayName("핀을 변경하면 토픽에 핀의 변경 일시를 새로 반영한다. (모든 일시는 영속화 시점 기준이다.)")
     void update_Success_UpdateLastPinsAddedAt() {
@@ -174,6 +183,54 @@ class PinCommandServiceTest {
         topicRepository.findById(createRequest.topicId())
                 .ifPresentOrElse(
                         topic -> assertThat(topic.getLastPinUpdatedAt()).isEqualTo(pin.getUpdatedAt()),
+                        Assertions::fail
+                );
+    }
+
+    @Test
+    @DisplayName("핀을 변경하면 핀 수정 이력을 저장한다.")
+    void update_Success_SaveHistory() {
+        // given
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+
+        // when
+        pinCommandService.update(authMember, pinId, new PinUpdateRequest("name", "update"));
+
+        // then
+        verify(pinUpdateHistoryCommandService, times(1)).saveHistory(any(PinUpdateEvent.class));
+    }
+
+    @Test
+    @DisplayName("핀 수정 시 예외가 발생하면, 수정 이력도 저장하지 않는다.")
+    void update_Fail_DoNotSaveHistory() {
+        // given
+        long illegalPinId = -1L;
+
+        // when
+        assertThatThrownBy(
+                () -> pinCommandService.update(new Guest(), illegalPinId, new PinUpdateRequest("name", "update"))
+        ).isInstanceOf(PinForbiddenException.class);
+
+        // then
+        verify(pinUpdateHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
+    }
+
+    @Test
+    @DisplayName("핀 수정 이력 저장 시 예외가 발생하면, 수정된 핀 정보도 저장하지 않는다.")
+    void update_FailBySaveHistoryException() {
+        // given
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+
+        // when
+        doThrow(new RuntimeException()).when(pinUpdateHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
+        PinUpdateRequest request = new PinUpdateRequest("name", "update");
+
+        // then
+        assertThatThrownBy(() -> pinCommandService.update(authMember, pinId, request))
+                .isInstanceOf(RuntimeException.class);
+        pinRepository.findById(pinId)
+                .ifPresentOrElse(
+                        pin -> assertThat(pin.getUpdatedAt()).isEqualTo(pin.getCreatedAt()),
                         Assertions::fail
                 );
     }
