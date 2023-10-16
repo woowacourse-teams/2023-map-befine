@@ -11,7 +11,9 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -48,6 +50,8 @@ class PinIntegrationTest extends IntegrationTest {
 
     @Autowired
     private LocationRepository locationRepository;
+    @Autowired
+    private PinRepository pinRepository;
 
     @BeforeEach
     void saveTopicAndLocation() {
@@ -140,6 +144,26 @@ class PinIntegrationTest extends IntegrationTest {
         //then
         assertThat(response.header("Location")).isNotBlank();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("Pin을 수정하면 200을 반환한다.")
+    void updatePin_Success() {
+        //given
+        ExtractableResponse<Response> createResponse = createPin(createRequestNoDuplicateLocation);
+
+        // when
+        final PinUpdateRequest request = new PinUpdateRequest("핀 수정", "수정 설명");
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().put(createResponse.header("Location"))
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
