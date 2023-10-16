@@ -116,11 +116,16 @@ const MapFlex = styled(Flex)`
 const CurrentLocationIcon = styled(CurrentLocation)`
   position: absolute;
   cursor: pointer;
-  bottom: 40px;
-  right: 12px;
-  width: 40px;
-  height: 40px;
+  bottom: 8%;
+  right: 4%;
+  width: 52px;
+  height: 52px;
   z-index: 10;
+
+  @media (max-width: 1036px) {
+    bottom: 8%;
+    right: 0.85%;
+  }
 `;
 
 export default Map;
