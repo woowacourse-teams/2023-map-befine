@@ -4,7 +4,6 @@ import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.pin.domain.Pin;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,13 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Where;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-@Where(clause = "is_deleted = false")
 public class PinUpdateHistory {
 
     @Id
@@ -33,10 +29,6 @@ public class PinUpdateHistory {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-
-    @Column(nullable = false)
-    @ColumnDefault(value = "false")
-    private boolean isDeleted = false;
 
     public PinUpdateHistory(Pin pin, Member member) {
         this.pin = pin;

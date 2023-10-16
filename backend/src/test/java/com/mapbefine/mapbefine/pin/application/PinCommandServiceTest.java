@@ -71,12 +71,13 @@ class PinCommandServiceTest {
 
     private Location location;
     private Topic topic;
+    private Member member;
     private AuthMember authMember;
     private PinCreateRequest createRequest;
 
     @BeforeEach
     void setUp() {
-        Member member = memberRepository.save(MemberFixture.create("user1", "userfirst@naver.com", Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("user1", "userfirst@naver.com", Role.ADMIN));
         location = locationRepository.save(LocationFixture.create());
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
 
@@ -231,7 +232,7 @@ class PinCommandServiceTest {
         pinCommandService.update(authMember, pinId, new PinUpdateRequest("name", "update"));
 
         // then
-        verify(pinUpdateHistoryCommandService, times(2)).saveHistory(any(PinUpdateEvent.class));
+        verify(pinUpdateHistoryCommandService, times(1)).saveHistory(any(PinUpdateEvent.class));
     }
 
     @Test

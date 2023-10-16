@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PinRepository extends JpaRepository<Pin, Long> {
 
-    boolean existsByTopicId(Long topicId);
-
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
     List<Pin> findAll();
 
@@ -33,4 +31,5 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update Pin p set p.isDeleted = true where p.creator.id = :memberId")
     void deleteAllByMemberId(@Param("memberId") Long memberId);
+
 }

@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.admin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
@@ -9,8 +8,6 @@ import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
-import com.mapbefine.mapbefine.history.domain.PinUpdateHistory;
-import com.mapbefine.mapbefine.history.domain.PinUpdateHistoryRepository;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -41,45 +38,52 @@ class AdminCommandServiceTest {
 
     @Autowired
     private AdminCommandService adminCommandService;
+
     @Autowired
     private MemberRepository memberRepository;
+
     @Autowired
     private TopicRepository topicRepository;
+
     @Autowired
     private PinRepository pinRepository;
+
     @Autowired
     private LocationRepository locationRepository;
+
     @Autowired
     private PinImageRepository pinImageRepository;
+
     @Autowired
     private AtlasRepository atlasRepository;
+
     @Autowired
     private PermissionRepository permissionRepository;
+
     @Autowired
     private BookmarkRepository bookmarkRepository;
-    @Autowired
-    private PinUpdateHistoryRepository pinUpdateHistoryRepository;
 
     @Autowired
     TestEntityManager testEntityManager;
 
+    private Location location;
+    private Member admin;
     private Member member;
     private Topic topic;
     private Pin pin;
     private PinImage pinImage;
-    private PinUpdateHistory pinUpdateHistory;
 
     @BeforeEach
     void setup() {
+        admin = memberRepository.save(MemberFixture.create("Admin", "admin@naver.com", Role.ADMIN));
         member = memberRepository.save(MemberFixture.create("member", "member@gmail.com", Role.USER));
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
-        Location location = locationRepository.save(LocationFixture.create());
+        location = locationRepository.save(LocationFixture.create());
         pin = pinRepository.save(PinFixture.create(location, topic, member));
-        pinUpdateHistory = pinUpdateHistoryRepository.save(new PinUpdateHistory(pin, member));
         pinImage = pinImageRepository.save(PinImageFixture.create(pin));
     }
 
-    @DisplayName("Member를 차단(탈퇴시킬)할 경우, Member가 생성한 토픽, 핀, 핀 이미지(soft delete)와 연관된 엔티티들을 삭제한다.")
+    @DisplayName("Member를 차단(탈퇴시킬)할 경우, Member가 생성한 토픽, 핀, 핀 이미지가 soft-deleting 된다.")
     @Test
     void blockMember_Success() {
         //given
@@ -91,16 +95,15 @@ class AdminCommandServiceTest {
         atlasRepository.save(atlas);
         permissionRepository.save(permission);
 
-        assertSoftly(softly -> {
-                    assertThat(member.getMemberInfo().getStatus()).isEqualTo(Status.NORMAL);
-                    assertThat(pin.isDeleted()).isFalse();
-                    assertThat(topic.isDeleted()).isFalse();
-                    assertThat(pinImage.isDeleted()).isFalse();
-                    assertThat(pinUpdateHistory.isDeleted()).isFalse();
-                    assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
-                    assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
-                    assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId())).isTrue();
-                }
+        assertAll(
+                () -> assertThat(member.getMemberInfo().getStatus()).isEqualTo(Status.NORMAL),
+                () -> assertThat(topic.isDeleted()).isFalse(),
+                () -> assertThat(pin.isDeleted()).isFalse(),
+                () -> assertThat(pinImage.isDeleted()).isFalse(),
+                () -> assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue(),
+                () -> assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue(),
+                () -> assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId()))
+                        .isTrue()
         );
 
         //when
@@ -115,7 +118,6 @@ class AdminCommandServiceTest {
                 () -> assertThat(topicRepository.existsById(topic.getId())).isFalse(),
                 () -> assertThat(pinRepository.existsById(pin.getId())).isFalse(),
                 () -> assertThat(pinImageRepository.existsById(pinImage.getId())).isFalse(),
-                () -> assertThat(pinUpdateHistoryRepository.existsById(pinUpdateHistory.getId())).isFalse(),
                 () -> assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId()))
                         .isFalse(),
                 () -> assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse(),
@@ -124,7 +126,7 @@ class AdminCommandServiceTest {
         );
     }
 
-    @DisplayName("Admin은 토픽을 삭제할 수 있다. (연관된 엔티티가 함께 삭제된다)")
+    @DisplayName("Admin은 토픽을 삭제시킬 수 있다.")
     @Test
     void deleteTopic_Success() {
         //given
@@ -135,11 +137,7 @@ class AdminCommandServiceTest {
         adminCommandService.deleteTopic(topicId);
 
         //then
-        Long pinId = pin.getId();
         assertThat(topicRepository.existsById(topicId)).isFalse();
-        assertThat(pinRepository.existsByTopicId(topicId)).isFalse();
-        assertThat(pinImageRepository.findAllByPinId(pinId)).isEmpty();
-        assertThat(pinUpdateHistoryRepository.findAllByPinId(pinId)).isEmpty();
     }
 
     @DisplayName("Admin은 토픽 이미지를 삭제할 수 있다.")
@@ -161,20 +159,17 @@ class AdminCommandServiceTest {
         );
     }
 
-    @DisplayName("Admin은 핀을 삭제할 수 있다. (연관된 엔티티가 함께 삭제된다)")
+    @DisplayName("Admin은 핀을 삭제할 수 있다.")
     @Test
     void deletePin_Success() {
         //given
         assertThat(pin.isDeleted()).isFalse();
 
         //when
-        Long pinId = pin.getId();
-        adminCommandService.deletePin(pinId);
+        adminCommandService.deletePin(pin.getId());
 
         //then
-        assertThat(pinRepository.existsById(pinId)).isFalse();
-        assertThat(pinImageRepository.findAllByPinId(pinId)).isEmpty();
-        assertThat(pinUpdateHistoryRepository.findAllByPinId(pinId)).isEmpty();
+        assertThat(pinRepository.existsById(pin.getId())).isFalse();
     }
 
     @DisplayName("Admin인 경우, 핀 이미지를 삭제할 수 있다.")
