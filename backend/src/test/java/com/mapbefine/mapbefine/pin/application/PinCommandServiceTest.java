@@ -161,7 +161,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀을 추가하면 핀 수정 이력을 저장한다.")
+    @DisplayName("핀을 추가하면 핀 정보 이력을 저장한다.")
     void save_Success_SaveHistory() {
         // when
         pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
@@ -171,7 +171,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀 추가 시 예외가 발생하면, 수정 이력도 저장하지 않는다.")
+    @DisplayName("핀 추가 시 예외가 발생하면, 정보 이력도 저장하지 않는다.")
     void save_Fail_DoNotSaveHistory() {
         // when
         assertThatThrownBy(() -> pinCommandService.save(authMember, Collections.emptyList(), null))
@@ -182,7 +182,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀 수정 이력 저장 시 예외가 발생하면, 추가된 핀 정보도 저장하지 않는다.")
+    @DisplayName("핀 정보 이력 저장 시 예외가 발생하면, 추가된 핀 정보도 저장하지 않는다.")
     void save_FailBySaveHistoryException() {
         // given
         doThrow(new RuntimeException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
@@ -222,7 +222,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀을 변경하면 핀 수정 이력을 저장한다.")
+    @DisplayName("핀을 변경하면 핀 정보 이력을 저장한다.")
     void update_Success_SaveHistory() {
         // given
         long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
@@ -235,7 +235,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀 수정 시 예외가 발생하면, 수정 이력도 저장하지 않는다.")
+    @DisplayName("핀 수정 시 예외가 발생하면, 정보 이력도 저장하지 않는다.")
     void update_Fail_DoNotSaveHistory() {
         // given
         long illegalPinId = -1L;
@@ -250,7 +250,7 @@ class PinCommandServiceTest {
     }
 
     @Test
-    @DisplayName("핀 수정 이력 저장 시 예외가 발생하면, 수정된 핀 정보도 저장하지 않는다.")
+    @DisplayName("핀 정보 이력 저장 시 예외가 발생하면, 수정된 핀 정보도 저장하지 않는다.")
     void update_FailBySaveHistoryException() {
         // given
         long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);

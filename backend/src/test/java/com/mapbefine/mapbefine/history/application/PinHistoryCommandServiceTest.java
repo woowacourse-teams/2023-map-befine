@@ -42,7 +42,7 @@ class PinHistoryCommandServiceTest {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Test
-    @DisplayName("핀 수정 이벤트가 발생하면, 핀을 수정한 사람, 핀 정보를 포함한 수정 이력을 저장한다.")
+    @DisplayName("핀 수정 이벤트가 발생하면, 핀을 수정한 사람, 핀 정보를 포함한 정보 이력을 저장한다.")
     void saveHistory_Success() {
         // given
         Member member = memberRepository.save(MemberFixture.create("핀 수정한 사람", "pinUpdateBy@gmail.com", Role.USER));
