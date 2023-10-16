@@ -8,6 +8,9 @@ import UpdateBtnSVG from '../assets/updateBtn.svg';
 import Box from '../components/common/Box';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
+import SingleComment, {
+  ProfileImage,
+} from '../components/common/Input/SingleComment';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import Modal from '../components/Modal';
@@ -28,7 +31,9 @@ interface PinDetailProps {
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const userToken = localStorage.getItem('userToken');
+const userToken = localStorage?.getItem('userToken');
+const localStorageUser = localStorage?.getItem('user');
+const user = JSON.parse(localStorageUser);
 
 function PinDetail({
   width,
@@ -36,8 +41,12 @@ function PinDetail({
   isEditPinDetail,
   setIsEditPinDetail,
 }: PinDetailProps) {
+  console.log(user);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinProps | null>(null);
+  const [commentList, setCommentList] = useState<any[]>([]); // 댓글 리스트
+  const [newComment, setNewComment] = useState<string>('');
   const { showToast } = useToast();
   const {
     formValues,
@@ -119,6 +128,41 @@ function PinDetail({
     getPinData();
   };
 
+  // 댓글 구현 부분
+  const setCurrentPageCommentList = async () => {
+    const { data } = await getApi(`/pins/comment/${pinId}`);
+    setCommentList(data);
+    return data;
+  };
+
+  useEffect(() => {
+    setCurrentPageCommentList();
+  }, []);
+
+  const onClickCommentBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    try {
+      // 댓글 추가
+      // comment 값이랑 추가 정보 body에 담아서 보내기
+      await postApi(
+        `/pins/comment`,
+        {
+          pinId,
+          content: newComment,
+          parentCommentId: null,
+        },
+        'x-www-form-urlencoded',
+      );
+
+      setCurrentPageCommentList();
+
+      showToast('info', '댓글이 추가되었습니다.');
+    } catch {
+      showToast('error', '댓글을 다시 작성해주세요');
+    }
+  };
+
   if (!pin) return <></>;
 
   if (isEditPinDetail)
@@ -144,9 +188,7 @@ function PinDetail({
           {pin.name}
         </Text>
       </Flex>
-
       <Space size={1} />
-
       <Flex $justifyContent="space-between" $alignItems="flex-end" width="100%">
         <Text color="black" $fontSize="small" $fontWeight="normal">
           {pin.creator}
@@ -164,9 +206,7 @@ function PinDetail({
           </Text>
         </Flex>
       </Flex>
-
       <Space size={2} />
-
       <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
       <ImageInputButton
         id="file"
@@ -174,11 +214,8 @@ function PinDetail({
         name="image"
         onChange={onPinImageFileChange}
       />
-
       <PinImageContainer images={pin.images} getPinData={getPinData} />
-
       <Space size={6} />
-
       <Flex $flexDirection="column">
         <Text color="black" $fontSize="large" $fontWeight="bold">
           어디에 있나요?
@@ -198,9 +235,64 @@ function PinDetail({
           {pin.description}
         </Text>
       </Flex>
-
       <Space size={7} />
+      {/*  Comment Section */}
 
+      <Text color="black" $fontSize="large" $fontWeight="bold">
+        댓글{' '}
+      </Text>
+      <Space size={1} />
+      {userToken && (
+        <div style={{ display: 'flex', marginBottom: '20px', gap: '12px' }}>
+          <ProfileImage src={user?.imageUrl || ''} width="40px" height="40px" />
+          <div style={{ width: '100%' }}>
+            <input
+              style={{
+                width: '100%',
+                borderTop: 'none',
+                borderLeft: 'none',
+                borderRight: 'none',
+                fontSize: '16px',
+              }}
+              value={newComment}
+              onChange={(e: any) => setNewComment(e.target.value)}
+              placeholder="댓글 추가"
+              // onClick={toggleReplyOpen}
+            />
+            <button
+              style={{
+                marginTop: '12px',
+                float: 'right',
+                width: '40px',
+                fontSize: '12px',
+              }}
+              type="button"
+              onClick={onClickCommentBtn}
+            >
+              등록
+            </button>
+
+            {/* {replyOpen && (
+            <form>
+              <input />
+            </form>
+          )} */}
+          </div>
+        </div>
+      )}
+      {commentList?.length > 0 &&
+        commentList.map(
+          (comment: any) =>
+            !comment.replyTo ? (
+              <SingleComment
+                key={comment.id}
+                comment={comment}
+                commentList={commentList}
+                totalList={commentList}
+              />
+            ) : null, // <-- comment.replyTo가 존재하는 경우 null 반환
+        )}
+      {/* comment section END */}
       <ButtonsWrapper>
         <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
           내 지도에 저장하기
@@ -210,9 +302,7 @@ function PinDetail({
           공유하기
         </ShareButton>
       </ButtonsWrapper>
-
       <Space size={8} />
-
       <Modal
         modalKey="addToMyTopicList"
         position="center"
