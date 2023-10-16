@@ -88,8 +88,8 @@ public class PinCommandService {
         );
 
         addPinImagesToPin(images, pin);
-
         pinRepository.save(pin);
+        eventPublisher.publishEvent(new PinUpdateEvent(pin, member));
 
         return pin.getId();
     }

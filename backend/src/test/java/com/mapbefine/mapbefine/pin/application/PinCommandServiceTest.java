@@ -36,6 +36,7 @@ import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -158,6 +159,40 @@ class PinCommandServiceTest {
                         topic -> assertThat(topic.getLastPinUpdatedAt()).isEqualTo(pin.getCreatedAt()),
                         Assertions::fail
                 );
+    }
+
+    @Test
+    @DisplayName("핀을 추가하면 핀 수정 이력을 저장한다.")
+    void save_Success_SaveHistory() {
+        // when
+        pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+
+        // then
+        verify(pinUpdateHistoryCommandService, times(1)).saveHistory(any(PinUpdateEvent.class));
+    }
+
+    @Test
+    @DisplayName("핀 추가 시 예외가 발생하면, 수정 이력도 저장하지 않는다.")
+    void save_Fail_DoNotSaveHistory() {
+        // when
+        assertThatThrownBy(() -> pinCommandService.save(authMember, Collections.emptyList(), null))
+                .isInstanceOf(RuntimeException.class);
+
+        // then
+        verify(pinUpdateHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
+    }
+
+    @Test
+    @DisplayName("핀 수정 이력 저장 시 예외가 발생하면, 추가된 핀 정보도 저장하지 않는다.")
+    void save_FailBySaveHistoryException() {
+        // given
+        doThrow(new RuntimeException()).when(pinUpdateHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
+
+        // when
+        // then
+        assertThatThrownBy(() -> pinCommandService.save(new Guest(), List.of(BASE_IMAGE_FILE), createRequest))
+                .isInstanceOf(RuntimeException.class);
+        assertThat(pinRepository.findAll()).isEmpty();
     }
 
     @Test
