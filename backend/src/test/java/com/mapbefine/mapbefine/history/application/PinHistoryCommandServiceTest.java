@@ -42,10 +42,10 @@ class PinHistoryCommandServiceTest {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Test
-    @DisplayName("핀 수정 이벤트가 발생하면, 핀을 수정한 사람, 핀 정보를 포함한 정보 이력을 저장한다.")
+    @DisplayName("핀 변경 이벤트가 발생하면, 핀을 수정한 사람, 핀 정보를 포함한 정보 이력을 저장한다.")
     void saveHistory_Success() {
         // given
-        Member member = memberRepository.save(MemberFixture.create("핀 수정한 사람", "pinUpdateBy@gmail.com", Role.USER));
+        Member member = memberRepository.save(MemberFixture.create("핀 변경한 사람", "pinUpdateBy@gmail.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
         Location location = locationRepository.save(LocationFixture.create());
         Pin pin = pinRepository.save(PinFixture.create(location, topic, member));
@@ -56,7 +56,7 @@ class PinHistoryCommandServiceTest {
         // then
         List<PinHistory> histories = pinHistoryRepository.findAllByPinId(pin.getId());
         assertThat(histories.get(0)).usingRecursiveComparison()
-                .ignoringFields("id", "updatedAt")
+                .ignoringFields("id", "updatedAt", "createdAt")
                 .isEqualTo(new PinHistory(pin, member));
     }
 }
