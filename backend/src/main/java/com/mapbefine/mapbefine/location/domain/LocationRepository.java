@@ -16,7 +16,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     )
     List<Location> findAllByCoordinateAndDistanceInMeters(
             @Param("coordinate") Point coordinate,
-            @Param("distance") double distance);
+            @Param("distance") double distance
+    );
 
 
 }
