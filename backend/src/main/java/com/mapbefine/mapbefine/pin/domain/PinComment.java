@@ -31,9 +31,13 @@ public class PinComment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "pin_id")
+    private Pin pin;
+
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "parent_comment_id")
-    private PinComment parentComment;
+    private PinComment parentPinComment;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
@@ -44,26 +48,26 @@ public class PinComment extends BaseTimeEntity {
     private String content;
 
     public PinComment(
-            Long id,
-            PinComment parentComment,
+            Pin pin,
+            PinComment parentPinComment,
             Member creator,
             String content
     ) {
-        this.id = id;
-        this.parentComment = parentComment;
+        this.pin = pin;
+        this.parentPinComment = parentPinComment;
         this.creator = creator;
         this.content = content;
     }
 
     public static PinComment of(
-            Long id,
-            PinComment parentComment,
+            Pin pin,
+            PinComment parentPinComment,
             Member creator,
             String content
     ) {
         validateContent(content);
 
-        return new PinComment(id, parentComment, creator, content);
+        return new PinComment(pin, parentPinComment, creator, content);
     }
 
     private static void validateContent(String content) {

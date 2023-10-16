@@ -4,6 +4,7 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
@@ -120,6 +121,15 @@ public class PinController {
         pinCommandService.removeImageById(member, pinImageId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @LoginRequired
+    @PostMapping("/comments")
+    public ResponseEntity<Void> addComment(AuthMember member, @RequestBody PinCommentCreateRequest request) {
+        Long commentId = pinCommandService.addComment(member, request);
+
+        return ResponseEntity.created(URI.create("pins/comments/" + commentId))
+                .build();
     }
 
 }

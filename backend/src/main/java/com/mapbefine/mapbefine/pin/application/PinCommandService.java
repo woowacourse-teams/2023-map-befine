@@ -1,6 +1,8 @@
 package com.mapbefine.mapbefine.pin.application;
 
 import static com.mapbefine.mapbefine.image.exception.ImageErrorCode.IMAGE_FILE_IS_NULL;
+import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.FORBIDDEN_PIN_COMMENT_CREATE;
+import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.PIN_COMMENT_NOT_FOUND;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
 import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_IMAGE_ID;
@@ -16,12 +18,17 @@ import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinComment;
+import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.exception.PinCommentException.PinCommentForbiddenException;
+import com.mapbefine.mapbefine.pin.exception.PinCommentException.PinCommentNotFoundException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -46,6 +53,7 @@ public class PinCommandService {
     private final MemberRepository memberRepository;
     private final PinImageRepository pinImageRepository;
     private final ImageService imageService;
+    private final PinCommentRepository pinCommentRepository;
 
     public PinCommandService(
             PinRepository pinRepository,
@@ -53,7 +61,8 @@ public class PinCommandService {
             TopicRepository topicRepository,
             MemberRepository memberRepository,
             PinImageRepository pinImageRepository,
-            ImageService imageService
+            ImageService imageService,
+            PinCommentRepository pinCommentRepository
     ) {
         this.pinRepository = pinRepository;
         this.locationRepository = locationRepository;
@@ -61,6 +70,7 @@ public class PinCommandService {
         this.memberRepository = memberRepository;
         this.pinImageRepository = pinImageRepository;
         this.imageService = imageService;
+        this.pinCommentRepository = pinCommentRepository;
     }
 
     public long save(
@@ -193,4 +203,34 @@ public class PinCommandService {
 
         throw new PinForbiddenException(FORBIDDEN_PIN_CREATE_OR_UPDATE);
     }
+
+    public Long addComment(AuthMember authMember, PinCommentCreateRequest request) {
+        Pin pin = findPin(request.pinId());
+        validatePinCommentCreate(authMember, pin);
+        Member member = findMember(authMember.getMemberId());
+        PinComment parentPinComment = findPinComment(request.pinId());
+
+        PinComment pinComment = PinComment.of(pin, parentPinComment, member, request.content());
+        pinCommentRepository.save(pinComment);
+
+        return pinComment.getId();
+    }
+
+    private void validatePinCommentCreate(AuthMember authMember, Pin pin) {
+        if (authMember.canPinCommentCreate(pin.getTopic())) {
+            return;
+        }
+
+        throw new PinCommentForbiddenException(FORBIDDEN_PIN_COMMENT_CREATE);
+    }
+
+    private PinComment findPinComment(Long pinCommentId) {
+        if (Objects.isNull(pinCommentId)) {
+            return null;
+        }
+
+        return pinCommentRepository.findById(pinCommentId)
+                .orElseThrow(() -> new PinCommentNotFoundException(PIN_COMMENT_NOT_FOUND, pinCommentId));
+    }
+
 }
