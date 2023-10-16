@@ -36,4 +36,9 @@ public class Guest extends AuthMember {
         return false;
     }
 
+    @Override
+    public boolean canPinCommentCreate(Topic topic) {
+        return false;
+    }
+
 }

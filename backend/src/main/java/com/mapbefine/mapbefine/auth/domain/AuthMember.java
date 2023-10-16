@@ -27,6 +27,8 @@ public abstract class AuthMember {
     public abstract boolean canTopicUpdate(Topic topic);
 
     public abstract boolean canPinCreateOrUpdate(Topic topic);
+
+    public abstract boolean canPinCommentCreate(Topic topic);
     
     public Long getMemberId() {
         return memberId;

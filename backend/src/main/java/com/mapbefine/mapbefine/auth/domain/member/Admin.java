@@ -34,4 +34,9 @@ public class Admin extends AuthMember {
         return true;
     }
 
+    @Override
+    public boolean canPinCommentCreate(Topic topic) {
+        return true;
+    }
+
 }

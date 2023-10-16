@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.auth.domain.member;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicStatus;
 import java.util.List;
@@ -40,6 +41,13 @@ public class User extends AuthMember {
     public boolean canPinCreateOrUpdate(Topic topic) {
         TopicStatus topicStatus = topic.getTopicStatus();
         return topicStatus.isAllMembers() || hasPermission(topic.getId());
+    }
+
+    @Override
+    public boolean canPinCommentCreate(Topic topic) {
+        Publicity publicity = topic.getPublicity();
+
+        return publicity == Publicity.PUBLIC || isGroup(topic.getId());
     }
 
     private boolean isCreator(Long topicId) {
