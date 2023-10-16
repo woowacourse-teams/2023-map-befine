@@ -30,15 +30,17 @@ public class Coordinate {
     @Column(columnDefinition = "geometry SRID 4326", nullable = false)
     private Point coordinate;
 
-    private Coordinate(double latitude, double longitude) {
-        this.coordinate = geometryFactory.createPoint(new org.locationtech.jts.geom.Coordinate(longitude, latitude));
+    private Coordinate(Point point) {
+        this.coordinate = point;
     }
 
 
     public static Coordinate of(double latitude, double longitude) {
         validateRange(latitude, longitude);
 
-        return new Coordinate(latitude, longitude);
+        Point point = geometryFactory.createPoint(new org.locationtech.jts.geom.Coordinate(longitude, latitude));
+
+        return new Coordinate(point);
     }
 
     private static void validateRange(double latitude, double longitude) {
