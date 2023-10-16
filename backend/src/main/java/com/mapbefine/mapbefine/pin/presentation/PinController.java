@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import java.net.URI;
@@ -130,6 +131,13 @@ public class PinController {
 
         return ResponseEntity.created(URI.create("pins/comments/" + commentId))
                 .build();
+    }
+
+    @GetMapping("/comments/{pinId}")
+    public ResponseEntity<List<PinCommentResponse>> findCommentByPinId(AuthMember member, @PathVariable Long pinId) {
+        List<PinCommentResponse> allResponse = pinQueryService.findAllPinCommentByPinId(member, pinId);
+
+        return ResponseEntity.ok(allResponse);
     }
 
 }

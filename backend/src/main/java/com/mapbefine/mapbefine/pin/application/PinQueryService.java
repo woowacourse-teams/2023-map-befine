@@ -5,13 +5,18 @@ import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.PIN_NOT_FOUND;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinComment;
+import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class PinQueryService {
 
     private final PinRepository pinRepository;
+    private final PinCommentRepository pinCommentRepository;
 
-    public PinQueryService(PinRepository pinRepository) {
+    public PinQueryService(PinRepository pinRepository, PinCommentRepository pinCommentRepository) {
+        this.pinCommentRepository = pinCommentRepository;
         this.pinRepository = pinRepository;
     }
 
@@ -56,4 +63,26 @@ public class PinQueryService {
                 .map(PinResponse::from)
                 .toList();
     }
+
+    public List<PinCommentResponse> findAllPinCommentByPinId(AuthMember member, Long pinId) {
+        List<PinComment> pinComments = pinCommentRepository.findAllByPinId(pinId);
+
+        return pinComments.stream()
+                .map(pinComment ->
+                        PinCommentResponse.of(pinComment, canChangePinCommentByAuthMember(member, pinComment))
+                )
+                .toList();
+    }
+
+    private boolean canChangePinCommentByAuthMember(AuthMember member, PinComment pinComment) {
+        Long creatorId = pinComment.getCreator()
+                .getId();
+
+        if (Objects.isNull(member.getMemberId()) || creatorId.equals(member.getMemberId())) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
