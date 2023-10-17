@@ -9,4 +9,5 @@ export const DEFAULT_TOPIC_IMAGE =
 export const DEFAULT_PROFILE_IMAGE =
   'https://dr702blqc4x5d.cloudfront.net/2023-map-be-fine/icon/profile_defaultImage.svg';
 
-export const DEFAULT_PROD_URL = process.env.APP_URL || 'http://localhost:8080';
+export const DEFAULT_PROD_URL =
+  process.env.APP_URL || 'https://mapbefine.kro.kr/api';
