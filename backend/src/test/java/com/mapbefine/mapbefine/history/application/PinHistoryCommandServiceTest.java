@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.history.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.history.domain.PinHistory;
 import com.mapbefine.mapbefine.history.domain.PinHistoryRepository;
@@ -27,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
 @ServiceTest
-class PinHistoryCommandServiceTest {
+class PinHistoryCommandServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private PinHistoryRepository pinHistoryRepository;
