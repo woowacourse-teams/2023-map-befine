@@ -1,6 +1,11 @@
 import SingleComment from './SingleComment';
 
-function ReplyComment({ commentList, pageTotalCommentList, depth }: any) {
+function ReplyComment({
+  commentList,
+  pageTotalCommentList,
+  depth,
+  refetch,
+}: any) {
   if (depth === 2) return null;
   return (
     <>
@@ -12,6 +17,7 @@ function ReplyComment({ commentList, pageTotalCommentList, depth }: any) {
               commentList={commentList}
               totalList={pageTotalCommentList}
               depth={depth}
+              refetch={refetch}
             />
           </>
         ))}

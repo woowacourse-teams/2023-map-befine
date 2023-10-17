@@ -94,7 +94,7 @@ function SingleComment({
         content,
       });
       await refetch(Number(pinDetail));
-      setIsEditing;
+      setIsEditing(false);
       showToast('info', '댓글이 수정되었습니다.');
     } catch (e) {
       console.error(e);
@@ -219,6 +219,7 @@ function SingleComment({
           parentId={comment.id}
           pageTotalCommentList={totalList}
           depth={depth + 1}
+          refetch={refetch}
         />
       )}
     </CommentWrapper>
