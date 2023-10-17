@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
+import { deleteApi } from '../../../apis/deleteApi';
 import { postApi } from '../../../apis/postApi';
 import { putApi } from '../../../apis/putApi';
 import useToast from '../../../hooks/useToast';
@@ -24,6 +25,8 @@ function SingleComment({
   const [seeMore, setSeeMore] = useState(false);
   const [newComment, setNewComment] = useState<string>('');
   const { showToast } = useToast();
+  const [isEditing, setIsEditing] = useState(false);
+  const [content, setContent] = useState(comment.content);
   const params = new URLSearchParams(window.location.search);
   const pinDetail = params.get('pinDetail');
 
@@ -68,7 +71,7 @@ function SingleComment({
     e.stopPropagation();
     try {
       // 댓글 삭제
-      await postApi(`/pins/comments/${comment.id}`);
+      await deleteApi(`/pins/comments/${comment.id}`);
       refetch();
       showToast('info', '댓글이 삭제되었습니다.');
     } catch (e) {
@@ -76,18 +79,29 @@ function SingleComment({
     }
   };
 
-  const onClickModifyBtn = async (e: React.MouseEvent<HTMLDivElement>) => {
+  const onContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContent(e.target.value);
+  };
+
+  const onClickModifyConfirmBtn = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     e.stopPropagation();
     try {
       // 댓글 수정
       await putApi(`/pins/comments/${comment.id}`, {
-        content: newComment,
+        content,
       });
       refetch();
+      setIsEditing;
       showToast('info', '댓글이 수정되었습니다.');
     } catch (e) {
       showToast('error', '댓글을 다시 작성해주세요');
     }
+  };
+
+  const onClickModifyBtn = () => {
+    setIsEditing((prev) => !prev);
   };
 
   return (
@@ -105,9 +119,18 @@ function SingleComment({
             </Text>
           </Writer>
           <Content>
-            <Text $fontSize="large" $fontWeight="normal" color="darkGray">
-              {comment.content}
-            </Text>
+            {isEditing ? (
+              <Flex>
+                <input value={content} onChange={onContentChange} />
+                <button type="button" onClick={onClickModifyConfirmBtn}>
+                  확인
+                </button>
+              </Flex>
+            ) : (
+              <Text $fontSize="large" $fontWeight="normal" color="darkGray">
+                {comment.content}
+              </Text>
+            )}
           </Content>
           <div>
             {depth === 1 ? null : (
