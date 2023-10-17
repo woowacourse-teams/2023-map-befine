@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { USER_LOCATION_IMAGE } from '../constants/pinImage';
 import useToast from './useToast';
 
 type GeoLocationState = {
@@ -16,19 +17,48 @@ const useGeoLocation = (mapInstance: TMap | null) => {
     loaded: false,
     coordinates: { lat: '', lng: '' },
   });
+  const [userMarker, setUserMarker] = useState<Marker | null>(null);
+  const [isUsingUserLocation, setIsUsingUserLocation] = useState<boolean>(true);
 
-  const focusMapCurrentLocation = () => {
+  const removeUserMarker = () => {
+    if (watchPositionId.current) {
+      navigator.geolocation.clearWatch(watchPositionId.current);
+    }
+
+    userMarker?.setMap(null);
+    setUserMarker(null);
+  };
+
+  const createUserMarkerWithZoomingMap = () => {
     if (!mapInstance) return;
-    if (location.coordinates.lat === '') return;
 
-    mapInstance.setCenter(
-      new Tmapv3.LatLng(
-        Number(location.coordinates.lat),
-        Number(location.coordinates.lng),
-      ),
+    if (!isUsingUserLocation) {
+      removeUserMarker();
+      return;
+    }
+
+    const userCoordinates = new Tmapv3.LatLng(
+      Number(location.coordinates.lat),
+      Number(location.coordinates.lng),
     );
 
+    mapInstance.setCenter(userCoordinates);
     mapInstance.setZoom(17);
+
+    const userPositionMarker = new Tmapv3.Marker({
+      position: userCoordinates,
+      iconHTML: USER_LOCATION_IMAGE,
+      map: mapInstance,
+    });
+
+    setUserMarker(userPositionMarker);
+  };
+
+  const toggleUsingUserLocation = () => {
+    if (location.coordinates.lat === '') return;
+
+    setIsUsingUserLocation((prev) => !prev);
+    createUserMarkerWithZoomingMap();
   };
 
   const onSuccess = (position: GeolocationPosition) => {
@@ -62,8 +92,6 @@ const useGeoLocation = (mapInstance: TMap | null) => {
 
     showToast('info', '위치 정보를 불러오는 중입니다.');
 
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
-
     watchPositionId.current = navigator.geolocation.watchPosition(
       onSuccess,
       onError,
@@ -71,19 +99,15 @@ const useGeoLocation = (mapInstance: TMap | null) => {
   };
 
   useEffect(() => {
-    focusMapCurrentLocation();
+    toggleUsingUserLocation();
   }, [location]);
 
-  useEffect(
-    () => () => {
-      if (!watchPositionId.current) return;
-
-      navigator.geolocation.clearWatch(watchPositionId.current);
-    },
-    [],
-  );
-
-  return { location, requestUserLocation, focusMapCurrentLocation };
+  return {
+    location,
+    isUsingUserLocation,
+    requestUserLocation,
+    toggleUsingUserLocation,
+  };
 };
 
 export default useGeoLocation;
