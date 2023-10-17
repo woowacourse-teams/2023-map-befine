@@ -64,11 +64,18 @@ public class PinQueryService {
     }
 
     public List<PinCommentResponse> findAllPinCommentByPinId(AuthMember member, Long pinId) {
+        Pin pin = findPin(pinId);
         List<PinComment> pinComments = pinCommentRepository.findAllByPinId(pinId);
+        validateReadAuth(member, pin.getTopic());
 
         return pinComments.stream()
                 .map(pinComment -> pinCommentToResponse(member, pinComment))
                 .toList();
+    }
+
+    private Pin findPin(Long pinId) {
+        return pinRepository.findById(pinId)
+                .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
     }
 
     private PinCommentResponse pinCommentToResponse(AuthMember member, PinComment pinComment) {
