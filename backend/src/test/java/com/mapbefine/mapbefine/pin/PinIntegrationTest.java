@@ -426,7 +426,24 @@ class PinIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @Test
+    @DisplayName("핀 댓글을 삭제하면 204 을 반환한다.")
+    void removePinComment_Success() {
+        //given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        Long parentPinCommentId = createParentPinComment(pinId);
 
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .when().delete("/pins/comments/" + parentPinCommentId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 
 }
 
