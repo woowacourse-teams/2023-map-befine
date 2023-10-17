@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.history.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.history.domain.PinHistory;
@@ -57,17 +56,32 @@ class PinHistoryCommandServiceTest {
 
         // then
         List<PinHistory> histories = pinHistoryRepository.findAllByPinId(pin.getId());
-        PinHistory pinHistory = new PinHistory(pin, member);
-        LocalDateTime expectedPinUpdatedAt = pinHistory.getPin()
-                .getUpdatedAt();
-        LocalDateTime actualPinUpdatedAt = pin.getUpdatedAt();
-
-        assertSoftly(softly -> {
-            assertThat(histories.get(0)).usingRecursiveComparison()
-                    .ignoringFields("id")
-                    .ignoringFieldsOfTypes(LocalDateTime.class)
-                    .isEqualTo(pinHistory);
-            assertThat(expectedPinUpdatedAt).isEqualTo(actualPinUpdatedAt);
-        });
+        PinHistory expected = new PinHistory(pin, member);
+        PinHistory actual = histories.get(0);
+        assertThat(actual).usingRecursiveComparison()
+                .ignoringFields("id")
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .isEqualTo(expected);
     }
+
+    @Test
+    @DisplayName("핀 정보 이력에는 해당 정보가 수정된 일시를 함께 저장한다.")
+    void saveHistory_Success_createdAt() {
+        // given
+        Member member = memberRepository.save(MemberFixture.create("핀 변경한 사람", "pinUpdateBy@gmail.com", Role.USER));
+        Topic topic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(member));
+        Location location = locationRepository.save(LocationFixture.create());
+        Pin pin = pinRepository.save(PinFixture.create(location, topic, member));
+
+        // when
+        applicationEventPublisher.publishEvent(new PinUpdateEvent(pin, member));
+
+        // then
+        List<PinHistory> histories = pinHistoryRepository.findAllByPinId(pin.getId());
+        LocalDateTime expectedPinUpdatedAt = pin.getUpdatedAt();
+        PinHistory actual = histories.get(0);
+        LocalDateTime actualPinUpdatedAt = actual.getPinUpdatedAt();
+        assertThat(expectedPinUpdatedAt).isEqualTo(actualPinUpdatedAt);
+    }
+
 }
