@@ -13,6 +13,7 @@ import com.mapbefine.mapbefine.pin.application.PinQueryService;
 import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -233,6 +234,38 @@ class PinControllerTest extends RestDocsIntegration {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pinCommentCreateRequest)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 댓글 조회")
+    void findAllPinCommentByPinId() throws Exception {
+        List<PinCommentResponse> pinCommentResponses = List.of(
+                new PinCommentResponse(
+                        1L,
+                        "댓글",
+                        "creator",
+                        "https://creatorImageUrl",
+                        null,
+                        true,
+                        LocalDateTime.now()
+                ),
+                new PinCommentResponse(
+                        2L,
+                        "대댓글",
+                        "creator",
+                        "https://creatorImageUrl",
+                        1L,
+                        true,
+                        LocalDateTime.now()
+                )
+        );
+        given(pinQueryService.findAllPinCommentByPinId(any(), any())).willReturn(pinCommentResponses);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/pins/comments/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .contentType(APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(restDocs.document());
     }
 
