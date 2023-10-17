@@ -75,6 +75,7 @@ function SingleComment({
       refetch();
       showToast('info', '댓글이 삭제되었습니다.');
     } catch (e) {
+      console.error(e);
       showToast('error', '댓글을 다시 작성해주세요');
     }
   };
@@ -96,6 +97,7 @@ function SingleComment({
       setIsEditing;
       showToast('info', '댓글이 수정되었습니다.');
     } catch (e) {
+      console.error(e);
       showToast('error', '댓글을 다시 작성해주세요');
     }
   };
@@ -189,24 +191,26 @@ function SingleComment({
             </MoreReplyButton>
           )}
         </CommentInfo>
-        <Flex>
-          <Text
-            $fontSize="small"
-            color="gray"
-            $fontWeight="bold"
-            onClick={onClickModifyBtn}
-          >
-            수정
-          </Text>
-          <Text
-            $fontSize="small"
-            color="primary"
-            $fontWeight="bold"
-            onClick={onClickDeleteBtn}
-          >
-            삭제
-          </Text>
-        </Flex>
+        {comment.canChange && (
+          <Flex>
+            <Text
+              $fontSize="small"
+              color="gray"
+              $fontWeight="bold"
+              onClick={onClickModifyBtn}
+            >
+              수정
+            </Text>
+            <Text
+              $fontSize="small"
+              color="primary"
+              $fontWeight="bold"
+              onClick={onClickDeleteBtn}
+            >
+              삭제
+            </Text>
+          </Flex>
+        )}
       </Flex>
 
       {seeMore && (
