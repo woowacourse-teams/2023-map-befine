@@ -29,29 +29,22 @@ function Map() {
   const { mapInstance, setMapInstance } = useMapStore((state) => state);
 
   const mapContainer = useRef(null);
-  const location = useGeoLocation();
+  const { location, requestUserLocation, focusMapCurrentLocation } =
+    useGeoLocation(mapInstance);
   const { showToast } = useToast();
 
   const handleCurrentLocationClick = () => {
-    if (!location.loaded) {
-      showToast('info', '위치 정보를 불러오는 중입니다.');
-      return;
-    }
-
     if (location.error) {
       showToast('error', '위치 정보 사용을 허용해주세요.');
       return;
     }
 
-    if (mapInstance) {
-      mapInstance.setCenter(
-        new Tmapv3.LatLng(
-          Number(location.coordinates.lat),
-          Number(location.coordinates.lng),
-        ),
-      );
-      mapInstance.setZoom(15);
+    if (!location.loaded) {
+      requestUserLocation();
+      return;
     }
+
+    focusMapCurrentLocation();
   };
 
   useEffect(() => {
