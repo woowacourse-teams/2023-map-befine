@@ -30,7 +30,6 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
       fetchDelete({
         url: `/pins/images/${imageId}`,
         errorMessage: '이미지 제거에 실패했습니다.',
-        isThrow: true,
         onSuccess: () => {
           showToast('info', '핀에서 이미지가 삭제 되었습니다.');
           getPinData();
