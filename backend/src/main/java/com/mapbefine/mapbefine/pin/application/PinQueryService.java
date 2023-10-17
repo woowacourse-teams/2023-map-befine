@@ -65,8 +65,9 @@ public class PinQueryService {
 
     public List<PinCommentResponse> findAllPinCommentByPinId(AuthMember member, Long pinId) {
         Pin pin = findPin(pinId);
-        List<PinComment> pinComments = pinCommentRepository.findAllByPinId(pinId);
         validateReadAuth(member, pin.getTopic());
+
+        List<PinComment> pinComments = pinCommentRepository.findAllByPinId(pinId);
 
         return pinComments.stream()
                 .map(pinComment -> pinCommentToResponse(member, pinComment))

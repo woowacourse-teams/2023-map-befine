@@ -210,7 +210,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
 
     @ParameterizedTest
     @MethodSource("publicTopicsStatus")
-    @DisplayName("Topic 이 PUBLIC 인 경우 Guest 유저가 Pin Comment 를 조회에 성공한다.")
+    @DisplayName("Topic 이 PUBLIC 인 경우 Guest 유저가 핀 댓글을 조회에 성공한다.")
     void findAllPinCommentGuest_Success(Publicity publicity, PermissionType permissionType) {
         // given
         Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
@@ -228,7 +228,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("Topic 이 PRIVATE 인 경우 Guest 유저가 Pin Comment 조회에 실패한다.")
+    @DisplayName("Topic 이 PRIVATE 인 경우 Guest 유저가 핀 댓글을 조회에 실패한다.")
     void findAllPinCommentGuest_Fail() {
         // given
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user1);
@@ -242,7 +242,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
 
     @ParameterizedTest
     @MethodSource("publicAndPrivateTopicsStatus")
-    @DisplayName("Topic 이 PUBLIC 인 경우와 PRIVATE 이면서 Permission 을 가진 일반 유저가 Pin Comment 조회에 성공한다.")
+    @DisplayName("Topic 이 PUBLIC 인 경우와 PRIVATE 이면서 Permission 을 가진 일반 유저가 핀 댓글을 조회에 성공한다.")
     void findAllPinCommentUser_Success(Publicity publicity, PermissionType permissionType) {
         // given
         Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
@@ -261,7 +261,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("Topic 이 PRIVATE 이면서 Permission 을 가지지 않은 일반 유저가 Pin Comment 조회에 실패한다.")
+    @DisplayName("Topic 이 PRIVATE 이면서 Permission 을 가지지 않은 일반 유저가 핀 댓글을 조회에 실패한다.")
     void findAllPinCommentUser_Fail() {
         // given
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user1);
@@ -277,7 +277,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
 
     @ParameterizedTest
     @MethodSource("publicAndPrivateTopicsStatus")
-    @DisplayName("Topic 이 PUBLIC 이든 PRIVATE 이든 ADMIN 은 Pin Comment 조회에 성공한다")
+    @DisplayName("Topic 이 PUBLIC 이든 PRIVATE 이든 ADMIN 은 핀 댓글을 조회에 성공한다")
     void findAllPinCommentAdmin_Success(Publicity publicity, PermissionType permissionType) {
         // given
         Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);

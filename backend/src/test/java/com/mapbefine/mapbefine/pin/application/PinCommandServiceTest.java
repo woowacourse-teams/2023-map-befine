@@ -1,5 +1,10 @@
 package com.mapbefine.mapbefine.pin.application;
 
+import static com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse.ofParentComment;
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.ALL_MEMBERS;
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.GROUP_ONLY;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PRIVATE;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PUBLIC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -17,24 +22,37 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinComment;
+import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
+import com.mapbefine.mapbefine.pin.exception.PinCommentException.PinCommentForbiddenException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
+import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,6 +76,8 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     private MemberRepository memberRepository;
     @Autowired
     private PinImageRepository pinImageRepository;
+    @Autowired
+    private PinCommentRepository pinCommentRepository;
 
     private Location location;
     private Topic topic;
@@ -290,6 +310,107 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         // when, then
         assertThatThrownBy(() -> pinCommandService.removeImageById(new Guest(), pinImageId))
                 .isInstanceOf(PinForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("Guest 인 경우 핀 댓글을 생성하면 예외가 발생된다.")
+    void savePinComment_Fail_ByGuest() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, member));
+        PinCommentCreateRequest request = new PinCommentCreateRequest(savedPin.getId(), null, "댓글");
+
+        // when then
+        assertThatThrownBy(() -> pinCommandService.savePinComment(new Guest(), request))
+                .isInstanceOf(PinCommentForbiddenException.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("publicAndPrivateTopicsStatus")
+    @DisplayName("User 인 경우 Public 인 토픽, Private 이지만 권한을 가진 토픽에는 핀 댓글을 생성할 수 있다.")
+    void savePinComment_Success_ByCreator(Publicity publicity, PermissionType permissionType) {
+        // given
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, member);
+        topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, member));
+        PinCommentCreateRequest request = new PinCommentCreateRequest(
+                savedPin.getId(), null, "댓글"
+        );
+        AuthMember creatorUser = MemberFixture.createUser(member);
+
+        // when
+        Long pinCommentId = pinCommandService.savePinComment(creatorUser, request);
+
+        // then
+        PinComment pinComment = pinCommentRepository.findById(pinCommentId).get();
+        PinCommentResponse expected = ofParentComment(
+                PinComment.of(savedPin, null, member, "댓글"), true
+        );
+        assertThat(ofParentComment(pinComment, true))
+                .usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .ignoringFields("id")
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("User 일 때 토픽이 Private 이고, 권한을 가지고 있지 않을 때 핀 댓글을 생성할 수 없다.")
+    void savePinComment_Fail_ByNonCreator() {
+        // given
+        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
+        topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, member));
+        PinCommentCreateRequest request = new PinCommentCreateRequest(
+                savedPin.getId(), null, "댓글"
+        );
+        Member nonCreator = memberRepository.save(
+                MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
+        );
+        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator);
+
+        // when then
+        assertThatThrownBy(() -> pinCommandService.savePinComment(nonCreatorUser, request))
+                .isInstanceOf(PinCommentForbiddenException.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("publicAndPrivateTopicsStatus")
+    @DisplayName("Admin 인 경우 어떠한 유형의 토픽이더라도 핀 댓글을 생성할 수 있다.")
+    void savePinComment_Success_ByAdmin(Publicity publicity, PermissionType permissionType) {
+        // given
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, member);
+        topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, member));
+        PinCommentCreateRequest request = new PinCommentCreateRequest(
+                savedPin.getId(), null, "댓글"
+        );
+        Member nonCreator = memberRepository.save(
+                MemberFixture.create("admin", "admin@naver.com", Role.ADMIN)
+        );
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
+
+        // when
+        Long pinCommentId = pinCommandService.savePinComment(nonCreatorAdmin, request);
+
+        // then
+        PinComment pinComment = pinCommentRepository.findById(pinCommentId).get();
+        PinCommentResponse expected = ofParentComment(
+                PinComment.of(savedPin, null, nonCreator, "댓글"), true
+        );
+        assertThat(ofParentComment(pinComment, true))
+                .usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .ignoringFields("id")
+                .isEqualTo(expected);
+    }
+
+
+
+    static Stream<Arguments> publicAndPrivateTopicsStatus() {
+        return Stream.of(
+                Arguments.of(PUBLIC, ALL_MEMBERS),
+                Arguments.of(PUBLIC, GROUP_ONLY),
+                Arguments.of(PRIVATE, GROUP_ONLY)
+        );
     }
 
 }
