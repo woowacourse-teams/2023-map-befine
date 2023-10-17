@@ -125,7 +125,7 @@ const CurrentLocationIcon = styled(CurrentLocation)<{
   z-index: 10;
   opacity: 0.85;
   filter: ${({ $isUsingUserLocation }) =>
-    !$isUsingUserLocation && 'brightness(0.6)'};
+    $isUsingUserLocation && 'brightness(0.6)'};
 
   @media (max-width: 1036px) {
     bottom: 8%;

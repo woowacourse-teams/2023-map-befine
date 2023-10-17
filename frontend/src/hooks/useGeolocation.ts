@@ -18,21 +18,30 @@ const useGeoLocation = (mapInstance: TMap | null) => {
     coordinates: { lat: '', lng: '' },
   });
   const [userMarker, setUserMarker] = useState<Marker | null>(null);
-  const [isUsingUserLocation, setIsUsingUserLocation] = useState<boolean>(true);
+  const [isUsingUserLocation, setIsUsingUserLocation] =
+    useState<boolean>(false);
 
   const removeUserMarker = () => {
     if (watchPositionId.current) {
+      console.log('clear', watchPositionId.current);
       navigator.geolocation.clearWatch(watchPositionId.current);
+      watchPositionId.current = null;
+      setLocation({
+        loaded: false,
+        coordinates: { lat: '', lng: '' },
+      });
     }
 
-    userMarker?.setMap(null);
-    setUserMarker(null);
+    if (userMarker) {
+      userMarker.setMap(null);
+      setUserMarker(null);
+    }
   };
 
   const createUserMarkerWithZoomingMap = () => {
     if (!mapInstance) return;
 
-    if (!isUsingUserLocation) {
+    if (isUsingUserLocation) {
       removeUserMarker();
       return;
     }
@@ -55,7 +64,7 @@ const useGeoLocation = (mapInstance: TMap | null) => {
   };
 
   const toggleUsingUserLocation = () => {
-    if (location.coordinates.lat === '') return;
+    console.log(watchPositionId.current, 'ref');
 
     setIsUsingUserLocation((prev) => !prev);
     createUserMarkerWithZoomingMap();
@@ -86,11 +95,17 @@ const useGeoLocation = (mapInstance: TMap | null) => {
   };
 
   const requestUserLocation = () => {
+    console.log('request');
     if (!('geolocation' in navigator)) {
       onError({ code: 0, message: 'Geolocation not supported' });
     }
 
     showToast('info', '위치 정보를 불러오는 중입니다.');
+
+    if (isUsingUserLocation) {
+      showToast('info', '잠시 후 다시 시도해주세요.');
+      return;
+    }
 
     watchPositionId.current = navigator.geolocation.watchPosition(
       onSuccess,
@@ -99,6 +114,9 @@ const useGeoLocation = (mapInstance: TMap | null) => {
   };
 
   useEffect(() => {
+    if (location.coordinates.lat === '') return;
+
+    console.log('useEffect');
     toggleUsingUserLocation();
   }, [location]);
 
