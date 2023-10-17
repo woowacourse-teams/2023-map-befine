@@ -28,8 +28,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation group: 'com.github.maricn', name: 'logback-slack-appender', version: '1.6.1'
-
+    implementation 'com.github.maricn:logback-slack-appender:1.6.1'
+    implementation 'org.hibernate:hibernate-spatial:6.2.5.Final'
     implementation 'mysql:mysql-connector-java:8.0.32'
 
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
@@ -44,6 +44,8 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'io.rest-assured:spring-mock-mvc'
     testImplementation 'org.assertj:assertj-core:3.19.0'
+    testImplementation 'org.testcontainers:mysql:1.17.2'
+    testImplementation 'org.testcontainers:junit-jupiter:1.17.2'
 
     // S3
     implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')

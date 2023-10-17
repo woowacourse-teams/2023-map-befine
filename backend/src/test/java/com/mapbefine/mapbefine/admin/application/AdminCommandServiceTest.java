@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.admin.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
@@ -35,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @ServiceTest
-class AdminCommandServiceTest {
+class AdminCommandServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private AdminCommandService adminCommandService;

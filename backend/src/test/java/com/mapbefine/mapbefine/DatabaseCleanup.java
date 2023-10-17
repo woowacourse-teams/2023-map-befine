@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DatabaseCleanup implements InitializingBean {
 
     private static final String TRUNCATE_SQL_MESSAGE = "TRUNCATE TABLE %s";
-    private static final String SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE = "SET REFERENTIAL_INTEGRITY %s";
+    private static final String SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE = "SET FOREIGN_KEY_CHECKS = %s";
     private static final String DISABLE_REFERENTIAL_QUERY = String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, false);
     private static final String ENABLE_REFERENTIAL_QUERY = String.format(SET_REFERENTIAL_INTEGRITY_SQL_MESSAGE, true);
 

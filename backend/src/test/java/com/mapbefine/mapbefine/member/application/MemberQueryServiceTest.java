@@ -4,6 +4,7 @@ import static com.mapbefine.mapbefine.member.domain.Role.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
@@ -38,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-class MemberQueryServiceTest {
+class MemberQueryServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private MemberQueryService memberQueryService;
