@@ -4,33 +4,35 @@ import { USER_LOCATION_IMAGE } from '../constants/pinImage';
 import useToast from './useToast';
 
 type GeoLocationState = {
-  loaded: boolean;
   coordinates: { lat: string | number; lng: string | number };
   error?: { code: number; message: string };
 };
+
+const INIT_VALUE = '';
 
 const useGeoLocation = (mapInstance: TMap | null) => {
   const { Tmapv3 } = window;
   const { showToast } = useToast();
   const watchPositionId = useRef<number | null>(null);
   const [location, setLocation] = useState<GeoLocationState>({
-    loaded: false,
     coordinates: { lat: '', lng: '' },
   });
   const [userMarker, setUserMarker] = useState<Marker | null>(null);
   const [isUsingUserLocation, setIsUsingUserLocation] =
     useState<boolean>(false);
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
 
   const removeUserMarker = () => {
-    if (watchPositionId.current) {
-      console.log('clear', watchPositionId.current);
-      navigator.geolocation.clearWatch(watchPositionId.current);
-      watchPositionId.current = null;
-      setLocation({
-        loaded: false,
-        coordinates: { lat: '', lng: '' },
-      });
-    }
+    if (watchPositionId.current === null) return;
+
+    navigator.geolocation.clearWatch(watchPositionId.current);
+    watchPositionId.current = null;
+
+    setLocation({
+      coordinates: { lat: INIT_VALUE, lng: INIT_VALUE },
+    });
+    setIsUsingUserLocation(false);
+    setIsRequesting(false);
 
     if (userMarker) {
       userMarker.setMap(null);
@@ -61,70 +63,77 @@ const useGeoLocation = (mapInstance: TMap | null) => {
     });
 
     setUserMarker(userPositionMarker);
-  };
-
-  const toggleUsingUserLocation = () => {
-    console.log(watchPositionId.current, 'ref');
-
-    setIsUsingUserLocation((prev) => !prev);
-    createUserMarkerWithZoomingMap();
+    setIsUsingUserLocation(true);
   };
 
   const onSuccess = (position: GeolocationPosition) => {
     setLocation({
-      loaded: true,
       coordinates: {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       },
     });
+
+    setIsRequesting(false);
   };
 
   const onError = (
     error: Pick<GeolocationPositionError, 'code' | 'message'>,
   ) => {
     setLocation({
-      loaded: true,
-      coordinates: { lat: '', lng: '' },
+      coordinates: { lat: INIT_VALUE, lng: INIT_VALUE },
       error: {
         code: error.code,
         message: error.message,
       },
     });
-    showToast('error', '위치 정보 사용을 허용해주세요.');
+
+    showToast(
+      'error',
+      '현재 위치를 사용하려면 설정에서 위치 권한을 허용해주세요.',
+    );
+    setIsRequesting(false);
   };
 
   const requestUserLocation = () => {
-    console.log('request');
     if (!('geolocation' in navigator)) {
       onError({ code: 0, message: 'Geolocation not supported' });
     }
 
-    showToast('info', '위치 정보를 불러오는 중입니다.');
-
     if (isUsingUserLocation) {
-      showToast('info', '잠시 후 다시 시도해주세요.');
+      removeUserMarker();
       return;
     }
+
+    if (isRequesting) {
+      showToast('info', '현재 위치를 찾고 있어요.');
+      return;
+    }
+
+    showToast('info', '현재 위치를 불러옵니다.');
 
     watchPositionId.current = navigator.geolocation.watchPosition(
       onSuccess,
       onError,
     );
+
+    setIsRequesting(true);
   };
 
   useEffect(() => {
-    if (location.coordinates.lat === '') return;
+    if (location.coordinates.lat === INIT_VALUE) {
+      return;
+    }
 
-    console.log('useEffect');
-    toggleUsingUserLocation();
+    createUserMarkerWithZoomingMap();
+
+    return () => removeUserMarker();
   }, [location]);
 
   return {
     location,
     isUsingUserLocation,
     requestUserLocation,
-    toggleUsingUserLocation,
   };
 };
 
