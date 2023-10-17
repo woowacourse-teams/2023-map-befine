@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.history.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.history.domain.PinHistory;
@@ -19,6 +20,7 @@ import com.mapbefine.mapbefine.pin.event.PinUpdateEvent;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,8 +57,17 @@ class PinHistoryCommandServiceTest {
 
         // then
         List<PinHistory> histories = pinHistoryRepository.findAllByPinId(pin.getId());
-        assertThat(histories.get(0)).usingRecursiveComparison()
-                .ignoringFields("id", "updatedAt", "createdAt")
-                .isEqualTo(new PinHistory(pin, member));
+        PinHistory pinHistory = new PinHistory(pin, member);
+        LocalDateTime expectedPinUpdatedAt = pinHistory.getPin()
+                .getUpdatedAt();
+        LocalDateTime actualPinUpdatedAt = pin.getUpdatedAt();
+
+        assertSoftly(softly -> {
+            assertThat(histories.get(0)).usingRecursiveComparison()
+                    .ignoringFields("id")
+                    .ignoringFieldsOfTypes(LocalDateTime.class)
+                    .isEqualTo(pinHistory);
+            assertThat(expectedPinUpdatedAt).isEqualTo(actualPinUpdatedAt);
+        });
     }
 }
