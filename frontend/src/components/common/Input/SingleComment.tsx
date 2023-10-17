@@ -72,7 +72,7 @@ function SingleComment({
     try {
       // 댓글 삭제
       await deleteApi(`/pins/comments/${comment.id}`);
-      refetch();
+      refetch(comment.id);
       showToast('info', '댓글이 삭제되었습니다.');
     } catch (e) {
       console.error(e);
@@ -93,7 +93,7 @@ function SingleComment({
       await putApi(`/pins/comments/${comment.id}`, {
         content,
       });
-      refetch();
+      refetch(comment.id);
       setIsEditing;
       showToast('info', '댓글이 수정되었습니다.');
     } catch (e) {
