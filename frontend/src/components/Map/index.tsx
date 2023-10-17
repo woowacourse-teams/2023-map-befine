@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 
 import CurrentLocation from '../../assets/currentLocationBtn.svg';
@@ -29,8 +29,12 @@ function Map() {
   const { mapInstance, setMapInstance } = useMapStore((state) => state);
 
   const mapContainer = useRef(null);
-  const { location, requestUserLocation, focusMapCurrentLocation } =
-    useGeoLocation(mapInstance);
+  const {
+    location,
+    isUsingUserLocation,
+    requestUserLocation,
+    toggleUsingUserLocation,
+  } = useGeoLocation(mapInstance);
   const { showToast } = useToast();
 
   const handleCurrentLocationClick = () => {
@@ -44,7 +48,7 @@ function Map() {
       return;
     }
 
-    focusMapCurrentLocation();
+    toggleUsingUserLocation();
   };
 
   useEffect(() => {
@@ -84,7 +88,10 @@ function Map() {
         height="calc(var(--vh, 1vh) * 100)"
         $minWidth={width}
       />
-      <CurrentLocationIcon onClick={handleCurrentLocationClick} />
+      <CurrentLocationIcon
+        onClick={handleCurrentLocationClick}
+        $isUsingUserLocation={isUsingUserLocation}
+      />
     </MapContainer>
   );
 }
@@ -97,7 +104,7 @@ const MapFlex = styled(Flex)`
   & {
     canvas {
       min-width: ${({ $minWidth }) =>
-        $minWidth === '100vw' ? '0' : 'calc(100vw - 400px)'};
+        $minWidth === '100vw' ? '0' : 'calc(100vw - 372px)'};
     }
   }
 
@@ -106,7 +113,9 @@ const MapFlex = styled(Flex)`
   }
 `;
 
-const CurrentLocationIcon = styled(CurrentLocation)`
+const CurrentLocationIcon = styled(CurrentLocation)<{
+  $isUsingUserLocation: boolean;
+}>`
   position: absolute;
   cursor: pointer;
   bottom: 8%;
@@ -114,10 +123,13 @@ const CurrentLocationIcon = styled(CurrentLocation)`
   width: 52px;
   height: 52px;
   z-index: 10;
+  opacity: 0.85;
+  filter: ${({ $isUsingUserLocation }) =>
+    !$isUsingUserLocation && 'brightness(0.6)'};
 
   @media (max-width: 1036px) {
     bottom: 8%;
-    right: 0.85%;
+    right: 1%;
   }
 `;
 
