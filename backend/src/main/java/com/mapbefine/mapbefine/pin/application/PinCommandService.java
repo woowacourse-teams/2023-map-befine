@@ -121,8 +121,9 @@ public class PinCommandService {
     private Location findDuplicateOrCreatePinLocation(PinCreateRequest request) {
         Coordinate coordinate = Coordinate.of(request.latitude(), request.longitude());
 
-        return locationRepository.findAllByCoordinateAndDistanceInMeters(coordinate,
-                        DUPLICATE_LOCATION_DISTANCE_METERS)
+        return locationRepository.findAllByCoordinateAndDistanceInMeters(
+                        coordinate.getCoordinate(), DUPLICATE_LOCATION_DISTANCE_METERS
+                )
                 .stream()
                 .filter(location -> location.isSameAddress(request.address()))
                 .findFirst()
