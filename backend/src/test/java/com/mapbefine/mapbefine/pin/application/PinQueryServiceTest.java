@@ -1,10 +1,16 @@
 package com.mapbefine.mapbefine.pin.application;
 
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.ALL_MEMBERS;
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.GROUP_ONLY;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PRIVATE;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PUBLIC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Admin;
+import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -14,24 +20,33 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinCommentFixture;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinComment;
+import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
+import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @ServiceTest
 class PinQueryServiceTest extends TestDatabaseContainer {
@@ -46,11 +61,13 @@ class PinQueryServiceTest extends TestDatabaseContainer {
     private LocationRepository locationRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private PinCommentRepository pinCommentRepository;
 
     private Location location;
     private Topic publicUser1Topic;
     private Topic privateUser2Topic;
-    private Member user1;
+    private  Member user1;
     private Member user2;
     private AuthMember authMemberUser1;
 
@@ -190,4 +207,108 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         assertThat(actual).extractingResultOf("id")
                 .isEqualTo(pinIds);
     }
+
+    @ParameterizedTest
+    @MethodSource("publicTopicsStatus")
+    @DisplayName("Topic 이 PUBLIC 인 경우 Guest 유저가 Pin Comment 를 조회에 성공한다.")
+    void findAllPinCommentGuest_Success(Publicity publicity, PermissionType permissionType) {
+        // given
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+        PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
+        PinCommentResponse expected = PinCommentResponse.ofParentComment(savedPinComment, false);
+
+        // when
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentByPinId(new Guest(), savedPin.getId());
+
+        // then
+        assertThat(actual.get(0)).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Topic 이 PRIVATE 인 경우 Guest 유저가 Pin Comment 조회에 실패한다.")
+    void findAllPinCommentGuest_Fail() {
+        // given
+        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+
+        // when then
+        assertThatThrownBy(() -> pinQueryService.findAllPinCommentByPinId(new Guest(), savedPin.getId()))
+                .isInstanceOf(PinForbiddenException.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("publicAndPrivateTopicsStatus")
+    @DisplayName("Topic 이 PUBLIC 인 경우와 PRIVATE 이면서 Permission 을 가진 일반 유저가 Pin Comment 조회에 성공한다.")
+    void findAllPinCommentUser_Success(Publicity publicity, PermissionType permissionType) {
+        // given
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+        PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
+        PinCommentResponse expected = PinCommentResponse.ofParentComment(savedPinComment, true);
+        AuthMember creatorUser = MemberFixture.createUser(user1);
+
+        // when
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentByPinId(creatorUser, savedPin.getId());
+
+        // then
+        assertThat(actual.get(0)).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Topic 이 PRIVATE 이면서 Permission 을 가지지 않은 일반 유저가 Pin Comment 조회에 실패한다.")
+    void findAllPinCommentUser_Fail() {
+        // given
+        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+        pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
+        AuthMember nonCreatorUser = MemberFixture.createUser(user2);
+
+        // when then
+        assertThatThrownBy(() -> pinQueryService.findAllPinCommentByPinId(nonCreatorUser, savedPin.getId()))
+                .isInstanceOf(PinForbiddenException.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("publicAndPrivateTopicsStatus")
+    @DisplayName("Topic 이 PUBLIC 이든 PRIVATE 이든 ADMIN 은 Pin Comment 조회에 성공한다")
+    void findAllPinCommentAdmin_Success(Publicity publicity, PermissionType permissionType) {
+        // given
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+        PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
+        PinCommentResponse expected = PinCommentResponse.ofParentComment(savedPinComment, true);
+        AuthMember nonCreatorAdmin = new Admin(user2.getId());
+
+        // when
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentByPinId(nonCreatorAdmin, savedPin.getId());
+
+        // then
+        assertThat(actual.get(0)).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    static Stream<Arguments> publicTopicsStatus() {
+
+        return Stream.of(
+                Arguments.of(PUBLIC, ALL_MEMBERS),
+                Arguments.of(PUBLIC, GROUP_ONLY)
+        );
+    }
+
+    static Stream<Arguments> publicAndPrivateTopicsStatus() {
+        return Stream.of(
+                Arguments.of(PUBLIC, ALL_MEMBERS),
+                Arguments.of(PUBLIC, GROUP_ONLY),
+                Arguments.of(PRIVATE, GROUP_ONLY)
+        );
+    }
+
 }
