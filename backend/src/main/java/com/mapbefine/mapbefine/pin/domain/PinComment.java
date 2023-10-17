@@ -38,11 +38,11 @@ public class PinComment extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "parent_pin_comment_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PinComment parentPinComment;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member creator;
 
     @Lob
