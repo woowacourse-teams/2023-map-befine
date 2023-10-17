@@ -1,8 +1,11 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState } from 'react';
 import styled from 'styled-components';
 
 import { postApi } from '../../../apis/postApi';
+import { putApi } from '../../../apis/putApi';
 import useToast from '../../../hooks/useToast';
+import Text from '../Text';
 import ReplyComment from './ReplyComment';
 
 const userToken = localStorage?.getItem('userToken');
@@ -15,11 +18,14 @@ function SingleComment({
   commentList,
   totalList,
   depth = 0,
+  refetch,
 }: any) {
   const [replyOpen, setReplyOpen] = useState(false);
   const [seeMore, setSeeMore] = useState(false);
   const [newComment, setNewComment] = useState<string>('');
   const { showToast } = useToast();
+  const params = new URLSearchParams(window.location.search);
+  const pinDetail = params.get('pinDetail');
 
   const toggleReplyOpen = () => {
     setReplyOpen((prev) => !prev);
@@ -28,8 +34,8 @@ function SingleComment({
     setSeeMore((prev) => !prev);
   };
 
-  const replyList = commentList.filter(
-    (curComment: any) => curComment.replyTo === comment.id,
+  const replyList = commentList?.filter(
+    (curComment: any) => curComment.parentPinCommentId === comment.id,
   );
   const replyCount = replyList.length;
 
@@ -39,23 +45,51 @@ function SingleComment({
     try {
       // 댓글 추가
       // comment 값이랑 추가 정보 body에 담아서 보내기
+
       await postApi(
         `/pins/comments`,
         {
-          pinId,
+          pinId: Number(pinDetail),
           content: newComment,
-          parentPinCommentId: null,
+          parentPinCommentId: comment.id,
         },
         'application/json',
       );
-
-      setCurrentPageCommentList();
-
+      refetch(Number(pinDetail));
+      setReplyOpen(false);
+      setNewComment('');
       showToast('info', '댓글이 추가되었습니다.');
-    } catch {
+    } catch (e) {
       showToast('error', '댓글을 다시 작성해주세요');
     }
   };
+
+  const onClickDeleteBtn = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    try {
+      // 댓글 삭제
+      await postApi(`/pins/comments/${comment.id}`);
+      refetch();
+      showToast('info', '댓글이 삭제되었습니다.');
+    } catch (e) {
+      showToast('error', '댓글을 다시 작성해주세요');
+    }
+  };
+
+  const onClickModifyBtn = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    try {
+      // 댓글 수정
+      await putApi(`/pins/comments/${comment.id}`, {
+        content: newComment,
+      });
+      refetch();
+      showToast('info', '댓글이 수정되었습니다.');
+    } catch (e) {
+      showToast('error', '댓글을 다시 작성해주세요');
+    }
+  };
+
   return (
     <CommentWrapper depth={depth} key={comment.id}>
       <Flex>
@@ -65,12 +99,22 @@ function SingleComment({
           height="40px"
         />
         <CommentInfo>
-          <Writer>@{comment.creator}</Writer>
-          <Content>{comment.content}</Content>
+          <Writer>
+            <Text $fontSize="default" $fontWeight="bold" color="black">
+              @{comment.creator}
+            </Text>
+          </Writer>
+          <Content>
+            <Text $fontSize="large" $fontWeight="normal" color="darkGray">
+              {comment.content}
+            </Text>
+          </Content>
           <div>
-            <button type="button" onClick={toggleReplyOpen}>
-              답글남기기
-            </button>
+            {depth === 1 ? null : (
+              <button type="button" onClick={toggleReplyOpen}>
+                답글남기기
+              </button>
+            )}
             {replyOpen && (
               <div
                 style={{ display: 'flex', marginBottom: '20px', gap: '12px' }}
@@ -122,11 +166,29 @@ function SingleComment({
             </MoreReplyButton>
           )}
         </CommentInfo>
+        <Flex>
+          <Text
+            $fontSize="small"
+            color="gray"
+            $fontWeight="bold"
+            onClick={onClickModifyBtn}
+          >
+            수정
+          </Text>
+          <Text
+            $fontSize="small"
+            color="primary"
+            $fontWeight="bold"
+            onClick={onClickDeleteBtn}
+          >
+            삭제
+          </Text>
+        </Flex>
       </Flex>
 
       {seeMore && (
         <ReplyComment
-          commentList={replyList}
+          commentList={replyList ?? []}
           parentId={comment.id}
           pageTotalCommentList={totalList}
           depth={depth + 1}
@@ -141,6 +203,7 @@ export default SingleComment;
 const CommentWrapper = styled.li<{ depth: number }>`
   width: 100%;
   margin-left: ${(props) => props.depth * 20}px;
+  list-style: none;
 `;
 
 const Flex = styled.div`
@@ -159,17 +222,9 @@ const CommentInfo = styled.div``;
 
 const Writer = styled.div`
   white-space: nowrap;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.8rem;
 `;
 
 const Content = styled.div`
-  font-family: 'Roboto', 'Arial', sans-serif;
-  font-size: 1.2rem;
-  line-height: 1.6rem;
-  font-weight: 300;
-  line-height: 2rem;
   overflow-wrap: anywhere;
 `;
 

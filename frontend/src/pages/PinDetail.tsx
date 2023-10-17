@@ -81,6 +81,7 @@ function PinDetail({
 
   useEffect(() => {
     getPinData();
+    setCurrentPageCommentList(pinId);
   }, [pinId, searchParams]);
 
   const onClickEditPin = () => {
@@ -129,14 +130,14 @@ function PinDetail({
   };
 
   // 댓글 구현 부분
-  const setCurrentPageCommentList = async () => {
+  const setCurrentPageCommentList = async (pinId: number) => {
     const data: any[] = await getApi(`/pins/comments/${pinId}`);
     setCommentList(data);
     return data;
   };
 
   useEffect(() => {
-    setCurrentPageCommentList();
+    setCurrentPageCommentList(pinId);
   }, []);
 
   const onClickCommentBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -155,8 +156,8 @@ function PinDetail({
         'application/json',
       );
 
-      setCurrentPageCommentList();
-
+      setCurrentPageCommentList(pinId);
+      setNewComment('');
       showToast('info', '댓글이 추가되었습니다.');
     } catch {
       showToast('error', '댓글을 다시 작성해주세요');
@@ -289,8 +290,9 @@ function PinDetail({
                 commentList={commentList}
                 totalList={commentList}
                 pinId={pinId}
+                refetch={setCurrentPageCommentList}
               />
-            ) : null, // <-- comment.replyTo가 존재하는 경우 null 반환
+            ) : null, // <-- comment.parentPinCommentId가 존재하는 경우 null 반환
         )}
       {/* comment section END */}
       <ButtonsWrapper>

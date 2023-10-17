@@ -1,8 +1,6 @@
 import SingleComment from './SingleComment';
 
-function ReplyComment({ props }: any) {
-  const { commentList, pageTotalCommentList, depth } = props;
-
+function ReplyComment({ commentList, pageTotalCommentList, depth }: any) {
   if (depth === 2) return null;
   return (
     <>
