@@ -43,7 +43,6 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
     openModal();
   };
 
-  console.log(isModalOpen);
   return (
     <>
       <FilmList>
@@ -70,13 +69,13 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
         )}
         {isModalOpen && (
           <ModalPortal closeModalHandler={closeModal}>
-            <ImageModalWrapper>
+            <ModalImageWrapper>
               <ModalImage src={modalImage} />
               <Space size={3} />
               <Button variant="custom" onClick={closeModal}>
                 닫기
               </Button>
-            </ImageModalWrapper>
+            </ModalImageWrapper>
           </ModalPortal>
         )}
       </FilmList>
@@ -109,7 +108,7 @@ const RemoveImageIconWrapper = styled.div`
   }
 `;
 
-const ImageModalWrapper = styled.div`
+const ModalImageWrapper = styled.div`
   width: 100%;
   height: 100%;
 
