@@ -54,5 +54,4 @@ public class Admin extends AuthMember {
         return false;
     }
 
-
 }

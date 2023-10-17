@@ -50,7 +50,6 @@ public class User extends AuthMember {
         return publicity == Publicity.PUBLIC || isGroup(topic.getId());
     }
 
-
     @Override
     public boolean isAdmin() {
         return false;
