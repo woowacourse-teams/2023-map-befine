@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.pin.application;
 
-import static com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse.ofParentComment;
 import static com.mapbefine.mapbefine.topic.domain.PermissionType.ALL_MEMBERS;
 import static com.mapbefine.mapbefine.topic.domain.PermissionType.GROUP_ONLY;
 import static com.mapbefine.mapbefine.topic.domain.Publicity.PRIVATE;
@@ -22,6 +21,7 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinCommentFixture;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinComment;
@@ -30,10 +30,10 @@ import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
-import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.exception.PinCommentException.PinCommentForbiddenException;
@@ -84,10 +84,14 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     private Member member;
     private AuthMember authMember;
     private PinCreateRequest createRequest;
+    private Member user;
+    private
 
     @BeforeEach
     void setUp() {
         member = memberRepository.save(MemberFixture.create("user1", "userfirst@naver.com", Role.ADMIN));
+        member = memberRepository.save(MemberFixture.create("user2", "usersecond@naver.com", Role.USER));
+
         location = locationRepository.save(LocationFixture.create());
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
 
@@ -316,7 +320,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     @DisplayName("Guest 인 경우 핀 댓글을 생성하면 예외가 발생된다.")
     void savePinComment_Fail_ByGuest() {
         // given
-        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, member));
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinCommentCreateRequest request = new PinCommentCreateRequest(savedPin.getId(), null, "댓글");
 
         // when then
@@ -329,23 +333,22 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     @DisplayName("User 인 경우 Public 인 토픽, Private 이지만 권한을 가진 토픽에는 핀 댓글을 생성할 수 있다.")
     void savePinComment_Success_ByCreator(Publicity publicity, PermissionType permissionType) {
         // given
-        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, member);
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user);
         topicRepository.save(topic);
-        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, member));
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinCommentCreateRequest request = new PinCommentCreateRequest(
                 savedPin.getId(), null, "댓글"
         );
-        AuthMember creatorUser = MemberFixture.createUser(member);
+        AuthMember creatorUser = MemberFixture.createUser(user);
 
         // when
         Long pinCommentId = pinCommandService.savePinComment(creatorUser, request);
 
         // then
-        PinComment pinComment = pinCommentRepository.findById(pinCommentId).get();
-        PinCommentResponse expected = ofParentComment(
-                PinComment.of(savedPin, null, member, "댓글"), true
-        );
-        assertThat(ofParentComment(pinComment, true))
+        PinComment actual = pinCommentRepository.findById(pinCommentId).get();
+        PinComment expected = PinComment.of(savedPin, null, user, "댓글");
+
+        assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
                 .ignoringFields("id")
@@ -356,9 +359,9 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     @DisplayName("User 일 때 토픽이 Private 이고, 권한을 가지고 있지 않을 때 핀 댓글을 생성할 수 없다.")
     void savePinComment_Fail_ByNonCreator() {
         // given
-        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(member);
+        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user);
         topicRepository.save(topic);
-        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, member));
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinCommentCreateRequest request = new PinCommentCreateRequest(
                 savedPin.getId(), null, "댓글"
         );
@@ -377,9 +380,9 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     @DisplayName("Admin 인 경우 어떠한 유형의 토픽이더라도 핀 댓글을 생성할 수 있다.")
     void savePinComment_Success_ByAdmin(Publicity publicity, PermissionType permissionType) {
         // given
-        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, member);
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user);
         topicRepository.save(topic);
-        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, member));
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinCommentCreateRequest request = new PinCommentCreateRequest(
                 savedPin.getId(), null, "댓글"
         );
@@ -392,18 +395,181 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Long pinCommentId = pinCommandService.savePinComment(nonCreatorAdmin, request);
 
         // then
-        PinComment pinComment = pinCommentRepository.findById(pinCommentId).get();
-        PinCommentResponse expected = ofParentComment(
-                PinComment.of(savedPin, null, nonCreator, "댓글"), true
-        );
-        assertThat(ofParentComment(pinComment, true))
+        PinComment actual = pinCommentRepository.findById(pinCommentId).get();
+        PinComment expected = PinComment.of(savedPin, null, nonCreator, "댓글");
+        assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
                 .ignoringFields("id")
                 .isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("Guest 인 경우 핀 댓글을 수정할 수 없다.")
+    void updatePinComment_Fail_ByGuest() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        PinCommentUpdateRequest request = new PinCommentUpdateRequest(
+                "댓글 수정!"
+        );
 
+        // when then
+        assertThatThrownBy(() -> pinCommandService.updatePinComment(new Guest(), pinComment.getId(), request))
+                .isInstanceOf(PinCommentForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("User 인 경우 본인이 단 핀 댓글을 수정할 수 있다.")
+    void updatePinComment_Success_ByCreator() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        PinCommentUpdateRequest request = new PinCommentUpdateRequest(
+                "댓글 수정!"
+        );
+        AuthMember creatorUser = MemberFixture.createUser(user);
+
+        // when
+        pinCommandService.updatePinComment(creatorUser, pinComment.getId(), request);
+
+        // then
+        PinComment actual = pinCommentRepository.findById(pinComment.getId()).get();
+        PinComment expected = PinComment.of(savedPin, null, user, "댓글 수정!");
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .ignoringFields("id")
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("User 인 경우 본인이 달지 않은 핀 댓글을 수정할 수 없다.")
+    void updatePinComment_Fail_ByNonCreator() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        PinCommentUpdateRequest request = new PinCommentUpdateRequest(
+                "댓글 수정!"
+        );
+        Member nonCreator = memberRepository.save(
+                MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
+        );
+        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator);
+
+        // when then
+        assertThatThrownBy(() -> pinCommandService.updatePinComment(nonCreatorUser, pinComment.getId(), request))
+                .isInstanceOf(PinCommentForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("Admin 인 경우 본인이 단 핀 댓글을 수정할 수 있다.")
+    void updatePinComment_Success_ByAdmin() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        PinCommentUpdateRequest request = new PinCommentUpdateRequest(
+                "댓글 수정!"
+        );
+        AuthMember creatorAdmin = new Admin(user.getId());
+
+        // when
+        pinCommandService.updatePinComment(creatorAdmin, pinComment.getId(), request);
+
+        // then
+        PinComment actual = pinCommentRepository.findById(pinComment.getId()).get();
+        PinComment expected = PinComment.of(savedPin, null, user, "댓글 수정!");
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .ignoringFields("id")
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Admin 인 경우 본인이 달지 않은 핀 댓글을 수정할 수 있다.")
+    void updatePinComment_Success_ByNonCreatorAdmin() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        PinCommentUpdateRequest request = new PinCommentUpdateRequest(
+                "댓글 수정!"
+        );
+        Member nonCreator = memberRepository.save(
+                MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN)
+        );
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
+
+        // when
+        pinCommandService.updatePinComment(nonCreatorAdmin, pinComment.getId(), request);
+
+        // then
+        PinComment actual = pinCommentRepository.findById(pinComment.getId()).get();
+        PinComment expected = PinComment.of(savedPin, null, user, "댓글 수정!");
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .ignoringFields("id")
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Guest 인 경우 핀 댓글을 삭제할 수 없다.")
+    void deletePinComment_Fail_ByGuest() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+
+        // when then
+        assertThatThrownBy(() -> pinCommandService.deletePinComment(new Guest(), pinComment.getId()))
+                .isInstanceOf(PinCommentForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("User 인 경우 본인이 단 핀 댓글을 삭제할 수 있다.")
+    void deletePinComment_Success_ByCreator() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        AuthMember creatorUser = MemberFixture.createUser(user);
+
+        // when then
+//        pinCommandService.deletePinComment(creatorUser, );
+        assertThatThrownBy(() -> pinCommandService.deletePinComment(new Guest(), pinComment.getId()))
+                .isInstanceOf(PinCommentForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("User 인 경우 본인이 달지 않은 핀 댓글을 삭제할 수 없다.")
+    void deletePinComment_Fail_ByNonCreator() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+
+        // when then
+        assertThatThrownBy(() -> pinCommandService.deletePinComment(new Guest(), pinComment.getId()))
+                .isInstanceOf(PinCommentForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("Admin 인 경우 본인이 단 핀 댓글을 삭제할 수 있다.")
+    void deletePinComment_Success_ByAdmin() {
+        // given
+
+        // when
+
+        // then
+    }
+
+    @Test
+    @DisplayName("Admin 인 경우 본인이 달지 않은 핀 댓글을 삭제할 수 있다.")
+    void deletePinComment_Success_ByNonCreatorAdmin() {
+        // given
+
+        // when
+
+        // then
+    }
 
     static Stream<Arguments> publicAndPrivateTopicsStatus() {
         return Stream.of(

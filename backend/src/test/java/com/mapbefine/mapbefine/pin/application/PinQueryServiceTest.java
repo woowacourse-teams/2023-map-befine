@@ -285,7 +285,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
         PinCommentResponse expected = PinCommentResponse.ofParentComment(savedPinComment, true);
-        AuthMember nonCreatorAdmin = new Admin(user2.getId());
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(user2);
 
         // when
         List<PinCommentResponse> actual = pinQueryService.findAllPinCommentByPinId(nonCreatorAdmin, savedPin.getId());
