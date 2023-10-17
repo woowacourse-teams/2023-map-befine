@@ -130,7 +130,7 @@ public class PinController {
     public ResponseEntity<Void> addPinComment(AuthMember member, @RequestBody PinCommentCreateRequest request) {
         Long commentId = pinCommandService.addPinComment(member, request);
 
-        return ResponseEntity.created(URI.create("pins/comments/" + commentId))
+        return ResponseEntity.created(URI.create("/pins/comments/" + commentId))
                 .build();
     }
 
