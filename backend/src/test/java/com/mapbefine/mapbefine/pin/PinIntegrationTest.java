@@ -15,6 +15,7 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinComment;
 import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
@@ -329,7 +330,31 @@ class PinIntegrationTest extends IntegrationTest {
                 .isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("핀 댓글을 생성하면 201 을 반환한다.")
+    void addPinComment_Success() {
+        //given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        PinCommentCreateRequest request = new PinCommentCreateRequest(
+                pinId,
+                null,
+                "댓글"
+        );
 
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/pins/comments")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
 
 }
 
