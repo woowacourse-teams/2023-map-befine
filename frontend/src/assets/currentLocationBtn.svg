@@ -1,9 +1,9 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="20" cy="20" r="20" fill="#454545"/>
-<circle cx="20.0039" cy="20" r="7" stroke="white" stroke-width="2"/>
-<circle cx="20" cy="20" r="4" fill="white"/>
-<path d="M21 10C21 9.44772 20.5523 9 20 9C19.4477 9 19 9.44772 19 10L21 10ZM19 12L19 13L21 13L21 12L19 12ZM19 10L19 12L21 12L21 10L19 10Z" fill="white"/>
-<path d="M10 19C9.44772 19 9 19.4477 9 20C9 20.5523 9.44772 21 10 21V19ZM12 21H13V19H12V21ZM10 21H12V19H10V21Z" fill="white"/>
-<path d="M30 21C30.5523 21 31 20.5523 31 20C31 19.4477 30.5523 19 30 19V21ZM28 19H27V21H28V19ZM30 19H28V21H30V19Z" fill="white"/>
-<path d="M19 30C19 30.5523 19.4477 31 20 31C20.5523 31 21 30.5523 21 30H19ZM21 28V27H19V28H21ZM21 30V28H19V30H21Z" fill="white"/>
+<svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="26" cy="26" r="26" fill="#454545"/>
+<circle cx="26.007" cy="26.0002" r="11.8" stroke="white" stroke-width="2"/>
+<circle cx="26.0016" cy="26.0006" r="6.4" fill="white"/>
+<path d="M27 10C27 9.44772 26.5523 9 26 9C25.4477 9 25 9.44772 25 10L27 10ZM25 13.2L25 14.2L27 14.2L27 13.2L25 13.2ZM25 10L25 13.2L27 13.2L27 10L25 10Z" fill="white"/>
+<path d="M10 25C9.44772 25 9 25.4477 9 26C9 26.5523 9.44772 27 10 27V25ZM13.2 27H14.2V25H13.2V27ZM10 27H13.2V25H10V27Z" fill="white"/>
+<path d="M42 27C42.5523 27 43 26.5523 43 26C43 25.4477 42.5523 25 42 25V27ZM38.8 25H37.8V27H38.8V25ZM42 25H38.8V27H42V25Z" fill="white"/>
+<path d="M25 42C25 42.5523 25.4477 43 26 43C26.5523 43 27 42.5523 27 42H25ZM27 38.8V37.8H25V38.8H27ZM27 42V38.8H25V42H27Z" fill="white"/>
 </svg>

@@ -24,11 +24,17 @@ import { TagContext } from '../context/TagContext';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import useMapStore from '../store/mapInstance';
 import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
+
+const getAvailableWidth = (sidebarWidth: number = 372) =>
+  window.innerWidth - sidebarWidth;
+
+const getAvailableHeight = () => window.innerHeight;
 
 function SelectedTopic() {
   const { topicId } = useParams();
@@ -48,6 +54,13 @@ function SelectedTopic() {
   );
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
+  const { mapInstance } = useMapStore((state) => state);
+
+  const resizeMap = () => {
+    if (!mapInstance) return;
+
+    mapInstance.resize(getAvailableWidth(372), getAvailableHeight());
+  };
 
   const goToHome = () => {
     routePage('/');
@@ -114,6 +127,7 @@ function SelectedTopic() {
   useEffect(() => {
     getAndSetDataFromServer();
     setTags([]);
+    if (window.innerWidth > 1180) resizeMap();
   }, []);
 
   const togglePinDetail = () => {

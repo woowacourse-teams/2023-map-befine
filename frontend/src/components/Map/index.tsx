@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { styled } from 'styled-components';
 
 import CurrentLocation from '../../assets/currentLocationBtn.svg';
@@ -11,42 +11,43 @@ import useGeoLocation from '../../hooks/useGeolocation';
 import useMapClick from '../../hooks/useMapClick';
 import useToast from '../../hooks/useToast';
 import useUpdateCoordinates from '../../hooks/useUpdateCoordinates';
+import useMapStore from '../../store/mapInstance';
 import Flex from '../common/Flex';
+
+const MOBILE_WIDTH = 744;
+
+const getZoomMinLimit = () => {
+  if (window.innerWidth <= MOBILE_WIDTH) return 6;
+  return 7;
+};
 
 function Map() {
   const { Tmapv3 } = window;
 
   const { markers } = useContext(MarkerContext);
   const { width } = useContext(LayoutWidthContext);
-  const [mapInstance, setMapInstance] = useState<TMap | null>(null);
+  const { mapInstance, setMapInstance } = useMapStore((state) => state);
 
   const mapContainer = useRef(null);
-  const location = useGeoLocation();
+  const { location, requestUserLocation, focusMapCurrentLocation } =
+    useGeoLocation(mapInstance);
   const { showToast } = useToast();
 
   const handleCurrentLocationClick = () => {
-    if (!location.loaded) {
-      showToast('info', '위치 정보를 불러오는 중입니다.');
-      return;
-    }
-
     if (location.error) {
       showToast('error', '위치 정보 사용을 허용해주세요.');
       return;
     }
 
-    if (mapInstance) {
-      mapInstance.setCenter(
-        new Tmapv3.LatLng(
-          Number(location.coordinates.lat),
-          Number(location.coordinates.lng),
-        ),
-      );
-      mapInstance.setZoom(15);
+    if (!location.loaded) {
+      requestUserLocation();
+      return;
     }
+
+    focusMapCurrentLocation();
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!Tmapv3 || !mapContainer.current) return;
 
     const map = new Tmapv3.Map(mapContainer.current, {
@@ -56,7 +57,7 @@ function Map() {
 
     if (!map) return;
 
-    map.setZoomLimit(7, 17);
+    map.setZoomLimit(getZoomMinLimit(), 17);
 
     setMapInstance(map);
 
@@ -108,11 +109,16 @@ const MapFlex = styled(Flex)`
 const CurrentLocationIcon = styled(CurrentLocation)`
   position: absolute;
   cursor: pointer;
-  bottom: 40px;
-  right: 12px;
-  width: 40px;
-  height: 40px;
+  bottom: 8%;
+  right: 4%;
+  width: 52px;
+  height: 52px;
   z-index: 10;
+
+  @media (max-width: 1036px) {
+    bottom: 8%;
+    right: 0.85%;
+  }
 `;
 
 export default Map;
