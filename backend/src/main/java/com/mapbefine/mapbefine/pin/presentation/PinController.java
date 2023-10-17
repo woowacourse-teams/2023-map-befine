@@ -128,7 +128,7 @@ public class PinController {
     @LoginRequired
     @PostMapping("/comments")
     public ResponseEntity<Void> addPinComment(AuthMember member, @RequestBody PinCommentCreateRequest request) {
-        Long commentId = pinCommandService.addPinComment(member, request);
+        Long commentId = pinCommandService.savePinComment(member, request);
 
         return ResponseEntity.created(URI.create("/pins/comments/" + commentId))
                 .build();

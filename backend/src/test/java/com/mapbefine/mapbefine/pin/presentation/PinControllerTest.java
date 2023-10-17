@@ -10,6 +10,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
@@ -196,6 +197,42 @@ class PinControllerTest extends RestDocsIntegration {
         mockMvc.perform(MockMvcRequestBuilders.get("/pins/members?id=1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 댓글 생성")
+    void createParentPinComment() throws Exception {
+        PinCommentCreateRequest pinCommentCreateRequest = new PinCommentCreateRequest(
+                1L,
+                null,
+                "댓글"
+        );
+        given(pinCommandService.savePinComment(any(), any())).willReturn(1L);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/pins/comments")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pinCommentCreateRequest)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 댓글 생성")
+    void createChildPinComment() throws Exception {
+        PinCommentCreateRequest pinCommentCreateRequest = new PinCommentCreateRequest(
+                1L,
+                1L,
+                "댓글"
+        );
+        given(pinCommandService.savePinComment(any(), any())).willReturn(1L);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/pins/comments")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pinCommentCreateRequest)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andDo(restDocs.document());
     }
 

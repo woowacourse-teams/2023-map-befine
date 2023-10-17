@@ -207,7 +207,7 @@ public class PinCommandService {
         throw new PinForbiddenException(FORBIDDEN_PIN_CREATE_OR_UPDATE);
     }
 
-    public Long addPinComment(AuthMember authMember, PinCommentCreateRequest request) {
+    public Long savePinComment(AuthMember authMember, PinCommentCreateRequest request) {
         Pin pin = findPin(request.pinId());
         validatePinCommentCreate(authMember, pin);
         Member member = findMember(authMember.getMemberId());
