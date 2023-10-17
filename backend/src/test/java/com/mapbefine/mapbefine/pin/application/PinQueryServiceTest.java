@@ -285,7 +285,10 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
         PinCommentResponse expected = PinCommentResponse.ofParentComment(savedPinComment, true);
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(user2);
+        Member nonCreator = memberRepository.save(
+                MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN)
+        );
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
 
         // when
         List<PinCommentResponse> actual = pinQueryService.findAllPinCommentByPinId(nonCreatorAdmin, savedPin.getId());
@@ -296,7 +299,6 @@ class PinQueryServiceTest extends TestDatabaseContainer {
     }
 
     static Stream<Arguments> publicTopicsStatus() {
-
         return Stream.of(
                 Arguments.of(PUBLIC, ALL_MEMBERS),
                 Arguments.of(PUBLIC, GROUP_ONLY)

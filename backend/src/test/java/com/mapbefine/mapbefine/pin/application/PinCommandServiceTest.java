@@ -90,7 +90,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     @BeforeEach
     void setUp() {
         member = memberRepository.save(MemberFixture.create("user1", "userfirst@naver.com", Role.ADMIN));
-        member = memberRepository.save(MemberFixture.create("user2", "usersecond@naver.com", Role.USER));
+        user = memberRepository.save(MemberFixture.create("user2", "usersecond@naver.com", Role.USER));
 
         location = locationRepository.save(LocationFixture.create());
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
@@ -533,10 +533,11 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
         AuthMember creatorUser = MemberFixture.createUser(user);
 
-        // when then
-//        pinCommandService.deletePinComment(creatorUser, );
-        assertThatThrownBy(() -> pinCommandService.deletePinComment(new Guest(), pinComment.getId()))
-                .isInstanceOf(PinCommentForbiddenException.class);
+        // when
+        pinCommandService.deletePinComment(creatorUser, pinComment.getId());
+
+        // then
+        assertThat(pinCommentRepository.existsById(pinComment.getId())).isFalse();
     }
 
     @Test
@@ -545,9 +546,13 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         // given
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        Member nonCreator = memberRepository.save(
+                MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
+        );
+        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator);
 
         // when then
-        assertThatThrownBy(() -> pinCommandService.deletePinComment(new Guest(), pinComment.getId()))
+        assertThatThrownBy(() -> pinCommandService.deletePinComment(nonCreatorUser, pinComment.getId()))
                 .isInstanceOf(PinCommentForbiddenException.class);
     }
 
@@ -555,20 +560,31 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     @DisplayName("Admin 인 경우 본인이 단 핀 댓글을 삭제할 수 있다.")
     void deletePinComment_Success_ByAdmin() {
         // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        AuthMember creatorAdmin = new Admin(user.getId());
 
         // when
+        pinCommandService.deletePinComment(creatorAdmin, pinComment.getId());
 
         // then
+        assertThat(pinCommentRepository.existsById(pinComment.getId())).isFalse();
     }
 
     @Test
     @DisplayName("Admin 인 경우 본인이 달지 않은 핀 댓글을 삭제할 수 있다.")
     void deletePinComment_Success_ByNonCreatorAdmin() {
         // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        Member nonCreator = MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN);
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
 
         // when
+        pinCommandService.deletePinComment(nonCreatorAdmin, pinComment.getId());
 
         // then
+        assertThat(pinCommentRepository.existsById(pinComment.getId())).isFalse();
     }
 
     static Stream<Arguments> publicAndPrivateTopicsStatus() {
