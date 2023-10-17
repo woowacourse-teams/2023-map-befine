@@ -54,8 +54,6 @@ export const ModalPortal = (props: ModalPortalProps) => {
 };
 
 const ModalContainer = styled.dialog`
-  width: 600px;
-  max-height: 600px;
   padding: 32px 16px;
 
   display: flex;
@@ -87,7 +85,7 @@ export const useModalContext = () => {
 
 export const ModalContext = React.createContext<ModalContextType | null>(null);
 
-function ModalContextProvider(props: { children: React.ReactNode }) {
+function ImageModalContextProvider(props: { children: React.ReactNode }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -111,4 +109,4 @@ function ModalContextProvider(props: { children: React.ReactNode }) {
   );
 }
 
-export default ModalContextProvider;
+export default ImageModalContextProvider;

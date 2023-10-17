@@ -16,6 +16,7 @@ import Map from '../Map';
 import Toast from '../Toast';
 import Logo from './Logo';
 import Navbar from './Navbar';
+import ImageModalContext from '../../context/ImageModalContext';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -43,44 +44,46 @@ function Layout({ children }: LayoutProps) {
   return (
     <ToastProvider>
       <ModalProvider>
-        <CoordinatesProvider>
-          <MarkerProvider>
-            <SeeTogetherProvider>
-              <TagProvider>
-                <MediaWrapper
-                  $isAddPage={navbarHighlights.addMapOrPin}
-                  $layoutWidth={width}
-                >
-                  <LayoutFlex
-                    $flexDirection="column"
-                    $minWidth={width}
-                    height="calc(var(--vh, 1vh) * 100)"
-                    $backgroundColor="white"
+        <ImageModalContext>
+          <CoordinatesProvider>
+            <MarkerProvider>
+              <SeeTogetherProvider>
+                <TagProvider>
+                  <MediaWrapper
+                    $isAddPage={navbarHighlights.addMapOrPin}
                     $layoutWidth={width}
                   >
-                    <LogoWrapper $layoutWidth={width}>
-                      <Box>
-                        <Logo />
-                        <Space size={2} />
-                      </Box>
-                    </LogoWrapper>
-                    <Flex
+                    <LayoutFlex
                       $flexDirection="column"
-                      height="inherit"
-                      overflow="auto"
-                      padding="0"
+                      $minWidth={width}
+                      height="calc(var(--vh, 1vh) * 100)"
+                      $backgroundColor="white"
+                      $layoutWidth={width}
                     >
-                      {children}
-                    </Flex>
-                    <Navbar $layoutWidth={width} />
-                    <Toast />
-                  </LayoutFlex>
-                  <Map />
-                </MediaWrapper>
-              </TagProvider>
-            </SeeTogetherProvider>
-          </MarkerProvider>
-        </CoordinatesProvider>
+                      <LogoWrapper $layoutWidth={width}>
+                        <Box>
+                          <Logo />
+                          <Space size={2} />
+                        </Box>
+                      </LogoWrapper>
+                      <Flex
+                        $flexDirection="column"
+                        height="inherit"
+                        overflow="auto"
+                        padding="0"
+                      >
+                        {children}
+                      </Flex>
+                      <Navbar $layoutWidth={width} />
+                      <Toast />
+                    </LayoutFlex>
+                    <Map />
+                  </MediaWrapper>
+                </TagProvider>
+              </SeeTogetherProvider>
+            </MarkerProvider>
+          </CoordinatesProvider>
+        </ImageModalContext>
       </ModalProvider>
     </ToastProvider>
   );
