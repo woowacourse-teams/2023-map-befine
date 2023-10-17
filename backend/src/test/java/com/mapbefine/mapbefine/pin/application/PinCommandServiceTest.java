@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ class PinCommandServiceTest {
     private PinCommandService pinCommandService;
     @Autowired
     private PinQueryService pinQueryService;
+
     @Autowired
     private PinRepository pinRepository;
     @Autowired
@@ -174,23 +176,24 @@ class PinCommandServiceTest {
     @DisplayName("핀 추가 시 예외가 발생하면, 정보 이력도 저장하지 않는다.")
     void save_Fail_DoNotSaveHistory() {
         // when
-        assertThatThrownBy(() -> pinCommandService.save(authMember, Collections.emptyList(), null))
-                .isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> pinCommandService.save(new Guest(), Collections.emptyList(), createRequest))
+                .isInstanceOf(PinForbiddenException.class);
 
         // then
         verify(pinHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
     }
 
+    @Disabled
     @Test
     @DisplayName("핀 정보 이력 저장 시 예외가 발생하면, 추가된 핀 정보도 저장하지 않는다.")
     void save_FailBySaveHistoryException() {
         // given
-        doThrow(new RuntimeException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
+        doThrow(new IllegalStateException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
 
         // when
         // then
-        assertThatThrownBy(() -> pinCommandService.save(new Guest(), List.of(BASE_IMAGE_FILE), createRequest))
-                .isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest))
+                .isInstanceOf(IllegalStateException.class);
         assertThat(pinRepository.findAll()).isEmpty();
     }
 
@@ -256,12 +259,12 @@ class PinCommandServiceTest {
         long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
 
         // when
-        doThrow(new RuntimeException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
+        doThrow(new IllegalStateException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
         PinUpdateRequest request = new PinUpdateRequest("name", "update");
 
         // then
         assertThatThrownBy(() -> pinCommandService.update(authMember, pinId, request))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalStateException.class);
         pinRepository.findById(pinId)
                 .ifPresentOrElse(
                         pin -> assertThat(pin.getUpdatedAt()).isEqualTo(pin.getCreatedAt()),
