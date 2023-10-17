@@ -38,7 +38,7 @@ class AdminCommandServiceTest {
 
     @Autowired
     private AdminCommandService adminCommandService;
-    
+
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
