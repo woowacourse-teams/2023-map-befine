@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.pin.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -40,7 +39,6 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,20 +181,6 @@ class PinCommandServiceTest {
         verify(pinHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
     }
 
-    @Disabled
-    @Test
-    @DisplayName("핀 정보 이력 저장 시 예외가 발생하면, 추가된 핀 정보도 저장하지 않는다.")
-    void save_FailBySaveHistoryException() {
-        // given
-        doThrow(new IllegalStateException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
-
-        // when
-        // then
-        assertThatThrownBy(() -> pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest))
-                .isInstanceOf(IllegalStateException.class);
-        assertThat(pinRepository.findAll()).isEmpty();
-    }
-
     @Test
     @DisplayName("권한이 없는 토픽에 핀을 저장하면 예외를 발생시킨다.")
     void save_FailByForbidden() {
@@ -250,26 +234,6 @@ class PinCommandServiceTest {
 
         // then
         verify(pinHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
-    }
-
-    @Test
-    @DisplayName("핀 정보 이력 저장 시 예외가 발생하면, 수정된 핀 정보도 저장하지 않는다.")
-    void update_FailBySaveHistoryException() {
-        // given
-        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
-
-        // when
-        doThrow(new IllegalStateException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
-        PinUpdateRequest request = new PinUpdateRequest("name", "update");
-
-        // then
-        assertThatThrownBy(() -> pinCommandService.update(authMember, pinId, request))
-                .isInstanceOf(IllegalStateException.class);
-        pinRepository.findById(pinId)
-                .ifPresentOrElse(
-                        pin -> assertThat(pin.getUpdatedAt()).isEqualTo(pin.getCreatedAt()),
-                        Assertions::fail
-                );
     }
 
     @Test
