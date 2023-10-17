@@ -127,15 +127,15 @@ public class PinController {
 
     @LoginRequired
     @PostMapping("/comments")
-    public ResponseEntity<Void> addComment(AuthMember member, @RequestBody PinCommentCreateRequest request) {
-        Long commentId = pinCommandService.addComment(member, request);
+    public ResponseEntity<Void> addPinComment(AuthMember member, @RequestBody PinCommentCreateRequest request) {
+        Long commentId = pinCommandService.addPinComment(member, request);
 
         return ResponseEntity.created(URI.create("pins/comments/" + commentId))
                 .build();
     }
 
     @GetMapping("/comments/{pinId}")
-    public ResponseEntity<List<PinCommentResponse>> findCommentByPinId(AuthMember member, @PathVariable Long pinId) {
+    public ResponseEntity<List<PinCommentResponse>> findPinCommentByPinId(AuthMember member, @PathVariable Long pinId) {
         List<PinCommentResponse> allResponse = pinQueryService.findAllPinCommentByPinId(member, pinId);
 
         return ResponseEntity.ok(allResponse);

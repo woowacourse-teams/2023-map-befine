@@ -11,17 +11,26 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinComment;
+import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
+import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +57,12 @@ class PinIntegrationTest extends IntegrationTest {
 
     @Autowired
     private LocationRepository locationRepository;
+
+    @Autowired
+    private PinCommentRepository pinCommentRepository;
+
+    @Autowired
+    private PinRepository pinRepository;
 
     @BeforeEach
     void saveTopicAndLocation() {
@@ -276,6 +291,45 @@ class PinIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(pinResponses).hasSize(1);
     }
+
+    @Test
+    @DisplayName("핀 댓글을 조회하면 200을 반환한다.")
+    void findPinCommentPinId_Success() {
+        //given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+
+        Pin pin = pinRepository.findById(pinId).get();
+        PinComment parentPinComment = pinCommentRepository.save(
+                PinCommentFixture.createParentComment(pin, member)
+        );
+        PinComment childPinComment = pinCommentRepository.save(
+                PinCommentFixture.createChildComment(pin, member, parentPinComment)
+        );
+        List<PinCommentResponse> expected = List.of(
+                PinCommentResponse.ofParentComment(parentPinComment, true),
+                PinCommentResponse.ofChildComment(childPinComment, true)
+        );
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/pins/comments/" + pinId)
+                .then().log().all()
+                .extract();
+
+        List<PinCommentResponse> pinResponses = response.as(new TypeRef<>() {});
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(pinResponses).hasSize(2);
+        assertThat(pinResponses).usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .isEqualTo(expected);
+    }
+
+
 
 }
 
