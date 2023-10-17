@@ -2,6 +2,12 @@ interface PinImageMap {
   [key: number]: string;
 }
 
+export const USER_LOCATION_IMAGE = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="11.5" fill="white" stroke="#454545"/>
+<circle cx="12" cy="12" r="8" fill="#287EFF"/>
+</svg>
+`;
+
 export const pinImageMap: PinImageMap = {
   1: `<svg width="40" height="58" viewBox="0 0 40 58" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M10.8449 48.4877C9.81988 49.803 7.73559 48.7147 8.22893 47.1219L14.5909 26.5813C14.868 25.6867 15.8879 25.262 16.718 25.6954L23.5743 29.2752C24.4044 29.7086 24.6388 30.7883 24.0632 31.5269L10.8449 48.4877Z" fill="#454545"/>
