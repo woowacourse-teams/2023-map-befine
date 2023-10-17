@@ -29,8 +29,7 @@ function Map() {
   const { mapInstance, setMapInstance } = useMapStore((state) => state);
 
   const mapContainer = useRef(null);
-  const { location, isUsingUserLocation, requestUserLocation } =
-    useGeoLocation(mapInstance);
+  const { location, requestUserLocation } = useGeoLocation(mapInstance);
   const { showToast } = useToast();
 
   const handleCurrentLocationClick = () => {
@@ -79,10 +78,7 @@ function Map() {
         height="calc(var(--vh, 1vh) * 100)"
         $minWidth={width}
       />
-      <CurrentLocationIcon
-        onClick={handleCurrentLocationClick}
-        $isUsingUserLocation={isUsingUserLocation}
-      />
+      <CurrentLocationIcon onClick={handleCurrentLocationClick} />
     </MapContainer>
   );
 }
@@ -104,9 +100,7 @@ const MapFlex = styled(Flex)`
   }
 `;
 
-const CurrentLocationIcon = styled(CurrentLocation)<{
-  $isUsingUserLocation: boolean;
-}>`
+const CurrentLocationIcon = styled(CurrentLocation)`
   position: absolute;
   cursor: pointer;
   bottom: 8%;
@@ -115,8 +109,6 @@ const CurrentLocationIcon = styled(CurrentLocation)<{
   height: 52px;
   z-index: 10;
   opacity: 0.85;
-  filter: ${({ $isUsingUserLocation }) =>
-    $isUsingUserLocation && 'brightness(0.6)'};
 
   @media (max-width: 1036px) {
     bottom: 8%;
