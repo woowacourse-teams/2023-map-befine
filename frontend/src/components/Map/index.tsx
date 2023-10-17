@@ -29,12 +29,8 @@ function Map() {
   const { mapInstance, setMapInstance } = useMapStore((state) => state);
 
   const mapContainer = useRef(null);
-  const {
-    location,
-    isUsingUserLocation,
-    requestUserLocation,
-    toggleUsingUserLocation,
-  } = useGeoLocation(mapInstance);
+  const { location, isUsingUserLocation, requestUserLocation } =
+    useGeoLocation(mapInstance);
   const { showToast } = useToast();
 
   const handleCurrentLocationClick = () => {
@@ -43,12 +39,7 @@ function Map() {
       return;
     }
 
-    if (!location.loaded) {
-      requestUserLocation();
-      return;
-    }
-
-    toggleUsingUserLocation();
+    requestUserLocation();
   };
 
   useEffect(() => {
