@@ -50,29 +50,29 @@ public class PinCommandService {
 
     private static final double DUPLICATE_LOCATION_DISTANCE_METERS = 10.0;
 
+    private final ImageService imageService;
     private final PinRepository pinRepository;
     private final LocationRepository locationRepository;
     private final TopicRepository topicRepository;
     private final MemberRepository memberRepository;
     private final PinImageRepository pinImageRepository;
-    private final ImageService imageService;
     private final PinCommentRepository pinCommentRepository;
 
     public PinCommandService(
+            ImageService imageService,
             PinRepository pinRepository,
             LocationRepository locationRepository,
             TopicRepository topicRepository,
             MemberRepository memberRepository,
             PinImageRepository pinImageRepository,
-            ImageService imageService,
             PinCommentRepository pinCommentRepository
     ) {
+        this.imageService = imageService;
         this.pinRepository = pinRepository;
         this.locationRepository = locationRepository;
         this.topicRepository = topicRepository;
         this.memberRepository = memberRepository;
         this.pinImageRepository = pinImageRepository;
-        this.imageService = imageService;
         this.pinCommentRepository = pinCommentRepository;
     }
 
