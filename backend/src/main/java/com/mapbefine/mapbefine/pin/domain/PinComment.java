@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -49,7 +50,7 @@ public class PinComment extends BaseTimeEntity {
     @Column(nullable = false, length = 1000)
     private String content;
 
-    public PinComment(
+    private PinComment(
             Pin pin,
             PinComment parentPinComment,
             Member creator,
@@ -98,6 +99,11 @@ public class PinComment extends BaseTimeEntity {
 
     public boolean isParentComment() {
         return Objects.isNull(parentPinComment);
+    }
+
+    public Optional<Long> getParentPinCommentId() {
+        return Optional.ofNullable(parentPinComment)
+                .map(PinComment::getId);
     }
 
 }

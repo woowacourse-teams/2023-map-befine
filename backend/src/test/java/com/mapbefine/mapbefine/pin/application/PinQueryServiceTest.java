@@ -9,7 +9,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -217,10 +216,10 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Topic savedTopic = topicRepository.save(topic);
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
-        PinCommentResponse expected = PinCommentResponse.ofParentComment(savedPinComment, false);
+        PinCommentResponse expected = PinCommentResponse.of(savedPinComment, false);
 
         // when
-        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentByPinId(new Guest(), savedPin.getId());
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(new Guest(), savedPin.getId());
 
         // then
         assertThat(actual.get(0)).usingRecursiveComparison()
@@ -236,7 +235,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
 
         // when then
-        assertThatThrownBy(() -> pinQueryService.findAllPinCommentByPinId(new Guest(), savedPin.getId()))
+        assertThatThrownBy(() -> pinQueryService.findAllPinCommentsByPinId(new Guest(), savedPin.getId()))
                 .isInstanceOf(PinForbiddenException.class);
     }
 
@@ -249,11 +248,11 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Topic savedTopic = topicRepository.save(topic);
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
-        PinCommentResponse expected = PinCommentResponse.ofParentComment(savedPinComment, true);
+        PinCommentResponse expected = PinCommentResponse.of(savedPinComment, true);
         AuthMember creatorUser = MemberFixture.createUser(user1);
 
         // when
-        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentByPinId(creatorUser, savedPin.getId());
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(creatorUser, savedPin.getId());
 
         // then
         assertThat(actual.get(0)).usingRecursiveComparison()
@@ -271,7 +270,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         AuthMember nonCreatorUser = MemberFixture.createUser(user2);
 
         // when then
-        assertThatThrownBy(() -> pinQueryService.findAllPinCommentByPinId(nonCreatorUser, savedPin.getId()))
+        assertThatThrownBy(() -> pinQueryService.findAllPinCommentsByPinId(nonCreatorUser, savedPin.getId()))
                 .isInstanceOf(PinForbiddenException.class);
     }
 
@@ -284,14 +283,14 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Topic savedTopic = topicRepository.save(topic);
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
-        PinCommentResponse expected = PinCommentResponse.ofParentComment(savedPinComment, true);
+        PinCommentResponse expected = PinCommentResponse.of(savedPinComment, true);
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN)
         );
         AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
 
         // when
-        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentByPinId(nonCreatorAdmin, savedPin.getId());
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(nonCreatorAdmin, savedPin.getId());
 
         // then
         assertThat(actual.get(0)).usingRecursiveComparison()

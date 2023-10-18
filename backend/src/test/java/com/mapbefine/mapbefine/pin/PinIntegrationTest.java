@@ -32,7 +32,6 @@ import io.restassured.response.Response;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -308,8 +307,8 @@ class PinIntegrationTest extends IntegrationTest {
                 PinCommentFixture.createChildComment(pin, member, parentPinComment)
         );
         List<PinCommentResponse> expected = List.of(
-                PinCommentResponse.ofParentComment(parentPinComment, true),
-                PinCommentResponse.ofChildComment(childPinComment, true)
+                PinCommentResponse.of(parentPinComment, true),
+                PinCommentResponse.of(childPinComment, true)
         );
 
         // when

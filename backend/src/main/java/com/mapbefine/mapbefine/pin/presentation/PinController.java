@@ -136,7 +136,7 @@ public class PinController {
 
     @GetMapping("/comments/{pinId}")
     public ResponseEntity<List<PinCommentResponse>> findPinCommentByPinId(AuthMember member, @PathVariable Long pinId) {
-        List<PinCommentResponse> allResponse = pinQueryService.findAllPinCommentByPinId(member, pinId);
+        List<PinCommentResponse> allResponse = pinQueryService.findAllPinCommentsByPinId(member, pinId);
 
         return ResponseEntity.ok(allResponse);
     }

@@ -63,14 +63,14 @@ public class PinQueryService {
                 .toList();
     }
 
-    public List<PinCommentResponse> findAllPinCommentByPinId(AuthMember member, Long pinId) {
+    public List<PinCommentResponse> findAllPinCommentsByPinId(AuthMember member, Long pinId) {
         Pin pin = findPin(pinId);
         validateReadAuth(member, pin.getTopic());
 
         List<PinComment> pinComments = pinCommentRepository.findAllByPinId(pinId);
 
         return pinComments.stream()
-                .map(pinComment -> pinCommentToResponse(member, pinComment))
+                .map(pinComment -> PinCommentResponse.of(pinComment, isCanChangePinComment(member, pinComment)))
                 .toList();
     }
 
@@ -79,18 +79,12 @@ public class PinQueryService {
                 .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
     }
 
-    private PinCommentResponse pinCommentToResponse(AuthMember member, PinComment pinComment) {
+    private boolean isCanChangePinComment(AuthMember member, PinComment pinComment) {
         Long creatorId = pinComment.getCreator().getId();
 
-        boolean canChange = (Objects.nonNull(member.getMemberId())
+        return (Objects.nonNull(member.getMemberId())
                 && member.isSameMember(creatorId))
                 || member.isAdmin();
-
-        if (pinComment.isParentComment()) {
-            return PinCommentResponse.ofParentComment(pinComment, canChange);
-        }
-
-        return PinCommentResponse.ofChildComment(pinComment, canChange);
     }
 
 }

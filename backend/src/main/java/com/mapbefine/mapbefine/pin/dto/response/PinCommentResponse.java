@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.pin.dto.response;
 import com.mapbefine.mapbefine.member.domain.MemberInfo;
 import com.mapbefine.mapbefine.pin.domain.PinComment;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public record PinCommentResponse(
         Long id,
@@ -14,32 +15,19 @@ public record PinCommentResponse(
         LocalDateTime updatedAt
 ) {
 
-    public static PinCommentResponse ofParentComment(PinComment pinComment, boolean canChange) {
+    public static PinCommentResponse of(PinComment pinComment, boolean canChange) {
         MemberInfo memberInfo = pinComment.getCreator().getMemberInfo();
-
-       return new PinCommentResponse(
-                pinComment.getId(),
-                pinComment.getContent(),
-                memberInfo.getNickName(),
-                memberInfo.getImageUrl(),
-                null,
-                canChange,
-                pinComment.getUpdatedAt()
-        );
-    }
-
-    public static PinCommentResponse ofChildComment(PinComment pinComment, boolean canChange) {
-        MemberInfo memberInfo = pinComment.getCreator().getMemberInfo();
+        Optional<Long> parentPinCommentId = pinComment.getParentPinCommentId();
 
         return new PinCommentResponse(
-                pinComment.getId(),
-                pinComment.getContent(),
-                memberInfo.getNickName(),
-                memberInfo.getImageUrl(),
-                pinComment.getParentPinComment().getId(),
-                canChange,
-                pinComment.getUpdatedAt()
-        );
+                 pinComment.getId(),
+                 pinComment.getContent(),
+                 memberInfo.getNickName(),
+                 memberInfo.getImageUrl(),
+                 parentPinCommentId.orElse(null),
+                 canChange,
+                 pinComment.getUpdatedAt()
+         );
     }
 
 }

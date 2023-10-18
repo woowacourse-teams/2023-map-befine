@@ -264,7 +264,7 @@ class PinControllerTest extends RestDocsIntegration {
                         LocalDateTime.now()
                 )
         );
-        given(pinQueryService.findAllPinCommentByPinId(any(), any())).willReturn(pinCommentResponses);
+        given(pinQueryService.findAllPinCommentsByPinId(any(), any())).willReturn(pinCommentResponses);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/pins/comments/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
