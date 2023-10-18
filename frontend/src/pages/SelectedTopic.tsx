@@ -1,29 +1,16 @@
-import {
-  Fragment,
-  lazy,
-  Suspense,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { lazy, Suspense, useContext, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import { getApi } from '../apis/getApi';
-import SeeTogetherNotFilledSVG from '../assets/seeTogetherBtn_notFilled.svg';
-import Button from '../components/common/Button';
-import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
-import Text from '../components/common/Text';
 import PullPin from '../components/PullPin';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import { CoordinatesContext } from '../context/CoordinatesContext';
-import { SeeTogetherContext } from '../context/SeeTogetherContext';
 import { TagContext } from '../context/TagContext';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useMapStore from '../store/mapInstance';
 import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
@@ -39,9 +26,7 @@ const getAvailableHeight = () => window.innerHeight;
 function SelectedTopic() {
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
-  const [topicDetails, setTopicDetails] = useState<TopicDetailProps[] | null>(
-    null,
-  );
+  const [topicDetail, setTopicDetail] = useState<TopicDetailProps | null>(null);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
@@ -49,11 +34,6 @@ function SelectedTopic() {
   const { setCoordinates } = useContext(CoordinatesContext);
   const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { navbarHighlights: __ } = useSetNavbarHighlight(
-    topicId && topicId.split(',').length > 1 ? 'seeTogether' : 'home',
-  );
-  const { seeTogetherTopics, setSeeTogetherTopics } =
-    useContext(SeeTogetherContext);
   const { mapInstance } = useMapStore((state) => state);
 
   const resizeMap = () => {
@@ -62,54 +42,35 @@ function SelectedTopic() {
     mapInstance.resize(getAvailableWidth(372), getAvailableHeight());
   };
 
-  const goToHome = () => {
-    routePage('/');
-  };
-
   const getAndSetDataFromServer = async () => {
-    if (topicId === '-1') return;
+    const topicInArray = await getApi<TopicDetailProps[]>(
+      `/topics/ids?ids=${topicId}`,
+    );
+    const topic = topicInArray[0];
 
-    const data = await getApi<TopicDetailProps[]>(`/topics/ids?ids=${topicId}`);
-
-    const topicHashmap = new Map([]);
-
-    setTopicDetails(data);
+    setTopicDetail(topic);
 
     // 각 topic의 pin들의 좌표를 가져옴
     const newCoordinates: any = [];
 
-    data.forEach((topic: TopicDetailProps) => {
-      topic.pins.forEach((pin: PinProps) => {
-        newCoordinates.push({
-          id: pin.id,
-          topicId: topic.id,
-          pinName: pin.name,
-          latitude: pin.latitude,
-          longitude: pin.longitude,
-        });
+    topic.pins.forEach((pin: PinProps) => {
+      newCoordinates.push({
+        id: pin.id,
+        topicId,
+        pinName: pin.name,
+        latitude: pin.latitude,
+        longitude: pin.longitude,
       });
     });
 
     setCoordinates(newCoordinates);
-
-    data.forEach((topicDetailFromData: TopicDetailProps) =>
-      topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
-    );
-
-    const topicDetailFromData = topicId
-      ?.split(',')
-      .map((number) => topicHashmap.get(number)) as TopicDetailProps[];
-
-    if (!topicDetailFromData) return;
-
-    setTopicDetails([...topicDetailFromData]);
   };
 
-  const onClickConfirm = () => {
+  const onClickCreateTopicWithTags = () => {
     routePage('/new-topic', tags.map((tag) => tag.id).join(','));
   };
 
-  const onTagCancel = () => {
+  const onClickInitTags = () => {
     setTags([]);
   };
 
@@ -134,29 +95,7 @@ function SelectedTopic() {
     setIsOpen(!isOpen);
   };
 
-  if (!seeTogetherTopics) return <></>;
-
-  if (seeTogetherTopics.length === 0 && topicId === '-1') {
-    return (
-      <WrapperWhenEmpty width={width}>
-        <Flex $alignItems="center">
-          <SeeTogetherNotFilledSVG />
-          <Space size={1} />
-          <Text color="black" $fontSize="default" $fontWeight="normal">
-            버튼을 눌러 지도를 추가해보세요.
-          </Text>
-          <Space size={4} />
-        </Flex>
-        <Space size={5} />
-        <Button variant="primary" onClick={goToHome}>
-          메인페이지로 가기
-        </Button>
-      </WrapperWhenEmpty>
-    );
-  }
-
-  if (!topicDetails) return <></>;
-  if (!topicId) return <></>;
+  if (!topicId || !topicDetail) return <></>;
 
   return (
     <Wrapper
@@ -168,23 +107,18 @@ function SelectedTopic() {
         <PullPin
           tags={tags}
           confirmButton="뽑아오기"
-          onClickConfirm={onClickConfirm}
-          onClickClose={onTagCancel}
+          onClickConfirm={onClickCreateTopicWithTags}
+          onClickClose={onClickInitTags}
         />
       )}
       <Suspense fallback={<PinsOfTopicSkeleton />}>
-        {topicDetails.map((topicDetail, idx) => (
-          <Fragment key={topicDetail.id}>
-            <PinsOfTopic
-              topicId={topicId.split(',')[idx]}
-              topicDetail={topicDetail}
-              setSelectedPinId={setSelectedPinId}
-              setIsEditPinDetail={setIsEditPinDetail}
-              setTopicsFromServer={getAndSetDataFromServer}
-            />
-            {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
-          </Fragment>
-        ))}
+        <PinsOfTopic
+          topicId={topicId}
+          topicDetail={topicDetail}
+          setSelectedPinId={setSelectedPinId}
+          setIsEditPinDetail={setIsEditPinDetail}
+          setTopicsFromServer={getAndSetDataFromServer}
+        />
       </Suspense>
 
       <Space size={8} />
@@ -252,7 +186,7 @@ const ToggleButton = styled.button<{
     props.$isCollapsed &&
     `
     transform: rotate(180deg);
-    top:45%;
+    top: 45%;
     left: 372px;
     z-index: 1;
     `}
@@ -264,17 +198,6 @@ const ToggleButton = styled.button<{
   @media (max-width: 1076px) {
     display: none;
   }
-`;
-
-const WrapperWhenEmpty = styled.section<{ width: '372px' | '100vw' }>`
-  width: ${({ width }) => `calc(${width} - 40px)`};
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  margin: 0 auto;
 `;
 
 export default SelectedTopic;
