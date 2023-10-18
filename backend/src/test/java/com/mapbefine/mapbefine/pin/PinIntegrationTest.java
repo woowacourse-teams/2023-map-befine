@@ -2,8 +2,11 @@ package com.mapbefine.mapbefine.pin;
 
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 import com.mapbefine.mapbefine.common.IntegrationTest;
+import com.mapbefine.mapbefine.history.application.PinHistoryCommandService;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -18,10 +21,11 @@ import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCommentUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
-import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
+import com.mapbefine.mapbefine.pin.event.PinUpdateEvent;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -34,8 +38,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -50,6 +56,9 @@ class PinIntegrationTest extends IntegrationTest {
     private PinCreateRequest createRequestNoDuplicateLocation;
     private PinCreateRequest createRequestNoDuplicateLocation2;
 
+
+    @MockBean
+    private PinHistoryCommandService pinHistoryCommandService;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -60,10 +69,10 @@ class PinIntegrationTest extends IntegrationTest {
     private LocationRepository locationRepository;
 
     @Autowired
-    private PinCommentRepository pinCommentRepository;
+    private PinRepository pinRepository;
 
     @Autowired
-    private PinRepository pinRepository;
+    private PinCommentRepository pinCommentRepository;
 
     @BeforeEach
     void saveTopicAndLocation() {
@@ -130,6 +139,16 @@ class PinIntegrationTest extends IntegrationTest {
                 .extract();
     }
 
+    private ExtractableResponse<Response> updatePin(PinUpdateRequest request, long pinId) {
+        return RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().put("/pins/" + pinId)
+                .then().log().all()
+                .extract();
+    }
+
     @Test
     @DisplayName("Image List 없이 Pin 을 정상적으로 생성한다.")
     void addIfNonExistImageList_Success() {
@@ -156,6 +175,22 @@ class PinIntegrationTest extends IntegrationTest {
         //then
         assertThat(response.header("Location")).isNotBlank();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("Pin을 수정하면 200을 반환한다.")
+    void updatePin_Success() {
+        //given
+        ExtractableResponse<Response> createResponse = createPin(createRequestNoDuplicateLocation);
+
+        // when
+        PinUpdateRequest request = new PinUpdateRequest("핀 수정", "수정 설명");
+        String pinLocation = createResponse.header("Location");
+        long pinId = Long.parseLong(pinLocation.replace("/pins/", ""));
+        ExtractableResponse<Response> response = updatePin(request, pinId);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -191,8 +226,6 @@ class PinIntegrationTest extends IntegrationTest {
 
         // when
         ExtractableResponse<Response> response = findById(pinId);
-
-        PinDetailResponse as = response.as(PinDetailResponse.class);
 
         // then
         assertThat(response.jsonPath().getString("name"))
@@ -440,6 +473,46 @@ class PinIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Nested
+    class EventListenerTest {
+
+        @Test
+        @DisplayName("Pin 저장 시 변경 이력 저장에 예외가 발생하면, 변경 사항을 함께 롤백한다.")
+        void savePin_FailBySaveHistory_Rollback() {
+            //given
+            doThrow(new IllegalStateException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
+
+            // when
+            ExtractableResponse<Response> response = createPin(createRequestNoDuplicateLocation);
+
+            //then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            assertThat(pinRepository.findAll()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Pin 수정 시 변경 이력 저장에 예외가 발생하면, 변경 사항을 함께 롤백한다.")
+        void updatePin_FailBySaveHistory_Rollback() {
+            //given
+            ExtractableResponse<Response> createResponse = createPin(createRequestNoDuplicateLocation);
+            String pinLocation = createResponse.header("Location");
+            long pinId = Long.parseLong(pinLocation.replace("/pins/", ""));
+            doThrow(new IllegalStateException()).when(pinHistoryCommandService).saveHistory(any(PinUpdateEvent.class));
+
+            // when
+            PinUpdateRequest request = new PinUpdateRequest("pin update", "description");
+            ExtractableResponse<Response> response = updatePin(request, pinId);
+
+            //then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            assertThat(pinRepository.findById(pinId)).isPresent()
+                    .usingRecursiveComparison()
+                    .withEqualsForFields(Object::equals, "name", "description")
+                    .isNotEqualTo(request);
+        }
+
     }
 
 }

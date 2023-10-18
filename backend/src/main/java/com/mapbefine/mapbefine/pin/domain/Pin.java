@@ -138,6 +138,10 @@ public class Pin extends BaseTimeEntity {
         return location.getLongitude();
     }
 
+    public String getDescription() {
+        return pinInfo.getDescription();
+    }
+
     public String getRoadBaseAddress() {
         Address address = location.getAddress();
         return address.getRoadBaseAddress();
