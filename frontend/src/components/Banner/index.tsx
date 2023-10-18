@@ -28,6 +28,7 @@ export default function Banner() {
       height={400}
       $simpleTab
       $tabBoxPosition="bottom"
+      $isNotTabBoxShow
       swipeable
       swiper
       autoplay
