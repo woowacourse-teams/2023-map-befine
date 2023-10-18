@@ -10,18 +10,13 @@ import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { TagContext } from '../context/TagContext';
 import useNavigator from '../hooks/useNavigator';
+import useResizeMap from '../hooks/useResizeMap';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import useMapStore from '../store/mapInstance';
 import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
-
-const getAvailableWidth = (sidebarWidth: number = 372) =>
-  window.innerWidth - sidebarWidth;
-
-const getAvailableHeight = () => window.innerHeight;
 
 function SelectedTopic() {
   const { topicId } = useParams();
@@ -34,13 +29,7 @@ function SelectedTopic() {
   const { setCoordinates } = useContext(CoordinatesContext);
   const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { mapInstance } = useMapStore((state) => state);
-
-  const resizeMap = () => {
-    if (!mapInstance) return;
-
-    mapInstance.resize(getAvailableWidth(372), getAvailableHeight());
-  };
+  useResizeMap();
 
   const getAndSetDataFromServer = async () => {
     const topicInArray = await getApi<TopicDetailProps[]>(
@@ -88,7 +77,6 @@ function SelectedTopic() {
   useEffect(() => {
     getAndSetDataFromServer();
     setTags([]);
-    if (window.innerWidth > 1180) resizeMap();
   }, []);
 
   const togglePinDetail = () => {
