@@ -152,6 +152,10 @@ public class Topic extends BaseTimeEntity {
         this.topicInfo = topicInfo.removeImage();
     }
 
+    public void increasePinCount() {
+        pinCount++;
+    }
+
     public void decreasePinCount() {
         pinCount--;
     }

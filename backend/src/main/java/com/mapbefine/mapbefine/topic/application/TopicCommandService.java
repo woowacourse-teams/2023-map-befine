@@ -12,6 +12,7 @@ import com.mapbefine.mapbefine.image.application.ImageService;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinBatchRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
@@ -35,17 +36,19 @@ import org.springframework.web.multipart.MultipartFile;
 public class TopicCommandService {
 
     private final TopicRepository topicRepository;
+    private final PinBatchRepository pinBatchRepository;
     private final PinRepository pinRepository;
     private final MemberRepository memberRepository;
     private final ImageService imageService;
 
     public TopicCommandService(
             TopicRepository topicRepository,
-            PinRepository pinRepository,
+            PinBatchRepository pinBatchRepository, PinRepository pinRepository,
             MemberRepository memberRepository,
             ImageService imageService
     ) {
         this.topicRepository = topicRepository;
+        this.pinBatchRepository = pinBatchRepository;
         this.pinRepository = pinRepository;
         this.memberRepository = memberRepository;
         this.imageService = imageService;
@@ -104,11 +107,12 @@ public class TopicCommandService {
             List<Long> pinIds
     ) {
         List<Pin> originalPins = findAllPins(pinIds);
+
         validateCopyablePins(member, originalPins);
 
         Member creator = findCreatorByAuthMember(member);
 
-        originalPins.forEach(pin -> pin.copyToTopic(creator, topic));
+        List<Long> batchUpdatedPins = pinBatchRepository.saveAll(originalPins, creator, topic);
     }
 
     private List<Pin> findAllPins(List<Long> pinIds) {
@@ -139,9 +143,7 @@ public class TopicCommandService {
 
         Member creator = findCreatorByAuthMember(member);
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
-        originalPins.forEach(pin -> pin.copyToTopic(creator, topic));
-
-        topicRepository.save(topic);
+        pinBatchRepository.saveAll(originalPins, creator, topic);
 
         return topic.getId();
     }

@@ -21,6 +21,7 @@ class JwtTokenProviderTest {
         String payload = "1";
 
         String token = jwtTokenProvider.createAccessToken(payload);
+        System.out.println(token);
 
         assertThat(jwtTokenProvider.getPayload(token))
                 .isEqualTo(payload);
