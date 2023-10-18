@@ -298,7 +298,6 @@ class PinIntegrationTest extends IntegrationTest {
     void findPinCommentPinId_Success() {
         //given
         long pinId = createPinAndGetId(createRequestDuplicateLocation);
-
         Pin pin = pinRepository.findById(pinId).get();
         PinComment parentPinComment = pinCommentRepository.save(
                 PinCommentFixture.createParentComment(pin, member)
@@ -320,12 +319,11 @@ class PinIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        List<PinCommentResponse> pinResponses = response.as(new TypeRef<>() {});
-
         // then
+        List<PinCommentResponse> pinCommentResponses = response.as(new TypeRef<>() {});
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(pinResponses).hasSize(2);
-        assertThat(pinResponses).usingRecursiveComparison()
+        assertThat(pinCommentResponses).hasSize(2);
+        assertThat(pinCommentResponses).usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
                 .isEqualTo(expected);
     }
