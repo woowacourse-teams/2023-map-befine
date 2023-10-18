@@ -315,7 +315,7 @@ class PinIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .header(AUTHORIZATION, authHeader)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/pins/comments/" + pinId)
+                .when().get("/pins/ + "+ pinId + "/comments")
                 .then().log().all()
                 .extract();
 

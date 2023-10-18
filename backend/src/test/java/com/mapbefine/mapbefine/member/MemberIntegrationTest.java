@@ -79,8 +79,7 @@ class MemberIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {
-        });
+        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {});
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

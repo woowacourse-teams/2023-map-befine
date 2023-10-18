@@ -83,11 +83,10 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
     private Location location;
     private Topic topic;
+    private Member user;
     private Member member;
     private AuthMember authMember;
     private PinCreateRequest createRequest;
-    private Member user;
-    private
 
     @BeforeEach
     void setUp() {
