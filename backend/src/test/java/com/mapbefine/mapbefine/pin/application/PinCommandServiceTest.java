@@ -330,7 +330,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
     @ParameterizedTest
     @MethodSource("publicAndPrivateTopicsStatus")
-    @DisplayName("User 인 경우 Public 인 토픽, Private 이지만 권한을 가진 토픽에는 핀 댓글을 생성할 수 있다.")
+    @DisplayName("일반 회원인 경우 공개 지도, 비공개 지도이지만 권한을 가진 지도에는 핀 댓글을 생성할 수 있다.")
     void savePinComment_Success_ByCreator(Publicity publicity, PermissionType permissionType) {
         // given
         Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user);
@@ -356,7 +356,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("User 일 때 토픽이 Private 이고, 권한을 가지고 있지 않을 때 핀 댓글을 생성할 수 없다.")
+    @DisplayName("일반 회원인 경우 비공개 지도이면서 권한을 가지고 있지 않은 지도에 핀 댓글을 생성할 수 없다.")
     void savePinComment_Fail_ByNonCreator() {
         // given
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user);
@@ -377,7 +377,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
     @ParameterizedTest
     @MethodSource("publicAndPrivateTopicsStatus")
-    @DisplayName("Admin 인 경우 어떠한 유형의 토픽이더라도 핀 댓글을 생성할 수 있다.")
+    @DisplayName("Admin 인 경우 어떠한 유형의 지도라도 핀 댓글을 생성할 수 있다.")
     void savePinComment_Success_ByAdmin(Publicity publicity, PermissionType permissionType) {
         // given
         Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user);
@@ -420,7 +420,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("User 인 경우 본인이 단 핀 댓글을 수정할 수 있다.")
+    @DisplayName("일반 회원인 경우 본인이 단 핀 댓글을 수정할 수 있다.")
     void updatePinComment_Success_ByCreator() {
         // given
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
@@ -444,7 +444,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("User 인 경우 본인이 달지 않은 핀 댓글을 수정할 수 없다.")
+    @DisplayName("일반 회원인 경우 본인이 달지 않은 핀 댓글을 수정할 수 없다.")
     void updatePinComment_Fail_ByNonCreator() {
         // given
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
@@ -526,7 +526,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("User 인 경우 본인이 단 핀 댓글을 삭제할 수 있다.")
+    @DisplayName("일반 회원인 경우 본인이 단 핀 댓글을 삭제할 수 있다.")
     void deletePinComment_Success_ByCreator() {
         // given
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
@@ -541,7 +541,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("User 인 경우 본인이 달지 않은 핀 댓글을 삭제할 수 없다.")
+    @DisplayName("일반 회원인 경우 본인이 달지 않은 핀 댓글을 삭제할 수 없다.")
     void deletePinComment_Fail_ByNonCreator() {
         // given
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));

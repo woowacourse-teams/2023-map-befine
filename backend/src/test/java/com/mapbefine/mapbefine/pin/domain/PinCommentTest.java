@@ -35,7 +35,7 @@ class PinCommentTest {
 
     @ParameterizedTest
     @MethodSource("validCommentContent")
-    @DisplayName("Pin Comment 생성에 성공한다.")
+    @DisplayName("유효한 댓글 내용일 경우 핀 댓글 생성에 성공한다.")
     void createPinComment_Success(String content) {
         // when
         PinComment pinComment = ofParentPinComment(pin, creator, content);
@@ -53,7 +53,7 @@ class PinCommentTest {
 
     @ParameterizedTest
     @MethodSource("invalidCommentContent")
-    @DisplayName("Pin Comment 생성에 실패한다.")
+    @DisplayName("유효하지 않은 핀 댓글 생성에 실패한다.")
     void createPinComment_Fail(String content) {
         // when then
         assertThatThrownBy(() -> ofParentPinComment(pin, creator, content))
@@ -69,7 +69,7 @@ class PinCommentTest {
 
     @ParameterizedTest
     @MethodSource("validCommentContent")
-    @DisplayName("Pin Comment 내용 수정에 성공한다.")
+    @DisplayName("유효한 댓글 내용일 경우 핀 댓글 내용 수정에 성공한다.")
     void updatePinComment_Success(String content) {
         // given
         PinComment pinComment = ofParentPinComment(pin, creator, "댓글 수정 전");
@@ -84,7 +84,7 @@ class PinCommentTest {
 
     @ParameterizedTest
     @MethodSource("invalidCommentContent")
-    @DisplayName("Pin Comment 수정에 실패한다.")
+    @DisplayName("유효하지 않은 댓글 내용일 경우 핀 댓글 수정에 실패한다.")
     void updatePinComment_Fail(String content) {
         PinComment pinComment = ofParentPinComment(pin, creator, "댓글 수정 전");
 

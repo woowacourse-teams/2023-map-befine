@@ -209,7 +209,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
 
     @ParameterizedTest
     @MethodSource("publicTopicsStatus")
-    @DisplayName("Topic 이 PUBLIC 인 경우 Guest 유저가 핀 댓글을 조회에 성공한다.")
+    @DisplayName("공개 지도인 경우, Guest 는 핀 댓글을 조회에 성공한다.")
     void findAllPinCommentGuest_Success(Publicity publicity, PermissionType permissionType) {
         // given
         Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
@@ -227,7 +227,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("Topic 이 PRIVATE 인 경우 Guest 유저가 핀 댓글을 조회에 실패한다.")
+    @DisplayName("비공개 지도인 경우, Guest 는 핀 댓글을 조회를 할 수 없다.")
     void findAllPinCommentGuest_Fail() {
         // given
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user1);
@@ -241,7 +241,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
 
     @ParameterizedTest
     @MethodSource("publicAndPrivateTopicsStatus")
-    @DisplayName("Topic 이 PUBLIC 인 경우와 PRIVATE 이면서 Permission 을 가진 일반 유저가 핀 댓글을 조회에 성공한다.")
+    @DisplayName("일반 회원은 공개 지도인 경우와, 비공개 지도이면서 본인이 권한을 가진 지도의 핀 댓글을 조회할 수 있다.")
     void findAllPinCommentUser_Success(Publicity publicity, PermissionType permissionType) {
         // given
         Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
@@ -260,7 +260,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("Topic 이 PRIVATE 이면서 Permission 을 가지지 않은 일반 유저가 핀 댓글을 조회에 실패한다.")
+    @DisplayName("일반 회원인 경우 비공개 지도이면서 권한을 가지지 않은 지도에 핀 댓글을 조회할 수 없다.")
     void findAllPinCommentUser_Fail() {
         // given
         Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user1);
@@ -276,7 +276,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
 
     @ParameterizedTest
     @MethodSource("publicAndPrivateTopicsStatus")
-    @DisplayName("Topic 이 PUBLIC 이든 PRIVATE 이든 ADMIN 은 핀 댓글을 조회에 성공한다")
+    @DisplayName("ADMIN 은 어떠한 유형의 지도의 핀 댓글을 조회할 수 있다.")
     void findAllPinCommentAdmin_Success(Publicity publicity, PermissionType permissionType) {
         // given
         Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
