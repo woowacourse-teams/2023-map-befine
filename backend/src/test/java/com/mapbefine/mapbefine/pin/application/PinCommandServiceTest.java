@@ -36,7 +36,9 @@ import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
+import com.mapbefine.mapbefine.pin.exception.PinCommentException.PinCommentBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinCommentException.PinCommentForbiddenException;
+import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.PermissionType;
@@ -373,6 +375,25 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         // when then
         assertThatThrownBy(() -> pinCommandService.savePinComment(nonCreatorUser, request))
                 .isInstanceOf(PinCommentForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("핀 대댓글에는 대댓글을 달 수 없다. (depth 2 이상)")
+    void savePinComment_Fail_ByIllegalDepth() {
+        // given
+        Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
+        PinComment parentPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
+        PinComment childPinComment = pinCommentRepository.save(
+                PinCommentFixture.createChildComment(savedPin, user, parentPinComment)
+        );
+        PinCommentCreateRequest request = new PinCommentCreateRequest(
+                savedPin.getId(), childPinComment.getId(), "대대댓글"
+        );
+        AuthMember creatorUser = MemberFixture.createUser(user);
+
+        // when then
+        assertThatThrownBy(() -> pinCommandService.savePinComment(creatorUser, request))
+                .isInstanceOf(PinCommentBadRequestException.class);
     }
 
     @ParameterizedTest

@@ -241,6 +241,7 @@ public class PinCommandService {
         }
 
         PinComment parentPinComment = findPinComment(parentPinCommentId);
+
         return PinComment.ofChildPinComment(pin, parentPinComment, member, content);
     }
 

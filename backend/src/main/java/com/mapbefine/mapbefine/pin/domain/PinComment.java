@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.pin.domain;
 
 import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.ILLEGAL_CONTENT_LENGTH;
 import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.ILLEGAL_CONTENT_NULL;
+import static com.mapbefine.mapbefine.pin.exception.PinCommentErrorCode.ILLEGAL_PIN_COMMENT_DEPTH;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
@@ -78,9 +79,19 @@ public class PinComment extends BaseTimeEntity {
             Member creator,
             String content
     ) {
+        validatePinCommentDepth(parentPinComment);
         validateContent(content);
 
+
         return new PinComment(pin, parentPinComment, creator, content);
+    }
+
+    private static void validatePinCommentDepth(PinComment parentPinComment) {
+        if (parentPinComment.isParentComment()) {
+            return;
+        }
+
+        throw new PinCommentBadRequestException(ILLEGAL_PIN_COMMENT_DEPTH);
     }
 
     private static void validateContent(String content) {
