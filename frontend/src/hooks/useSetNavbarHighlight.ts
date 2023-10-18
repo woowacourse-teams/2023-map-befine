@@ -6,20 +6,25 @@ import {
   NavbarHighlightsContext,
 } from '../context/NavbarHighlightsContext';
 
-const navbarPageNames: NavbarHighlightKeys[] = [
+type NavbarPageNamesType = 'none' | NavbarHighlightKeys;
+
+const navbarPageNames: NavbarPageNamesType[] = [
   'home',
   'seeTogether',
   'addMapOrPin',
   'favorite',
   'profile',
+  'none',
 ];
 
-const useSetNavbarHighlight = (pageName: NavbarHighlightKeys) => {
+const useSetNavbarHighlight = (pageName: NavbarPageNamesType) => {
   const { navbarHighlights, setNavbarHighlights } = useContext(
     NavbarHighlightsContext,
   );
 
   useEffect(() => {
+    if (pageName === 'none') return;
+
     const newNavbarHighlights: NavbarHighlights = navbarPageNames.reduce(
       (acc, curr) => ({ ...acc, [curr]: curr === pageName }),
       {} as NavbarHighlights,

@@ -12,6 +12,7 @@ import { TagContext } from '../context/TagContext';
 import useNavigator from '../hooks/useNavigator';
 import useResizeMap from '../hooks/useResizeMap';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
@@ -29,6 +30,7 @@ function SelectedTopic() {
   const { setCoordinates } = useContext(CoordinatesContext);
   const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
+  useSetNavbarHighlight('none');
   useResizeMap();
 
   const getAndSetDataFromServer = async () => {
@@ -38,8 +40,10 @@ function SelectedTopic() {
     const topic = topicInArray[0];
 
     setTopicDetail(topic);
+    setCoordinatesTopicDetail(topic);
+  };
 
-    // 각 topic의 pin들의 좌표를 가져옴
+  const setCoordinatesTopicDetail = (topic: TopicDetailProps) => {
     const newCoordinates: any = [];
 
     topic.pins.forEach((pin: PinProps) => {
