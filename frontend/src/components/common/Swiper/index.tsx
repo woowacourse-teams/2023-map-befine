@@ -158,10 +158,16 @@ function Swiper({
 
       {swiper && (
         <>
-          <SwiperButtonLeftWrapper $tabBoxHeight={$tabBoxHeight}>
+          <SwiperButtonLeftWrapper
+            $tabBoxHeight={$tabBoxHeight}
+            $isNotTabBoxShow={$isNotTabBoxShow}
+          >
             <SwiperLeftBtnSVG onClick={decreasePos} cursor="pointer" />
           </SwiperButtonLeftWrapper>
-          <SwiperButtonRightWrapper $tabBoxHeight={$tabBoxHeight}>
+          <SwiperButtonRightWrapper
+            $tabBoxHeight={$tabBoxHeight}
+            $isNotTabBoxShow={$isNotTabBoxShow}
+          >
             <SwiperRightBtnSVG onClick={increasePos} cursor="pointer" />
           </SwiperButtonRightWrapper>
         </>
@@ -332,24 +338,36 @@ const TabBox = styled.button<{
     `}
 `;
 
-const SwiperButtonLeftWrapper = styled.div<{ $tabBoxHeight: number }>`
+const SwiperButtonLeftWrapper = styled.div<{
+  $tabBoxHeight: number;
+  $isNotTabBoxShow: boolean;
+}>`
   position: absolute;
-  top: ${({ $tabBoxHeight }) => `calc(50% + ${$tabBoxHeight}px / 2)`};
+  top: ${({ $tabBoxHeight, $isNotTabBoxShow }) =>
+    $isNotTabBoxShow ? `50%` : `calc(50% + ${$tabBoxHeight}px / 2)`};
   left: 1%;
-  transform: ${({ $tabBoxHeight }) =>
-    `translateY(calc(-50% - ${$tabBoxHeight}px))`};
+  transform: ${({ $tabBoxHeight, $isNotTabBoxShow }) =>
+    $isNotTabBoxShow
+      ? `translateY(-50%)`
+      : `translateY(calc(-50% - ${$tabBoxHeight}px))`};
 
   @media (max-width: 744px) {
     display: none;
   }
 `;
 
-const SwiperButtonRightWrapper = styled.div<{ $tabBoxHeight: number }>`
+const SwiperButtonRightWrapper = styled.div<{
+  $tabBoxHeight: number;
+  $isNotTabBoxShow: boolean;
+}>`
   position: absolute;
-  top: ${({ $tabBoxHeight }) => `calc(50% + ${$tabBoxHeight}px / 2)`};
+  top: ${({ $tabBoxHeight, $isNotTabBoxShow }) =>
+    $isNotTabBoxShow ? `50%` : `calc(50% + ${$tabBoxHeight}px / 2)`};
   right: 1%;
-  transform: ${({ $tabBoxHeight }) =>
-    `translateY(calc(-50% - ${$tabBoxHeight}px))`};
+  transform: ${({ $tabBoxHeight, $isNotTabBoxShow }) =>
+    $isNotTabBoxShow
+      ? `translateY(-50%)`
+      : `translateY(calc(-50% - ${$tabBoxHeight}px))`};
 
   @media (max-width: 744px) {
     display: none;
