@@ -8,11 +8,10 @@ import PullPin from '../components/PullPin';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import { CoordinatesContext } from '../context/CoordinatesContext';
-import { TagContext } from '../context/TagContext';
-import useNavigator from '../hooks/useNavigator';
 import useResizeMap from '../hooks/useResizeMap';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import useTags from '../hooks/useTags';
 import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
@@ -26,10 +25,10 @@ function SelectedTopic() {
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
-  const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
-  const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
+  const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
+    useTags();
   useSetNavbarHighlight('none');
   useResizeMap();
 
@@ -59,33 +58,26 @@ function SelectedTopic() {
     setCoordinates(newCoordinates);
   };
 
-  const onClickCreateTopicWithTags = () => {
-    routePage('/new-topic', tags.map((tag) => tag.id).join(','));
-  };
-
-  const onClickInitTags = () => {
-    setTags([]);
+  const togglePinDetail = () => {
+    setIsOpen(!isOpen);
   };
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
+
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
-    } else {
-      setSelectedPinId(null);
+      setIsOpen(true);
+      return;
     }
 
-    setIsOpen(true);
+    setSelectedPinId(null);
   }, [searchParams]);
 
   useEffect(() => {
     getAndSetDataFromServer();
     setTags([]);
   }, []);
-
-  const togglePinDetail = () => {
-    setIsOpen(!isOpen);
-  };
 
   if (!topicId || !topicDetail) return <></>;
 
