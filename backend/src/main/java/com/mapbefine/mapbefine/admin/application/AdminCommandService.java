@@ -54,6 +54,7 @@ public class AdminCommandService {
     public void blockMember(Long memberId) {
         Member member = findMemberById(memberId);
         member.updateStatus(Status.BLOCKED);
+        memberRepository.flush();
 
         deleteAllRelatedMember(member);
     }
@@ -63,11 +64,8 @@ public class AdminCommandService {
         Long memberId = member.getId();
 
         permissionRepository.deleteAllByMemberId(memberId);
-        permissionRepository.flush();
         atlasRepository.deleteAllByMemberId(memberId);
-        atlasRepository.flush();
         bookmarkRepository.deleteAllByMemberId(memberId);
-        bookmarkRepository.flush();
         pinImageRepository.deleteAllByPinIds(pinIds);
         pinRepository.deleteAllByMemberId(memberId);
         topicRepository.deleteAllByMemberId(memberId);
@@ -90,11 +88,8 @@ public class AdminCommandService {
         List<Long> pinIds = extractPinIdsByTopic(topic);
 
         permissionRepository.deleteAllByTopicId(topicId);
-        permissionRepository.flush();
         atlasRepository.deleteAllByTopicId(topicId);
-        atlasRepository.flush();
         bookmarkRepository.deleteAllByTopicId(topicId);
-        bookmarkRepository.flush();
         pinImageRepository.deleteAllByPinIds(pinIds);
         pinRepository.deleteAllByTopicId(topicId);
         topicRepository.deleteById(topicId);

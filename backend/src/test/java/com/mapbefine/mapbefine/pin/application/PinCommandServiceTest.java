@@ -2,12 +2,17 @@ package com.mapbefine.mapbefine.pin.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.history.application.PinHistoryCommandService;
 import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.image.exception.ImageException.ImageBadRequestException;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -26,16 +31,19 @@ import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
+import com.mapbefine.mapbefine.pin.event.PinUpdateEvent;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.multipart.MultipartFile;
 
 @ServiceTest
@@ -44,10 +52,13 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     private static final MultipartFile BASE_IMAGE_FILE = FileFixture.createFile();
     private static final String BASE_IMAGE = "https://mapbefine.github.io/favicon.png";
 
+    @MockBean
+    private PinHistoryCommandService pinHistoryCommandService;
     @Autowired
     private PinCommandService pinCommandService;
     @Autowired
     private PinQueryService pinQueryService;
+
     @Autowired
     private PinRepository pinRepository;
     @Autowired
@@ -61,13 +72,12 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
     private Location location;
     private Topic topic;
-    private Member member;
     private AuthMember authMember;
     private PinCreateRequest createRequest;
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(MemberFixture.create("user1", "userfirst@naver.com", Role.ADMIN));
+        Member member = memberRepository.save(MemberFixture.create("user1", "userfirst@naver.com", Role.ADMIN));
         location = locationRepository.save(LocationFixture.create());
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
 
@@ -152,12 +162,32 @@ class PinCommandServiceTest extends TestDatabaseContainer {
     }
 
     @Test
+    @DisplayName("핀을 추가하면 핀 정보 이력을 저장한다.")
+    void save_Success_SaveHistory() {
+        // when
+        pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+
+        // then
+        verify(pinHistoryCommandService, times(1)).saveHistory(any(PinUpdateEvent.class));
+    }
+
+    @Test
+    @DisplayName("핀 추가 시 예외가 발생하면, 정보 이력도 저장하지 않는다.")
+    void save_Fail_DoNotSaveHistory() {
+        // when
+        assertThatThrownBy(() -> pinCommandService.save(new Guest(), Collections.emptyList(), createRequest))
+                .isInstanceOf(PinForbiddenException.class);
+
+        // then
+        verify(pinHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
+    }
+
+    @Test
     @DisplayName("권한이 없는 토픽에 핀을 저장하면 예외를 발생시킨다.")
     void save_FailByForbidden() {
         assertThatThrownBy(() -> pinCommandService.save(new Guest(), List.of(BASE_IMAGE_FILE), createRequest))
                 .isInstanceOf(PinForbiddenException.class);
     }
-
 
     @Test
     @DisplayName("핀을 변경하면 토픽에 핀의 변경 일시를 새로 반영한다. (모든 일시는 영속화 시점 기준이다.)")
@@ -177,6 +207,34 @@ class PinCommandServiceTest extends TestDatabaseContainer {
                         topic -> assertThat(topic.getLastPinUpdatedAt()).isEqualTo(pin.getUpdatedAt()),
                         Assertions::fail
                 );
+    }
+
+    @Test
+    @DisplayName("핀을 변경하면 핀 정보 이력을 저장한다.")
+    void update_Success_SaveHistory() {
+        // given
+        long pinId = pinCommandService.save(authMember, List.of(BASE_IMAGE_FILE), createRequest);
+
+        // when
+        pinCommandService.update(authMember, pinId, new PinUpdateRequest("name", "update"));
+
+        // then
+        verify(pinHistoryCommandService, times(2)).saveHistory(any(PinUpdateEvent.class));
+    }
+
+    @Test
+    @DisplayName("핀 수정 시 예외가 발생하면, 정보 이력도 저장하지 않는다.")
+    void update_Fail_DoNotSaveHistory() {
+        // given
+        long illegalPinId = -1L;
+
+        // when
+        assertThatThrownBy(
+                () -> pinCommandService.update(new Guest(), illegalPinId, new PinUpdateRequest("name", "update"))
+        ).isInstanceOf(PinForbiddenException.class);
+
+        // then
+        verify(pinHistoryCommandService, never()).saveHistory(any(PinUpdateEvent.class));
     }
 
     @Test
