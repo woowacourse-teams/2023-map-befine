@@ -4,22 +4,22 @@ import com.mapbefine.mapbefine.common.exception.BadRequestException;
 import com.mapbefine.mapbefine.common.exception.ErrorCode;
 import com.mapbefine.mapbefine.common.exception.ForbiddenException;
 
-public class PinException {
+public class PinCommentException {
 
-    public static class PinBadRequestException extends BadRequestException {
-        public PinBadRequestException(PinErrorCode errorCode) {
+    public static class PinCommentBadRequestException extends BadRequestException {
+        public PinCommentBadRequestException(PinCommentErrorCode errorCode) {
             super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
-    public static class PinForbiddenException extends ForbiddenException {
-        public PinForbiddenException(PinErrorCode errorCode) {
+    public static class PinCommentForbiddenException extends ForbiddenException {
+        public PinCommentForbiddenException(PinCommentErrorCode errorCode) {
             super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
         }
     }
 
-    public static class PinNotFoundException extends ForbiddenException {
-        public PinNotFoundException(PinErrorCode errorCode, Long id) {
+    public static class PinCommentNotFoundException extends ForbiddenException {
+        public PinCommentNotFoundException(PinCommentErrorCode errorCode, Long id) {
             super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), id));
         }
     }

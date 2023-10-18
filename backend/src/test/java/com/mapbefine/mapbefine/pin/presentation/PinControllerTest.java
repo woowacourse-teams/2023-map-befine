@@ -1,6 +1,7 @@
 package com.mapbefine.mapbefine.pin.presentation;
 
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.LOCATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpMethod.POST;
@@ -10,8 +11,11 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
@@ -196,6 +200,101 @@ class PinControllerTest extends RestDocsIntegration {
         mockMvc.perform(MockMvcRequestBuilders.get("/pins/members?id=1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 댓글 생성")
+    void createParentPinComment() throws Exception {
+        PinCommentCreateRequest pinCommentCreateRequest = new PinCommentCreateRequest(
+                1L,
+                null,
+                "댓글"
+        );
+        given(pinCommandService.savePinComment(any(), any())).willReturn(1L);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/pins/comments")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .header(LOCATION, "/pins/comments/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pinCommentCreateRequest)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 댓글 생성")
+    void createChildPinComment() throws Exception {
+        PinCommentCreateRequest pinCommentCreateRequest = new PinCommentCreateRequest(
+                1L,
+                1L,
+                "댓글"
+        );
+        given(pinCommandService.savePinComment(any(), any())).willReturn(1L);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/pins/comments")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .header(LOCATION, "/pins/comments/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(pinCommentCreateRequest)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 댓글 조회")
+    void findAllPinCommentByPinId() throws Exception {
+        List<PinCommentResponse> pinCommentResponses = List.of(
+                new PinCommentResponse(
+                        1L,
+                        "댓글",
+                        "creator",
+                        "https://creatorImageUrl",
+                        null,
+                        true,
+                        LocalDateTime.now()
+                ),
+                new PinCommentResponse(
+                        2L,
+                        "대댓글",
+                        "creator",
+                        "https://creatorImageUrl",
+                        1L,
+                        true,
+                        LocalDateTime.now()
+                )
+        );
+        given(pinQueryService.findAllPinCommentsByPinId(any(), any())).willReturn(pinCommentResponses);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/pins/1/comments")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .contentType(APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 댓글 수정")
+    void updatePinComment() throws Exception {
+        PinCommentUpdateRequest pinCommentUpdateRequest = new PinCommentUpdateRequest(
+                "댓글 수정"
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/pins/comments/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .header(LOCATION, "/pins/comments/1")
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(pinCommentUpdateRequest)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("핀 댓글 삭제")
+    void removePinComment() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/pins/comments/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(restDocs.document());
     }
 

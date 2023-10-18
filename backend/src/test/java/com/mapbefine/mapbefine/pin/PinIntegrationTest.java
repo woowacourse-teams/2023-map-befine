@@ -14,18 +14,27 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinComment;
+import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.pin.event.PinUpdateEvent;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.*;
-import io.restassured.response.*;
+import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,8 +67,12 @@ class PinIntegrationTest extends IntegrationTest {
 
     @Autowired
     private LocationRepository locationRepository;
+
     @Autowired
     private PinRepository pinRepository;
+
+    @Autowired
+    private PinCommentRepository pinCommentRepository;
 
     @BeforeEach
     void saveTopicAndLocation() {
@@ -311,6 +324,155 @@ class PinIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(pinResponses).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("핀 댓글을 조회하면 200을 반환한다.")
+    void findPinCommentPinId_Success() {
+        //given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        Pin pin = pinRepository.findById(pinId).get();
+        PinComment parentPinComment = pinCommentRepository.save(
+                PinCommentFixture.createParentComment(pin, member)
+        );
+        PinComment childPinComment = pinCommentRepository.save(
+                PinCommentFixture.createChildComment(pin, member, parentPinComment)
+        );
+        List<PinCommentResponse> expected = List.of(
+                PinCommentResponse.of(parentPinComment, true),
+                PinCommentResponse.of(childPinComment, true)
+        );
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/pins/ + "+ pinId + "/comments")
+                .then().log().all()
+                .extract();
+
+        // then
+        List<PinCommentResponse> pinCommentResponses = response.as(new TypeRef<>() {});
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(pinCommentResponses).hasSize(2);
+        assertThat(pinCommentResponses).usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class)
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("핀 댓글을 생성하면 201 을 반환한다.")
+    void addParentPinComment_Success() {
+        //given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        PinCommentCreateRequest request = new PinCommentCreateRequest(
+                pinId,
+                null,
+                "댓글"
+        );
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/pins/comments")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("핀 대댓글을 생성하면 201 을 반환한다.")
+    void addChildPinComment_Success() {
+        //given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        Long parentPinCommentId = createParentPinComment(pinId);
+        PinCommentCreateRequest childPinCommentRequest = new PinCommentCreateRequest(
+                pinId,
+                parentPinCommentId,
+                "대댓글"
+        );
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(childPinCommentRequest)
+                .when().post("/pins/comments")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private Long createParentPinComment(long pinId) {
+        PinCommentCreateRequest parentPinCommentRequest = new PinCommentCreateRequest(
+                pinId,
+                null,
+                "댓글"
+        );
+
+        ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(parentPinCommentRequest)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/pins/comments")
+                .then().log().all()
+                .extract();
+
+        String locationHeader = createResponse.header("Location");
+        return Long.parseLong(locationHeader.split("/")[3]);
+    }
+
+    @Test
+    @DisplayName("핀 댓글을 수정하면 201 을 반환한다.")
+    void updatePinComment_Success() {
+        //given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        PinCommentUpdateRequest request = new PinCommentUpdateRequest(
+                "댓그으으을"
+        );
+        long pinCommentId = createParentPinComment(pinId);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().put("/pins/comments/" + pinCommentId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("핀 댓글을 삭제하면 204 을 반환한다.")
+    void removePinComment_Success() {
+        //given
+        long pinId = createPinAndGetId(createRequestDuplicateLocation);
+        Long parentPinCommentId = createParentPinComment(pinId);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .when().delete("/pins/comments/" + parentPinCommentId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Nested
