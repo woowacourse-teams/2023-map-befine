@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.pin.domain;
 
-import static com.mapbefine.mapbefine.pin.domain.PinComment.of;
+import static com.mapbefine.mapbefine.pin.domain.PinComment.ofParentPinComment;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -11,7 +11,6 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.exception.PinCommentException.PinCommentBadRequestException;
-import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.stream.Stream;
@@ -39,7 +38,7 @@ class PinCommentTest {
     @DisplayName("Pin Comment 생성에 성공한다.")
     void createPinComment_Success(String content) {
         // when
-        PinComment pinComment = of(pin, null, creator, content);
+        PinComment pinComment = ofParentPinComment(pin, creator, content);
 
         // then
         assertThat(pinComment.getContent()).isEqualTo(content);
@@ -57,7 +56,7 @@ class PinCommentTest {
     @DisplayName("Pin Comment 생성에 실패한다.")
     void createPinComment_Fail(String content) {
         // when then
-        assertThatThrownBy(() -> of(pin, null, creator, content))
+        assertThatThrownBy(() -> ofParentPinComment(pin, creator, content))
                 .isInstanceOf(PinCommentBadRequestException.class);
     }
 
@@ -73,7 +72,7 @@ class PinCommentTest {
     @DisplayName("Pin Comment 내용 수정에 성공한다.")
     void updatePinComment_Success(String content) {
         // given
-        PinComment pinComment = of(pin, null, creator, "댓글 수정 전");
+        PinComment pinComment = ofParentPinComment(pin, creator, "댓글 수정 전");
 
         // when
         pinComment.updateContent(content);
@@ -87,7 +86,7 @@ class PinCommentTest {
     @MethodSource("invalidCommentContent")
     @DisplayName("Pin Comment 수정에 실패한다.")
     void updatePinComment_Fail(String content) {
-        PinComment pinComment = of(pin, null, creator, "댓글 수정 전");
+        PinComment pinComment = ofParentPinComment(pin, creator, "댓글 수정 전");
 
         // when then
         assertThatThrownBy(() -> pinComment.updateContent(content))

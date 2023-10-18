@@ -211,9 +211,12 @@ public class PinCommandService {
         Pin pin = findPin(request.pinId());
         validatePinCommentCreate(authMember, pin);
         Member member = findMember(authMember.getMemberId());
-        PinComment parentPinComment = findParentPinComment(request.parentPinCommentId());
-
-        PinComment pinComment = PinComment.of(pin, parentPinComment, member, request.content());
+        PinComment pinComment = createPinComment(
+                pin,
+                member,
+                request.parentPinCommentId(),
+                request.content()
+        );
         pinCommentRepository.save(pinComment);
 
         return pinComment.getId();
@@ -227,13 +230,18 @@ public class PinCommandService {
         throw new PinCommentForbiddenException(FORBIDDEN_PIN_COMMENT_CREATE);
     }
 
-    private PinComment findParentPinComment(Long parentPinComment) {
-        if (Objects.isNull(parentPinComment)) {
-            return null;
+    private PinComment createPinComment(
+            Pin pin,
+            Member member,
+            Long parentPinCommentId,
+            String content
+    ) {
+        if (Objects.isNull(parentPinCommentId)) {
+            return PinComment.ofParentPinComment(pin, member, content);
         }
 
-        return pinCommentRepository.findById(parentPinComment)
-                .orElseThrow(() -> new PinCommentNotFoundException(PIN_COMMENT_NOT_FOUND, parentPinComment));
+        PinComment parentPinComment = findPinComment(parentPinCommentId);
+        return PinComment.ofChildPinComment(pin, parentPinComment, member, content);
     }
 
     public void updatePinComment(

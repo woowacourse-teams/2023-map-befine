@@ -10,9 +10,8 @@ public class PinCommentFixture {
             Pin pin,
             Member creator
     ) {
-        return PinComment.of(
+        return PinComment.ofParentPinComment(
                 pin,
-                null,
                 creator,
                 "댓글"
         );
@@ -23,7 +22,7 @@ public class PinCommentFixture {
             Member creator,
             PinComment savedParentPinComment
     ) {
-        return PinComment.of(
+        return PinComment.ofChildPinComment(
                 pin,
                 savedParentPinComment,
                 creator,

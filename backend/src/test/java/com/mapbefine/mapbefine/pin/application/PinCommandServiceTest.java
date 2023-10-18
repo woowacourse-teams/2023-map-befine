@@ -346,7 +346,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
         // then
         PinComment actual = pinCommentRepository.findById(pinCommentId).get();
-        PinComment expected = PinComment.of(savedPin, null, user, "댓글");
+        PinComment expected = PinComment.ofParentPinComment(savedPin, user, "댓글");
 
         assertThat(actual)
                 .usingRecursiveComparison()
@@ -396,7 +396,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
         // then
         PinComment actual = pinCommentRepository.findById(pinCommentId).get();
-        PinComment expected = PinComment.of(savedPin, null, nonCreator, "댓글");
+        PinComment expected = PinComment.ofParentPinComment(savedPin, nonCreator, "댓글");
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
@@ -435,7 +435,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
         // then
         PinComment actual = pinCommentRepository.findById(pinComment.getId()).get();
-        PinComment expected = PinComment.of(savedPin, null, user, "댓글 수정!");
+        PinComment expected = PinComment.ofParentPinComment(savedPin, user, "댓글 수정!");
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
@@ -478,7 +478,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
         // then
         PinComment actual = pinCommentRepository.findById(pinComment.getId()).get();
-        PinComment expected = PinComment.of(savedPin, null, user, "댓글 수정!");
+        PinComment expected = PinComment.ofParentPinComment(savedPin, user, "댓글 수정!");
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)
@@ -505,7 +505,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
 
         // then
         PinComment actual = pinCommentRepository.findById(pinComment.getId()).get();
-        PinComment expected = PinComment.of(savedPin, null, user, "댓글 수정!");
+        PinComment expected = PinComment.ofParentPinComment(savedPin, user, "댓글 수정!");
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(LocalDateTime.class)

@@ -61,7 +61,17 @@ public class PinComment extends BaseTimeEntity {
         this.content = content;
     }
 
-    public static PinComment of(
+    public static PinComment ofParentPinComment(
+            Pin pin,
+            Member creator,
+            String content
+    ) {
+        validateContent(content);
+
+        return new PinComment(pin, null, creator, content);
+    }
+
+    public static PinComment ofChildPinComment(
             Pin pin,
             PinComment parentPinComment,
             Member creator,
