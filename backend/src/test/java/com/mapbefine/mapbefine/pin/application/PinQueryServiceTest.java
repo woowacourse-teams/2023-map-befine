@@ -66,7 +66,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
     private Location location;
     private Topic publicUser1Topic;
     private Topic privateUser2Topic;
-    private  Member user1;
+    private Member user1;
     private Member user2;
     private AuthMember authMemberUser1;
 
