@@ -279,7 +279,6 @@ class TopicIntegrationTest extends IntegrationTest {
         // when
         TopicUpdateRequest 송파_데이트코스 = new TopicUpdateRequest(
                 "송파 데이트코스",
-                "https://map-befine-official.github.io/favicon.png",
                 "수정한 토픽",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS
@@ -510,6 +509,35 @@ class TopicIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/topics")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("Topic의 이미지를 변경하면 200을 반환한다")
+    void updateTopicImage_Success() {
+        ExtractableResponse<Response> newTopic = createNewTopic(
+                new TopicCreateRequestWithoutImage(
+                        "준팍의 또간집",
+                        "준팍이 두번 간집",
+                        Publicity.PUBLIC,
+                        PermissionType.ALL_MEMBERS,
+                        Collections.emptyList()
+                ),
+                authHeader
+        );
+        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .multiPart("image", mockFile)
+                .when().put("/topics/images/{id}", topicId)
                 .then().log().all()
                 .extract();
 

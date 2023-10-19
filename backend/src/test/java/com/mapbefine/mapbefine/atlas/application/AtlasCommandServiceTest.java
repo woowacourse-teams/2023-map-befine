@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.atlas.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.atlas.exception.AtlasException.AtlasForbiddenException;
@@ -27,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @ServiceTest
-class AtlasCommandServiceTest {
+class AtlasCommandServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private TopicRepository topicRepository;

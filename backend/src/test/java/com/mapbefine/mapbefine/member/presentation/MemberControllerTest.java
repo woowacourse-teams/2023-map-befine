@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.location.LocationFixture;
+import com.mapbefine.mapbefine.member.application.MemberCommandService;
 import com.mapbefine.mapbefine.member.application.MemberQueryService;
 import com.mapbefine.mapbefine.member.dto.request.MemberUpdateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
@@ -19,11 +20,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 class MemberControllerTest extends RestDocsIntegration {
 
     @MockBean
     private MemberQueryService memberQueryService;
+    @MockBean
+    private MemberCommandService memberCommandService;
 
     @Test
     @DisplayName("회원 목록 조회")
@@ -41,15 +45,15 @@ class MemberControllerTest extends RestDocsIntegration {
 
         given(memberQueryService.findAll()).willReturn(memberResponses);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/members")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
-    @DisplayName("회원 단일 조회")
-    void findMemberById() throws Exception {
+    @DisplayName("회원 상세 정보 조회")
+    void findMyProfile() throws Exception {
         MemberDetailResponse memberDetailResponse = new MemberDetailResponse(
                 1L,
                 "member",
@@ -58,12 +62,12 @@ class MemberControllerTest extends RestDocsIntegration {
                 LocalDateTime.now()
         );
 
-        given(memberQueryService.findById(any(), any())).willReturn(memberDetailResponse);
+        given(memberQueryService.findMemberDetail(any())).willReturn(memberDetailResponse);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/my/profiles")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -95,10 +99,10 @@ class MemberControllerTest extends RestDocsIntegration {
 
         given(memberQueryService.findAllTopicsInAtlas(any())).willReturn(responses);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/my/atlas")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/my/atlas")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -130,10 +134,10 @@ class MemberControllerTest extends RestDocsIntegration {
 
         given(memberQueryService.findAllTopicsInBookmark(any())).willReturn(responses);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/my/bookmarks")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/my/bookmarks")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -165,10 +169,10 @@ class MemberControllerTest extends RestDocsIntegration {
 
         given(memberQueryService.findMyAllTopics(any())).willReturn(responses);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/my/topics")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/my/topics")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -196,10 +200,10 @@ class MemberControllerTest extends RestDocsIntegration {
 
         given(memberQueryService.findMyAllPins(any())).willReturn(responses);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/members/my/pins")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/my/pins")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -207,12 +211,12 @@ class MemberControllerTest extends RestDocsIntegration {
     void updateMyInfo() throws Exception {
         MemberUpdateRequest request = new MemberUpdateRequest("새로운 닉네임");
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.patch("/members/my/profiles")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members/my/profiles")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        ).andDo(restDocs.document());
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
 }

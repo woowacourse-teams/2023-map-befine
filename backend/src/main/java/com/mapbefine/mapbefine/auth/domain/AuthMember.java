@@ -27,6 +27,8 @@ public abstract class AuthMember {
     public abstract boolean canTopicUpdate(Topic topic);
 
     public abstract boolean canPinCreateOrUpdate(Topic topic);
+
+    public abstract boolean canPinCommentCreate(Topic topic);
     
     public Long getMemberId() {
         return memberId;
@@ -35,5 +37,11 @@ public abstract class AuthMember {
     public boolean isSameMember(Long memberId) {
         return Objects.equals(memberId, this.memberId);
     }
+
+    public abstract boolean isAdmin();
+
+    public abstract boolean isUser();
+
+    public abstract boolean isGuest();
 
 }

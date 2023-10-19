@@ -146,6 +146,21 @@ public class TopicController {
         return ResponseEntity.ok(responses);
     }
 
+    @LoginRequired
+    @PutMapping(
+            value = "/images/{topicId}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<Void> deleteImage(
+            AuthMember authMember,
+            @PathVariable Long topicId,
+            @RequestPart MultipartFile image
+    ) {
+        topicCommandService.updateTopicImage(authMember, topicId, image);
+
+        return ResponseEntity.ok().build();
+    }
+
     @Deprecated(since = "2023.10.06")
     @LoginRequired
     @DeleteMapping("/{topicId}")

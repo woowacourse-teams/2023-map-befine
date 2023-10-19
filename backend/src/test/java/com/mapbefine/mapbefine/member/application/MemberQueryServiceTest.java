@@ -4,10 +4,12 @@ import static com.mapbefine.mapbefine.member.domain.Role.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
+import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -20,7 +22,7 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.member.exception.MemberException.MemberForbiddenException;
+import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
@@ -29,6 +31,7 @@ import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-class MemberQueryServiceTest {
+class MemberQueryServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private MemberQueryService memberQueryService;
@@ -101,11 +104,11 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("회원을 단일 조회한다.")
-    void findMemberById() {
+    @DisplayName("로그인 회원의 상세 정보를 조회한다.")
+    void findMyProfile() {
         // given
         // when
-        MemberDetailResponse response = memberQueryService.findById(authMember, member.getId());
+        MemberDetailResponse response = memberQueryService.findMemberDetail(authMember);
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -113,19 +116,14 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("조회하려는 회원이 없는 경우 본인이 아니므로 예외를 반환한다.")
-    void findMemberById_whenNoneExists_thenFail() {
-        // given when then
-        assertThatThrownBy(() -> memberQueryService.findById(authMember, Long.MAX_VALUE))
-                .isInstanceOf(MemberForbiddenException.class);
-    }
+    @DisplayName("로그인한 식별값(ID)에 해당하는 회원 정보를 찾을 수 없는 경우 예외를 반환한다.")
+    void findMyProfile_whenNoneExists_thenFail() {
+        // given
+        AuthMember otherAuthMember = new User(Long.MAX_VALUE, Collections.emptyList(), Collections.emptyList());
 
-    @Test
-    @DisplayName("조회하려는 회원이 본인이 아닌 경우 예외를 반환한다.")
-    void findMemberById_whenNotSameMember_thenFail() {
-        // given when then
-        assertThatThrownBy(() -> memberQueryService.findById(authMember, Long.MAX_VALUE))
-                .isInstanceOf(MemberForbiddenException.class);
+        // when then
+        assertThatThrownBy(() -> memberQueryService.findMemberDetail(otherAuthMember))
+                .isInstanceOf(MemberNotFoundException.class);
     }
 
     @Test

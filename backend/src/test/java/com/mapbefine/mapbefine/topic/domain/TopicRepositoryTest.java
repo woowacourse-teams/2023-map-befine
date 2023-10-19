@@ -2,6 +2,8 @@ package com.mapbefine.mapbefine.topic.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
+import com.mapbefine.mapbefine.common.annotation.RepositoryTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -13,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@DataJpaTest
-class TopicRepositoryTest {
+@RepositoryTest
+class TopicRepositoryTest extends TestDatabaseContainer {
 
     @Autowired
     private TopicRepository topicRepository;

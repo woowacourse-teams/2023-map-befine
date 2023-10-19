@@ -9,7 +9,6 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.member.exception.MemberErrorCode;
-import com.mapbefine.mapbefine.member.exception.MemberException.MemberForbiddenException;
 import com.mapbefine.mapbefine.member.exception.MemberException.MemberNotFoundException;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -41,12 +40,10 @@ public class MemberQueryService {
         this.topicRepository = topicRepository;
     }
 
-    public MemberDetailResponse findById(AuthMember authMember, Long id) {
-        if (authMember.isSameMember(id)) {
-            Member member = findMemberById(id);
-            return MemberDetailResponse.from(member);
-        }
-        throw new MemberForbiddenException(MemberErrorCode.FORBIDDEN_ACCESS, id);
+    public MemberDetailResponse findMemberDetail(AuthMember authMember) {
+        Member member = findMemberById(authMember.getMemberId());
+
+        return MemberDetailResponse.from(member);
     }
 
     private Member findMemberById(Long id) {
@@ -77,13 +74,6 @@ public class MemberQueryService {
                 .toList();
     }
 
-    private List<Topic> findTopicsInAtlas(Member member) {
-        return member.getAtlantes()
-                .stream()
-                .map(Atlas::getTopic)
-                .toList();
-    }
-
     private boolean isInAtlas(Long memberId, Long topicId) {
         return atlasRepository.existsByMemberIdAndTopicId(memberId, topicId);
     }
@@ -98,6 +88,13 @@ public class MemberQueryService {
                         true,
                         isInBookmark(authMember.getMemberId(), topic.getId())
                 ))
+                .toList();
+    }
+
+    private List<Topic> findTopicsInAtlas(Member member) {
+        return member.getAtlantes()
+                .stream()
+                .map(Atlas::getTopic)
                 .toList();
     }
 

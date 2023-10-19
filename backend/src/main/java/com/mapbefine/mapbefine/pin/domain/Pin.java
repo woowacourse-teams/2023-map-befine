@@ -48,7 +48,7 @@ public class Pin extends BaseTimeEntity {
     private Topic topic;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member creator;
 
     @Column(nullable = false)
@@ -136,6 +136,10 @@ public class Pin extends BaseTimeEntity {
 
     public double getLongitude() {
         return location.getLongitude();
+    }
+
+    public String getDescription() {
+        return pinInfo.getDescription();
     }
 
     public String getRoadBaseAddress() {

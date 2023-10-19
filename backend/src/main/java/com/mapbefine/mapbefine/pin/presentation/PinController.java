@@ -4,9 +4,12 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.pin.application.PinCommandService;
 import com.mapbefine.mapbefine.pin.application.PinQueryService;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
+import com.mapbefine.mapbefine.pin.dto.request.PinCommentUpdateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
 import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import java.net.URI;
@@ -65,6 +68,7 @@ public class PinController {
                 .build();
     }
 
+    @Deprecated(since = "2023.10.10 (이미지 삭제 로직 불완전, 사용되지 않는 API)")
     @LoginRequired
     @DeleteMapping("/{pinId}")
     public ResponseEntity<Void> delete(AuthMember member, @PathVariable Long pinId) {
@@ -117,6 +121,44 @@ public class PinController {
     @DeleteMapping("/images/{pinImageId}")
     public ResponseEntity<Void> removeImage(AuthMember member, @PathVariable Long pinImageId) {
         pinCommandService.removeImageById(member, pinImageId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @LoginRequired
+    @PostMapping("/comments")
+    public ResponseEntity<Void> addPinComment(AuthMember member, @RequestBody PinCommentCreateRequest request) {
+        Long commentId = pinCommandService.savePinComment(member, request);
+
+        return ResponseEntity.created(URI.create("/pins/comments/" + commentId))
+                .build();
+    }
+
+    @GetMapping("/{pinId}/comments")
+    public ResponseEntity<List<PinCommentResponse>> findPinCommentByPinId(AuthMember member, @PathVariable Long pinId) {
+        List<PinCommentResponse> allResponse = pinQueryService.findAllPinCommentsByPinId(member, pinId);
+
+        return ResponseEntity.ok(allResponse);
+    }
+
+    @PutMapping("/comments/{pinCommentId}")
+    public ResponseEntity<Void> updatePinComment(
+            AuthMember member,
+            @PathVariable Long pinCommentId,
+            @RequestBody PinCommentUpdateRequest request
+    )  {
+        pinCommandService.updatePinComment(member, pinCommentId, request);
+
+        return ResponseEntity.created(URI.create("/pins/comments/" + pinCommentId))
+                .build();
+    }
+
+    @DeleteMapping("/comments/{pinCommentId}")
+    public ResponseEntity<Void> removePinComment(
+            AuthMember member,
+            @PathVariable Long pinCommentId
+    ) {
+        pinCommandService.deletePinComment(member, pinCommentId);
 
         return ResponseEntity.noContent().build();
     }

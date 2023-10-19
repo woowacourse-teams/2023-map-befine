@@ -8,4 +8,5 @@ public class PinImageFixture {
     public static PinImage create(Pin pin) {
         return PinImage.createPinImageAssociatedWithPin("https://example.com/image.jpg", pin);
     }
+
 }
