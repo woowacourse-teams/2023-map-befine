@@ -13,6 +13,7 @@ import PullPin from '../components/PullPin';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
 import { CoordinatesContext } from '../context/CoordinatesContext';
+import { MarkerContext } from '../context/MarkerContext';
 import { SeeTogetherContext } from '../context/SeeTogetherContext';
 import useNavigator from '../hooks/useNavigator';
 import useResizeMap from '../hooks/useResizeMap';
@@ -43,6 +44,8 @@ function SeeTogether() {
   const { setCoordinates } = useContext(CoordinatesContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
   const { seeTogetherTopics } = useContext(SeeTogetherContext);
+  const { markers, removeMarkers, removeInfowindows } =
+    useContext(MarkerContext);
   useSetNavbarHighlight('seeTogether');
   useResizeMap();
 
@@ -117,6 +120,11 @@ function SeeTogether() {
 
   useEffect(() => {
     setTags([]);
+
+    if (markers && markers.length > 0) {
+      removeMarkers();
+      removeInfowindows();
+    }
   }, []);
 
   if (!seeTogetherTopics || !topicId) return <></>;
