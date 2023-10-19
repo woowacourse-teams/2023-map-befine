@@ -6,7 +6,7 @@ const useFocusToMarker = (map: TMap | null, markers: Marker[]) => {
 
   useEffect(() => {
     if (map && markers && markers.length === 1) {
-      map.panTo(markers[0].getPosition());
+      map.setCenter(markers[0].getPosition());
     }
 
     if (map && markers && markers.length > 1) {

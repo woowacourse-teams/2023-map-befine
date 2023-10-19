@@ -8,8 +8,11 @@ export default function useClickedCoordinate(map: TMap | null) {
   const { clickedCoordinate } = useContext(CoordinatesContext);
   const { displayClickedMarker } = useContext(MarkerContext);
 
+  const params = new URLSearchParams(window.location.search);
+  const pinDetail = params.get('pinDetail');
+
   useEffect(() => {
-    if (!map) return;
+    if (!map || pinDetail) return;
     const currentZoom = map.getZoom();
     if (clickedCoordinate.address) displayClickedMarker(map);
 
