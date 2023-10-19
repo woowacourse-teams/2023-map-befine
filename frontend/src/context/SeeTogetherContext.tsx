@@ -6,8 +6,6 @@ import {
   useState,
 } from 'react';
 
-import { TopicCardProps } from '../types/Topic';
-
 interface SeeTogetherContextProps {
   seeTogetherTopics: number[] | null;
   setSeeTogetherTopics: Dispatch<SetStateAction<number[] | []>>;
