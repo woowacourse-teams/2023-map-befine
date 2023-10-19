@@ -45,9 +45,47 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
     openModal();
   };
 
+  if (images.length <= 3) {
+    return (
+      <FilmList>
+        {images.map((image, index) => (
+          <Tab label={`${index}`} key={image.id}>
+            <ImageWrapper key={`image-${index}`}>
+              <div onClick={() => onImageOpen(image.imageUrl)}>
+                <Image
+                  key={image.id}
+                  height="100px"
+                  width="100px"
+                  src={image.imageUrl}
+                  $errorDefaultSrc={NOT_FOUND_IMAGE}
+                />
+              </div>
+              <RemoveImageIconWrapper
+                onClick={() => onRemovePinImage(image.id)}
+              >
+                <RemoveImageButton />
+              </RemoveImageIconWrapper>
+            </ImageWrapper>
+          </Tab>
+        ))}
+        {isModalOpen && (
+          <ImageModal closeModalHandler={closeModal}>
+            <ModalImageWrapper>
+              <ModalImage src={modalImage} />
+              <Space size={3} />
+              <Button variant="custom" onClick={closeModal}>
+                닫기
+              </Button>
+            </ModalImageWrapper>
+          </ImageModal>
+        )}
+      </FilmList>
+    );
+  }
+
   return (
     <Wrapper>
-      {images.length !== 0 && (
+      {
         <Swiper
           as="ul"
           width={330}
@@ -57,39 +95,39 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
           swipeable
           $isNotTabBoxShow
         >
-            {images.map((image, index) => (
-              <Tab label={`${index}`} key={image.id}>
-                <ImageWrapper key={`image-${index}`}>
-                  <div onClick={() => onImageOpen(image.imageUrl)}>
-                    <Image
-                      key={image.id}
-                      height="100px"
-                      width="100px"
-                      src={image.imageUrl}
-                      $errorDefaultSrc={NOT_FOUND_IMAGE}
-                    />
-                  </div>
-                  <RemoveImageIconWrapper
-                    onClick={() => onRemovePinImage(image.id)}
-                  >
-                    <RemoveImageButton />
-                  </RemoveImageIconWrapper>
-                </ImageWrapper>
-              </Tab>
-            ))}
-            {isModalOpen && (
-              <ImageModal closeModalHandler={closeModal}>
-                <ModalImageWrapper>
-                  <ModalImage src={modalImage} />
-                  <Space size={3} />
-                  <Button variant="custom" onClick={closeModal}>
-                    닫기
-                  </Button>
-                </ModalImageWrapper>
-              </ImageModal>
-            )}
+          {images.map((image, index) => (
+            <Tab label={`${index}`} key={image.id}>
+              <ImageWrapper key={`image-${index}`}>
+                <div onClick={() => onImageOpen(image.imageUrl)}>
+                  <Image
+                    key={image.id}
+                    height="100px"
+                    width="100px"
+                    src={image.imageUrl}
+                    $errorDefaultSrc={NOT_FOUND_IMAGE}
+                  />
+                </div>
+                <RemoveImageIconWrapper
+                  onClick={() => onRemovePinImage(image.id)}
+                >
+                  <RemoveImageButton />
+                </RemoveImageIconWrapper>
+              </ImageWrapper>
+            </Tab>
+          ))}
+          {isModalOpen && (
+            <ImageModal closeModalHandler={closeModal}>
+              <ModalImageWrapper>
+                <ModalImage src={modalImage} />
+                <Space size={3} />
+                <Button variant="custom" onClick={closeModal}>
+                  닫기
+                </Button>
+              </ModalImageWrapper>
+            </ImageModal>
+          )}
         </Swiper>
-      )}
+      }
     </Wrapper>
   );
 };
