@@ -141,11 +141,7 @@ const routes: routeElement[] = [
       },
       {
         path: '/search',
-        element: (
-          <SuspenseComp>
-            <Search />
-          </SuspenseComp>
-        ),
+        element: <Search />,
         withAuth: false,
       },
       {
