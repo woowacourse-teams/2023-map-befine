@@ -14,7 +14,7 @@ import Space from '../common/Space';
 import InputContainer from '../InputContainer';
 import Text from '../common/Text';
 import useCompressImage from '../../hooks/useCompressImage';
-import Image from '../common/Image';
+import ImageCommon from '../common/Image';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
 import { putApi } from '../../apis/putApi';
 
@@ -135,6 +135,7 @@ function UpdatedTopicInfo({
   ) => {
     const file = event.target.files && event.target.files[0];
     const formData = new FormData();
+    const currentImage = new Image();
 
     if (!file) {
       showToast(
@@ -145,12 +146,22 @@ function UpdatedTopicInfo({
     }
 
     const compressedFile = await compressImage(file);
-    formData.append('image', compressedFile);
+    currentImage.src = URL.createObjectURL(compressedFile);
 
-    await putApi(`/topics/images/${id}`, formData);
+    currentImage.onload = async () => {
+      if (currentImage.width < 300) {
+        showToast(
+          'warning',
+          '이미지의 크기가 너무 작습니다. 다른 이미지를 선택해 주세요.',
+        );
+        return;
+      }
+      formData.append('image', compressedFile);
+      await putApi(`/topics/images/${id}`, formData);
 
-    const updatedImageUrl = URL.createObjectURL(compressedFile);
-    setChangedImages(updatedImageUrl);
+      const updatedImageUrl = URL.createObjectURL(compressedFile);
+      setChangedImages(updatedImageUrl);
+    };
   };
 
   return (
@@ -288,7 +299,7 @@ const ImageInputButton = styled.input`
   display: none;
 `;
 
-const TopicImage = styled(Image)`
+const TopicImage = styled(ImageCommon)`
   border-radius: ${({ theme }) => theme.radius.medium};
 `;
 
