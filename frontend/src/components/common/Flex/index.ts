@@ -1,4 +1,5 @@
 import { styled } from 'styled-components';
+
 import Box, { BoxProps } from '../Box';
 
 interface FlexProps extends BoxProps {

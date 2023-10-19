@@ -1,13 +1,14 @@
 import { rest } from 'msw';
-import topics from './db/topics';
-import newestTopics from './db/newestTopics';
-import bestTopics from './db/bestTopics';
-import detailTopic from './db/detailTopic';
-import tempPins from './db/tempPins';
-import resLogin from './db/resLogin';
-import bookmarks from './db/bookmarks';
-import myTopics from './db/myTopics';
+
 import atlas from './db/atlas';
+import bestTopics from './db/bestTopics';
+import bookmarks from './db/bookmarks';
+import detailTopic from './db/detailTopic';
+import myTopics from './db/myTopics';
+import newestTopics from './db/newestTopics';
+import resLogin from './db/resLogin';
+import tempPins from './db/tempPins';
+import topics from './db/topics';
 
 export const handlers = [
   // 포스트 목록
@@ -180,7 +181,7 @@ export const handlers = [
       description,
       creator: '패트릭',
       isInAtlas: false,
-      pins: pins,
+      pins,
       isBookmarked: false,
       bookmarkCount: 5,
       pinCount: 0,
@@ -207,8 +208,8 @@ export const handlers = [
       name,
       description,
       address,
-      latitude: latitude,
-      longitude: longitude,
+      latitude,
+      longitude,
       legalDongCode: '',
       images: [],
     };

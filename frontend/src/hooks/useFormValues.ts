@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { validateCurse, validatePolitically } from '../validations';
 
 const initErrorMessages = <T extends Record<keyof T, string | string[]>>(

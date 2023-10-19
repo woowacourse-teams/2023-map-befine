@@ -1,8 +1,9 @@
 import { styled } from 'styled-components';
+
 import theme from '../../../themes';
 import { colorThemeKey } from '../../../themes/color';
-import { SpaceThemeKeys } from '../../../themes/spacing';
 import { radiusKey } from '../../../themes/radius';
+import { SpaceThemeKeys } from '../../../themes/spacing';
 
 export interface BoxProps {
   display?: string;
@@ -10,6 +11,8 @@ export interface BoxProps {
   height?: string;
   $minWidth?: string;
   $minHeight?: string;
+  $maxWidth?: string;
+  $maxHeight?: string;
   padding?: SpaceThemeKeys | string;
   $backgroundColor?: colorThemeKey;
   $backdropFilter?: string;
@@ -41,6 +44,8 @@ const Box = styled.div<BoxProps>`
   height: ${({ height }) => height};
   min-width: ${({ $minWidth }) => $minWidth};
   min-height: ${({ $minHeight }) => $minHeight};
+  max-width: ${({ $maxWidth }) => $maxWidth};
+  max-height: ${({ $maxHeight }) => $maxHeight};
   overflow: ${({ overflow }) => overflow};
   position: ${({ position }) => position};
   right: ${({ right }) => right};

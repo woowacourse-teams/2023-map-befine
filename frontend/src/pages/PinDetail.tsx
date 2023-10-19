@@ -1,23 +1,29 @@
+import { useContext, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { styled } from 'styled-components';
+
+import { getApi } from '../apis/getApi';
+import { postApi } from '../apis/postApi';
+import UpdateBtnSVG from '../assets/updateBtn.svg';
+import Box from '../components/common/Box';
+import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
+import SingleComment, {
+  ProfileImage,
+} from '../components/common/Input/SingleComment';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import { Fragment, useContext, useEffect, useState } from 'react';
-import { PinProps } from '../types/Pin';
-import { getApi } from '../apis/getApi';
-import { useSearchParams } from 'react-router-dom';
-import Box from '../components/common/Box';
-import UpdatedPinDetail from './UpdatedPinDetail';
-import useFormValues from '../hooks/useFormValues';
-import { ModifyPinFormProps } from '../types/FormValues';
-import useToast from '../hooks/useToast';
-import Button from '../components/common/Button';
 import Modal from '../components/Modal';
-import { styled } from 'styled-components';
-import { ModalContext } from '../context/ModalContext';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
-import { postApi } from '../apis/postApi';
 import PinImageContainer from '../components/PinImageContainer';
+import { ModalContext } from '../context/ModalContext';
 import useCompressImage from '../hooks/useCompressImage';
+import useFormValues from '../hooks/useFormValues';
+import useToast from '../hooks/useToast';
+import theme from '../themes';
+import { ModifyPinFormProps } from '../types/FormValues';
+import { PinProps } from '../types/Pin';
+import UpdatedPinDetail from './UpdatedPinDetail';
 
 interface PinDetailProps {
   width: '372px' | '100vw';
@@ -26,16 +32,20 @@ interface PinDetailProps {
   setIsEditPinDetail: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const userToken = localStorage.getItem('userToken');
+const userToken = localStorage?.getItem('userToken');
+const localStorageUser = localStorage?.getItem('user');
+const user = JSON.parse(localStorageUser || '{}');
 
-const PinDetail = ({
+function PinDetail({
   width,
   pinId,
   isEditPinDetail,
   setIsEditPinDetail,
-}: PinDetailProps) => {
+}: PinDetailProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinProps | null>(null);
+  const [commentList, setCommentList] = useState<Comment[]>([]); // 댓글 리스트
+  const [newComment, setNewComment] = useState<string>('');
   const { showToast } = useToast();
   const {
     formValues,
@@ -70,6 +80,7 @@ const PinDetail = ({
 
   useEffect(() => {
     getPinData();
+    setCurrentPageCommentList(pinId);
   }, [pinId, searchParams]);
 
   const onClickEditPin = () => {
@@ -117,6 +128,40 @@ const PinDetail = ({
     getPinData();
   };
 
+  // 댓글 구현 부분
+  const setCurrentPageCommentList = async (pinId: number) => {
+    const data = await getApi<Comment[]>(`/pins/${pinId}/comments`);
+    setCommentList(data);
+    return data;
+  };
+
+  useEffect(() => {
+    setCurrentPageCommentList(pinId);
+  }, []);
+
+  const onClickCommentBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    try {
+      // 댓글 추가
+      // comment 값이랑 추가 정보 body에 담아서 보내기
+      await postApi(
+        `/pins/comments`,
+        {
+          pinId,
+          content: newComment,
+          parentPinCommentId: null,
+        },
+        'application/json',
+      );
+
+      setCurrentPageCommentList(pinId);
+      setNewComment('');
+      showToast('info', '댓글이 추가되었습니다.');
+    } catch {
+      showToast('error', '댓글을 다시 작성해주세요');
+    }
+  };
   if (!pin) return <></>;
 
   if (isEditPinDetail)
@@ -142,9 +187,7 @@ const PinDetail = ({
           {pin.name}
         </Text>
       </Flex>
-
       <Space size={1} />
-
       <Flex $justifyContent="space-between" $alignItems="flex-end" width="100%">
         <Text color="black" $fontSize="small" $fontWeight="normal">
           {pin.creator}
@@ -152,14 +195,7 @@ const PinDetail = ({
         <Flex $flexDirection="column" $alignItems="flex-end">
           {pin.canUpdate ? (
             <Box cursor="pointer">
-              <Text
-                color="primary"
-                $fontSize="default"
-                $fontWeight="normal"
-                onClick={onClickEditPin}
-              >
-                수정하기
-              </Text>
+              <UpdateBtnSVG onClick={onClickEditPin} />
             </Box>
           ) : (
             <Space size={5} />
@@ -169,25 +205,18 @@ const PinDetail = ({
           </Text>
         </Flex>
       </Flex>
-
       <Space size={2} />
-
       {userToken && (
-        <Fragment>
-          <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
-          <ImageInputButton
-            id="file"
-            type="file"
-            name="image"
-            onChange={onPinImageFileChange}
-          />
-
-          <PinImageContainer images={pin.images} />
-        </Fragment>
+        <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
       )}
-
+      <ImageInputButton
+        id="file"
+        type="file"
+        name="image"
+        onChange={onPinImageFileChange}
+      />
+      <PinImageContainer images={pin.images} getPinData={getPinData} />
       <Space size={6} />
-
       <Flex $flexDirection="column">
         <Text color="black" $fontSize="large" $fontWeight="bold">
           어디에 있나요?
@@ -207,8 +236,7 @@ const PinDetail = ({
           {pin.description}
         </Text>
       </Flex>
-
-      <Space size={7} />
+      <Space size={6} />
 
       <ButtonsWrapper>
         <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
@@ -222,6 +250,49 @@ const PinDetail = ({
 
       <Space size={8} />
 
+      {/*  Comment Section */}
+
+      <Text color="black" $fontSize="large" $fontWeight="bold">
+        어떻게 생각하나요?{' '}
+      </Text>
+      <Space size={1} />
+      {userToken && (
+        <div style={{ display: 'flex', marginBottom: '20px', gap: '12px' }}>
+          <ProfileImage src={user?.imageUrl || ''} width="40px" height="40px" />
+          <div style={{ width: '100%', marginTop: '12px' }}>
+            <CustomInput
+              value={newComment}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setNewComment(e.target.value)
+              }
+              placeholder="댓글 추가"
+            />
+            <ConfirmCommentButton
+              variant="secondary"
+              onClick={onClickCommentBtn}
+            >
+              등록
+            </ConfirmCommentButton>
+          </div>
+        </div>
+      )}
+      {commentList?.length > 0 &&
+        commentList.map(
+          (comment) =>
+            !comment.parentPinCommentId ? (
+              <SingleComment
+                key={comment.id}
+                comment={comment}
+                commentList={commentList}
+                totalList={commentList}
+                pinId={pinId}
+                refetch={setCurrentPageCommentList}
+              />
+            ) : null, // <-- comment.parentPinCommentId가 존재하는 경우 null 반환
+        )}
+      {/* comment section END */}
+
+      <Space size={8} />
       <Modal
         modalKey="addToMyTopicList"
         position="center"
@@ -243,7 +314,7 @@ const PinDetail = ({
       </Modal>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.section<{
   $layoutWidth: '372px' | '100vw';
@@ -311,7 +382,7 @@ const ButtonsWrapper = styled.div`
   align-items: center;
   width: 332px;
   height: 48px;
-  margin: 0 auto;
+  margin: 24px auto 0;
 `;
 
 const ImageInputLabel = styled.label`
@@ -333,4 +404,28 @@ const ImageInputButton = styled.input`
   display: none;
 `;
 
+export const CustomInput = styled.input`
+  width: 100%;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid ${theme.color.lightGray};
+  font-size: 16px;
+
+  &:focus {
+    outline: none;
+    border-bottom: 2px solid ${theme.color.black};
+  }
+`;
+
+export const ConfirmCommentButton = styled(Button)`
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+
+  box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
+
+  margin-top: 12px;
+  float: right;
+  font-size: 12px;
+`;
 export default PinDetail;

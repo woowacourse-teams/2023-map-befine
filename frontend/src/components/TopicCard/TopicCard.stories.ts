@@ -1,4 +1,5 @@
-import { StoryObj, Meta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
+
 import TopicCard from '.';
 
 const meta = {

@@ -35,6 +35,8 @@ const usePost = () => {
 
       if (isThrow) throw e;
     }
+
+    return null;
   };
 
   return { fetchPost };

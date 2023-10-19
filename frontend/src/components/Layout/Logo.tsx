@@ -1,9 +1,9 @@
 import LogoImage from '../../assets/logo.svg';
+import useKeyDown from '../../hooks/useKeyDown';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
-import useKeyDown from '../../hooks/useKeyDown';
 
-const Logo = () => {
+function Logo() {
   const { routePage } = useNavigator();
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLDivElement>();
 
@@ -23,6 +23,6 @@ const Logo = () => {
       <LogoImage />
     </Box>
   );
-};
+}
 
 export default Logo;

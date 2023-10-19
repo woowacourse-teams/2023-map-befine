@@ -1,14 +1,17 @@
 import { styled } from 'styled-components';
+
 import LoginErrorIcon from '../assets/LoginErrorIcon.svg';
 import Button from '../components/common/Button';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import { DEFAULT_PROD_URL, FULLSCREEN } from '../constants';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-const AskLogin = () => {
+function AskLogin() {
   const { width } = useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('none');
 
   const loginButtonClick = async () => {
     window.location.href = `${DEFAULT_PROD_URL}/oauth/kakao`;
@@ -40,7 +43,7 @@ const AskLogin = () => {
       </Flex>
     </Flex>
   );
-};
+}
 
 const NotFoundButton = styled(Button)`
   width: 270px;
@@ -49,7 +52,7 @@ const NotFoundButton = styled(Button)`
   background-color: rgb(255, 220, 0);
 
   color: ${({ theme }) => theme.color.black};
-  font-weight: ${({ theme }) => theme.fontWeight['bold']};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
   border: 1px solid ${({ theme }) => theme.color.white};
 `;
 

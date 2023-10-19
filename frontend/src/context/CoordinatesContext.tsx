@@ -31,7 +31,7 @@ interface Props {
   children: JSX.Element | JSX.Element[];
 }
 
-const CoordinatesProvider = ({ children }: Props): JSX.Element => {
+function CoordinatesProvider({ children }: Props): JSX.Element {
   const [coordinates, setCoordinates] = useState<Coordinate[]>([
     { latitude: 37.5055, longitude: 127.0509 },
   ]);
@@ -60,6 +60,6 @@ const CoordinatesProvider = ({ children }: Props): JSX.Element => {
       {children}
     </CoordinatesContext.Provider>
   );
-};
+}
 
 export default CoordinatesProvider;

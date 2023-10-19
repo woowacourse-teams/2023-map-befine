@@ -1,7 +1,8 @@
 import { styled } from 'styled-components';
+
+import { deleteApi } from '../../apis/deleteApi';
 import { postApi } from '../../apis/postApi';
 import useToast from '../../hooks/useToast';
-import { deleteApi } from '../../apis/deleteApi';
 
 interface AddFavoriteProps {
   id: number;
@@ -10,12 +11,12 @@ interface AddFavoriteProps {
   children: React.ReactNode;
 }
 
-const AddFavorite = ({
+function AddFavorite({
   id,
   isBookmarked,
   getTopicsFromServer,
   children,
-}: AddFavoriteProps) => {
+}: AddFavoriteProps) {
   const { showToast } = useToast();
 
   const addFavoriteList = async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -51,7 +52,7 @@ const AddFavorite = ({
       {children}
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   cursor: pointer;

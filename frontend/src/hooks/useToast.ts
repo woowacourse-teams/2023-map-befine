@@ -1,7 +1,8 @@
 import { useContext } from 'react';
-import ToastProps from '../types/Toast';
-import { ToastContext } from '../context/ToastContext';
+
 import { TOAST_SHOWTIME } from '../constants';
+import { ToastContext } from '../context/ToastContext';
+import ToastProps from '../types/Toast';
 
 let timeoutID: null | number = null;
 

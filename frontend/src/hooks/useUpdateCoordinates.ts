@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react';
+
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 

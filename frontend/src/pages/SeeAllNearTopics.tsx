@@ -1,18 +1,19 @@
+import { lazy, Suspense } from 'react';
 import { styled } from 'styled-components';
-import { FULLSCREEN } from '../constants';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+
 import Box from '../components/common/Box';
 import Space from '../components/common/Space';
-import Text from '../components/common/Text';
+import MediaSpace from '../components/common/Space/MediaSpace';
+import MediaText from '../components/common/Text/MediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { Suspense, lazy } from 'react';
+import { FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
-import { setFullScreenResponsive } from '../constants/responsive';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
-const SeeAllNearTopics = () => {
+function SeeAllNearTopics() {
   const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
@@ -24,11 +25,11 @@ const SeeAllNearTopics = () => {
   return (
     <Wrapper>
       <Space size={5} />
-      <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+      <MediaText color="black" $fontSize="extraLarge" $fontWeight="bold">
         내 주변일 지도?
-      </Text>
+      </MediaText>
 
-      <Space size={5} />
+      <MediaSpace size={6} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicCardList
@@ -39,15 +40,20 @@ const SeeAllNearTopics = () => {
           routePage={goToHome}
         />
       </Suspense>
+
+      <Space size={8} />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled(Box)`
-  width: 1036px;
+  width: 1140px;
   margin: 0 auto;
+  position: relative;
 
-  ${setFullScreenResponsive()}
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
 `;
 
 export default SeeAllNearTopics;

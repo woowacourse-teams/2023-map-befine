@@ -1,7 +1,8 @@
 import { styled } from 'styled-components';
+
 import TopicCardSkeleton from './TopicCardSkeleton';
 
-const TopicCardContainerSkeleton = () => {
+function TopicCardContainerSkeleton() {
   return (
     <Wrapper>
       <TopicCardSkeleton />
@@ -12,7 +13,7 @@ const TopicCardContainerSkeleton = () => {
       <TopicCardSkeleton />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.section`
   display: flex;

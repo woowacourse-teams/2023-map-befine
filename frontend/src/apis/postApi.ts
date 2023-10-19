@@ -7,7 +7,7 @@ export const postApi = async (
   payload?: {} | FormData,
   contentType?: ContentTypeType,
 ) => {
-  return await withTokenRefresh(async () => {
+  const data = await withTokenRefresh(async () => {
     const apiUrl = `${DEFAULT_PROD_URL + url}`;
     const userToken = localStorage.getItem('userToken');
 
@@ -15,7 +15,7 @@ export const postApi = async (
       const headers: any = {};
 
       if (userToken) {
-        headers['Authorization'] = `Bearer ${userToken}`;
+        headers.Authorization = `Bearer ${userToken}`;
       }
 
       const response = await fetch(apiUrl, {
@@ -36,7 +36,7 @@ export const postApi = async (
     };
 
     if (userToken) {
-      headers['Authorization'] = `Bearer ${userToken}`;
+      headers.Authorization = `Bearer ${userToken}`;
     }
 
     if (contentType) {
@@ -55,4 +55,6 @@ export const postApi = async (
 
     return response;
   });
+
+  return data;
 };

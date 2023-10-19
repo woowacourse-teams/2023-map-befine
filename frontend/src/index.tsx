@@ -1,11 +1,12 @@
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import { ThemeProvider } from 'styled-components';
-import theme from './themes';
-import GlobalStyle from './GlobalStyle';
-import ErrorBoundary from './components/ErrorBoundary';
-import NotFound from './pages/NotFound';
 import ReactGA from 'react-ga4';
+import { ThemeProvider } from 'styled-components';
+
+import App from './App';
+import ErrorBoundary from './components/ErrorBoundary';
+import GlobalStyle from './GlobalStyle';
+import NotFound from './pages/NotFound';
+import theme from './themes';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');

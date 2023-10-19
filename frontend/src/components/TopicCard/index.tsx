@@ -1,23 +1,22 @@
+import { SyntheticEvent, useContext, useState } from 'react';
 import { styled } from 'styled-components';
-import Text from '../common/Text';
-import useNavigator from '../../hooks/useNavigator';
-import Box from '../common/Box';
-import Image from '../common/Image';
-import { SyntheticEvent, useContext } from 'react';
-import Space from '../common/Space';
-import Flex from '../common/Flex';
-import FavoriteSVG from '../../assets/favoriteBtn_filled.svg';
-import FavoriteNotFilledSVG from '../../assets/favoriteBtn_notFilled.svg';
+
 import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
 import SeeTogetherNotFilledSVG from '../../assets/seeTogetherBtn_notFilled.svg';
 import SmallTopicPin from '../../assets/smallTopicPin.svg';
 import SmallTopicStar from '../../assets/smallTopicStar.svg';
 import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import AddSeeTogether from '../AddSeeTogether';
-import AddFavorite from '../AddFavorite';
-import { TopicCardProps } from '../../types/Topic';
-import useKeyDown from '../../hooks/useKeyDown';
 import { ModalContext } from '../../context/ModalContext';
+import useKeyDown from '../../hooks/useKeyDown';
+import useNavigator from '../../hooks/useNavigator';
+import useToast from '../../hooks/useToast';
+import { TopicCardProps } from '../../types/Topic';
+import AddSeeTogether from '../AddSeeTogether';
+import Box from '../common/Box';
+import Flex from '../common/Flex';
+import Image from '../common/Image';
+import Space from '../common/Space';
+import MediaText from '../common/Text/MediaText';
 
 interface OnClickDesignatedProps {
   topicId: number;
@@ -30,7 +29,7 @@ interface TopicCardExtendedProps extends TopicCardProps {
   getTopicsFromServer?: () => void;
 }
 
-const TopicCard = ({
+function TopicCard({
   cardType,
   id,
   image,
@@ -43,10 +42,13 @@ const TopicCard = ({
   isBookmarked,
   onClickDesignated,
   getTopicsFromServer,
-}: TopicCardExtendedProps) => {
+}: TopicCardExtendedProps) {
   const { routePage } = useNavigator();
   const { closeModal } = useContext(ModalContext);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLLIElement>();
+  const [isInNonMemberAtlas, setIsInNonMemberAtlas] =
+    useState<boolean>(isInAtlas);
+  const { showToast } = useToast();
 
   const goToSelectedTopic = () => {
     routePage(`/topics/${id}`, [id]);
@@ -60,6 +62,15 @@ const TopicCard = ({
     closeModal('newPin');
   };
 
+  const onClickIsInAtlas = () => {
+    setIsInNonMemberAtlas(!isInNonMemberAtlas);
+    if (!isInNonMemberAtlas) {
+      showToast('info', '모아보기에 추가했습니다.');
+      return true;
+    }
+    showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
+    return true;
+  };
   return (
     <Wrapper
       data-cy="topic-card"
@@ -67,44 +78,49 @@ const TopicCard = ({
       ref={elementRef}
       onKeyDown={onElementKeyDown}
     >
-      <Flex position="relative" tabIndex={0} role="button">
-        <TopicImage
-          height="138px"
-          width="138px"
+      <Flex
+        $flexDirection="column"
+        position="relative"
+        tabIndex={0}
+        role="button"
+      >
+        <Image
+          width="100%"
+          height="100%"
           src={image}
           alt="사진 이미지"
           $objectFit="cover"
-          onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-            e.currentTarget.src = DEFAULT_TOPIC_IMAGE;
-          }}
+          $errorDefaultSrc={DEFAULT_TOPIC_IMAGE}
+          radius="small"
+          ratio="1.6 / 1"
         />
 
-        <Box width="192px" padding={1}>
+        <Box width="100%" $maxWidth="212px" padding={1}>
           <Box height="52px">
-            <Text
+            <MediaText
               color="black"
               $fontSize="default"
               $fontWeight="bold"
               aria-label={`토픽 이름 ${name}`}
             >
               {name}
-            </Text>
+            </MediaText>
           </Box>
 
-          <Text
+          <MediaText
             color="black"
             $fontSize="small"
             $fontWeight="normal"
             aria-label={`작성자 ${creator}`}
           >
             {creator}
-          </Text>
+          </MediaText>
 
           <Space size={0} />
 
-          <Text color="gray" $fontSize="small" $fontWeight="normal">
+          <MediaText color="gray" $fontSize="small" $fontWeight="normal">
             {updatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
-          </Text>
+          </MediaText>
 
           <Space size={0} />
 
@@ -112,58 +128,54 @@ const TopicCard = ({
             <Flex $alignItems="center" width="64px">
               <SmallTopicPin />
               <Space size={0} />
-              <Text
+              <MediaText
                 color="black"
                 $fontSize="extraSmall"
                 $fontWeight="normal"
                 aria-label={`핀 갯수 ${pinCount}개`}
               >
                 {pinCount > 999 ? '+999' : pinCount}개
-              </Text>
+              </MediaText>
             </Flex>
             <Flex $alignItems="center" width="64px">
               <SmallTopicStar />
               <Space size={0} />
-              <Text
+              <MediaText
                 color="black"
                 $fontSize="extraSmall"
                 $fontWeight="normal"
                 aria-label={`즐겨찾기 ${bookmarkCount}명`}
               >
                 {bookmarkCount > 999 ? '+999' : bookmarkCount}명
-              </Text>
+              </MediaText>
             </Flex>
           </Flex>
 
           {cardType === 'default' && getTopicsFromServer && (
             <ButtonWrapper>
               <AddSeeTogether
+                parentType="topicCard"
                 isInAtlas={isInAtlas}
+                onClickAtlas={onClickIsInAtlas}
                 id={id}
                 getTopicsFromServer={getTopicsFromServer}
               >
-                {isInAtlas ? <SeeTogetherSVG /> : <SeeTogetherNotFilledSVG />}
+                {isInNonMemberAtlas ? (
+                  <SeeTogetherSVG />
+                ) : (
+                  <SeeTogetherNotFilledSVG />
+                )}
               </AddSeeTogether>
-              <AddFavorite
-                isBookmarked={isBookmarked}
-                id={id}
-                getTopicsFromServer={getTopicsFromServer}
-              >
-                {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
-              </AddFavorite>
             </ButtonWrapper>
           )}
         </Box>
       </Flex>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.li`
-  width: 332px;
-  height: 140px;
   cursor: pointer;
-  border: 1px solid ${({ theme }) => theme.color.gray};
   border-radius: ${({ theme }) => theme.radius.small};
 `;
 
@@ -171,14 +183,10 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   position: absolute;
-  width: 72px;
+  width: 32px;
 
-  top: 100px;
-  left: 60px;
-`;
-
-const TopicImage = styled(Image)`
-  border-radius: ${({ theme }) => theme.radius.small};
+  top: 4%;
+  right: 4%;
 `;
 
 export default TopicCard;

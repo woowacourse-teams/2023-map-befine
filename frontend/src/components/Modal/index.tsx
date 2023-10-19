@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { css, keyframes, styled } from 'styled-components';
+
 import { ModalContext } from '../../context/ModalContext';
 import Box from '../common/Box';
 
@@ -129,14 +130,13 @@ const addMapOrPinPosition = (modalKey: string) => {
 
       transform: translate(-50%, -30%);
     `;
-  } else {
-    return css`
-      width: 100%;
-      height: inherit;
-
-      transform: translate(-50%, 0);
-    `;
   }
+  return css`
+    width: 100%;
+    height: inherit;
+
+    transform: translate(-50%, 0);
+  `;
 };
 
 const Wrapper = styled.div<ModalWrapperType>`

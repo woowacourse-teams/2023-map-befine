@@ -35,6 +35,8 @@ const usePut = () => {
 
       if (isThrow) throw e;
     }
+
+    return null;
   };
 
   return { fetchPut };

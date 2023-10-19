@@ -1,9 +1,10 @@
 import { useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { keyframes, styled } from 'styled-components';
+
+import { TOAST_SHOWTIME } from '../../constants';
 import { ToastContext } from '../../context/ToastContext';
 import Flex from '../common/Flex';
-import { TOAST_SHOWTIME } from '../../constants';
 
 const asynchronousDelayTime = 50;
 

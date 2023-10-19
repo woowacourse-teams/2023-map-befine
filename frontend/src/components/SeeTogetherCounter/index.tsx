@@ -1,11 +1,12 @@
 import { useContext, useEffect } from 'react';
-import { SeeTogetherContext } from '../../context/SeeTogetherContext';
 import { keyframes, styled } from 'styled-components';
-import { getApi } from '../../apis/getApi';
-import { TopicCardProps } from '../../types/Topic';
-import useToast from '../../hooks/useToast';
 
-const SeeTogetherCounter = () => {
+import { getApi } from '../../apis/getApi';
+import { SeeTogetherContext } from '../../context/SeeTogetherContext';
+import useToast from '../../hooks/useToast';
+import { TopicCardProps } from '../../types/Topic';
+
+function SeeTogetherCounter() {
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
   const { showToast } = useToast();
@@ -16,7 +17,7 @@ const SeeTogetherCounter = () => {
       if (!userToken) return;
 
       const topics = await getApi<TopicCardProps[]>('/members/my/atlas');
-      setSeeTogetherTopics(topics);
+      setSeeTogetherTopics(topics.map((topic) => topic.id));
     } catch {
       showToast(
         'error',
@@ -29,11 +30,11 @@ const SeeTogetherCounter = () => {
     getSeeTogetherTopics();
   }, []);
 
-  if (!seeTogetherTopics) return <></>;
-  if (seeTogetherTopics.length === 0) return <></>;
+  if (!seeTogetherTopics) return null;
+  if (seeTogetherTopics.length === 0) return null;
 
   return <Wrapper>{seeTogetherTopics.length}</Wrapper>;
-};
+}
 
 const initAnimation = keyframes`
   0% {

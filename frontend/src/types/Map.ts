@@ -1,7 +1,3 @@
-export interface MapAddressProps {
-  addressInfo: AddressInfoProps;
-}
-
 export interface AddressInfoProps {
   addressType: string;
   adminDong: string;
@@ -21,45 +17,6 @@ export interface AddressInfoProps {
   roadName: string;
 }
 
-export interface MapProps {
-  isMobile: boolean;
-  mouseClickFlag: boolean;
-  name: string;
-  _data: MapDataProps;
-  _object_: MapObjectProps;
-  _status: MapStatusProps;
-}
-
-export interface MapDataProps {
-  mapType: number;
-  maxBounds: {};
-  target: string;
-  container: {};
-  vsmMap: {};
-  vsmOptions: {};
-  minZoomLimit: number;
-  maxZoomLimit: number;
-  options: MapOptionsProps;
-}
-
-export interface MapObjectProps {
-  eventListeners: {};
-  getHandlers: string;
-  fireEvent: string;
-}
-
-export interface MapStatusProps {
-  zoom: number;
-  center: {};
-  width: number;
-  height: number;
-}
-
-export interface MapOptionsProps {
-  draggable: boolean;
-  measureControl: boolean;
-  naviControl: boolean;
-  pinchZoom: boolean;
-  scaleBar: boolean;
-  scrollwheel: boolean;
+export interface MapAddressProps {
+  addressInfo: AddressInfoProps;
 }

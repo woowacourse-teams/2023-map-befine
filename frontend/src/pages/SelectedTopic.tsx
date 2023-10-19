@@ -1,98 +1,77 @@
-import {
-  Fragment,
-  lazy,
-  Suspense,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { styled } from 'styled-components';
-import Space from '../components/common/Space';
-import { TopicDetailProps } from '../types/Topic';
+import { lazy, Suspense, useContext, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import PinDetail from './PinDetail';
+import { styled } from 'styled-components';
+
 import { getApi } from '../apis/getApi';
+import Space from '../components/common/Space';
 import PullPin from '../components/PullPin';
-import { CoordinatesContext } from '../context/CoordinatesContext';
-import useNavigator from '../hooks/useNavigator';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { LAYOUT_PADDING, SIDEBAR } from '../constants';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
-import { TagContext } from '../context/TagContext';
+import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { CoordinatesContext } from '../context/CoordinatesContext';
+import useResizeMap from '../hooks/useResizeMap';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import useTags from '../hooks/useTags';
 import { PinProps } from '../types/Pin';
+import { TopicDetailProps } from '../types/Topic';
+import PinDetail from './PinDetail';
 
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
-const SelectedTopic = () => {
+function SelectedTopic() {
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
-  const [topicDetails, setTopicDetails] = useState<TopicDetailProps[] | null>(
-    null,
-  );
+  const [topicDetail, setTopicDetail] = useState<TopicDetailProps | null>(null);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
-  const { routePage } = useNavigator();
   const { setCoordinates } = useContext(CoordinatesContext);
-  const { tags, setTags } = useContext(TagContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const { navbarHighlights: __ } = useSetNavbarHighlight('home');
+  const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
+    useTags();
+  useSetNavbarHighlight('none');
+  useResizeMap();
 
   const getAndSetDataFromServer = async () => {
-    const data = await getApi<TopicDetailProps[]>(`/topics/ids?ids=${topicId}`);
+    const topicInArray = await getApi<TopicDetailProps[]>(
+      `/topics/ids?ids=${topicId}`,
+    );
+    const topic = topicInArray[0];
 
-    const topicHashmap = new Map([]);
+    setTopicDetail(topic);
+    setCoordinatesTopicDetail(topic);
+  };
 
-    setTopicDetails(data);
-
-    // 각 topic의 pin들의 좌표를 가져옴
+  const setCoordinatesTopicDetail = (topic: TopicDetailProps) => {
     const newCoordinates: any = [];
 
-    data.forEach((topic: TopicDetailProps) => {
-      topic.pins.forEach((pin: PinProps) => {
-        newCoordinates.push({
-          id: pin.id,
-          topicId: topic.id,
-          pinName: pin.name,
-          latitude: pin.latitude,
-          longitude: pin.longitude,
-        });
+    topic.pins.forEach((pin: PinProps) => {
+      newCoordinates.push({
+        id: pin.id,
+        topicId,
+        pinName: pin.name,
+        latitude: pin.latitude,
+        longitude: pin.longitude,
       });
     });
 
     setCoordinates(newCoordinates);
-
-    data.forEach((topicDetailFromData: TopicDetailProps) =>
-      topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
-    );
-
-    const topicDetailFromData = topicId
-      ?.split(',')
-      .map((number) => topicHashmap.get(number)) as TopicDetailProps[];
-
-    if (!topicDetailFromData) return;
-
-    setTopicDetails([...topicDetailFromData]);
   };
 
-  const onClickConfirm = () => {
-    routePage('/new-topic', tags.map((tag) => tag.id).join(','));
-  };
-
-  const onTagCancel = () => {
-    setTags([]);
+  const togglePinDetail = () => {
+    setIsOpen(!isOpen);
   };
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
+
     if (queryParams.has('pinDetail')) {
       setSelectedPinId(Number(queryParams.get('pinDetail')));
-    } else {
-      setSelectedPinId(null);
+      setIsOpen(true);
+      return;
     }
 
-    setIsOpen(true);
+    setSelectedPinId(null);
   }, [searchParams]);
 
   useEffect(() => {
@@ -100,12 +79,7 @@ const SelectedTopic = () => {
     setTags([]);
   }, []);
 
-  const togglePinDetail = () => {
-    setIsOpen(!isOpen);
-  };
-
-  if (!topicDetails) return <></>;
-  if (!topicId) return <></>;
+  if (!topicId || !topicDetail) return <></>;
 
   return (
     <Wrapper
@@ -117,24 +91,21 @@ const SelectedTopic = () => {
         <PullPin
           tags={tags}
           confirmButton="뽑아오기"
-          onClickConfirm={onClickConfirm}
-          onClickClose={onTagCancel}
+          onClickConfirm={onClickCreateTopicWithTags}
+          onClickClose={onClickInitTags}
         />
       )}
       <Suspense fallback={<PinsOfTopicSkeleton />}>
-        {topicDetails.map((topicDetail, idx) => (
-          <Fragment key={topicDetail.id}>
-            <PinsOfTopic
-              topicId={topicId.split(',')[idx]}
-              topicDetail={topicDetail}
-              setSelectedPinId={setSelectedPinId}
-              setIsEditPinDetail={setIsEditPinDetail}
-              setTopicsFromServer={getAndSetDataFromServer}
-            />
-            {idx !== topicDetails.length - 1 ? <Space size={9} /> : <></>}
-          </Fragment>
-        ))}
+        <PinsOfTopic
+          topicId={topicId}
+          topicDetail={topicDetail}
+          setSelectedPinId={setSelectedPinId}
+          setIsEditPinDetail={setIsEditPinDetail}
+          setTopicsFromServer={getAndSetDataFromServer}
+        />
       </Suspense>
+
+      <Space size={8} />
 
       {selectedPinId && (
         <>
@@ -153,7 +124,7 @@ const SelectedTopic = () => {
       )}
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.section<{
   width: 'calc(100vw - 40px)' | 'calc(372px - 40px)';
@@ -162,18 +133,15 @@ const Wrapper = styled.section<{
   display: flex;
   flex-direction: column;
   width: ${({ width }) => width};
-  margin: ${({ $selectedPinId }) => $selectedPinId === null && '0 auto'};
+  margin: 0 auto;
 
   @media (max-width: 1076px) {
-    width: calc(50vw - 40px);
+    width: ${({ $selectedPinId }) => ($selectedPinId ? '49vw' : '50vw')};
+    margin: ${({ $selectedPinId }) => $selectedPinId && '0'};
   }
 
   @media (max-width: 744px) {
     width: 100%;
-  }
-
-  @media (max-width: 372px) {
-    width: ${({ width }) => width};
   }
 `;
 
@@ -202,7 +170,7 @@ const ToggleButton = styled.button<{
     props.$isCollapsed &&
     `
     transform: rotate(180deg);
-    top:45%;
+    top: 45%;
     left: 372px;
     z-index: 1;
     `}

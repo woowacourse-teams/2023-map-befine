@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+
 import useKeyDown from '../../../hooks/useKeyDown';
 import Flex from '../Flex';
 
@@ -10,12 +11,7 @@ interface CheckboxProps {
   onChecked: (checked: boolean, id: number) => void;
 }
 
-const Checkbox = ({
-  id,
-  isAlreadyChecked,
-  label,
-  onChecked,
-}: CheckboxProps) => {
+function Checkbox({ id, isAlreadyChecked, label, onChecked }: CheckboxProps) {
   const [isChecked, setIsChecked] = useState(isAlreadyChecked);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLInputElement>();
 
@@ -43,7 +39,7 @@ const Checkbox = ({
       </Label>
     </CheckboxWrapper>
   );
-};
+}
 
 const CheckboxWrapper = styled(Flex)`
   border-bottom: 1px solid #c6c6c6;
