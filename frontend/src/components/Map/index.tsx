@@ -27,7 +27,7 @@ function Map() {
   const { markers } = useContext(MarkerContext);
   const { width } = useContext(LayoutWidthContext);
   const { mapInstance, setMapInstance } = useMapStore((state) => state);
-
+  const { onFocusClickedPin } = useAnimateClickedPin();
   const mapContainer = useRef(null);
   const { location, requestUserLocation } = useGeoLocation(mapInstance);
   const { showToast } = useToast();
@@ -66,7 +66,7 @@ function Map() {
   useUpdateCoordinates(mapInstance);
 
   useFocusToMarker(mapInstance, markers);
-  useAnimateClickedPin(mapInstance, markers);
+  onFocusClickedPin(mapInstance, markers);
 
   return (
     <MapContainer>
