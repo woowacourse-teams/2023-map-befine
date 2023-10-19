@@ -8,16 +8,12 @@
     <property name="LOG_PATTERN_COLORED"
               value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] ${PID} %highlight(%-5level) %cyan(%logger) - %msg%n"/>
 
-    <include resource="logback/console-appender.xml"/>
+    <springProfile name="default">
+        <include resource="logback/console-appender.xml"/>
 
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-    </root>
-
-    <springProfile name="test">
-        <logger name="com.mapbefine.mapbefine" level="DEBUG" additivity="false">
+        <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-        </logger>
+        </root>
     </springProfile>
 
     <springProfile name="dev">

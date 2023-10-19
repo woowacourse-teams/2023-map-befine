@@ -2,8 +2,6 @@ package com.mapbefine.mapbefine.pin.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.TestDatabaseContainer;
-import com.mapbefine.mapbefine.common.annotation.RepositoryTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -23,8 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@RepositoryTest
-class PinImageRepositoryTest extends TestDatabaseContainer {
+@DataJpaTest
+class PinImageRepositoryTest {
 
     @Autowired
     private PinImageRepository pinImageRepository;

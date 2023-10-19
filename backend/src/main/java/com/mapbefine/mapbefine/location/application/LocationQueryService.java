@@ -44,7 +44,7 @@ public class LocationQueryService {
     ) {
         Coordinate coordinate = Coordinate.of(latitude, longitude);
         List<Location> nearLocation = locationRepository.findAllByCoordinateAndDistanceInMeters(
-                coordinate.getCoordinate(),
+                coordinate,
                 NEAR_DISTANCE_METERS
         );
 

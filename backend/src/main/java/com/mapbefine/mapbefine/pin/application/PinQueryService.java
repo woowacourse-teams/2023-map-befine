@@ -5,17 +5,13 @@ import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.PIN_NOT_FOUND;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.pin.domain.Pin;
-import com.mapbefine.mapbefine.pin.domain.PinComment;
-import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
-import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class PinQueryService {
 
     private final PinRepository pinRepository;
-    private final PinCommentRepository pinCommentRepository;
 
-    public PinQueryService(PinRepository pinRepository, PinCommentRepository pinCommentRepository) {
-        this.pinCommentRepository = pinCommentRepository;
+    public PinQueryService(PinRepository pinRepository) {
         this.pinRepository = pinRepository;
     }
 
@@ -62,29 +56,4 @@ public class PinQueryService {
                 .map(PinResponse::from)
                 .toList();
     }
-
-    public List<PinCommentResponse> findAllPinCommentsByPinId(AuthMember member, Long pinId) {
-        Pin pin = findPin(pinId);
-        validateReadAuth(member, pin.getTopic());
-
-        List<PinComment> pinComments = pinCommentRepository.findAllByPinId(pinId);
-
-        return pinComments.stream()
-                .map(pinComment -> PinCommentResponse.of(pinComment, isCanChangePinComment(member, pinComment)))
-                .toList();
-    }
-
-    private Pin findPin(Long pinId) {
-        return pinRepository.findById(pinId)
-                .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
-    }
-
-    private boolean isCanChangePinComment(AuthMember member, PinComment pinComment) {
-        Long creatorId = pinComment.getCreator().getId();
-
-        return (Objects.nonNull(member.getMemberId())
-                && member.isSameMember(creatorId))
-                || member.isAdmin();
-    }
-
 }

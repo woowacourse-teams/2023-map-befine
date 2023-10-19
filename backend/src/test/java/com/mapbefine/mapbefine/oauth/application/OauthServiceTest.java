@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import com.mapbefine.mapbefine.DatabaseCleanup;
-import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
@@ -26,7 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
-class OauthServiceTest extends TestDatabaseContainer {
+class OauthServiceTest {
 
     private static final OauthMember oauthMember = OauthMember.of(
             "12345678901234567890",

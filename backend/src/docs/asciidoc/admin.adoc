@@ -1,29 +1,29 @@
-== 관리자 기능
-
-=== 전체 회원 조회
-
-operation::admin-controller-test/find-all-member-details[snippets='http-request,http-response']
-
-=== 회원 상세 조회
-
-operation::admin-controller-test/find-member[snippets='http-request,http-response']
-
-=== 회원 차단(삭제)
-
-operation::admin-controller-test/delete-member[snippets='http-request,http-response']
-
-=== 토픽 삭제
-
-operation::admin-controller-test/delete-topic[snippets='http-request,http-response']
-
-=== 토픽 이미지 삭제
-
-operation::admin-controller-test/delete-topic-image[snippets='http-request,http-response']
-
-=== 핀 삭제
-
-operation::admin-controller-test/delete-pin[snippets='http-request,http-response']
-
-=== 핀 이미지 삭제
-
-operation::admin-controller-test/delete-pin-image[snippets='http-request,http-response']
+// == 관리자 기능
+//
+// === 전체 회원 조회
+//
+// operation::admin-controller-test/find-all-member-details[snippets='http-request,http-response']
+//
+// === 회원 상세 조회
+//
+// operation::admin-controller-test/find-member[snippets='http-request,http-response']
+//
+// === 회원 차단(삭제)
+//
+// operation::admin-controller-test/delete-member[snippets='http-request,http-response']
+//
+// === 토픽 삭제
+//
+// operation::admin-controller-test/delete-topic[snippets='http-request,http-response']
+//
+// === 토픽 이미지 삭제
+//
+// operation::admin-controller-test/delete-topic-image[snippets='http-request,http-response']
+//
+// === 핀 삭제
+//
+// operation::admin-controller-test/delete-pin[snippets='http-request,http-response']
+//
+// === 핀 이미지 삭제
+//
+// operation::admin-controller-test/delete-pin-image[snippets='http-request,http-response']

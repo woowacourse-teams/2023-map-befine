@@ -22,14 +22,12 @@ public class User extends AuthMember {
     @Override
     public boolean canRead(Topic topic) {
         TopicStatus topicStatus = topic.getTopicStatus();
-
-        return topicStatus.isPublic() || hasPermission(topic.getId());
+        return topicStatus.isPublic() || isGroup(topic.getId());
     }
 
     @Override
     public boolean canDelete(Topic topic) {
         TopicStatus topicStatus = topic.getTopicStatus();
-
         return topicStatus.isPrivate() && isCreator(topic.getId());
     }
 
@@ -41,36 +39,19 @@ public class User extends AuthMember {
     @Override
     public boolean canPinCreateOrUpdate(Topic topic) {
         TopicStatus topicStatus = topic.getTopicStatus();
-
         return topicStatus.isAllMembers() || hasPermission(topic.getId());
-    }
-
-    @Override
-    public boolean canPinCommentCreate(Topic topic) {
-        return canRead(topic);
-    }
-
-    @Override
-    public boolean isAdmin() {
-        return false;
-    }
-
-    @Override
-    public boolean isUser() {
-        return true;
-    }
-
-    @Override
-    public boolean isGuest() {
-        return false;
     }
 
     private boolean isCreator(Long topicId) {
         return createdTopic.contains(topicId);
     }
 
+    private boolean isGroup(Long topicId) {
+        return isCreator(topicId) || hasPermission(topicId);
+    }
+
     private boolean hasPermission(Long topicId) {
-        return isCreator(topicId) || topicsWithPermission.contains(topicId);
+        return createdTopic.contains(topicId) || topicsWithPermission.contains(topicId);
     }
 
 }

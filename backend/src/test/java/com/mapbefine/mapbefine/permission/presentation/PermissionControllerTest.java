@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.given;
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import com.mapbefine.mapbefine.permission.application.PermissionCommandService;
 import com.mapbefine.mapbefine.permission.application.PermissionQueryService;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionMemberDetailResponse;
@@ -21,36 +20,32 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 class PermissionControllerTest extends RestDocsIntegration {
 
     @MockBean
     private PermissionQueryService permissionQueryService;
-    @MockBean
-    private PermissionCommandService permissionCommandService;
-
 
     @Test
     @DisplayName("권한 추가")
     void addPermission() throws Exception {
         PermissionRequest request = new PermissionRequest(1L, List.of(1L, 2L, 3L));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/permissions")
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/permissions")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andDo(restDocs.document());
+                        .content(objectMapper.writeValueAsString(request))
+        ).andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("권한 삭제")
     void deletePermission() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/permissions/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
-                .andExpect(MockMvcResultMatchers.status().isNoContent())
-                .andDo(restDocs.document());
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/permissions/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+        ).andDo(restDocs.document());
     }
 
     @Test
@@ -64,10 +59,10 @@ class PermissionControllerTest extends RestDocsIntegration {
 
         given(permissionQueryService.findTopicAccessDetailById(any())).willReturn(response);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/permissions/topics/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(restDocs.document());
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/permissions/topics/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+        ).andDo(restDocs.document());
     }
 
     @Test
@@ -87,10 +82,10 @@ class PermissionControllerTest extends RestDocsIntegration {
 
         given(permissionQueryService.findPermissionById(any())).willReturn(permissionMemberDetailResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/permissions/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(restDocs.document());
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/permissions/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+        ).andDo(restDocs.document());
     }
 
 }

@@ -36,24 +36,4 @@ public class Guest extends AuthMember {
         return false;
     }
 
-    @Override
-    public boolean canPinCommentCreate(Topic topic) {
-        return false;
-    }
-
-    @Override
-    public boolean isAdmin() {
-        return false;
-    }
-
-    @Override
-    public boolean isUser() {
-        return false;
-    }
-
-    @Override
-    public boolean isGuest() {
-        return true;
-    }
-
 }

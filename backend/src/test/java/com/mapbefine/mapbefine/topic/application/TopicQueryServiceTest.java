@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.topic.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
@@ -36,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-class TopicQueryServiceTest extends TestDatabaseContainer {
+class TopicQueryServiceTest {
 
     @Autowired
     private TopicRepository topicRepository;

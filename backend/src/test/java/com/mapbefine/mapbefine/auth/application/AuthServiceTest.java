@@ -3,7 +3,6 @@ package com.mapbefine.mapbefine.auth.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.admin.application.AdminCommandService;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -25,7 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @ServiceTest
-class AuthServiceTest extends TestDatabaseContainer {
+class AuthServiceTest {
 
     @Autowired
     private AuthService authService;

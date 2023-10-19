@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.topic.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
@@ -36,44 +35,25 @@ class TopicTest {
     }
 
     @Test
-    @DisplayName("이미지를 제외한 토픽 정보를 변경한다.")
+    @DisplayName("토픽 정보를 변경한다.")
     void updateTopicInfo() {
         //given
         String name = "New Topic";
         String description = "New Description";
+        String imageUrl = "https://example.com/image.png";
 
         //when
         topic.updateTopicInfo(
                 name,
-                description
+                description,
+                imageUrl
         );
         TopicInfo topicInfo = topic.getTopicInfo();
 
         //then
         assertThat(topicInfo.getName()).isEqualTo(name);
         assertThat(topicInfo.getDescription()).isEqualTo(description);
-    }
-
-    @Test
-    @DisplayName("토픽의 이미지를 변경한다.")
-    void updateTopicImageUrl() {
-        //given
-        String imageUrl = "https://changedImageUrl";
-        String originalName = topic.getTopicInfo().getName();
-        String originalDescription = topic.getTopicInfo().getDescription();
-
-        //when
-        topic.updateTopicImageUrl(
-                imageUrl
-        );
-        TopicInfo topicInfo = topic.getTopicInfo();
-
-        //then
-        assertAll(
-                () -> assertThat(topicInfo.getImageUrl()).isEqualTo(imageUrl),
-                () -> assertThat(topicInfo.getName()).isEqualTo(originalName),
-                () -> assertThat(topicInfo.getDescription()).isEqualTo(originalDescription)
-        );
+        assertThat(topicInfo.getImageUrl()).isEqualTo(imageUrl);
     }
 
     @Test

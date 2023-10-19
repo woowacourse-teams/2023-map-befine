@@ -79,7 +79,8 @@ class MemberIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {});
+        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {
+        });
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -93,13 +94,13 @@ class MemberIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("로그인 회원의 상세 정보를 단일 조회한다.")
-    void findMyProfile() {
+    @DisplayName("회원을 단일 조회한다.")
+    void findMemberById() {
         // given, when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, user1AuthHeader)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/my/profiles")
+                .when().get("/members/" + user1.getId())
                 .then().log().all()
                 .extract();
 
@@ -191,5 +192,5 @@ class MemberIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
-
+    
 }

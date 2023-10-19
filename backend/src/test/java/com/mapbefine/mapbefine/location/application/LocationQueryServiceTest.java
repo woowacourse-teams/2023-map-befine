@@ -4,7 +4,6 @@ import static com.mapbefine.mapbefine.location.LocationFixture.ADDRESS;
 import static com.mapbefine.mapbefine.location.LocationFixture.BASE_COORDINATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -33,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-class LocationQueryServiceTest extends TestDatabaseContainer {
+class LocationQueryServiceTest {
 
     @Autowired
     private LocationRepository locationRepository;
