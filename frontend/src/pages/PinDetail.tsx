@@ -206,7 +206,9 @@ function PinDetail({
         </Flex>
       </Flex>
       <Space size={2} />
-      <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+      {userToken && (
+        <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+      )}
       <ImageInputButton
         id="file"
         type="file"
@@ -234,7 +236,20 @@ function PinDetail({
           {pin.description}
         </Text>
       </Flex>
-      <Space size={7} />
+      <Space size={6} />
+
+      <ButtonsWrapper>
+        <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
+          내 지도에 저장하기
+        </SaveToMyMapButton>
+        <Space size={3} />
+        <ShareButton variant="secondary" onClick={copyContent}>
+          공유하기
+        </ShareButton>
+      </ButtonsWrapper>
+
+      <Space size={8} />
+
       {/*  Comment Section */}
 
       <Text color="black" $fontSize="large" $fontWeight="bold">
