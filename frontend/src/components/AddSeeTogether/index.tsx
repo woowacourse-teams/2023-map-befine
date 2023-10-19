@@ -34,7 +34,7 @@ function AddSeeTogether({
 
     try {
       if (seeTogetherTopics && seeTogetherTopics.length === 7) {
-        showToast('warning', '모아보기는 7개까지만 가능합니다.');
+        showToast('error', '모아보기는 7개까지만 가능합니다.');
         return;
       }
 
