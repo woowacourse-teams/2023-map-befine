@@ -138,7 +138,6 @@ const Wrapper = styled.div`
 
 const FilmList = styled.ul`
   display: flex;
-  /* overflow-y: scroll; */
 `;
 
 const ImageWrapper = styled.li`
