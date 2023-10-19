@@ -11,7 +11,13 @@ const useFocusToMarker = (map: TMap | null, markers: Marker[]) => {
     if (map && markers && markers.length === 1) {
       map.panTo(markers[0].getPosition());
     }
-
+    if (map && pinDetail) {
+      const marker = markers.find((marker: Marker) => marker.id === pinDetail);
+      if (marker) {
+        map.setCenter(marker.getPosition());
+        map.setZoom(17);
+      }
+    }
     if (
       map &&
       markers &&
