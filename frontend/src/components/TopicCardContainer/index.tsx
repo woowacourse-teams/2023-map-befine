@@ -1,3 +1,4 @@
+import { Swiper, Tab } from 'map-befine-swiper';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
@@ -7,8 +8,6 @@ import { TopicCardProps } from '../../types/Topic';
 import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
-import Swiper from '../common/Swiper';
-import Tab from '../common/Swiper/Tab';
 import Text from '../common/Text';
 import MediaText from '../common/Text/MediaText';
 import TopicCard from '../TopicCard';
