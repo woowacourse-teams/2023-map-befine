@@ -1,16 +1,23 @@
 import SingleComment from './SingleComment';
 
+interface ReplyCommentProps {
+  commentList: Comment[];
+  pageTotalCommentList: Comment[];
+  depth: number;
+  refetch: (pinId: number) => Promise<Comment[]>;
+}
+
 function ReplyComment({
   commentList,
   pageTotalCommentList,
   depth,
   refetch,
-}: any) {
+}: ReplyCommentProps) {
   if (depth === 2) return null;
   return (
     <>
       {commentList.length > 0 &&
-        commentList.map((comment: string) => (
+        commentList.map((comment) => (
           <>
             <SingleComment
               comment={comment}

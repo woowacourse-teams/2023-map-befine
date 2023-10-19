@@ -20,6 +20,7 @@ import { ModalContext } from '../context/ModalContext';
 import useCompressImage from '../hooks/useCompressImage';
 import useFormValues from '../hooks/useFormValues';
 import useToast from '../hooks/useToast';
+import theme from '../themes';
 import { ModifyPinFormProps } from '../types/FormValues';
 import { PinProps } from '../types/Pin';
 import UpdatedPinDetail from './UpdatedPinDetail';
@@ -41,11 +42,9 @@ function PinDetail({
   isEditPinDetail,
   setIsEditPinDetail,
 }: PinDetailProps) {
-  console.log(user);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [pin, setPin] = useState<PinProps | null>(null);
-  const [commentList, setCommentList] = useState<any[]>([]); // 댓글 리스트
+  const [commentList, setCommentList] = useState<Comment[]>([]); // 댓글 리스트
   const [newComment, setNewComment] = useState<string>('');
   const { showToast } = useToast();
   const {
@@ -131,7 +130,7 @@ function PinDetail({
 
   // 댓글 구현 부분
   const setCurrentPageCommentList = async (pinId: number) => {
-    const data: any[] = await getApi(`/pins/comments/${pinId}`);
+    const data = await getApi<Comment[]>(`/pins/${pinId}/comments`);
     setCommentList(data);
     return data;
   };
@@ -239,50 +238,32 @@ function PinDetail({
       {/*  Comment Section */}
 
       <Text color="black" $fontSize="large" $fontWeight="bold">
-        댓글{' '}
+        어떻게 생각하나요?{' '}
       </Text>
       <Space size={1} />
       {userToken && (
         <div style={{ display: 'flex', marginBottom: '20px', gap: '12px' }}>
           <ProfileImage src={user?.imageUrl || ''} width="40px" height="40px" />
-          <div style={{ width: '100%' }}>
-            <input
-              style={{
-                width: '100%',
-                borderTop: 'none',
-                borderLeft: 'none',
-                borderRight: 'none',
-                fontSize: '16px',
-              }}
+          <div style={{ width: '100%', marginTop: '12px' }}>
+            <CustomInput
               value={newComment}
-              onChange={(e: any) => setNewComment(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setNewComment(e.target.value)
+              }
               placeholder="댓글 추가"
-              // onClick={toggleReplyOpen}
             />
-            <button
-              style={{
-                marginTop: '12px',
-                float: 'right',
-                width: '40px',
-                fontSize: '12px',
-              }}
-              type="button"
+            <ConfirmCommentButton
+              variant="secondary"
               onClick={onClickCommentBtn}
             >
               등록
-            </button>
-
-            {/* {replyOpen && (
-            <form>
-              <input />
-            </form>
-          )} */}
+            </ConfirmCommentButton>
           </div>
         </div>
       )}
       {commentList?.length > 0 &&
         commentList.map(
-          (comment: any) =>
+          (comment) =>
             !comment.parentPinCommentId ? (
               <SingleComment
                 key={comment.id}
@@ -295,15 +276,7 @@ function PinDetail({
             ) : null, // <-- comment.parentPinCommentId가 존재하는 경우 null 반환
         )}
       {/* comment section END */}
-      <ButtonsWrapper>
-        <SaveToMyMapButton variant="primary" onClick={openModalWithToken}>
-          내 지도에 저장하기
-        </SaveToMyMapButton>
-        <Space size={3} />
-        <ShareButton variant="secondary" onClick={copyContent}>
-          공유하기
-        </ShareButton>
-      </ButtonsWrapper>
+
       <Space size={8} />
       <Modal
         modalKey="addToMyTopicList"
@@ -394,7 +367,7 @@ const ButtonsWrapper = styled.div`
   align-items: center;
   width: 332px;
   height: 48px;
-  margin: 0 auto;
+  margin: 24px auto 0;
 `;
 
 const ImageInputLabel = styled.label`
@@ -416,4 +389,28 @@ const ImageInputButton = styled.input`
   display: none;
 `;
 
+export const CustomInput = styled.input`
+  width: 100%;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid ${theme.color.lightGray};
+  font-size: 16px;
+
+  &:focus {
+    outline: none;
+    border-bottom: 2px solid ${theme.color.black};
+  }
+`;
+
+export const ConfirmCommentButton = styled(Button)`
+  font-size: ${({ theme }) => theme.fontSize.extraSmall};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+
+  box-shadow: 8px 8px 8px 0px rgba(69, 69, 69, 0.15);
+
+  margin-top: 12px;
+  float: right;
+  font-size: 12px;
+`;
 export default PinDetail;

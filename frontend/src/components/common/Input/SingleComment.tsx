@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -6,15 +7,15 @@ import { deleteApi } from '../../../apis/deleteApi';
 import { postApi } from '../../../apis/postApi';
 import { putApi } from '../../../apis/putApi';
 import useToast from '../../../hooks/useToast';
+import { ConfirmCommentButton, CustomInput } from '../../../pages/PinDetail';
+import Flex from '../Flex';
 import Text from '../Text';
 import ReplyComment from './ReplyComment';
 
-const userToken = localStorage?.getItem('userToken');
 const localStorageUser = localStorage?.getItem('user');
 const user = JSON.parse(localStorageUser || '{}');
 //  { 댓글, 댓글목록, 전체목록, depth = 0 }
 function SingleComment({
-  pinId,
   comment,
   commentList,
   totalList,
@@ -108,109 +109,117 @@ function SingleComment({
 
   return (
     <CommentWrapper depth={depth} key={comment.id}>
-      <Flex>
+      <Flex $gap="12px">
         <ProfileImage
           src={comment.creatorImageUrl}
           width="40px"
           height="40px"
         />
         <CommentInfo>
-          <Writer>
-            <Text $fontSize="default" $fontWeight="bold" color="black">
-              @{comment.creator}
-            </Text>
-          </Writer>
+          <Flex $justifyContent="space-between">
+            <div>
+              <Writer>
+                <Text $fontSize="default" $fontWeight="bold" color="black">
+                  @{comment.creator}
+                </Text>
+              </Writer>
+            </div>
+            {comment.canChange && (
+              <Flex $gap="8px" cursor="pointer">
+                <Text
+                  $fontSize="small"
+                  color="gray"
+                  $fontWeight="bold"
+                  onClick={onClickModifyBtn}
+                >
+                  수정
+                </Text>
+                <Text
+                  $fontSize="small"
+                  color="primary"
+                  $fontWeight="bold"
+                  onClick={onClickDeleteBtn}
+                >
+                  삭제
+                </Text>
+              </Flex>
+            )}
+          </Flex>
           <Content>
             {isEditing ? (
-              <Flex>
-                <input value={content} onChange={onContentChange} />
-                <button type="button" onClick={onClickModifyConfirmBtn}>
-                  확인
-                </button>
-              </Flex>
+              <div
+                style={{ width: '100%', display: 'flex', marginTop: '12px' }}
+              >
+                <CustomInput
+                  value={content}
+                  onChange={onContentChange}
+                  placeholder="댓글 수정"
+                />
+                <ConfirmCommentButton
+                  variant="secondary"
+                  style={{ width: '60px', padding: '4px 12px' }}
+                  // type="button"
+                  onClick={onClickModifyConfirmBtn}
+                >
+                  등록
+                </ConfirmCommentButton>
+              </div>
             ) : (
-              <Text $fontSize="large" $fontWeight="normal" color="darkGray">
+              <Text $fontSize="default" $fontWeight="normal" color="darkGray">
                 {comment.content}
               </Text>
             )}
           </Content>
           <div>
             {depth === 1 ? null : (
-              <button type="button" onClick={toggleReplyOpen}>
-                답글남기기
-              </button>
+              <div
+                onClick={toggleReplyOpen}
+                style={{ cursor: 'pointer', marginBottom: '8px' }}
+              >
+                <Text color="black" $fontSize="small" $fontWeight="bold">
+                  답글 작성
+                </Text>
+              </div>
             )}
             {replyOpen && (
-              <div
-                style={{ display: 'flex', marginBottom: '20px', gap: '12px' }}
-              >
+              <div style={{ display: 'flex', gap: '12px' }}>
                 <ProfileImage
                   src={user?.imageUrl || ''}
                   width="40px"
                   height="40px"
                 />
                 <div style={{ width: '100%' }}>
-                  <input
-                    style={{
-                      width: '100%',
-                      borderTop: 'none',
-                      borderLeft: 'none',
-                      borderRight: 'none',
-                      fontSize: '16px',
-                    }}
+                  <CustomInput
                     value={newComment}
                     onChange={(e: any) => setNewComment(e.target.value)}
                     placeholder="댓글 추가"
                     // onClick={toggleReplyOpen}
                   />
-                  <button
-                    style={{
-                      marginTop: '12px',
-                      float: 'right',
-                      width: '40px',
-                      fontSize: '12px',
-                    }}
-                    type="button"
+                  <ConfirmCommentButton
+                    variant="secondary"
+                    style={{}}
+                    // type="button"
                     onClick={onClickCommentBtn}
                   >
                     등록
-                  </button>
-
-                  {/* {replyOpen && (
-            <form>
-              <input />
-            </form>
-          )} */}
+                  </ConfirmCommentButton>
                 </div>
               </div>
             )}
           </div>
           {replyCount > 0 && (
-            <MoreReplyButton onClick={toggleSeeMore}>
-              {seeMore ? '\u25B2' : '\u25BC'} 답글 {replyCount}개
-            </MoreReplyButton>
+            <Flex>
+              <ProfileImage
+                src={replyList[0].creatorImageUrl || ''}
+                width="28px"
+                height="28px"
+              />
+              <MoreReplyButton onClick={toggleSeeMore}>
+                {seeMore ? '\u25B2' : '\u25BC'} 답글 {replyCount}개
+              </MoreReplyButton>
+            </Flex>
           )}
         </CommentInfo>
-        {comment.canChange && (
-          <Flex>
-            <Text
-              $fontSize="small"
-              color="gray"
-              $fontWeight="bold"
-              onClick={onClickModifyBtn}
-            >
-              수정
-            </Text>
-            <Text
-              $fontSize="small"
-              color="primary"
-              $fontWeight="bold"
-              onClick={onClickDeleteBtn}
-            >
-              삭제
-            </Text>
-          </Flex>
-        )}
       </Flex>
 
       {seeMore && (
@@ -229,15 +238,9 @@ function SingleComment({
 export default SingleComment;
 
 const CommentWrapper = styled.li<{ depth: number }>`
-  width: 100%;
   margin-left: ${(props) => props.depth * 20}px;
+  margin-top: 12px;
   list-style: none;
-`;
-
-const Flex = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
 `;
 
 export const ProfileImage = styled.img`
@@ -246,7 +249,9 @@ export const ProfileImage = styled.img`
   border-radius: 50%;
 `;
 
-const CommentInfo = styled.div``;
+const CommentInfo = styled.div`
+  flex: 1;
+`;
 
 const Writer = styled.div`
   white-space: nowrap;
