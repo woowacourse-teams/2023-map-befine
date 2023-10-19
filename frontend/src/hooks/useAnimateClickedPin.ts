@@ -9,13 +9,14 @@ const useAnimateClickedPin = () => {
       const currentQueryParams = new URLSearchParams(location.search);
 
       if (checkQueryParams === null) {
-        if(!map) return;
+        if (!map) return;
         const pinId = queryParams.get('pinDetail');
         const marker = markers.find((marker: Marker) => marker.id === pinId);
 
-        if(!marker) return;
+        if (!marker) return;
+
         map.setCenter(marker.getPosition());
-        map.setZoom(17);
+
         setCheckQueryParams(currentQueryParams);
         return;
       }
