@@ -24,6 +24,8 @@ import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
 
 function SeeTogether() {
+  const accessToken = localStorage.getItem('userToken');
+
   const { topicId } = useParams();
   const { routePage } = useNavigator();
   const [searchParams, _] = useSearchParams();
@@ -51,7 +53,10 @@ function SeeTogether() {
   const getAndSetDataFromServer = async () => {
     if (topicId === '-1' || !topicId) return;
 
-    const requestTopicIds = seeTogetherTopics?.join(',');
+    const requestTopicIds = accessToken
+      ? topicId
+      : seeTogetherTopics?.join(',');
+
     const topics = await getApi<TopicDetailProps[]>(
       `/topics/ids?ids=${requestTopicIds}`,
     );
