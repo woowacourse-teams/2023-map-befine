@@ -142,7 +142,7 @@ function NewTopic() {
     currentImage.onload = () => {
       if (currentImage.width < 300) {
         showToast(
-          'warning',
+          'error',
           '이미지의 크기가 너무 작습니다. 다른 이미지를 선택해 주세요.',
         );
         return;

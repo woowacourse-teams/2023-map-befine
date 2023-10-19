@@ -1,16 +1,15 @@
+import { Swiper, Tab } from 'map-befine-swiper';
+import { useState } from 'react';
 import styled from 'styled-components';
 
-import { ImageProps } from '../../types/Pin';
-import Image from '../common/Image';
-import RemoveImageButton from '../../assets/remove_image_icon.svg';
 import useDelete from '../../apiHooks/useDelete';
+import RemoveImageButton from '../../assets/remove_image_icon.svg';
+import { ImageModal, useModalContext } from '../../context/ImageModalContext';
 import useToast from '../../hooks/useToast';
-import { useModalContext, ImageModal } from '../../context/ImageModalContext';
-import { useState } from 'react';
+import { ImageProps } from '../../types/Pin';
 import Button from '../common/Button';
+import Image from '../common/Image';
 import Space from '../common/Space';
-import Swiper from '../common/Swiper';
-import Tab from '../common/Swiper/Tab';
 
 interface PinImageContainerProps {
   images: ImageProps[];
@@ -19,7 +18,7 @@ interface PinImageContainerProps {
 const NOT_FOUND_IMAGE =
   'https://dr702blqc4x5d.cloudfront.net/2023-map-be-fine/icon/notFound_image.svg';
 
-const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
+function PinImageContainer({ images, getPinData }: PinImageContainerProps) {
   const { fetchDelete } = useDelete();
   const { showToast } = useToast();
   const { isModalOpen, openModal, closeModal } = useModalContext();
@@ -85,52 +84,50 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
 
   return (
     <Wrapper>
-      {
-        <Swiper
-          as="ul"
-          width={330}
-          height={100}
-          $elementsOneTab={3}
-          swiper
-          swipeable
-          $isNotTabBoxShow
-        >
-          {images.map((image, index) => (
-            <Tab label={`${index}`} key={image.id}>
-              <ImageWrapper key={`image-${index}`}>
-                <div onClick={() => onImageOpen(image.imageUrl)}>
-                  <Image
-                    key={image.id}
-                    height="100px"
-                    width="100px"
-                    src={image.imageUrl}
-                    $errorDefaultSrc={NOT_FOUND_IMAGE}
-                  />
-                </div>
-                <RemoveImageIconWrapper
-                  onClick={() => onRemovePinImage(image.id)}
-                >
-                  <RemoveImageButton />
-                </RemoveImageIconWrapper>
-              </ImageWrapper>
-            </Tab>
-          ))}
-          {isModalOpen && (
-            <ImageModal closeModalHandler={closeModal}>
-              <ModalImageWrapper>
-                <ModalImage src={modalImage} />
-                <Space size={3} />
-                <Button variant="custom" onClick={closeModal}>
-                  닫기
-                </Button>
-              </ModalImageWrapper>
-            </ImageModal>
-          )}
-        </Swiper>
-      }
+      <Swiper
+        as="ul"
+        width={330}
+        height={100}
+        $elementsOneTab={3}
+        swiper
+        swipeable
+        $isNotTabBoxShow
+      >
+        {images.map((image, index) => (
+          <Tab label={`${index}`} key={image.id}>
+            <ImageWrapper key={`image-${index}`}>
+              <div onClick={() => onImageOpen(image.imageUrl)}>
+                <Image
+                  key={image.id}
+                  height="100px"
+                  width="100px"
+                  src={image.imageUrl}
+                  $errorDefaultSrc={NOT_FOUND_IMAGE}
+                />
+              </div>
+              <RemoveImageIconWrapper
+                onClick={() => onRemovePinImage(image.id)}
+              >
+                <RemoveImageButton />
+              </RemoveImageIconWrapper>
+            </ImageWrapper>
+          </Tab>
+        ))}
+        {isModalOpen && (
+          <ImageModal closeModalHandler={closeModal}>
+            <ModalImageWrapper>
+              <ModalImage src={modalImage} />
+              <Space size={3} />
+              <Button variant="custom" onClick={closeModal}>
+                닫기
+              </Button>
+            </ModalImageWrapper>
+          </ImageModal>
+        )}
+      </Swiper>
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.div`
   width: 330px;

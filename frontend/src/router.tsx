@@ -17,6 +17,7 @@ const KakaoRedirect = lazy(() => import('./pages/KakaoRedirect'));
 const Profile = lazy(() => import('./pages/Profile'));
 const AskLogin = lazy(() => import('./pages/AskLogin'));
 const Bookmark = lazy(() => import('./pages/Bookmark'));
+const SeeTogether = lazy(() => import('./pages/SeeTogether'));
 
 interface routeElement {
   path: string;
@@ -141,6 +142,15 @@ const routes: routeElement[] = [
       {
         path: '/search',
         element: <Search />,
+        withAuth: false,
+      },
+      {
+        path: '/see-together/:topicId',
+        element: (
+          <SuspenseComp>
+            <SeeTogether />
+          </SuspenseComp>
+        ),
         withAuth: false,
       },
     ],

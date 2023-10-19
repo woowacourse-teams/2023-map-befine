@@ -1,11 +1,10 @@
+import { Swiper, Tab } from 'map-befine-swiper';
 import styled from 'styled-components';
 
 import BannerItemBoongWEBP from '../../assets/banner_boong.webp';
 import BannerItemUsageWEBP from '../../assets/banner_usage.webp';
 import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
-import Swiper from '../common/Swiper';
-import Tab from '../common/Swiper/Tab';
 
 const USAGE_URL =
   'https://yoondgu.notion.site/3e5b3c98c4814aa1bd5887104fee314e?pvs=4';
@@ -28,6 +27,7 @@ export default function Banner() {
       height={400}
       $simpleTab
       $tabBoxPosition="bottom"
+      $isNotTabBoxShow
       swipeable
       swiper
       autoplay

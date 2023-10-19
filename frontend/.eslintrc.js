@@ -39,6 +39,7 @@ module.exports = {
     'no-unused-expressions': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/no-unused-prop-types': 'off',
+    'import/no-extraneous-dependencies': 'off',
   },
   settings: {
     'import/resolver': {

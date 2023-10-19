@@ -5,18 +5,18 @@ import useDelete from '../../apiHooks/useDelete';
 import useGet from '../../apiHooks/useGet';
 import usePost from '../../apiHooks/usePost';
 import usePut from '../../apiHooks/usePut';
+import { putApi } from '../../apis/putApi';
+import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import useCompressImage from '../../hooks/useCompressImage';
 import useFormValues from '../../hooks/useFormValues';
 import useToast from '../../hooks/useToast';
 import { TopicAuthorInfo } from '../../types/Topic';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
-import Space from '../common/Space';
-import InputContainer from '../InputContainer';
-import Text from '../common/Text';
-import useCompressImage from '../../hooks/useCompressImage';
 import ImageCommon from '../common/Image';
-import { DEFAULT_TOPIC_IMAGE } from '../../constants';
-import { putApi } from '../../apis/putApi';
+import Space from '../common/Space';
+import Text from '../common/Text';
+import InputContainer from '../InputContainer';
 
 interface UpdatedTopicInfoProp {
   id: number;
@@ -85,7 +85,7 @@ function UpdatedTopicInfo({
       //   await updateTopicPermissionMembers();
       // }
 
-      showToast('info', '지도를 수정하였습니다.');
+      showToast('info', `${name} 지도를 수정하였습니다.`);
       setIsUpdate(false);
       setTopicsFromServer();
     } catch {}
@@ -151,16 +151,21 @@ function UpdatedTopicInfo({
     currentImage.onload = async () => {
       if (currentImage.width < 300) {
         showToast(
-          'warning',
+          'error',
           '이미지의 크기가 너무 작습니다. 다른 이미지를 선택해 주세요.',
         );
         return;
       }
       formData.append('image', compressedFile);
-      await putApi(`/topics/images/${id}`, formData);
+      try {
+        await putApi(`/topics/images/${id}`, formData);
+      } catch {
+        showToast('error', '사용할 수 없는 이미지입니다.');
+      }
 
       const updatedImageUrl = URL.createObjectURL(compressedFile);
       setChangedImages(updatedImageUrl);
+      showToast('info', '지도 이미지를 수정하였습니다.');
     };
   };
 
@@ -177,7 +182,7 @@ function UpdatedTopicInfo({
         <TopicImage
           height="168px"
           width="100%"
-          src={changedImages ? changedImages : image}
+          src={changedImages || image}
           alt="사진 이미지"
           $objectFit="cover"
           onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {

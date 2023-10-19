@@ -12,12 +12,14 @@ import { SeeTogetherContext } from '../context/SeeTogetherContext';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import useToast from '../hooks/useToast';
 
 const TopicListContainer = lazy(
   () => import('../components/TopicCardContainer'),
 );
 
 function Home() {
+  const accessToken = localStorage.getItem('userToken');
   const { routingHandlers } = useNavigator();
   const { goToPopularTopics, goToLatestTopics, goToNearByMeTopics } =
     routingHandlers;
@@ -25,7 +27,7 @@ function Home() {
     useContext(SeeTogetherContext);
   const { markers, removeMarkers, removeInfowindows } =
     useContext(MarkerContext);
-  const accessToken = localStorage.getItem('userToken');
+  const { showToast } = useToast();
 
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
@@ -33,6 +35,7 @@ function Home() {
   useEffect(() => {
     if (accessToken === null && seeTogetherTopics?.length !== 0) {
       setSeeTogetherTopics([]);
+      showToast('info', '로그인을 하면 모아보기가 유지돼요.');
     }
   }, []);
 

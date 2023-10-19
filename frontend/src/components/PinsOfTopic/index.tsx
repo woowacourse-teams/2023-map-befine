@@ -5,6 +5,7 @@ import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
+  urlTopicId?: string;
   topicId: string;
   topicDetail: TopicDetailProps;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
@@ -13,6 +14,7 @@ interface PinsOfTopicProps {
 }
 
 function PinsOfTopic({
+  urlTopicId,
   topicId,
   topicDetail,
   setSelectedPinId,
@@ -38,13 +40,14 @@ function PinsOfTopic({
       {topicDetail.pins.map((pin, idx) => (
         <li key={pin.id}>
           <PinPreview
+            urlTopicId={urlTopicId || topicId}
             idx={idx}
+            pinId={Number(pin.id)}
+            topicId={topicId}
             pinTitle={pin.name}
             pinLocation={pin.address}
             pinInformation={pin.description}
             setSelectedPinId={setSelectedPinId}
-            pinId={Number(pin.id)}
-            topicId={topicId}
             setIsEditPinDetail={setIsEditPinDetail}
           />
         </li>
