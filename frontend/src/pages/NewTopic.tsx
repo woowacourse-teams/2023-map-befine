@@ -127,6 +127,7 @@ function NewTopic() {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files && event.target.files[0];
+    const currentImage = new Image();
     if (!file) {
       showToast(
         'error',
@@ -136,9 +137,20 @@ function NewTopic() {
     }
 
     const compressedFile = await compressImage(file);
+    currentImage.src = URL.createObjectURL(compressedFile);
 
-    setFormImage(compressedFile);
-    setShowImage(URL.createObjectURL(file));
+    currentImage.onload = () => {
+      if (currentImage.width < 300) {
+        showToast(
+          'error',
+          '이미지의 크기가 너무 작습니다. 다른 이미지를 선택해 주세요.',
+        );
+        return;
+      }
+
+      setFormImage(compressedFile);
+      setShowImage(URL.createObjectURL(file));
+    };
   };
 
   useEffect(() => {

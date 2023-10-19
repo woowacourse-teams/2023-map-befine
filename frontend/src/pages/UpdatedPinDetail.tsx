@@ -73,27 +73,6 @@ function UpdatedPinDetail({
 
   return (
     <Wrapper>
-      <Flex
-        width="100%"
-        height="180px"
-        $backgroundColor="gray"
-        $alignItems="center"
-        $justifyContent="center"
-        $flexDirection="column"
-        padding={7}
-        $borderRadius="small"
-      >
-        <Space size={1} />
-        <Text
-          color="white"
-          $fontSize="default"
-          $fontWeight="normal"
-          $textAlign="center"
-        >
-          + 사진을 추가해주시면 더 알찬 정보를 제공해줄 수 있을 것 같아요.
-        </Text>
-      </Flex>
-
       <Space size={5} />
 
       <InputContainer
@@ -145,7 +124,7 @@ function UpdatedPinDetail({
 
 const Wrapper = styled.div`
   margin: 0 auto;
-
+  width: 100%;
   @media (max-width: 1076px) {
     width: calc(50vw - 40px);
   }

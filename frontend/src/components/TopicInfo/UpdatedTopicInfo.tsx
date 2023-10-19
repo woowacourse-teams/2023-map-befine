@@ -13,7 +13,7 @@ import useToast from '../../hooks/useToast';
 import { TopicAuthorInfo } from '../../types/Topic';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
-import Image from '../common/Image';
+import ImageCommon from '../common/Image';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import InputContainer from '../InputContainer';
@@ -135,6 +135,7 @@ function UpdatedTopicInfo({
   ) => {
     const file = event.target.files && event.target.files[0];
     const formData = new FormData();
+    const currentImage = new Image();
 
     if (!file) {
       showToast(
@@ -145,17 +146,27 @@ function UpdatedTopicInfo({
     }
 
     const compressedFile = await compressImage(file);
-    formData.append('image', compressedFile);
+    currentImage.src = URL.createObjectURL(compressedFile);
 
-    try {
-      await putApi(`/topics/images/${id}`, formData);
-    } catch {
-      showToast('error', '사용할 수 없는 이미지입니다.');
-    }
+    currentImage.onload = async () => {
+      if (currentImage.width < 300) {
+        showToast(
+          'error',
+          '이미지의 크기가 너무 작습니다. 다른 이미지를 선택해 주세요.',
+        );
+        return;
+      }
+      formData.append('image', compressedFile);
+      try {
+        await putApi(`/topics/images/${id}`, formData);
+      } catch {
+        showToast('error', '사용할 수 없는 이미지입니다.');
+      }
 
-    const updatedImageUrl = URL.createObjectURL(compressedFile);
-    setChangedImages(updatedImageUrl);
-    showToast('info', '지도 이미지를 수정하였습니다.');
+      const updatedImageUrl = URL.createObjectURL(compressedFile);
+      setChangedImages(updatedImageUrl);
+      showToast('info', '지도 이미지를 수정하였습니다.');
+    };
   };
 
   return (
@@ -293,7 +304,7 @@ const ImageInputButton = styled.input`
   display: none;
 `;
 
-const TopicImage = styled(Image)`
+const TopicImage = styled(ImageCommon)`
   border-radius: ${({ theme }) => theme.radius.medium};
 `;
 
