@@ -24,8 +24,6 @@ import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
 
 function SeeTogether() {
-  const accessToken = localStorage.getItem('userToken');
-
   const { topicId } = useParams();
   const { routePage } = useNavigator();
   const [searchParams, _] = useSearchParams();
@@ -50,32 +48,10 @@ function SeeTogether() {
     routePage('/');
   };
 
-  // console.log(topicDetails);
-  console.log(seeTogetherTopics, 'render');
-
-  const getAndSetDataFromServer = async (temp) => {
+  const getAndSetDataFromServer = async () => {
     if (topicId === '-1' || !topicId) return;
 
     const requestTopicIds = seeTogetherTopics?.join(',');
-    console.log(seeTogetherTopics, 'getAndSet');
-
-    // if (temp) {
-    //   console.log(temp, 'temp');
-    //   const topics = await getApi<TopicDetailProps[]>(
-    //     `/topics/ids?ids=${temp.map((topic) => topic.id).join(',')}`,
-    //   );
-    //   console.log(topics, 'topics');
-    //   window.location.pathname = `see-together/${window.location.pathname
-    //     .split('/')
-    //     [window.location.pathname.split('/').length - 1].split(',')
-    //     .filter((id) => topics.map((topic) => topic.id).includes(Number(id)))
-    //     .join(',')}`;
-
-    //   setCoordinatesTopicDetailWithHashMap(topics);
-
-    //   return;
-    // }
-
     const topics = await getApi<TopicDetailProps[]>(
       `/topics/ids?ids=${requestTopicIds}`,
     );
@@ -132,6 +108,9 @@ function SeeTogether() {
 
   useEffect(() => {
     getAndSetDataFromServer();
+  }, [topicId]);
+
+  useEffect(() => {
     setTags([]);
   }, []);
 

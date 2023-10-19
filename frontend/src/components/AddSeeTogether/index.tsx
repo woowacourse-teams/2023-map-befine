@@ -5,10 +5,12 @@ import { deleteApi } from '../../apis/deleteApi';
 import { getApi } from '../../apis/getApi';
 import { postApi } from '../../apis/postApi';
 import { SeeTogetherContext } from '../../context/SeeTogetherContext';
+import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
 import { TopicCardProps } from '../../types/Topic';
 
 interface AddSeeTogetherProps {
+  parentType: 'topicCard' | 'topicInfo';
   isInAtlas: boolean;
   id: number;
   children: React.ReactNode;
@@ -17,6 +19,7 @@ interface AddSeeTogetherProps {
 }
 
 function AddSeeTogether({
+  parentType,
   isInAtlas,
   id,
   children,
@@ -26,6 +29,7 @@ function AddSeeTogether({
   const { showToast } = useToast();
   const { seeTogetherTopics, setSeeTogetherTopics } =
     useContext(SeeTogetherContext);
+  const { routePage } = useNavigator();
 
   const accessToken = localStorage.getItem('userToken');
 
@@ -69,9 +73,20 @@ function AddSeeTogether({
       onClickAtlas();
 
       showToast('info', '해당 지도를 모아보기에서 제외했습니다.');
+
+      if (parentType === 'topicInfo') routePageAfterSuccessToDelete(topics);
     } catch {
       showToast('error', '로그인 후 사용해주세요.');
     }
+  };
+
+  const routePageAfterSuccessToDelete = (topics: TopicCardProps[]) => {
+    if (topics.length === 0) {
+      routePage(`/`);
+      return;
+    }
+
+    routePage(`/see-together/${topics.map((topic) => topic.id).join(',')}`);
   };
 
   const onChangeIsInAtlas = (e: React.MouseEvent<HTMLDivElement>) => {

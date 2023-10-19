@@ -154,6 +154,7 @@ function TopicCard({
           {cardType === 'default' && getTopicsFromServer && (
             <ButtonWrapper>
               <AddSeeTogether
+                parentType="topicCard"
                 isInAtlas={isInAtlas}
                 onClickAtlas={onClickIsInAtlas}
                 id={id}

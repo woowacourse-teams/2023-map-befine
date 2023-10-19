@@ -155,6 +155,7 @@ function TopicInfo({
 
       <ButtonsWrapper>
         <AddSeeTogether
+          parentType="topicInfo"
           isInAtlas={isInAtlas}
           onClickAtlas={onChangeIsInAtlas}
           id={Number(topicId)}
