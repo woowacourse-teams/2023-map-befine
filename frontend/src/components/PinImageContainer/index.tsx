@@ -49,7 +49,7 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
         {images.map(
           (image, index) =>
             index < 3 && (
-              <ImageWrapper>
+              <ImageWrapper key={`image-${index}`}>
                 <div onClick={() => onImageOpen(image.imageUrl)}>
                   <Image
                     key={image.id}
