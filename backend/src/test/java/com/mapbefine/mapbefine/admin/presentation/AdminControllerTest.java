@@ -20,6 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 class AdminControllerTest extends RestDocsIntegration {
 
@@ -74,7 +75,7 @@ class AdminControllerTest extends RestDocsIntegration {
     private AdminAuthInterceptor adminAuthInterceptor;
 
     @BeforeEach
-    void setAll() throws Exception {
+    void setAll() {
         given(adminAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
     }
 
@@ -88,10 +89,10 @@ class AdminControllerTest extends RestDocsIntegration {
 
         given(adminQueryService.findAllMemberDetails()).willReturn(response);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/admin/members")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/admin/members")
+                        .header(AUTHORIZATION, "testKey"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @DisplayName("멤버 상세 조회")
@@ -109,10 +110,10 @@ class AdminControllerTest extends RestDocsIntegration {
 
         given(adminQueryService.findMemberDetail(any())).willReturn(response);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/admin/members/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/admin/members/1")
+                        .header(AUTHORIZATION, "testKey"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @DisplayName("멤버 차단(블랙리스트)")
@@ -120,10 +121,10 @@ class AdminControllerTest extends RestDocsIntegration {
     void deleteMember() throws Exception {
         doNothing().when(adminCommandService).blockMember(any());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/admin/members/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/members/1")
+                        .header(AUTHORIZATION, "testKey"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
     @DisplayName("토픽 삭제")
@@ -131,10 +132,10 @@ class AdminControllerTest extends RestDocsIntegration {
     void deleteTopic() throws Exception {
         doNothing().when(adminCommandService).deleteTopic(any());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/admin/topics/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/topics/1")
+                        .header(AUTHORIZATION, "testKey"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
     @DisplayName("토픽 이미지 삭제")
@@ -142,10 +143,10 @@ class AdminControllerTest extends RestDocsIntegration {
     void deleteTopicImage() throws Exception {
         doNothing().when(adminCommandService).deleteTopicImage(any());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/admin/topics/1/images")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/topics/1/images")
+                        .header(AUTHORIZATION, "testKey"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
     @DisplayName("핀 삭제")
@@ -153,10 +154,10 @@ class AdminControllerTest extends RestDocsIntegration {
     void deletePin() throws Exception {
         doNothing().when(adminCommandService).deletePin(any());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/admin/pins/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/pins/1")
+                        .header(AUTHORIZATION, "testKey"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
     @DisplayName("토픽 이미지 삭제")
@@ -164,9 +165,9 @@ class AdminControllerTest extends RestDocsIntegration {
     void deletePinImage() throws Exception {
         doNothing().when(adminCommandService).deletePinImage(any());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/admin/pins/images/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/pins/images/1")
+                        .header(AUTHORIZATION, "testKey"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 }

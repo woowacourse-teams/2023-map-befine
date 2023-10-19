@@ -2,7 +2,7 @@ name: Backend production CI/CD
 
 on:
   workflow_dispatch:
-  
+
   pull_request:
     branches: [ main ]
     types: [ closed ]
@@ -10,11 +10,11 @@ on:
 
 permissions:
   contents: read
-  
+
 jobs:
-  build-and-upload:    
+  build-and-upload:
     if: github.event.pull_request.merged
-    
+
     runs-on: ubuntu-22.04
 
     steps:
@@ -41,30 +41,39 @@ jobs:
         run: ./gradlew clean build
         working-directory: backend
 
-      - name: jar 파일 artifact에 업로드
-        uses: actions/upload-artifact@v3
+      - name: Docker buildx 설치
+        uses: docker/setup-buildx-action@v2.9.1
+
+      - name: Docker Hub 로그인
+        uses: docker/login-action@v2.2.0
         with:
-          name: BackendApplication
-          path: backend/build/libs/mapbefine.jar
+          username: ${{ secrets.DOCKERHUB_DEV_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_DEV_TOKEN }}
+
+      - name: Docker Image Build
+        working-directory: backend
+        run: docker build --platform linux/arm64/v8 -t mapbefine/mapbefine -f Dockerfile-prod .
+
+      - name: Docker Hub Push
+        run: docker push mapbefine/mapbefine
 
   deploy:
+    if: github.event.pull_request.merged
+
     runs-on: [ self-hosted, prod ]
     needs: build-and-upload
-  
-    if: github.event.pull_request.merged
-    
+
     steps:
-      - name: 구버전 jar 파일 삭제
-        run: rm -rf /home/ubuntu/backend/build/*.jar 
+      - name: 최신 Docker Image 가져오기
+        run: |
+          sudo docker login --username ${{ secrets.DOCKERHUB_DEV_USERNAME }} --password ${{ secrets.DOCKERHUB_DEV_TOKEN }}
+          sudo docker pull mapbefine/mapbefine:latest
 
-      - name: jar파일 artifact에서 다운로드
-        uses: actions/download-artifact@v3 
-        with:
-          name: BackendApplication
-          path: /home/ubuntu/backend/build/
-
-      - name: 배포하기
-        run: /home/ubuntu/backend/deploy.sh
+      - name: Docker Compose
+        run: |
+          cd /home/ubuntu/backend
+          sudo sh zero-downtime-deploy.sh
+          sudo docker image prune -af
 
       - name: 슬랙 메시지 보내기
 

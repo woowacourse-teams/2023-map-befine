@@ -14,13 +14,12 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,7 +50,7 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestTopicResponses(AuthMember authMember) {
-        return topicRepository.findAllByIsDeletedFalse()
+        return topicRepository.findAll()
                 .stream()
                 .filter(authMember::canRead)
                 .map(TopicResponse::fromGuestQuery)
@@ -61,7 +60,7 @@ public class TopicQueryService {
     private List<TopicResponse> getUserTopicResponses(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        return topicRepository.findAllByIsDeletedFalse().stream()
+        return topicRepository.findAll().stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
                         topic,
@@ -103,7 +102,7 @@ public class TopicQueryService {
     }
 
     private Topic findTopic(Long id) {
-        return topicRepository.findByIdAndIsDeletedFalse(id)
+        return topicRepository.findById(id)
                 .orElseThrow(() -> new TopicNotFoundException(TOPIC_NOT_FOUND, List.of(id)));
     }
 
@@ -116,7 +115,7 @@ public class TopicQueryService {
     }
 
     public List<TopicDetailResponse> findDetailsByIds(AuthMember authMember, List<Long> ids) {
-        List<Topic> topics = topicRepository.findByIdInAndIsDeletedFalse(ids);
+        List<Topic> topics = topicRepository.findByIdIn(ids);
 
         validateTopicsCount(ids, topics);
         validateReadableTopics(authMember, topics);
@@ -163,7 +162,7 @@ public class TopicQueryService {
     public List<TopicResponse> findAllTopicsByMemberId(AuthMember authMember, Long memberId) {
 
         if (Objects.isNull(authMember.getMemberId())) {
-            return topicRepository.findAllByCreatorIdAndIsDeletedFalse(memberId)
+            return topicRepository.findAllByCreatorId(memberId)
                     .stream()
                     .filter(authMember::canRead)
                     .map(TopicResponse::fromGuestQuery)
@@ -172,7 +171,7 @@ public class TopicQueryService {
 
         Member member = findMemberById(authMember.getMemberId());
 
-        return topicRepository.findAllByCreatorIdAndIsDeletedFalse(memberId)
+        return topicRepository.findAllByCreatorId(memberId)
                 .stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
@@ -193,7 +192,7 @@ public class TopicQueryService {
     private List<TopicResponse> getUserNewestTopicResponse(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        return topicRepository.findAllByIsDeletedFalseOrderByLastPinUpdatedAtDesc()
+        return topicRepository.findAllByOrderByLastPinUpdatedAtDesc()
                 .stream()
                 .filter(authMember::canRead)
                 .map(topic -> TopicResponse.from(
@@ -205,7 +204,7 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestNewestTopicResponse(AuthMember authMember) {
-        return topicRepository.findAllByIsDeletedFalseOrderByLastPinUpdatedAtDesc()
+        return topicRepository.findAllByOrderByLastPinUpdatedAtDesc()
                 .stream()
                 .filter(authMember::canRead)
                 .map(TopicResponse::fromGuestQuery)
@@ -220,7 +219,7 @@ public class TopicQueryService {
     }
 
     private List<TopicResponse> getGuestBestTopicResponse(AuthMember authMember) {
-        return topicRepository.findAllByIsDeletedFalse()
+        return topicRepository.findAll()
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())
@@ -231,7 +230,7 @@ public class TopicQueryService {
     private List<TopicResponse> getUserBestTopicResponse(AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
 
-        return topicRepository.findAllByIsDeletedFalse()
+        return topicRepository.findAll()
                 .stream()
                 .filter(authMember::canRead)
                 .sorted(Comparator.comparing(Topic::countBookmarks).reversed())

@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.auth.domain.member;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import java.util.Collections;
 
@@ -36,8 +35,23 @@ public class Admin extends AuthMember {
     }
 
     @Override
-    public boolean isRole(Role role) {
-        return Role.ADMIN == role;
+    public boolean canPinCommentCreate(Topic topic) {
+        return true;
+    }
+
+    @Override
+    public boolean isAdmin() {
+        return true;
+    }
+
+    @Override
+    public boolean isUser() {
+        return false;
+    }
+
+    @Override
+    public boolean isGuest() {
+        return false;
     }
 
 }

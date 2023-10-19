@@ -20,10 +20,6 @@ operation::pin-controller-test/add[snippets='http-request,http-response']
 
 operation::pin-controller-test/update[snippets='http-request,http-response']
 
-=== 핀 삭제
-
-operation::pin-controller-test/delete[snippets='http-request,http-response']
-
 === 핀 이미지 추가
 
 operation::pin-controller-test/add-image[snippets='http-request,http-response']
@@ -31,3 +27,23 @@ operation::pin-controller-test/add-image[snippets='http-request,http-response']
 === 핀 이미지 삭제
 
 operation::pin-controller-test/remove-image[snippets='http-request,http-response']
+
+=== 핀 댓글 생성
+
+operation::pin-controller-test/create-parent-pin-comment[snippets='http-request,http-response']
+
+=== 핀 대댓글 생성
+
+operation::pin-controller-test/create-child-pin-comment[snippets='http-request,http-response']
+
+=== 핀 댓글 조회
+
+operation::pin-controller-test/find-all-pin-comment-by-pin-id[snippets='http-request,http-response']
+
+=== 핀 댓글 수정
+
+operation::pin-controller-test/update-pin-comment[snippets='http-request,http-response']
+
+=== 핀 댓글 삭제
+
+operation::pin-controller-test/remove-pin-comment[snippets='http-request,http-response']

@@ -3,8 +3,13 @@ package com.mapbefine.mapbefine.topic.presentation;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import com.mapbefine.mapbefine.common.RestDocsIntegration;
+import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
@@ -15,19 +20,17 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Image 칼람 추가됨으로 인해 수정 필요
+class TopicControllerTest extends RestDocsIntegration {
 
     private static final List<TopicResponse> RESPONSES = List.of(new TopicResponse(
             1L,
@@ -51,30 +54,15 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
             LocalDateTime.now()
     ));
 
-    private File mockFile;
-
     @MockBean
     private TopicCommandService topicCommandService;
     @MockBean
     private TopicQueryService topicQueryService;
 
-    @BeforeEach
-    void setUp() {
-        mockFile = new File(
-                getClass().getClassLoader()
-                        .getResource("test.png")
-                        .getPath()
-        );
-    }
-
-
     @Test
     @DisplayName("토픽 새로 생성")
     void create() throws Exception {
         given(topicCommandService.saveTopic(any(), any())).willReturn(1L);
-        File mockFile = new File(getClass().getClassLoader().getResource("test.png").getPath());
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-
         TopicCreateRequestWithoutImage request = new TopicCreateRequestWithoutImage(
                 "준팍의 안갈집",
                 "준팍이 두번 다시 안갈집",
@@ -82,25 +70,23 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 PermissionType.ALL_MEMBERS,
                 List.of(1L, 2L, 3L)
         );
+        MockMultipartFile requestJson = new MockMultipartFile("request", "request", APPLICATION_JSON_VALUE,
+                objectMapper.writeValueAsBytes(request));
+        MockMultipartFile image = new MockMultipartFile("image", "test.png", IMAGE_PNG_VALUE, "data".getBytes());
 
-        param.add("image", mockFile);
-        param.add("request", request);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/topics/new")
+        mockMvc.perform(MockMvcRequestBuilders.multipart(POST, "/topics/new")
+                        .file(image)
+                        .file(requestJson)
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .content(objectMapper.writeValueAsString(param))
-        ).andDo(restDocs.document());
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("토픽 병합 생성")
     void mergeAndCreate() throws Exception {
         given(topicCommandService.merge(any(), any())).willReturn(1L);
-
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-
 
         TopicMergeRequestWithoutImage request = new TopicMergeRequestWithoutImage(
                 "준팍의 안갈집",
@@ -109,26 +95,25 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
                 PermissionType.ALL_MEMBERS,
                 List.of(1L, 2L, 3L)
         );
+        MockMultipartFile requestJson = new MockMultipartFile("request", "request", APPLICATION_JSON_VALUE,
+                objectMapper.writeValueAsBytes(request));
+        MockMultipartFile image = new MockMultipartFile("image", "test.png", IMAGE_PNG_VALUE, "data".getBytes());
 
-        param.add("image", mockFile);
-        param.add("request", request);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/topics/merge")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .content(objectMapper.writeValueAsString(param))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.multipart(POST, "/topics/merge")
+                        .file(image)
+                        .file(requestJson)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("핀을 권한이 있는 토픽에 복사할 수 있다.")
     void copyPin() throws Exception {
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/topics/1/copy?pinIds=1,2,3")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.post("/topics/1/copy?pinIds=1,2,3")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -136,27 +121,39 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void update() throws Exception {
         TopicUpdateRequest topicUpdateRequest = new TopicUpdateRequest(
                 "준팍의 안갈집",
-                "https://map-befine-official.github.io/favicon.png",
                 "준팍이 두번 다시 안갈집",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS
         );
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.put("/topics/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/topics/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(topicUpdateRequest))
-        ).andDo(restDocs.document());
+                        .content(objectMapper.writeValueAsString(topicUpdateRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("토픽 이미지 수정")
+    void updateImage() throws Exception {
+        MockMultipartFile image = FileFixture.createFile();
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart(PUT, "/topics/images/1")
+                        .file(image)
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
     @DisplayName("토픽 삭제")
     void delete() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/topics/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/topics/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -164,10 +161,10 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void findAll() throws Exception {
         given(topicQueryService.findAllReadable(any())).willReturn(RESPONSES);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/topics")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/topics")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -207,10 +204,10 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
         );
         given(topicQueryService.findDetailById(any(), any())).willReturn(topicDetailResponse);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/topics/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/topics/1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -218,10 +215,10 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void findAllByOrderByUpdatedAtDesc() throws Exception {
         given(topicQueryService.findAllByOrderByUpdatedAtDesc(any())).willReturn(RESPONSES);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/topics/newest")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/topics/newest")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -229,10 +226,10 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void findAllTopicsByMemberId() throws Exception {
         given(topicQueryService.findAllTopicsByMemberId(any(), any())).willReturn(RESPONSES);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/topics/members?id=1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/topics/members?id=1")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -240,10 +237,10 @@ class TopicControllerTest extends RestDocsIntegration { // TODO: 2023/07/25 Imag
     void findAllBestTopics() throws Exception {
         given(topicQueryService.findAllBestTopics(any())).willReturn(RESPONSES);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/topics/bests")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+        mockMvc.perform(MockMvcRequestBuilders.get("/topics/bests")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
 }

@@ -15,11 +15,10 @@ import com.mapbefine.mapbefine.permission.exception.PermissionException.Permissi
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -78,7 +77,7 @@ public class PermissionCommandService {
 
     private Topic findTopic(PermissionRequest request) {
         Long topicId = request.topicId();
-        return topicRepository.findByIdAndIsDeletedFalse(topicId)
+        return topicRepository.findById(topicId)
                 .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_TOPIC_ID, topicId));
     }
 

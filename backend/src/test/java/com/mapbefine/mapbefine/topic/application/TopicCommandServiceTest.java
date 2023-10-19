@@ -1,12 +1,17 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import static com.mapbefine.mapbefine.image.FileFixture.createFile;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
+import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -29,16 +34,16 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
-
 @ServiceTest
-class TopicCommandServiceTest {
+class TopicCommandServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -334,7 +339,6 @@ class TopicCommandServiceTest {
         AuthMember user = MemberFixture.createUser(member);
         TopicUpdateRequest request = new TopicUpdateRequest(
                 "수정된 이름",
-                "https://map-befine-official.github.io/favicon.png",
                 "수정된 설명",
                 Publicity.PRIVATE,
                 PermissionType.GROUP_ONLY
@@ -366,7 +370,6 @@ class TopicCommandServiceTest {
         //when then
         TopicUpdateRequest request = new TopicUpdateRequest(
                 "수정된 이름",
-                "https://map-befine-official.github.io/favicon.png",
                 "수정된 설명",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS
@@ -398,9 +401,7 @@ class TopicCommandServiceTest {
         topicCommandService.delete(adminAuthMember, topic.getId());
 
         //then
-        Topic deletedTopic = topicRepository.findById(topic.getId()).get();
-
-        assertThat(deletedTopic.isDeleted()).isTrue();
+        assertThat(topicRepository.existsById(topic.getId())).isFalse();
     }
 
     @Test
@@ -414,4 +415,82 @@ class TopicCommandServiceTest {
         assertThatThrownBy(() -> topicCommandService.delete(user, topic.getId()))
                 .isInstanceOf(TopicForbiddenException.class);
     }
+
+    @Test
+    @DisplayName("Guest는 토픽의 이미지를 변경할 수 없다.")
+    void updateTopicImage_FailByGuest() {
+        // given
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topic);
+
+        // when then
+        assertThatThrownBy(() -> topicCommandService.updateTopicImage(guest, topic.getId(), createFile()))
+                .isInstanceOf(TopicForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("토픽 생성자가 아니면 토픽의 이미지를 변경할 수 없다.")
+    void updateTopicImage_FailByNotCreator() {
+        // given
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+        topicRepository.save(topic);
+        Member otherMember = MemberFixture.create("토픽을 만든자가 아님", "member@naver.com", Role.USER);
+        AuthMember otherAuthMember = MemberFixture.createUser(otherMember);
+
+        // when then
+        assertThatThrownBy(() -> topicCommandService.updateTopicImage(otherAuthMember, topic.getId(), createFile()))
+                .isInstanceOf(TopicForbiddenException.class);
+    }
+
+    @Test
+    @DisplayName("토픽의 생성자인 경우 이미지를 변경할 수 있다.")
+    void updateTopicImage_SuccessByCreator() {
+        // given
+        String originalImageUrl = "https://originalImageUrl";
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(originalImageUrl, member);
+        topicRepository.save(topic);
+        AuthMember authMember = MemberFixture.createUser(member);
+
+        // when
+        topicCommandService.updateTopicImage(authMember, topic.getId(), createFile());
+        Topic changedTopic = topicRepository.findById(topic.getId())
+                .orElseThrow(NoSuchElementException::new);
+
+        // then
+        assertAll(
+                () -> assertThat(topic).usingRecursiveComparison()
+                        .ignoringFields("imageUrl")
+                        .isEqualTo(changedTopic),
+                () -> assertThat(topic.getTopicInfo().getImageUrl())
+                        .isEqualTo("https://map-befine-official.github.io/favicon.png")
+        );
+    }
+
+    @Test
+    @DisplayName("Admin인 경우 이미지를 변경할 수 있다.")
+    void updateTopicImage_SuccessByAdmin() {
+        // given
+        String originalImageUrl = "https://originalImageUrl";
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(originalImageUrl, member);
+        topicRepository.save(topic);
+        Member adminMember = memberRepository.save(
+                MemberFixture.create("관리자", "admin@naver.com", Role.ADMIN)
+        );
+        AuthMember adminAuthMember = new Admin(adminMember.getId());
+
+        // when
+        topicCommandService.updateTopicImage(adminAuthMember, topic.getId(), createFile());
+        Topic changedTopic = topicRepository.findById(topic.getId())
+                .orElseThrow(NoSuchElementException::new);
+
+        // then
+        assertAll(
+                () -> assertThat(topic).usingRecursiveComparison()
+                        .ignoringFields("imageUrl")
+                        .isEqualTo(changedTopic),
+                () -> assertThat(topic.getTopicInfo().getImageUrl())
+                        .isEqualTo("https://map-befine-official.github.io/favicon.png")
+        );
+    }
+
 }

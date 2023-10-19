@@ -1,9 +1,15 @@
 package com.mapbefine.mapbefine.pin.application;
 
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.ALL_MEMBERS;
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.GROUP_ONLY;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PRIVATE;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PUBLIC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -13,27 +19,36 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.pin.PinCommentFixture;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.pin.domain.PinComment;
+import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
+import com.mapbefine.mapbefine.pin.dto.response.PinCommentResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinResponse;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinNotFoundException;
 import com.mapbefine.mapbefine.topic.TopicFixture;
+import com.mapbefine.mapbefine.topic.domain.PermissionType;
+import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @ServiceTest
-class PinQueryServiceTest {
+class PinQueryServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private PinQueryService pinQueryService;
@@ -45,6 +60,8 @@ class PinQueryServiceTest {
     private LocationRepository locationRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private PinCommentRepository pinCommentRepository;
 
     private Location location;
     private Topic publicUser1Topic;
@@ -189,4 +206,110 @@ class PinQueryServiceTest {
         assertThat(actual).extractingResultOf("id")
                 .isEqualTo(pinIds);
     }
+
+    @ParameterizedTest
+    @MethodSource("publicTopicsStatus")
+    @DisplayName("공개 지도인 경우, Guest 는 핀 댓글을 조회에 성공한다.")
+    void findAllPinCommentGuest_Success(Publicity publicity, PermissionType permissionType) {
+        // given
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+        PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
+        PinCommentResponse expected = PinCommentResponse.of(savedPinComment, false);
+
+        // when
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(new Guest(), savedPin.getId());
+
+        // then
+        assertThat(actual.get(0)).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("비공개 지도인 경우, Guest 는 핀 댓글을 조회를 할 수 없다.")
+    void findAllPinCommentGuest_Fail() {
+        // given
+        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+
+        // when then
+        assertThatThrownBy(() -> pinQueryService.findAllPinCommentsByPinId(new Guest(), savedPin.getId()))
+                .isInstanceOf(PinForbiddenException.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("publicAndPrivateTopicsStatus")
+    @DisplayName("일반 회원은 공개 지도인 경우와, 비공개 지도이면서 본인이 권한을 가진 지도의 핀 댓글을 조회할 수 있다.")
+    void findAllPinCommentUser_Success(Publicity publicity, PermissionType permissionType) {
+        // given
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+        PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
+        PinCommentResponse expected = PinCommentResponse.of(savedPinComment, true);
+        AuthMember creatorUser = MemberFixture.createUser(user1);
+
+        // when
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(creatorUser, savedPin.getId());
+
+        // then
+        assertThat(actual.get(0)).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("일반 회원인 경우 비공개 지도이면서 권한을 가지지 않은 지도에 핀 댓글을 조회할 수 없다.")
+    void findAllPinCommentUser_Fail() {
+        // given
+        Topic topic = TopicFixture.createPrivateAndGroupOnlyTopic(user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+        pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
+        AuthMember nonCreatorUser = MemberFixture.createUser(user2);
+
+        // when then
+        assertThatThrownBy(() -> pinQueryService.findAllPinCommentsByPinId(nonCreatorUser, savedPin.getId()))
+                .isInstanceOf(PinForbiddenException.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("publicAndPrivateTopicsStatus")
+    @DisplayName("ADMIN 은 어떠한 유형의 지도의 핀 댓글을 조회할 수 있다.")
+    void findAllPinCommentAdmin_Success(Publicity publicity, PermissionType permissionType) {
+        // given
+        Topic topic = TopicFixture.createByPublicityAndPermissionTypeAndCreator(publicity, permissionType, user1);
+        Topic savedTopic = topicRepository.save(topic);
+        Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
+        PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
+        PinCommentResponse expected = PinCommentResponse.of(savedPinComment, true);
+        Member nonCreator = memberRepository.save(
+                MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN)
+        );
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
+
+        // when
+        List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(nonCreatorAdmin, savedPin.getId());
+
+        // then
+        assertThat(actual.get(0)).usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+
+    static Stream<Arguments> publicTopicsStatus() {
+        return Stream.of(
+                Arguments.of(PUBLIC, ALL_MEMBERS),
+                Arguments.of(PUBLIC, GROUP_ONLY)
+        );
+    }
+
+    static Stream<Arguments> publicAndPrivateTopicsStatus() {
+        return Stream.of(
+                Arguments.of(PUBLIC, ALL_MEMBERS),
+                Arguments.of(PUBLIC, GROUP_ONLY),
+                Arguments.of(PRIVATE, GROUP_ONLY)
+        );
+    }
+
 }

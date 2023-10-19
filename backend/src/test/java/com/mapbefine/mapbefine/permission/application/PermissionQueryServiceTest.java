@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.permission.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-class PermissionQueryServiceTest {
+class PermissionQueryServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private MemberRepository memberRepository;

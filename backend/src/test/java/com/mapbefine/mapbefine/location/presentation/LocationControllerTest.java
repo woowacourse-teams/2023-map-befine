@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 class LocationControllerTest extends RestDocsIntegration {
 
@@ -63,13 +64,13 @@ class LocationControllerTest extends RestDocsIntegration {
                 .willReturn(responses);
 
         //then
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/locations/bests")
+        mockMvc.perform(MockMvcRequestBuilders.get("/locations/bests")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("latitude", String.valueOf(latitude))
-                        .param("longitude", String.valueOf(longitude))
-        ).andDo(restDocs.document());
+                        .param("longitude", String.valueOf(longitude)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
     }
 
 }

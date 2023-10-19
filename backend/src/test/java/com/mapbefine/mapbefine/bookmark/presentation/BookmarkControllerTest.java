@@ -11,23 +11,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 class BookmarkControllerTest extends RestDocsIntegration {
 
     @MockBean
     private BookmarkCommandService bookmarkCommandService;
 
-
     @Test
     @DisplayName("토픽을 회원의 즐겨찾기에 추가")
     void addTopicInBookmark() throws Exception {
         given(bookmarkCommandService.addTopicInBookmark(any(), any())).willReturn(1L);
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/bookmarks/topics")
+        mockMvc.perform(MockMvcRequestBuilders.post("/bookmarks/topics")
                         .queryParam("id", String.valueOf(1))
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(restDocs.document());
     }
 
     @Test
@@ -35,11 +35,11 @@ class BookmarkControllerTest extends RestDocsIntegration {
     void deleteTopicInBookmark() throws Exception {
         doNothing().when(bookmarkCommandService).deleteTopicInBookmark(any(), any());
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/bookmarks/topics")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/bookmarks/topics")
                         .queryParam("id", String.valueOf(1L))
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L))
-        ).andDo(restDocs.document());
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(restDocs.document());
     }
 
 }

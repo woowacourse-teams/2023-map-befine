@@ -18,10 +18,10 @@ public class PinException {
         }
     }
 
-
     public static class PinNotFoundException extends ForbiddenException {
         public PinNotFoundException(PinErrorCode errorCode, Long id) {
             super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), id));
         }
     }
+
 }

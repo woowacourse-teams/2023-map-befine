@@ -9,10 +9,26 @@ import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import java.util.List;
+import org.apache.http.conn.util.PublicSuffixList;
 
 public class TopicFixture {
 
     private static final String IMAGE_URL = "https://map-befine-official.github.io/favicon.png";
+
+    public static Topic createByPublicityAndPermissionTypeAndCreator(
+            Publicity publicity,
+            PermissionType permissionType,
+            Member creator
+    ) {
+        return Topic.createTopicAssociatedWithCreator(
+                "토픽",
+                "토픽의 Publicity, PermissionType 이 동적으로 정해집니다.",
+                IMAGE_URL,
+                publicity,
+                permissionType,
+                creator
+        );
+    }
 
     public static Topic createPrivateAndGroupOnlyTopic(Member member) {
         return Topic.createTopicAssociatedWithCreator(
@@ -30,6 +46,28 @@ public class TopicFixture {
                 "아무나 읽을 수 있는 토픽",
                 "아무나 읽을 수 있습니다.",
                 IMAGE_URL,
+                Publicity.PUBLIC,
+                PermissionType.ALL_MEMBERS,
+                member
+        );
+    }
+
+    public static Topic createPublicAndGroupOnlyTopic(Member member) {
+        return Topic.createTopicAssociatedWithCreator(
+                "아무나 읽을 수 있는 토픽",
+                "아무나 읽지만 아무나 생성할 수는 없습니다.",
+                IMAGE_URL,
+                Publicity.PUBLIC,
+                PermissionType.GROUP_ONLY,
+                member
+        );
+    }
+
+    public static Topic createPublicAndAllMembersTopic(String imageUrl, Member member) {
+        return Topic.createTopicAssociatedWithCreator(
+                "아무나 읽을 수 있는 토픽",
+                "아무나 읽을 수 있습니다.",
+                imageUrl,
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
                 member
@@ -96,4 +134,5 @@ public class TopicFixture {
                 topicIds
         );
     }
+
 }

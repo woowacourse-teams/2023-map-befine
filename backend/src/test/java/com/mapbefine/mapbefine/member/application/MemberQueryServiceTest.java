@@ -1,12 +1,15 @@
 package com.mapbefine.mapbefine.member.application;
 
+import static com.mapbefine.mapbefine.member.domain.Role.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
+import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -28,6 +31,7 @@ import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
-class MemberQueryServiceTest {
+class MemberQueryServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private MemberQueryService memberQueryService;
@@ -81,10 +85,10 @@ class MemberQueryServiceTest {
     void findAllMember() {
         // given
         Member member2 = memberRepository.save(
-                MemberFixture.create("member2", "member2@member.com", Role.USER)
+                MemberFixture.create("member2", "member2@member.com", USER)
         );
         Member member3 = memberRepository.save(
-                MemberFixture.create("member3", "member3@member.com", Role.USER)
+                MemberFixture.create("member3", "member3@member.com", USER)
         );
 
         // when
@@ -100,15 +104,11 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("회원을 단일 조회한다.")
-    void findMemberById() {
+    @DisplayName("로그인 회원의 상세 정보를 조회한다.")
+    void findMyProfile() {
         // given
-        Member member = memberRepository.save(
-                MemberFixture.create("member", "member@naver.com", Role.USER)
-        );
-
         // when
-        MemberDetailResponse response = memberQueryService.findById(member.getId());
+        MemberDetailResponse response = memberQueryService.findMemberDetail(authMember);
 
         // then
         assertThat(response).usingRecursiveComparison()
@@ -116,13 +116,15 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("조회하려는 회원이 없는 경우 예외를 반환한다.")
-    void findMemberById_whenNoneExists_thenFail() {
-        // given when then
-        assertThatThrownBy(() -> memberQueryService.findById(Long.MAX_VALUE))
+    @DisplayName("로그인한 식별값(ID)에 해당하는 회원 정보를 찾을 수 없는 경우 예외를 반환한다.")
+    void findMyProfile_whenNoneExists_thenFail() {
+        // given
+        AuthMember otherAuthMember = new User(Long.MAX_VALUE, Collections.emptyList(), Collections.emptyList());
+
+        // when then
+        assertThatThrownBy(() -> memberQueryService.findMemberDetail(otherAuthMember))
                 .isInstanceOf(MemberNotFoundException.class);
     }
-
 
     @Test
     @DisplayName("즐겨찾기 목록에 추가 된 토픽을 조회할 수 있다")
@@ -158,7 +160,7 @@ class MemberQueryServiceTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("로그인한 회원의 모든 지도를 가져올 수 있다.")
     void findMyAllTopics_Success() {
         //when
         List<TopicResponse> myAllTopics = memberQueryService.findMyAllTopics(authMember);
@@ -171,6 +173,26 @@ class MemberQueryServiceTest {
         assertThat(myAllTopics).hasSize(topics.size());
         assertThat(myAllTopics).extractingResultOf("id")
                 .isEqualTo(topicIds);
+    }
+
+    @Test
+    @DisplayName("로그인한 회원의 모든 지도를 가져올 때, 삭제된 지도는 제외한다. (soft delete 반영)")
+    void findMyAllTopics_Success_notContainingSoftDeleted() {
+        // given
+        List<Long> topicIds = topics.stream()
+                .map(Topic::getId)
+                .toList();
+
+        // when
+        Long deleted = topicIds.get(0);
+        topicRepository.deleteById(deleted);
+        topicRepository.flush();
+        List<TopicResponse> myAllTopics = memberQueryService.findMyAllTopics(authMember);
+
+        // then
+        assertThat(myAllTopics).hasSize(topics.size() - 1);
+        assertThat(myAllTopics).extractingResultOf("id")
+                .doesNotContain(deleted);
     }
 
     @Test
@@ -198,5 +220,5 @@ class MemberQueryServiceTest {
                 .isEqualTo(pinIds);
 
     }
-    
+
 }

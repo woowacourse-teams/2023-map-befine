@@ -25,8 +25,6 @@ class MemberResponseTest {
         // then
         assertThat(memberResponse.nickName())
                 .isEqualTo(member.getMemberInfo().getNickName());
-        assertThat(memberResponse.email())
-                .isEqualTo(member.getMemberInfo().getEmail());
     }
 
 }

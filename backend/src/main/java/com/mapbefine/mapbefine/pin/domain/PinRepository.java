@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.pin.domain;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -7,22 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Repository
 public interface PinRepository extends JpaRepository<Pin, Long> {
 
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
-    List<Pin> findAllByIsDeletedFalse();
-
-    Optional<Pin> findByIdAndIsDeletedFalse(Long pinId);
+    List<Pin> findAll();
 
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
     List<Pin> findAllByTopicId(Long topicId);
-
-    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
-    List<Pin> findAllByCreatorIdAndIsDeletedFalse(Long creatorId);
 
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
     List<Pin> findAllByCreatorId(Long creatorId);

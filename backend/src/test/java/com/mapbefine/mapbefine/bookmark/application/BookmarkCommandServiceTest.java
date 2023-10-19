@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.bookmark.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
@@ -21,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @ServiceTest
-class BookmarkCommandServiceTest {
+class BookmarkCommandServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private BookmarkCommandService bookmarkCommandService;

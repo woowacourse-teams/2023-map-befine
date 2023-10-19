@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.topic.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
@@ -27,16 +28,15 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
-
 @ServiceTest
-class TopicQueryServiceTest {
+class TopicQueryServiceTest extends TestDatabaseContainer {
 
     @Autowired
     private TopicRepository topicRepository;
@@ -206,7 +206,7 @@ class TopicQueryServiceTest {
         assertThat(topics).extractingResultOf("isBookmarked")
                 .containsExactlyInAnyOrder(Boolean.FALSE, Boolean.FALSE);
     }
-    
+
     @Test
     @DisplayName("권한이 있는 토픽을 ID로 조회한다.")
     void findDetailById_Success() {
@@ -223,6 +223,25 @@ class TopicQueryServiceTest {
         //then
         assertThat(detail.id()).isEqualTo(topic.getId());
         assertThat(detail.name()).isEqualTo("아무나 읽을 수 있는 토픽");
+    }
+
+    @Test
+    @DisplayName("토픽 상세 조회 시 삭제된 핀은 볼 수 없다. (soft delete 반영)")
+    void findDetailById_Success_getPinsOnlyNotDeleted() {
+        //given
+        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
+        Location location = LocationFixture.create();
+        Pin pin = PinFixture.create(location, topic, member);
+        locationRepository.save(location);
+        topicRepository.save(topic);
+        pinRepository.save(pin);
+        pinRepository.deleteById(pin.getId());
+
+        //when
+        TopicDetailResponse response = topicQueryService.findDetailById(new Admin(member.getId()), topic.getId());
+
+        //then
+        assertThat(response.pins()).isEmpty();
     }
 
     @Test
