@@ -21,7 +21,7 @@ const useNavigator = () => {
       home: () => routePage('/'),
       seeTogether: () =>
         routePage(
-          `/topics/${
+          `/see-together/${
             seeTogetherTopics?.length === 0 ? -1 : seeTogetherTopics?.join(',')
           }`,
         ),

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { pinColors, pinImageMap } from '../constants/pinImage';
 import useNavigator from '../hooks/useNavigator';
@@ -41,6 +41,7 @@ function MarkerProvider({ children }: Props): JSX.Element {
   const { coordinates, clickedCoordinate } = useContext(CoordinatesContext);
   const { topicId } = useParams<{ topicId: string }>();
   const { routePage } = useNavigator();
+  const { pathname } = useLocation();
 
   const createMarker = (
     coordinate: Coordinate,
@@ -87,7 +88,12 @@ function MarkerProvider({ children }: Props): JSX.Element {
 
     newMarkers.forEach((marker: Marker) => {
       marker.on('click', () => {
-        routePage(`/topics/${topicId}?pinDetail=${marker.id}`);
+        if (pathname.split('/')[1] === 'topics') {
+          routePage(`/topics/${topicId}?pinDetail=${marker.id}`);
+          return;
+        }
+
+        routePage(`/see-together/${topicId}?pinDetail=${marker.id}`);
       });
     });
     setMarkers(newMarkers);
