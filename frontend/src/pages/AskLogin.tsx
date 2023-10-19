@@ -7,9 +7,11 @@ import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import { DEFAULT_PROD_URL, FULLSCREEN } from '../constants';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 function AskLogin() {
   const { width } = useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('none');
 
   const loginButtonClick = async () => {
     window.location.href = `${DEFAULT_PROD_URL}/oauth/kakao`;

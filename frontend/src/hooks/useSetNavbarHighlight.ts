@@ -17,16 +17,27 @@ const navbarPageNames: NavbarPageNamesType[] = [
   'none',
 ];
 
+const deleteNavbarHighlights = {
+  home: false,
+  seeTogether: false,
+  addMapOrPin: false,
+  favorite: false,
+  profile: false,
+};
+
 const useSetNavbarHighlight = (pageName: NavbarPageNamesType) => {
   const { navbarHighlights, setNavbarHighlights } = useContext(
     NavbarHighlightsContext,
   );
 
   useEffect(() => {
-    if (pageName === 'none') return;
+    if (pageName === 'none') {
+      setNavbarHighlights(deleteNavbarHighlights);
+      return;
+    }
 
     const newNavbarHighlights: NavbarHighlights = navbarPageNames.reduce(
-      (acc, curr) => ({ ...acc, [curr]: curr === pageName }),
+      (acc, cur) => ({ ...acc, [cur]: cur === pageName }),
       {} as NavbarHighlights,
     );
 
