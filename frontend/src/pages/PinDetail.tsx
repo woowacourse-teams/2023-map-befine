@@ -206,7 +206,9 @@ function PinDetail({
         </Flex>
       </Flex>
       <Space size={2} />
-      <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+      {userToken && (
+        <ImageInputLabel htmlFor="file">파일업로드</ImageInputLabel>
+      )}
       <ImageInputButton
         id="file"
         type="file"
