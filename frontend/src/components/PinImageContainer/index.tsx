@@ -5,7 +5,7 @@ import Image from '../common/Image';
 import RemoveImageButton from '../../assets/remove_image_icon.svg';
 import useDelete from '../../apiHooks/useDelete';
 import useToast from '../../hooks/useToast';
-import { useModalContext, ModalPortal } from '../../context/ImageModalContext';
+import { useModalContext, ImageModal } from '../../context/ImageModalContext';
 import { useState } from 'react';
 import Button from '../common/Button';
 import Space from '../common/Space';
@@ -68,7 +68,7 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
             ),
         )}
         {isModalOpen && (
-          <ModalPortal closeModalHandler={closeModal}>
+          <ImageModal closeModalHandler={closeModal}>
             <ModalImageWrapper>
               <ModalImage src={modalImage} />
               <Space size={3} />
@@ -76,7 +76,7 @@ const PinImageContainer = ({ images, getPinData }: PinImageContainerProps) => {
                 닫기
               </Button>
             </ModalImageWrapper>
-          </ModalPortal>
+          </ImageModal>
         )}
       </FilmList>
     </>

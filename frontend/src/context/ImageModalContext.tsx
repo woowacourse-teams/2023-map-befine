@@ -8,12 +8,12 @@ import React, {
 import ReactDOM from 'react-dom';
 import { styled } from 'styled-components';
 
-interface ModalPortalProps {
+interface ImageModalProps {
   children: ReactChild;
   closeModalHandler: () => void;
 }
 
-export const ModalPortal = (props: ModalPortalProps) => {
+export const ImageModal = (props: ImageModalProps) => {
   const $modalRoot = document.getElementById('modal-root') as HTMLElement;
   const modalRef = useRef<HTMLDialogElement>(null);
 
