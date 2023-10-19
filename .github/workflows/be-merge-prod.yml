@@ -52,7 +52,7 @@ jobs:
 
       - name: Docker Image Build
         working-directory: backend
-        run: docker build --platform linux/arm64/v8 -t mapbefine/mapbefine -f Dockerfile-dev .
+        run: docker build --platform linux/arm64/v8 -t mapbefine/mapbefine -f Dockerfile-prod .
 
       - name: Docker Hub Push
         run: docker push mapbefine/mapbefine
