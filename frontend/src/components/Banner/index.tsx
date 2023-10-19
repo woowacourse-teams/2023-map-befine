@@ -7,7 +7,7 @@ import useNavigator from '../../hooks/useNavigator';
 import Box from '../common/Box';
 
 const USAGE_URL =
-  'https://yoondgu.notion.site/3e5b3c98c4814aa1bd5887104fee314e?pvs=4';
+  'https://sites.google.com/woowahan.com/woowacourse-demo-5th/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/%EA%B4%9C%EC%B0%AE%EC%9D%84%EC%A7%80%EB%8F%84';
 
 export default function Banner() {
   const { routePage } = useNavigator();
