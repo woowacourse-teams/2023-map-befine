@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "history": "^5.3.0",
-    "map-befine-swiper": "^0.8.2",
+    "map-befine-swiper": "^0.8.3",
     "msw-storybook-addon": "^1.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
