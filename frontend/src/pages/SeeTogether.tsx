@@ -64,6 +64,7 @@ function SeeTogether() {
       `/topics/ids?ids=${requestTopicIds}`,
     );
 
+    setTopicDetails([...topics]);
     setCoordinatesTopicDetailWithHashMap(topics);
   };
 
@@ -71,7 +72,6 @@ function SeeTogether() {
     if (topicId === '-1' || !topicId) return;
 
     const newCoordinates: any = [];
-    const topicHashmap = new Map([]);
 
     topics.forEach((topic: TopicDetailProps) => {
       topic.pins.forEach((pin: PinProps) => {
@@ -86,16 +86,6 @@ function SeeTogether() {
     });
 
     setCoordinates(newCoordinates);
-
-    topics.forEach((topicDetailFromData: TopicDetailProps) =>
-      topicHashmap.set(`${topicDetailFromData.id}`, topicDetailFromData),
-    );
-
-    const topicDetailFromData = topicId
-      .split(',')
-      .map((number) => topicHashmap.get(number)) as TopicDetailProps[];
-
-    setTopicDetails([...topicDetailFromData]);
   };
 
   const togglePinDetail = () => {
