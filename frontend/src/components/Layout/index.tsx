@@ -2,6 +2,7 @@ import { useContext, useEffect } from 'react';
 import { css, styled } from 'styled-components';
 
 import CoordinatesProvider from '../../context/CoordinatesContext';
+import ImageModalContext from '../../context/ImageModalContext';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
 import MarkerProvider from '../../context/MarkerContext';
 import ModalProvider from '../../context/ModalContext';
@@ -16,7 +17,6 @@ import Map from '../Map';
 import Toast from '../Toast';
 import Logo from './Logo';
 import Navbar from './Navbar';
-import ImageModalContext from '../../context/ImageModalContext';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -70,7 +70,6 @@ function Layout({ children }: LayoutProps) {
                         $flexDirection="column"
                         height="inherit"
                         overflow="auto"
-                        padding="0"
                       >
                         {children}
                       </Flex>
