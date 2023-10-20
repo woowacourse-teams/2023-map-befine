@@ -101,11 +101,11 @@ const Wrapper = styled.section`
   border-bottom: 4px solid ${({ theme }) => theme.color.black};
 
   @media (max-width: 1076px) {
-    width: calc(50vw - 40px);
+    width: 50vw;
   }
 
   @media (max-width: 744px) {
-    width: calc(100vw - 40px);
+    width: 100vw;
   }
 
   @media (max-width: 372px) {
