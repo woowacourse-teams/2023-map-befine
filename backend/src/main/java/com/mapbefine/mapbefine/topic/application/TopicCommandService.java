@@ -110,9 +110,7 @@ public class TopicCommandService {
 
         validateCopyablePins(member, originalPins);
 
-        Member creator = findCreatorByAuthMember(member);
-
-        List<Long> batchUpdatedPins = pinBatchRepository.saveAll(originalPins, creator, topic);
+        pinBatchRepository.saveAll(topic, originalPins);
     }
 
     private List<Pin> findAllPins(List<Long> pinIds) {
@@ -141,10 +139,12 @@ public class TopicCommandService {
 
         validateCopyableTopics(member, originalTopics);
 
-        Member creator = findCreatorByAuthMember(member);
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
-        pinBatchRepository.saveAll(originalPins, creator, topic);
+        List<Pin> pinToCopy = originalPins.stream()
+                .map(pin -> pin.copyToTopic(topic))
+                .toList();
 
+        pinBatchRepository.saveAll(topic, pinToCopy);
         return topic.getId();
     }
 

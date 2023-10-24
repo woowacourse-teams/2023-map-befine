@@ -9,13 +9,11 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Set;
 
 class PinTest {
 
@@ -80,7 +78,7 @@ class PinTest {
         Topic topicForCopy = TopicFixture.createByName("복사해 갈 토픽 이름", memberForCopy);
 
         // when
-        original.copyToTopic(memberForCopy, topicForCopy);
+        original.copyToTopic(topicForCopy);
         Pin actual = topicForCopy.getPins().iterator().next();
 
         // then
