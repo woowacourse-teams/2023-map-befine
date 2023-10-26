@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -21,24 +22,35 @@ public class PinBatchRepository {
     }
 
     public int[] saveAll(Topic topicForCopy, List<Pin> originalPins) {
-        topicForCopy.increasePinCount();
-        LocalDateTime createdAt = LocalDateTime.now();
-        topicForCopy.updateLastPinUpdatedAt(createdAt);
-        final int[] rowCount = batchUpdatePins(topicForCopy, originalPins);
+        int[] rowCount = batchUpdatePins(topicForCopy, originalPins);
+        Long firstIdFromBatch = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
+        validateId(firstIdFromBatch);
 
-        final long firstId = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
+        List<PinImageDTO> pinImageDTOsToBatches = createPinImageDTOsToBatch(originalPins, rowCount, firstIdFromBatch);
 
-        List<PinImageDto> pinImagesToBatch = new ArrayList<>();
+        return batchUpdatePinImages(pinImageDTOsToBatches);
+    }
+
+    private void validateId(Long firstIdFromBatch) {
+        if (Objects.isNull(firstIdFromBatch)) {
+            throw new IllegalStateException("fail to batch update pins");
+        }
+    }
+
+    private List<PinImageDTO> createPinImageDTOsToBatch(
+            List<Pin> originalPins,
+            int[] rowCount,
+            Long firstIdFromBatch
+    ) {
+        List<PinImageDTO> pinImagesToBatch = new ArrayList<>();
         for (int i = 0; i < originalPins.size(); i++) {
             if (rowCount[i] == 0) {
                 continue;
             }
             final Pin pin = originalPins.get(i);
-            /// TODO: 2023/10/25  PinImage fetch 조인으로 가져와서 N+1 없애야함
-            pinImagesToBatch.addAll(PinImageDto.of(pin.getPinImages(), firstId + i));
+            pinImagesToBatch.addAll(PinImageDTO.of(pin.getPinImages(), firstIdFromBatch + i));
         }
-
-        return batchUpdatePinImages(pinImagesToBatch);
+        return pinImagesToBatch;
     }
 
     private int[] batchUpdatePins(Topic topicForCopy, List<Pin> pins) {
@@ -71,14 +83,14 @@ public class PinBatchRepository {
         });
     }
 
-    private int[] batchUpdatePinImages(List<PinImageDto> pinImages) {
+    private int[] batchUpdatePinImages(List<PinImageDTO> pinImages) {
         return jdbcTemplate.batchUpdate("INSERT INTO pin_image ("
                 + " image_url, pin_id)"
                 + " VALUES ("
                 + " ?, ?)", new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                final PinImageDto pinImage = pinImages.get(i);
+                final PinImageDTO pinImage = pinImages.get(i);
                 ps.setString(1, pinImage.getImageUrl());
                 ps.setLong(2, pinImage.getPinId());
             }
@@ -90,29 +102,29 @@ public class PinBatchRepository {
         });
     }
 
-    private static class PinImageDto {
+    private static class PinImageDTO {
 
         private final String imageUrl;
         private final Long pinId;
         private final boolean isDeleted;
 
-        private PinImageDto(String imageUrl, Long pinId, boolean isDeleted) {
+        private PinImageDTO(String imageUrl, Long pinId, boolean isDeleted) {
             this.imageUrl = imageUrl;
             this.pinId = pinId;
             this.isDeleted = isDeleted;
         }
 
-        public static PinImageDto of(PinImage pinImage, Long pinId) {
-            return new PinImageDto(
+        public static PinImageDTO of(PinImage pinImage, Long pinId) {
+            return new PinImageDTO(
                     pinImage.getImageUrl(),
                     pinId,
                     pinImage.isDeleted()
             );
         }
 
-        private static List<PinImageDto> of(List<PinImage> pinImages, Long pinId) {
+        private static List<PinImageDTO> of(List<PinImage> pinImages, Long pinId) {
             return pinImages.stream()
-                    .map(pinImage -> PinImageDto.of(pinImage, pinId))
+                    .map(pinImage -> PinImageDTO.of(pinImage, pinId))
                     .toList();
         }
 
