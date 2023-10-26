@@ -15,6 +15,9 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
     List<Pin> findAll();
 
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
+    List<Pin> findAllByIdIn(List<Long> pinIds);
+
+    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
     List<Pin> findAllByTopicId(Long topicId);
 
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
