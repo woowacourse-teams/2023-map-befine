@@ -114,7 +114,7 @@ public class TopicCommandService {
     }
 
     private List<Pin> findAllPins(List<Long> pinIds) {
-        List<Pin> findPins = pinRepository.findAllById(pinIds);
+        List<Pin> findPins = pinRepository.findAllByIdIn(pinIds);
 
         if (pinIds.size() != findPins.size()) {
             throw new PinBadRequestException(ILLEGAL_PIN_ID);
