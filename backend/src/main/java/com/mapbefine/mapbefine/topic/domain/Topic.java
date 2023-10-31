@@ -156,6 +156,11 @@ public class Topic extends BaseTimeEntity {
         pinCount++;
     }
 
+
+    public void increasePinCount(int count) {
+        pinCount += count;
+    }
+
     public void decreasePinCount() {
         pinCount--;
     }

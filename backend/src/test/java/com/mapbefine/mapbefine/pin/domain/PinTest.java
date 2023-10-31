@@ -62,35 +62,6 @@ class PinTest {
                 .isEqualTo(pin);
     }
 
-    @Test
-    @DisplayName("Pin을 복사하면 Topic, Member 외 정보가 모두 같은 새로운 Pin을 생성해 반환한다.")
-    void copy_Success() {
-        // given
-        Pin original = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                "before name",
-                "before description",
-                location,
-                topic,
-                member
-        );
-        PinImage.createPinImageAssociatedWithPin("https://example.com/image.jpg", original);
-        Member memberForCopy = MemberFixture.create("복사해 갈 회원", "other@gmail.com", Role.USER);
-        Topic topicForCopy = TopicFixture.createByName("복사해 갈 토픽 이름", memberForCopy);
-
-        // when
-        original.copyToTopic(topicForCopy);
-        Pin actual = topicForCopy.getPins().iterator().next();
-
-        // then
-        assertThat(original).usingRecursiveComparison()
-                .ignoringFieldsOfTypes(Topic.class, Member.class)
-                .isEqualTo(actual);
-        assertThat(actual.getTopic()).usingRecursiveComparison()
-                .isEqualTo(topicForCopy);
-        assertThat(actual.getCreator()).usingRecursiveComparison()
-                .isEqualTo(memberForCopy);
-    }
-
     @Nested
     class Validate {
 

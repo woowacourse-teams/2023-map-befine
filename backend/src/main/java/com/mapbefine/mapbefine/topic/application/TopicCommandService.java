@@ -12,7 +12,6 @@ import com.mapbefine.mapbefine.image.application.ImageService;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
-import com.mapbefine.mapbefine.pin.domain.PinBatchRepository;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinBadRequestException;
 import com.mapbefine.mapbefine.pin.exception.PinException.PinForbiddenException;
@@ -36,19 +35,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class TopicCommandService {
 
     private final TopicRepository topicRepository;
-    private final PinBatchRepository pinBatchRepository;
     private final PinRepository pinRepository;
     private final MemberRepository memberRepository;
     private final ImageService imageService;
 
     public TopicCommandService(
             TopicRepository topicRepository,
-            PinBatchRepository pinBatchRepository, PinRepository pinRepository,
+            PinRepository pinRepository,
             MemberRepository memberRepository,
             ImageService imageService
     ) {
         this.topicRepository = topicRepository;
-        this.pinBatchRepository = pinBatchRepository;
         this.pinRepository = pinRepository;
         this.memberRepository = memberRepository;
         this.imageService = imageService;
@@ -58,11 +55,11 @@ public class TopicCommandService {
         Topic topic = convertToTopic(member, request);
         List<Long> pinIds = request.pins();
 
+        topicRepository.save(topic);
+        topicRepository.flush();
         if (!pinIds.isEmpty()) {
             copyPinsToTopic(member, topic, pinIds);
         }
-
-        topicRepository.save(topic);
 
         return topic.getId();
     }
@@ -107,10 +104,9 @@ public class TopicCommandService {
             List<Long> pinIds
     ) {
         List<Pin> originalPins = findAllPins(pinIds);
-
         validateCopyablePins(member, originalPins);
 
-        pinBatchRepository.saveAll(topic, originalPins);
+        pinRepository.saveAllToTopic(topic, originalPins, member);
     }
 
     private List<Pin> findAllPins(List<Long> pinIds) {
@@ -140,11 +136,9 @@ public class TopicCommandService {
         validateCopyableTopics(member, originalTopics);
 
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
-        List<Pin> pinToCopy = originalPins.stream()
-                .map(pin -> pin.copyToTopic(topic))
-                .toList();
 
-        pinBatchRepository.saveAll(topic, pinToCopy);
+        topicRepository.save(topic);
+        pinRepository.saveAllToTopic(topic, originalPins, member);
         return topic.getId();
     }
 

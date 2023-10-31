@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.topic.application;
 
 import static com.mapbefine.mapbefine.image.FileFixture.createFile;
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,7 +10,6 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
-import com.mapbefine.mapbefine.image.FileFixture;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -41,25 +39,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @ServiceTest
 class TopicCommandServiceTest extends TestDatabaseContainer {
 
     @Autowired
-    private MemberRepository memberRepository;
+    private TestEntityManager testEntityManager;
 
+    @Autowired
+    private MemberRepository memberRepository;
     @Autowired
     private LocationRepository locationRepository;
-
     @Autowired
     private TopicRepository topicRepository;
-
     @Autowired
     private PinRepository pinRepository;
-
     @Autowired
     private TopicCommandService topicCommandService;
-
     @Autowired
     private TopicQueryService topicQueryService;
 
@@ -137,7 +134,7 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("핀을 통해 새로운 토픽을 생성할 수 있다.")
+    @DisplayName("기존 핀을 뽑아온 새로운 토픽을 생성할 수 있다.")
     void saveTopicWithPins_Success() {
         //given
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
@@ -154,6 +151,7 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
                 );
 
         Long topicId = topicCommandService.saveTopic(user, request);
+        testEntityManager.clear();
 
         //then
         TopicDetailResponse detail = topicQueryService.findDetailById(user, topicId);
@@ -237,6 +235,7 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
                 );
 
         Long topicId = topicCommandService.merge(user, request);
+        testEntityManager.clear();
 
         //then
         TopicDetailResponse detail = topicQueryService.findDetailById(user, topicId);
@@ -316,7 +315,7 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
         topicCommandService.copyPin(user, target.getId(), pinIds);
 
         // then
-        List<Pin> targetPins = target.getPins();
+        List<Pin> targetPins = pinRepository.findAllByTopicId(target.getId());
         Pin targetPin = targetPins.iterator().next();
         Pin sourcePin = sourcePins.get(0);
 
