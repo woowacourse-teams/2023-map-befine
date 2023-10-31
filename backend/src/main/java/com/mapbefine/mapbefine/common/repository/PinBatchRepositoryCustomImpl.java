@@ -9,9 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,6 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
         int[] rowCount = batchUpdatePins(topicForCopy, originalPins, copiedPinsCreator);
         Long firstIdFromBatch = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
         validateId(firstIdFromBatch);
-
         List<PinImageDTO> pinImageDTOsToBatches = createPinImageDTOsToBatch(originalPins, rowCount, firstIdFromBatch);
 
         return batchUpdatePinImages(pinImageDTOsToBatches);
@@ -89,16 +89,13 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
             int[] rowCount,
             Long firstIdFromBatch
     ) {
-        List<PinImageDTO> pinImagesToBatch = new ArrayList<>();
-        for (int i = 0; i < originalPins.size(); i++) {
-            // TODO 인덴트 개선
-            if (rowCount[i] == 0) {
-                continue;
-            }
-            Pin pin = originalPins.get(i);
-            pinImagesToBatch.addAll(PinImageDTO.of(pin.getPinImages(), firstIdFromBatch + i));
-        }
-        return pinImagesToBatch;
+        return IntStream.range(0, originalPins.size())
+                .filter(index -> rowCount[index] != 0)
+                .mapToObj(index -> {
+                    Pin pin = originalPins.get(index);
+                    return PinImageDTO.of(pin.getPinImages(), firstIdFromBatch + index);
+                }).flatMap(Collection::stream)
+                .toList();
     }
 
     private int[] batchUpdatePinImages(List<PinImageDTO> pinImages) {
