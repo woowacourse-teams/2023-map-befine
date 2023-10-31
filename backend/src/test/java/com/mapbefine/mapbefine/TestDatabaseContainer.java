@@ -15,10 +15,18 @@ public abstract class TestDatabaseContainer {
 
     @DynamicPropertySource
     public static void overrideProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.url", TestDatabaseContainer::getJdbcUrlWithQueryStrings);
         registry.add("spring.datasource.username", mySQLContainer::getUsername);
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
         registry.add("spring.datasource.driver-class-name", mySQLContainer::getDriverClassName);
+    }
+
+    private static String getJdbcUrlWithQueryStrings() {
+        return mySQLContainer.getJdbcUrl()
+                + "?rewriteBatchedStatements=true&"
+                + "profileSQL=true&"
+                + "logger=Slf4JLogger&"
+                + "maxQuerySizeToLog=999999";
     }
 
 }
