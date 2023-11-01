@@ -6,11 +6,10 @@ import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_F
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
-import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
-import com.mapbefine.mapbefine.topic.domain.Cluster;
+import com.mapbefine.mapbefine.topic.domain.Clustering;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.ClusteringResponse;
@@ -18,11 +17,8 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
@@ -251,75 +247,24 @@ public class TopicQueryService {
     public List<ClusteringResponse> findClusteringPinsByIds(
             AuthMember authMember,
             List<Long> topicIds,
-            double realDistanceOfImage
+            double imageDiameter
     ) {
-        // topic 을 불러온다.
         List<Topic> topics = topicRepository.findByIdIn(topicIds);
 
-        // 토픽에 대해서 모두 검증을 진행한다.
         for (Topic topic : topics) {
             validateReadableTopic(authMember, topic);
         }
 
-        // 검증이 모두 완료가 된 상태라면 분리집합을 진행한다.
         List<Pin> allPins = topics.stream()
                 .map(Topic::getPins)
                 .flatMap(List::stream)
                 .toList();
 
-        int[] parent = new int[allPins.size()];
-
-        for (int i = 0; i < parent.length; i++) {
-            parent[i] = i;
-        }
-
-        for (int i = 0; i < allPins.size(); i++) {
-            for (int j = 0; j < allPins.size(); j++) {
-                if (i == j) {
-                    continue;
-                }
-
-                Pin a = allPins.get(i);
-                Pin b = allPins.get(j);
-
-                Coordinate ac = a.getLocation().getCoordinate();
-                Coordinate bc = b.getLocation().getCoordinate();
-
-                if (ac.calculateDistance(bc) <= realDistanceOfImage) {
-                    union(parent, find(parent, i), find(parent, j));
-                }
-            }
-        }
-
-        // 분리집합이 끝나면 각각의 ID --> List<Pin> 으로 묶는다.
-        Map<Integer, List<Pin>> m = new HashMap<>();
-        for (int i = 0; i < allPins.size(); i++) {
-            int unionNumber = find(parent, i);
-
-            if (!m.containsKey(unionNumber)) {
-                m.put(unionNumber, new ArrayList<>());
-            }
-
-            m.get(unionNumber).add(allPins.get(i));
-        }
-
-        return m.values().stream()
-                .map(Cluster::from)
+        return Clustering.from(allPins, imageDiameter)
+                .getClusters()
+                .stream()
                 .map(ClusteringResponse::from)
                 .toList();
-    }
-
-    private int find(int[] parent, int x) {
-        if (parent[x] == x) {
-            return x;
-        }
-
-        parent[x] = find(parent, parent[x]);
-        return parent[x];
-    }
-
-    private void union(int[] parent, int a, int b) {
-        parent[b] = a;
     }
 
 }
