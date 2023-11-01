@@ -12,11 +12,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Repository
 public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
 
@@ -47,22 +49,33 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
         topicForCopy.updateLastPinUpdatedAt(createdAt);
         entityManager.flush();
 
-        return jdbcTemplate.batchUpdate("INSERT INTO pin ("
-                + " name, description, member_id, topic_id, location_id,"
+        String bulkInsertSql = "INSERT INTO pin ("
+                + "name, description, member_id, topic_id, location_id,"
                 + " created_at, updated_at)"
                 + " VALUES ("
                 + " ?, ?, ?, ?, ?,"
-                + " ?, ?)", new BatchPreparedStatementSetter() {
+                + " ?, ?)";
+        log.debug("[Query] bulk insert size {} : {}", originalPins.size(), bulkInsertSql);
+
+        Long topicId = topicForCopy.getId();
+        Long creatorId = topicForCopy.getCreator().getId();
+
+        return jdbcTemplate.batchUpdate(bulkInsertSql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 Pin pin = originalPins.get(i);
                 ps.setString(1, pin.getName());
                 ps.setString(2, pin.getDescription());
-                ps.setLong(3, topicForCopy.getCreator().getId());
-                ps.setLong(4, topicForCopy.getId());
+                ps.setLong(3, creatorId);
+                ps.setLong(4, topicId);
                 ps.setLong(5, pin.getLocation().getId());
                 ps.setTimestamp(6, Timestamp.valueOf(createdAt));
                 ps.setTimestamp(7, Timestamp.valueOf(createdAt));
+                log.trace("[Parameter Binding] {} : "
+                                + "name={}, description={}, member_id={}, topic_id={}, location_id={}, "
+                                + "created_at={}, updated_at={}",
+                        i, pin.getName(), pin.getDescription(), creatorId, topicId, pin.getLocation().getId(),
+                        createdAt, createdAt);
             }
 
             @Override
@@ -93,15 +106,20 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
     }
 
     private int[] batchUpdatePinImages(List<PinImageDTO> pinImages) {
-        return jdbcTemplate.batchUpdate("INSERT INTO pin_image ("
+        String bulkInsertSql = "INSERT INTO pin_image ("
                 + "image_url, pin_id) "
                 + "VALUES ("
-                + "?, ?)", new BatchPreparedStatementSetter() {
+                + "?, ?)";
+        log.debug("[Query] bulk insert size {} : {}", pinImages.size(), bulkInsertSql);
+
+        return jdbcTemplate.batchUpdate(bulkInsertSql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 PinImageDTO pinImage = pinImages.get(i);
                 ps.setString(1, pinImage.getImageUrl());
                 ps.setLong(2, pinImage.getPinId());
+                log.trace("[Parameter Binding] {} : imageUrl={}, pinImage={} ",
+                        i, pinImage.getImageUrl(), pinImage.getPinId());
             }
 
             @Override

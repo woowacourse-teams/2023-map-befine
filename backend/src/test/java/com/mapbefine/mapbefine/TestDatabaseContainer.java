@@ -22,11 +22,7 @@ public abstract class TestDatabaseContainer {
     }
 
     private static String getJdbcUrlWithQueryStrings() {
-        return mySQLContainer.getJdbcUrl()
-                + "?rewriteBatchedStatements=true&"
-                + "profileSQL=true&"
-                + "logger=Slf4JLogger&"
-                + "maxQuerySizeToLog=999999";
+        return mySQLContainer.getJdbcUrl() + "?rewriteBatchedStatements=true";
     }
 
 }
