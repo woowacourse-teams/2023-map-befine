@@ -1,7 +1,14 @@
-interface LatLng {}
+interface LatLng {
+  _lat: number;
+  _lng: number;
+  distanceTo(latLng: LatLng): number;
+}
 
 interface LatLngBounds {
   extend(latLng: LatLng): void;
+  getCenter(): LatLng;
+  _ne: LatLng;
+  _sw: LatLng;
 }
 
 interface evt {
@@ -24,6 +31,7 @@ interface TMap {
   on(eventType: string, callback: (event: evt) => void): void;
   removeListener(eventType: string, callback: (event: evt) => void): void;
   resize(width: number, height: number): void;
+  getBounds(): LatLngBounds;
 }
 
 interface Marker {
@@ -58,7 +66,12 @@ interface Window {
   Tmapv3: {
     Map: new (
       element: HTMLElement,
-      options?: { center?: LatLng; scaleBar: boolean },
+      options?: {
+        center?: LatLng;
+        scaleBar: boolean;
+        width: string | number;
+        height: string | number;
+      },
     ) => TMap;
     LatLng: new (lat: number, lng: number) => LatLng;
     LatLngBounds: new () => LatLngBounds;
