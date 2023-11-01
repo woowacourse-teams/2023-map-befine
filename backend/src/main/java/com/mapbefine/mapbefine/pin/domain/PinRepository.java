@@ -24,9 +24,6 @@ public interface PinRepository extends JpaRepository<Pin, Long>, PinBatchReposit
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
     List<Pin> findAllByCreatorId(Long creatorId);
 
-    @EntityGraph(attributePaths = {"location", "topic", "creator"})
-    List<Pin> findAllByTopicIdIn(List<Long> topicIds);
-
     @Modifying(clearAutomatically = true)
     @Query("update Pin p set p.isDeleted = true where p.topic.id = :topicId")
     void deleteAllByTopicId(@Param("topicId") Long topicId);
