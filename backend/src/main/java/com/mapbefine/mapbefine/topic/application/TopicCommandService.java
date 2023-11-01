@@ -136,15 +136,13 @@ public class TopicCommandService {
     public Long merge(AuthMember member, TopicMergeRequest request) {
         Topic topic = convertToTopic(member, request);
         List<Topic> originalTopics = findAllTopics(request.topics());
-
         validateCopyableTopics(member, originalTopics);
-
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
 
         topic.increasePinCount(originalPins.size());
         topic.updateLastPinUpdatedAt(LocalDateTime.now());
+
         topicRepository.save(topic);
-        topicRepository.flush();
         pinRepository.saveAllToTopic(topic, originalPins);
         return topic.getId();
     }
