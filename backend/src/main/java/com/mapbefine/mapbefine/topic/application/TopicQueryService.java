@@ -9,10 +9,10 @@ import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
-import com.mapbefine.mapbefine.topic.domain.Clustering;
+import com.mapbefine.mapbefine.topic.domain.Clusters;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import com.mapbefine.mapbefine.topic.dto.response.ClusteringResponse;
+import com.mapbefine.mapbefine.topic.dto.response.ClusterResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
@@ -244,7 +244,7 @@ public class TopicQueryService {
                 )).toList();
     }
 
-    public List<ClusteringResponse> findClusteringPinsByIds(
+    public List<ClusterResponse> findClusteringPinsByIds(
             AuthMember authMember,
             List<Long> topicIds,
             double imageDiameter
@@ -260,10 +260,10 @@ public class TopicQueryService {
                 .flatMap(List::stream)
                 .toList();
 
-        return Clustering.from(allPins, imageDiameter)
+        return Clusters.from(allPins, imageDiameter)
                 .getClusters()
                 .stream()
-                .map(ClusteringResponse::from)
+                .map(ClusterResponse::from)
                 .toList();
     }
 
