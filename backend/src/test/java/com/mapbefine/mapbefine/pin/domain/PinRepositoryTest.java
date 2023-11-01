@@ -1,27 +1,27 @@
 package com.mapbefine.mapbefine.pin.domain;
 
+import static com.mapbefine.mapbefine.member.domain.Role.USER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.common.annotation.RepositoryTest;
-import com.mapbefine.mapbefine.common.config.JpaConfig;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
-import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinFixture;
+import com.mapbefine.mapbefine.pin.PinImageFixture;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
 @RepositoryTest
 class PinRepositoryTest extends TestDatabaseContainer {
@@ -30,6 +30,8 @@ class PinRepositoryTest extends TestDatabaseContainer {
     private TopicRepository topicRepository;
     @Autowired
     private PinRepository pinRepository;
+    @Autowired
+    private PinImageRepository pinImageRepository;
     @Autowired
     private LocationRepository locationRepository;
     @Autowired
@@ -41,7 +43,7 @@ class PinRepositoryTest extends TestDatabaseContainer {
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(MemberFixture.create("member", "member@gmail.com", Role.USER));
+        member = memberRepository.save(MemberFixture.create("member", "member@gmail.com", USER));
         topic = topicRepository.save(TopicFixture.createByName("topic", member));
         location = locationRepository.save(LocationFixture.create());
     }
@@ -123,4 +125,39 @@ class PinRepositoryTest extends TestDatabaseContainer {
         assertThat(pinRepository.findAllByCreatorId(MemberId)).isEmpty();
     }
 
+    @Test
+    @DisplayName("기존에 존재하는 핀들을 토픽에 한 번에 복사할 수 있다. (bulk insert)")
+    void saveAllToTopic() {
+        // given
+        for (int i = 0; i < 10; i++) {
+            Pin pin = pinRepository.save(PinFixture.create(location, topic, member));
+            pinRepository.flush();
+            pinImageRepository.save(PinImageFixture.create(pin));
+        }
+        Member copier = memberRepository.save(MemberFixture.create("copier", "copier@gmail.com", USER));
+        Topic topicForCopy = topicRepository.save(TopicFixture.createByName("otherTopic", copier));
+
+        // when
+        List<Pin> originalPins = topic.getPins();
+        pinRepository.saveAllToTopic(topicForCopy, originalPins);
+
+        // then
+        List<Pin> copiedPins = pinRepository.findAllByTopicId(topicForCopy.getId());
+        List<PinInfo> originalPinInfos = originalPins.stream()
+                .map(Pin::getPinInfo)
+                .toList();
+
+        assertSoftly(softly -> {
+            softly.assertThat(copiedPins).extracting("pinInfo")
+                    .usingRecursiveComparison()
+                    .isEqualTo(originalPinInfos);
+            softly.assertThat(copiedPins.get(0).getCreator())
+                    .isEqualTo(copier);
+            softly.assertThat(copiedPins).hasSize(originalPins.size())
+                    .flatMap(Pin::getPinImages)
+                    .allSatisfy(pinImage -> {
+                        assertThat(pinImage.getImageUrl()).isEqualTo(PinImageFixture.IMAGE_URL);
+                    });
+        });
+    }
 }

@@ -5,8 +5,10 @@ import com.mapbefine.mapbefine.pin.domain.PinImage;
 
 public class PinImageFixture {
 
+    public static String IMAGE_URL = "https://example.com/image.jpg";
+
     public static PinImage create(Pin pin) {
-        return PinImage.createPinImageAssociatedWithPin("https://example.com/image.jpg", pin);
+        return PinImage.createPinImageAssociatedWithPin(IMAGE_URL, pin);
     }
 
 }
