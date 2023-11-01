@@ -34,7 +34,6 @@ public class Coordinate {
         this.coordinate = point;
     }
 
-
     public static Coordinate of(double latitude, double longitude) {
         validateRange(latitude, longitude);
 
@@ -60,6 +59,12 @@ public class Coordinate {
 
     public double getLongitude() {
         return coordinate.getX();
+    }
+
+    public double calculateDistance(Coordinate coordinate) {
+        return this.coordinate.distance(
+                coordinate.coordinate
+        );
     }
 
 }

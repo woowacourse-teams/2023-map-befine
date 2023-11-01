@@ -8,6 +8,7 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.topic.dto.response.ClusteringResponse;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
@@ -239,6 +240,10 @@ public class TopicQueryService {
                         isInAtlas(member.getId(), topic.getId()),
                         isBookMarked(member.getId(), topic.getId())
                 )).toList();
+    }
+
+    public List<ClusteringResponse> findClusteringPinsByIds(AuthMember authMember, List<Long> topicIds) {
+        return null;
     }
 
 }
