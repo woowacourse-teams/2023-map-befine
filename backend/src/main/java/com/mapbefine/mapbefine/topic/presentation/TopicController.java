@@ -150,9 +150,14 @@ public class TopicController {
     @GetMapping("/clustering/ids")
     public ResponseEntity<List<ClusteringResponse>> getClusteringOfPins(
             AuthMember authMember,
-            @RequestParam("ids") List<Long> topicIds
+            @RequestParam("ids") List<Long> topicIds,
+            @RequestParam("image-diameter") double imageDiameter
     ) {
-        List<ClusteringResponse> responses = topicQueryService.findClusteringPinsByIds(authMember, topicIds);
+        List<ClusteringResponse> responses = topicQueryService.findClusteringPinsByIds(
+                authMember,
+                topicIds,
+                imageDiameter
+        );
 
         return ResponseEntity.ok(responses);
     }
