@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.topic.presentation;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
+import com.mapbefine.mapbefine.topic.dto.response.ClusteringResponse;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -142,6 +143,16 @@ public class TopicController {
     @GetMapping("/bests")
     public ResponseEntity<List<TopicResponse>> findAllBestTopics(AuthMember authMember) {
         List<TopicResponse> responses = topicQueryService.findAllBestTopics(authMember);
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/clustering/ids")
+    public ResponseEntity<List<ClusteringResponse>> getClusteringOfPins(
+            AuthMember authMember,
+            @RequestParam("ids") List<Long> topicIds
+    ) {
+        List<ClusteringResponse> responses = topicQueryService.findClusteringPinsByIds(authMember, topicIds);
 
         return ResponseEntity.ok(responses);
     }
