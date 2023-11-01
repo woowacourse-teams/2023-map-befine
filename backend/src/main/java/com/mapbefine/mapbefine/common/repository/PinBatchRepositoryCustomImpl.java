@@ -28,6 +28,7 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
 
     public int[] saveAllToTopic(Topic topicForCopy, List<Pin> originalPins) {
         int[] rowCount = batchUpdatePins(topicForCopy, originalPins);
+        
         Long firstIdFromBatch = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
         validateId(firstIdFromBatch);
         List<PinImageInsertDto> pinImageInsertDtos = createPinImageDTOsToBatch(originalPins, rowCount,
