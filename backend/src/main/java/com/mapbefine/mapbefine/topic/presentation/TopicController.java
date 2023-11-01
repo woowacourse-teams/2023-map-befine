@@ -2,7 +2,7 @@ package com.mapbefine.mapbefine.topic.presentation;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
-import com.mapbefine.mapbefine.topic.dto.response.ClusteringResponse;
+import com.mapbefine.mapbefine.topic.dto.response.ClusterResponse;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -148,12 +148,12 @@ public class TopicController {
     }
 
     @GetMapping("/clustering/ids")
-    public ResponseEntity<List<ClusteringResponse>> getClusteringOfPins(
+    public ResponseEntity<List<ClusterResponse>> getClusteringOfPins(
             AuthMember authMember,
             @RequestParam("ids") List<Long> topicIds,
             @RequestParam("image-diameter") double imageDiameter
     ) {
-        List<ClusteringResponse> responses = topicQueryService.findClusteringPinsByIds(
+        List<ClusterResponse> responses = topicQueryService.findClusteringPinsByIds(
                 authMember,
                 topicIds,
                 imageDiameter
