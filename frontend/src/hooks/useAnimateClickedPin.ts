@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react';
 
+import useMapStore from '../store/mapInstance';
+
 const useAnimateClickedPin = () => {
   const queryParams = new URLSearchParams(location.search);
+  const { mapInstance } = useMapStore((state) => state);
   const [checkQueryParams, setCheckQueryParams] = useState<any>(queryParams);
 
-  const onFocusClickedPin = (map: TMap | null, markers: Marker[]) => {
+  const onFocusClickedPin = (markers: Marker[]) => {
     useEffect(() => {
       const currentQueryParams = new URLSearchParams(location.search);
 
       if (checkQueryParams === null) {
-        if (!map) return;
+        if (!mapInstance) return;
         const pinId = queryParams.get('pinDetail');
         const marker = markers.find((marker: Marker) => marker.id === pinId);
 
         if (!marker) return;
 
-        map.setCenter(marker.getPosition());
+        mapInstance.setCenter(marker.getPosition());
 
         setCheckQueryParams(currentQueryParams);
         return;
@@ -28,13 +31,14 @@ const useAnimateClickedPin = () => {
         const pinId = queryParams.get('pinDetail');
         const marker = markers.find((marker: Marker) => marker.id === pinId);
 
-        if (marker && map) {
-          map.setCenter(marker.getPosition());
-          map.setZoom(17);
+        if (marker && mapInstance) {
+          mapInstance.setCenter(marker.getPosition());
+          mapInstance.setZoom(17);
         }
+
         setCheckQueryParams(currentQueryParams);
       }
-    }, [markers, map, queryParams]);
+    }, [markers, mapInstance, queryParams]);
   };
 
   return { checkQueryParams, onFocusClickedPin };

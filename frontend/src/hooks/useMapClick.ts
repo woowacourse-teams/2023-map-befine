@@ -2,11 +2,13 @@ import { useContext, useEffect } from 'react';
 
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import getAddressFromServer from '../lib/getAddressFromServer';
+import useMapStore from '../store/mapInstance';
 import useToast from './useToast';
 
-export default function useMapClick(map: TMap | null) {
+export default function useMapClick() {
   const { setClickedCoordinate } = useContext(CoordinatesContext);
   const { showToast } = useToast();
+  const { mapInstance } = useMapStore((state) => state);
 
   const clickHandler = async (evt: evt) => {
     try {
@@ -26,14 +28,14 @@ export default function useMapClick(map: TMap | null) {
   };
 
   useEffect(() => {
-    if (!map) return;
+    if (!mapInstance) return;
 
-    map.on('Click', clickHandler);
+    mapInstance.on('Click', clickHandler);
 
     return () => {
-      if (map) {
-        map.removeListener('click', clickHandler);
+      if (mapInstance) {
+        mapInstance.removeListener('click', clickHandler);
       }
     };
-  }, [map]);
+  }, [mapInstance]);
 }

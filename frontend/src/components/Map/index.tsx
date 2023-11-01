@@ -47,26 +47,25 @@ function Map() {
     const map = new Tmapv3.Map(mapContainer.current, {
       center: new Tmapv3.LatLng(37.5154, 127.1029),
       scaleBar: false,
+      width: '100%',
+      height: '100%',
     });
-
-    if (!map) return;
 
     map.setZoomLimit(getZoomMinLimit(), 17);
 
     setMapInstance(map);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       map.destroy();
     };
   }, []);
 
-  useMapClick(mapInstance);
-  useClickedCoordinate(mapInstance);
-  useUpdateCoordinates(mapInstance);
+  useMapClick();
+  useClickedCoordinate();
+  useUpdateCoordinates();
 
-  useFocusToMarker(mapInstance, markers);
-  onFocusClickedPin(mapInstance, markers);
+  useFocusToMarker(markers);
+  onFocusClickedPin(markers);
 
   return (
     <MapContainer>
@@ -84,6 +83,8 @@ function Map() {
 }
 
 const MapContainer = styled.div`
+  width: 100%;
+  height: 100%;
   position: relative;
 `;
 

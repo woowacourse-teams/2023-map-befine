@@ -2,9 +2,11 @@ import { useContext, useEffect } from 'react';
 
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
+import useMapStore from '../store/mapInstance';
 
-export default function useUpdateCoordinates(map: TMap | null) {
+export default function useUpdateCoordinates() {
   const { coordinates } = useContext(CoordinatesContext);
+  const { mapInstance } = useMapStore((state) => state);
   const {
     markers,
     createMarkers,
@@ -14,14 +16,16 @@ export default function useUpdateCoordinates(map: TMap | null) {
   } = useContext(MarkerContext);
 
   useEffect(() => {
-    if (!map) return;
+    if (!mapInstance) return;
+
     if (markers && markers.length > 0) {
       removeMarkers();
       removeInfowindows();
     }
+
     if (coordinates.length > 0) {
-      createMarkers(map);
-      createInfowindows(map);
+      createMarkers(mapInstance);
+      createInfowindows(mapInstance);
     }
   }, [coordinates]);
 }
