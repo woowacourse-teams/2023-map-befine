@@ -106,7 +106,7 @@ public class TopicCommandService {
         List<Pin> originalPins = findAllPins(pinIds);
         validateCopyablePins(member, originalPins);
 
-        pinRepository.saveAllToTopic(topic, originalPins, member);
+        pinRepository.saveAllToTopic(topic, originalPins);
     }
 
     private List<Pin> findAllPins(List<Long> pinIds) {
@@ -138,7 +138,7 @@ public class TopicCommandService {
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
 
         topicRepository.save(topic);
-        pinRepository.saveAllToTopic(topic, originalPins, member);
+        pinRepository.saveAllToTopic(topic, originalPins);
         return topic.getId();
     }
 

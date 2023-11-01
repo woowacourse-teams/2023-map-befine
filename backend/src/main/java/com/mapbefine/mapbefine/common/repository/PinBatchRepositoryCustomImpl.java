@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.common.repository;
 
-import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -30,12 +29,8 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
     }
 
     @Transactional
-    public int[] saveAllToTopic(
-            Topic topicForCopy,
-            List<Pin> originalPins,
-            AuthMember copiedPinsCreator
-    ) {
-        int[] rowCount = batchUpdatePins(topicForCopy, originalPins, copiedPinsCreator);
+    public int[] saveAllToTopic(Topic topicForCopy, List<Pin> originalPins) {
+        int[] rowCount = batchUpdatePins(topicForCopy, originalPins);
         Long firstIdFromBatch = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
         validateId(firstIdFromBatch);
         List<PinImageDTO> pinImageDTOsToBatches = createPinImageDTOsToBatch(originalPins, rowCount, firstIdFromBatch);
@@ -45,11 +40,10 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
 
     private int[] batchUpdatePins(
             Topic topicForCopy,
-            List<Pin> originalPins,
-            AuthMember copiedPinsCreator
+            List<Pin> originalPins
     ) {
-        topicForCopy.increasePinCount(originalPins.size());
         LocalDateTime createdAt = LocalDateTime.now();
+        topicForCopy.increasePinCount(originalPins.size());
         topicForCopy.updateLastPinUpdatedAt(createdAt);
         entityManager.flush();
 
@@ -64,7 +58,7 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
                 Pin pin = originalPins.get(i);
                 ps.setString(1, pin.getName());
                 ps.setString(2, pin.getDescription());
-                ps.setLong(3, copiedPinsCreator.getMemberId());
+                ps.setLong(3, topicForCopy.getCreator().getId());
                 ps.setLong(4, topicForCopy.getId());
                 ps.setLong(5, pin.getLocation().getId());
                 ps.setTimestamp(6, Timestamp.valueOf(createdAt));
@@ -100,9 +94,9 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
 
     private int[] batchUpdatePinImages(List<PinImageDTO> pinImages) {
         return jdbcTemplate.batchUpdate("INSERT INTO pin_image ("
-                + " image_url, pin_id)"
-                + " VALUES ("
-                + " ?, ?)", new BatchPreparedStatementSetter() {
+                + "image_url, pin_id) "
+                + "VALUES ("
+                + "?, ?)", new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 PinImageDTO pinImage = pinImages.get(i);
