@@ -62,9 +62,12 @@ public class Coordinate {
     }
 
     public double calculateDistance(Coordinate coordinate) {
-        return this.coordinate.distance(
-                coordinate.coordinate
-        );
+        return Math.acos(
+                Math.sin(Math.toRadians(coordinate.getLatitude())) * Math.sin(Math.toRadians(this.getLatitude()))
+                        + (Math.cos(Math.toRadians(coordinate.getLatitude())) * Math.cos(
+                        Math.toRadians(this.getLatitude())) * Math.cos(
+                        Math.toRadians(coordinate.getLongitude() - this.getLongitude())))
+        ) * 6371.0 * 1000;
     }
 
 }
