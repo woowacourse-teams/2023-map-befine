@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.pin.domain;
 
-import com.mapbefine.mapbefine.common.repository.PinBatchRepositoryCustom;
+import com.mapbefine.mapbefine.pin.infrastructure.PinBatchRepositoryCustom;
 import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

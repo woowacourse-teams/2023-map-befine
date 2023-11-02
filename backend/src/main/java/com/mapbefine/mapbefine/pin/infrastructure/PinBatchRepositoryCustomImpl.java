@@ -1,4 +1,4 @@
-package com.mapbefine.mapbefine.common.repository;
+package com.mapbefine.mapbefine.pin.infrastructure;
 
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
@@ -28,7 +28,7 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
 
     public int[] saveAllToTopic(Topic topicForCopy, List<Pin> originalPins) {
         int[] rowCount = batchUpdatePins(topicForCopy, originalPins);
-        
+
         Long firstIdFromBatch = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
         validateId(firstIdFromBatch);
         List<PinImageInsertDto> pinImageInsertDtos = createPinImageDTOsToBatch(originalPins, rowCount,
