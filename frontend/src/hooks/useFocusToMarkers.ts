@@ -10,7 +10,7 @@ const useFocusToMarker = (markers: Marker[]) => {
 
   useEffect(() => {
     if (mapInstance && markers && markers.length === 1) {
-      mapInstance.panTo(markers[0].getPosition());
+      // mapInstance.panTo(markers[0].getPosition());
     }
     if (mapInstance && markers && markers.length > 1) {
       bounds.current = new Tmapv3.LatLngBounds();
@@ -21,19 +21,8 @@ const useFocusToMarker = (markers: Marker[]) => {
       if (markersLength === 0) {
         setMarkersLength(markers.length);
 
-        const mapBounds = mapInstance.getBounds();
+        // mapInstance.setCenter(bounds.current.getCenter());
 
-        const leftWidth = new Tmapv3.LatLng(
-          mapBounds._ne._lat,
-          mapBounds._sw._lng,
-        );
-        const rightWidth = new Tmapv3.LatLng(
-          mapBounds._ne._lat,
-          mapBounds._ne._lng,
-        );
-        console.log(leftWidth.distanceTo(rightWidth));
-
-        mapInstance.setCenter(bounds.current.getCenter());
         // map.fitBounds(bounds.current, {
         //   left: 100, // 지도의 왼쪽과의 간격(단위 : px)
         //   top: 100, // 지도의 위쪽과의 간격(단위 : px)
@@ -44,7 +33,7 @@ const useFocusToMarker = (markers: Marker[]) => {
       }
 
       if (markersLength !== markers.length) {
-        mapInstance.fitBounds(bounds.current);
+        // mapInstance.fitBounds(bounds.current);
       }
     }
     return () => {

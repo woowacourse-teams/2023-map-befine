@@ -1,4 +1,4 @@
-import { lazy, Suspense, useContext, useEffect, useState } from 'react';
+import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
@@ -7,11 +7,12 @@ import Space from '../components/common/Space';
 import PullPin from '../components/PullPin';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
-import { CoordinatesContext } from '../context/CoordinatesContext';
+import { Coordinate, CoordinatesContext } from '../context/CoordinatesContext';
 import useResizeMap from '../hooks/useResizeMap';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useTags from '../hooks/useTags';
+import useMapStore from '../store/mapInstance';
 import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
@@ -19,6 +20,7 @@ import PinDetail from './PinDetail';
 const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
 
 function SelectedTopic() {
+  const { Tmapv3 } = window;
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicDetailProps | null>(null);
@@ -27,6 +29,8 @@ function SelectedTopic() {
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { setCoordinates } = useContext(CoordinatesContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
+  const timerIdRef = useRef<NodeJS.Timeout | null>(null);
+  const { mapInstance } = useMapStore((state) => state);
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
     useTags();
   useSetNavbarHighlight('none');
@@ -39,28 +43,89 @@ function SelectedTopic() {
     const topic = topicInArray[0];
 
     setTopicDetail(topic);
-    setCoordinatesTopicDetail(topic);
   };
 
-  const setCoordinatesTopicDetail = (topic: TopicDetailProps) => {
-    const newCoordinates: any = [];
+  const setCoordinatesTopicDetail = async () => {
+    if (!topicDetail) return;
 
-    topic.pins.forEach((pin: PinProps) => {
+    const newCoordinates: any = [];
+    const distanceOfPinSize = getDistanceOfPin();
+
+    const diameterPins = await getApi<any>(
+      `pins/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
+    );
+
+    diameterPins.forEach((clusterOrPin: any) => {
       newCoordinates.push({
-        id: pin.id,
         topicId,
-        pinName: pin.name,
-        latitude: pin.latitude,
-        longitude: pin.longitude,
+        id: clusterOrPin.pins.id || 'cluster',
+        pinName: clusterOrPin.pins.name,
+        latitude: clusterOrPin.latitude,
+        longitude: clusterOrPin.longitude,
       });
     });
 
-    setCoordinates(newCoordinates);
+    checkCoordinatesInScreenSize(newCoordinates);
+
+    mapInstance?.on('DragEnd', (evt) => {
+      checkCoordinatesInScreenSize(newCoordinates);
+    });
+    mapInstance?.on('Zoom', (evt) => {
+      if (timerIdRef.current) {
+        clearTimeout(timerIdRef.current);
+      }
+
+      timerIdRef.current = setTimeout(() => {
+        checkCoordinatesInScreenSize(newCoordinates);
+      }, 100);
+    });
   };
 
-  const togglePinDetail = () => {
-    setIsOpen(!isOpen);
+  const checkCoordinatesInScreenSize = (newCoordinates: any) => {
+    if (!mapInstance) return;
+
+    const mapBounds = mapInstance.getBounds();
+    const northEast = mapBounds._ne;
+    const southWest = mapBounds._sw;
+
+    const newCoordinatesInScreenSize = newCoordinates.filter(
+      (coordinate: any) =>
+        coordinate.latitude <= northEast._lat &&
+        coordinate.latitude >= southWest._lat &&
+        coordinate.longitude <= northEast._lng &&
+        coordinate.longitude >= southWest._lng,
+    );
+
+    setCoordinates(newCoordinatesInScreenSize);
   };
+
+  const getDistanceOfPin = () => {
+    if (!mapInstance) return;
+
+    const mapBounds = mapInstance.getBounds();
+
+    const leftWidth = new Tmapv3.LatLng(mapBounds._ne._lat, mapBounds._sw._lng);
+    const rightWidth = new Tmapv3.LatLng(
+      mapBounds._ne._lat,
+      mapBounds._ne._lng,
+    );
+
+    const realDistanceOfScreen = leftWidth.distanceTo(rightWidth);
+    const currentScreenSize =
+      mapInstance.realToScreen(rightWidth).x -
+      mapInstance.realToScreen(leftWidth).x;
+
+    return (realDistanceOfScreen / currentScreenSize) * 60;
+  };
+
+  useEffect(() => {
+    getAndSetDataFromServer();
+    setTags([]);
+  }, []);
+
+  useEffect(() => {
+    setCoordinatesTopicDetail();
+  }, [topicDetail]);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -73,11 +138,6 @@ function SelectedTopic() {
 
     setSelectedPinId(null);
   }, [searchParams]);
-
-  useEffect(() => {
-    getAndSetDataFromServer();
-    setTags([]);
-  }, []);
 
   if (!topicId || !topicDetail) return <></>;
 
@@ -109,7 +169,12 @@ function SelectedTopic() {
 
       {selectedPinId && (
         <>
-          <ToggleButton $isCollapsed={!isOpen} onClick={togglePinDetail}>
+          <ToggleButton
+            $isCollapsed={!isOpen}
+            onClick={() => {
+              setIsOpen(!isOpen);
+            }}
+          >
             ◀
           </ToggleButton>
           <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
