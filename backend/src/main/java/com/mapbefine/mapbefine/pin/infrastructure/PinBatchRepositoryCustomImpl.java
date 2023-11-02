@@ -27,35 +27,26 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
     }
 
     public int[] saveAllToTopic(Topic topicForCopy, List<Pin> originalPins) {
-        int[] rowCount = batchUpdatePins(topicForCopy, originalPins);
-
-        Long firstIdFromBatch = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
-        validateId(firstIdFromBatch);
-        List<PinImageInsertDto> pinImageInsertDtos = createPinImageDTOsToBatch(originalPins, rowCount,
-                firstIdFromBatch);
+        int[] rowCount = bulkInsertPins(topicForCopy, originalPins);
+        List<PinImageInsertDto> pinImageInsertDtos = createPinImageInsertDtos(originalPins, rowCount);
 
         if (pinImageInsertDtos.isEmpty()) {
             return rowCount;
         }
-        return batchUpdatePinImages(pinImageInsertDtos);
+        return bulkInsertPinImages(pinImageInsertDtos);
     }
 
-    private int[] batchUpdatePins(
-            Topic topicForCopy,
-            List<Pin> originalPins
-    ) {
-        LocalDateTime createdAt = topicForCopy.getLastPinUpdatedAt();
-
+    private int[] bulkInsertPins(Topic topicForCopy, List<Pin> originalPins) {
         String bulkInsertSql = "INSERT INTO pin ("
                 + "name, description, member_id, topic_id, location_id,"
                 + " created_at, updated_at)"
                 + " VALUES ("
                 + " ?, ?, ?, ?, ?,"
                 + " ?, ?)";
-        log.debug("[Query] bulk insert size {} : {}", originalPins.size(), bulkInsertSql);
-
+        LocalDateTime createdAt = topicForCopy.getLastPinUpdatedAt();
         Long topicId = topicForCopy.getId();
         Long creatorId = topicForCopy.getCreator().getId();
+        log.debug("[Query] bulk insert size {} : {}", originalPins.size(), bulkInsertSql);
 
         return jdbcTemplate.batchUpdate(bulkInsertSql, new BatchPreparedStatementSetter() {
             @Override
@@ -82,17 +73,10 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
         });
     }
 
-    private void validateId(Long firstIdFromBatch) {
-        if (Objects.isNull(firstIdFromBatch)) {
-            throw new IllegalStateException("fail to batch update pins");
-        }
-    }
+    private List<PinImageInsertDto> createPinImageInsertDtos(List<Pin> originalPins, int[] rowCount) {
+        Long firstIdFromBatch = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
+        validateId(firstIdFromBatch);
 
-    private List<PinImageInsertDto> createPinImageDTOsToBatch(
-            List<Pin> originalPins,
-            int[] rowCount,
-            Long firstIdFromBatch
-    ) {
         return IntStream.range(0, originalPins.size())
                 .filter(index -> rowCount[index] != -3)
                 .mapToObj(index -> {
@@ -102,7 +86,13 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
                 .toList();
     }
 
-    private int[] batchUpdatePinImages(List<PinImageInsertDto> pinImages) {
+    private void validateId(Long firstIdFromBatch) {
+        if (Objects.isNull(firstIdFromBatch)) {
+            throw new IllegalStateException("fail to batch update pins");
+        }
+    }
+
+    private int[] bulkInsertPinImages(List<PinImageInsertDto> pinImages) {
         String bulkInsertSql = "INSERT INTO pin_image "
                 + "(image_url, pin_id) "
                 + "VALUES "
