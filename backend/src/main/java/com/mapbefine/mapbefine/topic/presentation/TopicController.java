@@ -147,7 +147,7 @@ public class TopicController {
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/clustering/ids")
+    @GetMapping("/clusters/ids")
     public ResponseEntity<List<ClusterResponse>> getClusteringOfPins(
             AuthMember authMember,
             @RequestParam("ids") List<Long> topicIds,
