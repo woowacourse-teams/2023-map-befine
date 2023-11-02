@@ -7,13 +7,12 @@ import Space from '../components/common/Space';
 import PullPin from '../components/PullPin';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { LAYOUT_PADDING, SIDEBAR } from '../constants';
-import { Coordinate, CoordinatesContext } from '../context/CoordinatesContext';
+import { CoordinatesContext } from '../context/CoordinatesContext';
 import useResizeMap from '../hooks/useResizeMap';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useTags from '../hooks/useTags';
 import useMapStore from '../store/mapInstance';
-import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
 
@@ -29,7 +28,8 @@ function SelectedTopic() {
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { setCoordinates } = useContext(CoordinatesContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const timerIdRef = useRef<NodeJS.Timeout | null>(null);
+  const zoomTimerIdRef = useRef<NodeJS.Timeout | null>(null);
+  const dragTimerIdRef = useRef<NodeJS.Timeout | null>(null);
   const { mapInstance } = useMapStore((state) => state);
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
     useTags();
@@ -52,14 +52,17 @@ function SelectedTopic() {
     const distanceOfPinSize = getDistanceOfPin();
 
     const diameterPins = await getApi<any>(
-      `pins/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
+      `/topics/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
     );
 
     diameterPins.forEach((clusterOrPin: any) => {
       newCoordinates.push({
         topicId,
-        id: clusterOrPin.pins.id || 'cluster',
-        pinName: clusterOrPin.pins.name,
+        id: clusterOrPin.pins[0].id || 'cluster',
+        pinName:
+          clusterOrPin.pins.length > 1
+            ? `${clusterOrPin.pins[0].name} 💬 + ${clusterOrPin.pins.length} 개`
+            : clusterOrPin.pins[0].name,
         latitude: clusterOrPin.latitude,
         longitude: clusterOrPin.longitude,
       });
@@ -68,15 +71,22 @@ function SelectedTopic() {
     checkCoordinatesInScreenSize(newCoordinates);
 
     mapInstance?.on('DragEnd', (evt) => {
-      checkCoordinatesInScreenSize(newCoordinates);
-    });
-    mapInstance?.on('Zoom', (evt) => {
-      if (timerIdRef.current) {
-        clearTimeout(timerIdRef.current);
+      if (dragTimerIdRef.current) {
+        clearTimeout(dragTimerIdRef.current);
       }
 
-      timerIdRef.current = setTimeout(() => {
-        checkCoordinatesInScreenSize(newCoordinates);
+      dragTimerIdRef.current = setTimeout(() => {
+        setCoordinatesTopicDetail();
+      }, 100);
+    });
+
+    mapInstance?.on('Zoom', (evt) => {
+      if (zoomTimerIdRef.current) {
+        clearTimeout(zoomTimerIdRef.current);
+      }
+
+      zoomTimerIdRef.current = setTimeout(() => {
+        setCoordinatesTopicDetail();
       }, 100);
     });
   };
