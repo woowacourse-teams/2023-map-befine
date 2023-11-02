@@ -32,6 +32,7 @@ interface TMap {
   removeListener(eventType: string, callback: (event: evt) => void): void;
   resize(width: number, height: number): void;
   getBounds(): LatLngBounds;
+  realToScreen(latLng: LatLng): Point;
 }
 
 interface Marker {
