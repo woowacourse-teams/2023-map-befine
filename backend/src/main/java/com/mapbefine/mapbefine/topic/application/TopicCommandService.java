@@ -22,7 +22,6 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -106,7 +105,6 @@ public class TopicCommandService {
         List<Pin> originalPins = findAllPins(pinIds);
         validateCopyablePins(member, originalPins);
         topic.increasePinCount(pinIds.size());
-        topic.updateLastPinUpdatedAt(LocalDateTime.now());
         pinRepository.flush();
 
         pinRepository.saveAllToTopic(topic, originalPins);
@@ -139,7 +137,6 @@ public class TopicCommandService {
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
 
         topic.increasePinCount(originalPins.size());
-        topic.updateLastPinUpdatedAt(LocalDateTime.now());
 
         topicRepository.save(topic);
         pinRepository.saveAllToTopic(topic, originalPins);
