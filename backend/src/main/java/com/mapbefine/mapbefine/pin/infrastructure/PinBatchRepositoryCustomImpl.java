@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.pin.infrastructure;
 
+import static java.sql.Statement.EXECUTE_FAILED;
+
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinImage;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -78,7 +80,7 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
         validateId(firstIdFromBatch);
 
         return IntStream.range(0, originalPins.size())
-                .filter(index -> rowCount[index] != -3)
+                .filter(index -> rowCount[index] != EXECUTE_FAILED)
                 .mapToObj(index -> {
                     Pin pin = originalPins.get(index);
                     return PinImageInsertDto.of(pin.getPinImages(), firstIdFromBatch + index);
