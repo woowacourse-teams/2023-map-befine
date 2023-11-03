@@ -11,3 +11,5 @@ export const DEFAULT_PROFILE_IMAGE =
 
 export const DEFAULT_PROD_URL =
   process.env.APP_URL || 'https://mapbefine.kro.kr/api';
+
+export const PIN_SIZE = 60;

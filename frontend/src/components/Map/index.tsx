@@ -23,7 +23,6 @@ const getZoomMinLimit = () => {
 
 function Map() {
   const { Tmapv3 } = window;
-
   const { markers } = useContext(MarkerContext);
   const { width } = useContext(LayoutWidthContext);
   const { mapInstance, setMapInstance } = useMapStore((state) => state);

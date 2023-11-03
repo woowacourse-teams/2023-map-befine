@@ -96,6 +96,7 @@ function MarkerProvider({ children }: Props): JSX.Element {
         routePage(`/see-together/${topicId}?pinDetail=${marker.id}`);
       });
     });
+
     setMarkers(newMarkers);
   };
 
