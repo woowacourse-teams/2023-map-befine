@@ -57,7 +57,6 @@ public class TopicCommandService {
         List<Long> pinIds = request.pins();
 
         topicRepository.save(topic);
-        topicRepository.flush();
         if (!pinIds.isEmpty()) {
             copyPinsToTopic(member, topic, pinIds);
         }
