@@ -105,10 +105,10 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 PinImageInsertDto pinImage = pinImages.get(i);
-                ps.setString(1, pinImage.getImageUrl());
-                ps.setLong(2, pinImage.getPinId());
+                ps.setString(1, pinImage.imageUrl);
+                ps.setLong(2, pinImage.pinId);
                 log.trace("[Parameter Binding] {} : imageUrl={}, pinImage={} ",
-                        i, pinImage.getImageUrl(), pinImage.getPinId());
+                        i, pinImage.imageUrl, pinImage.pinId);
             }
 
             @Override
@@ -118,17 +118,11 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
         });
     }
 
-    private static class PinImageInsertDto {
-
-        private final String imageUrl;
-        private final Long pinId;
-        private final boolean isDeleted;
-
-        private PinImageInsertDto(String imageUrl, Long pinId, boolean isDeleted) {
-            this.imageUrl = imageUrl;
-            this.pinId = pinId;
-            this.isDeleted = isDeleted;
-        }
+    private record PinImageInsertDto(
+            String imageUrl,
+            Long pinId,
+            boolean isDeleted
+    ) {
 
         public static PinImageInsertDto of(PinImage pinImage, Long pinId) {
             return new PinImageInsertDto(
@@ -142,18 +136,6 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
             return pinImages.stream()
                     .map(pinImage -> PinImageInsertDto.of(pinImage, pinId))
                     .toList();
-        }
-
-        public String getImageUrl() {
-            return imageUrl;
-        }
-
-        public Long getPinId() {
-            return pinId;
-        }
-
-        public boolean isDeleted() {
-            return isDeleted;
         }
     }
 
