@@ -6,13 +6,15 @@ import { getApi } from '../apis/getApi';
 import Space from '../components/common/Space';
 import PullPin from '../components/PullPin';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
-import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { LAYOUT_PADDING, PIN_SIZE, SIDEBAR } from '../constants';
+import { 붕어빵지도 } from '../constants/cluster';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import useResizeMap from '../hooks/useResizeMap';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useTags from '../hooks/useTags';
 import useMapStore from '../store/mapInstance';
+import useMapSidebarMarkers from '../store/mapSidebarMarkers';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
 
@@ -30,7 +32,7 @@ function SelectedTopic() {
   const { width } = useSetLayoutWidth(SIDEBAR);
   const zoomTimerIdRef = useRef<NodeJS.Timeout | null>(null);
   const dragTimerIdRef = useRef<NodeJS.Timeout | null>(null);
-  const { mapInstance } = useMapStore((state) => state);
+  const { mapInstance, setMapInstance } = useMapStore((state) => state);
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
     useTags();
   useSetNavbarHighlight('none');
@@ -55,10 +57,12 @@ function SelectedTopic() {
       `/topics/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
     );
 
-    diameterPins.forEach((clusterOrPin: any) => {
+    // const diameterPins = 붕어빵지도;
+
+    diameterPins.forEach((clusterOrPin: any, idx: number) => {
       newCoordinates.push({
         topicId,
-        id: clusterOrPin.pins[0].id || 'cluster',
+        id: clusterOrPin.pins[0].id || `cluster ${idx}`,
         pinName:
           clusterOrPin.pins.length > 1
             ? `${clusterOrPin.pins[0].name} 💬 + ${clusterOrPin.pins.length} 개`
@@ -68,27 +72,17 @@ function SelectedTopic() {
       });
     });
 
+    // topicDetail.pins.forEach((pin: PinProps) => {
+    //   newCoordinates.push({
+    //     id: pin.id,
+    //     topicId,
+    //     pinName: pin.name,
+    //     latitude: pin.latitude,
+    //     longitude: pin.longitude,
+    //   });
+    // });
+
     checkCoordinatesInScreenSize(newCoordinates);
-
-    mapInstance?.on('DragEnd', (evt) => {
-      if (dragTimerIdRef.current) {
-        clearTimeout(dragTimerIdRef.current);
-      }
-
-      dragTimerIdRef.current = setTimeout(() => {
-        setCoordinatesTopicDetail();
-      }, 100);
-    });
-
-    mapInstance?.on('Zoom', (evt) => {
-      if (zoomTimerIdRef.current) {
-        clearTimeout(zoomTimerIdRef.current);
-      }
-
-      zoomTimerIdRef.current = setTimeout(() => {
-        setCoordinatesTopicDetail();
-      }, 100);
-    });
   };
 
   const checkCoordinatesInScreenSize = (newCoordinates: any) => {
@@ -125,7 +119,7 @@ function SelectedTopic() {
       mapInstance.realToScreen(rightWidth).x -
       mapInstance.realToScreen(leftWidth).x;
 
-    return (realDistanceOfScreen / currentScreenSize) * 60;
+    return (realDistanceOfScreen / currentScreenSize) * PIN_SIZE;
   };
 
   useEffect(() => {
@@ -135,6 +129,35 @@ function SelectedTopic() {
 
   useEffect(() => {
     setCoordinatesTopicDetail();
+
+    const onDragEnd = (evt: evt) => {
+      if (dragTimerIdRef.current) {
+        clearTimeout(dragTimerIdRef.current);
+      }
+
+      dragTimerIdRef.current = setTimeout(() => {
+        setCoordinatesTopicDetail();
+      }, 100);
+    };
+    const onZoom = (evt: evt) => {
+      if (zoomTimerIdRef.current) {
+        clearTimeout(zoomTimerIdRef.current);
+      }
+
+      zoomTimerIdRef.current = setTimeout(() => {
+        setCoordinatesTopicDetail();
+      }, 100);
+    };
+
+    if (!mapInstance) return;
+
+    mapInstance.on('DragEnd', onDragEnd);
+    mapInstance.on('Zoom', onZoom);
+
+    return () => {
+      mapInstance.off('DragEnd', onDragEnd);
+      mapInstance.off('Zoom', onZoom);
+    };
   }, [topicDetail]);
 
   useEffect(() => {

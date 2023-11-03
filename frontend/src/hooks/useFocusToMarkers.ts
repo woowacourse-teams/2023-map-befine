@@ -9,10 +9,7 @@ const useFocusToMarker = (markers: Marker[]) => {
   const [markersLength, setMarkersLength] = useState<Number>(0);
 
   useEffect(() => {
-    if (mapInstance && markers && markers.length === 1) {
-      // mapInstance.panTo(markers[0].getPosition());
-    }
-    if (mapInstance && markers && markers.length > 1) {
+    if (mapInstance && markers && markers.length >= 1) {
       bounds.current = new Tmapv3.LatLngBounds();
       markers.forEach((marker: Marker) => {
         bounds.current.extend(marker.getPosition());
@@ -23,7 +20,7 @@ const useFocusToMarker = (markers: Marker[]) => {
 
         // mapInstance.setCenter(bounds.current.getCenter());
 
-        // map.fitBounds(bounds.current, {
+        // mapInstance.fitBounds(bounds.current, {
         //   left: 100, // 지도의 왼쪽과의 간격(단위 : px)
         //   top: 100, // 지도의 위쪽과의 간격(단위 : px)
         //   right: 100, // 지도의 오른쪽과의 간격(단위 : px)

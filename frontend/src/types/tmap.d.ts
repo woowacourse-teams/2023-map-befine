@@ -33,6 +33,7 @@ interface TMap {
   resize(width: number, height: number): void;
   getBounds(): LatLngBounds;
   realToScreen(latLng: LatLng): Point;
+  off(eventType: string, callback: (event: evt) => void): void;
 }
 
 interface Marker {

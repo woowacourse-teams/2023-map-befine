@@ -34,7 +34,7 @@ export default function useMapClick() {
 
     return () => {
       if (mapInstance) {
-        mapInstance.removeListener('click', clickHandler);
+        mapInstance.off('Click', clickHandler);
       }
     };
   }, [mapInstance]);
