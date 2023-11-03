@@ -39,12 +39,12 @@ public class PinBatchRepositoryCustomImpl implements PinBatchRepositoryCustom {
     }
 
     private int[] bulkInsertPins(Topic topicForCopy, List<Pin> originalPins) {
-        String bulkInsertSql = "INSERT INTO pin ("
-                + "name, description, member_id, topic_id, location_id,"
-                + " created_at, updated_at)"
-                + " VALUES ("
-                + " ?, ?, ?, ?, ?,"
-                + " ?, ?)";
+        String bulkInsertSql = "INSERT INTO pin "
+                + "(name, description, member_id, topic_id, location_id, "
+                + "created_at, updated_at) "
+                + "VALUES "
+                + "(?, ?, ?, ?, ?, "
+                + "?, ?)";
         LocalDateTime createdAt = topicForCopy.getLastPinUpdatedAt();
         Long topicId = topicForCopy.getId();
         Long creatorId = topicForCopy.getCreator().getId();
