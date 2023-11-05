@@ -10,11 +10,11 @@ import { Coordinate, CoordinatesContext } from './CoordinatesContext';
 type MarkerContextType = {
   markers: Marker[];
   clickedMarker: Marker | null;
-  createMarkers: (map: TMap) => void;
+  createMarkers: () => void;
   removeMarkers: () => void;
   removeInfowindows: () => void;
-  createInfowindows: (map: TMap) => void;
-  displayClickedMarker: (map: TMap) => void;
+  createInfowindows: () => void;
+  displayClickedMarker: () => void;
 };
 
 const defaultMarkerContext = () => {
@@ -65,19 +65,15 @@ function MarkerProvider({ children }: Props): JSX.Element {
     return coordinatesInScreenSize;
   };
 
-  const createMarker = (
-    coordinate: Coordinate,
-    map: TMap,
-    markerType: number,
-  ) =>
+  const createMarker = (coordinate: Coordinate, markerType: number) =>
     new Tmapv3.Marker({
       position: new Tmapv3.LatLng(coordinate.latitude, coordinate.longitude),
       iconHTML: pinImageMap[markerType + 1],
-      map,
+      map: mapInstance,
     });
 
   // 현재 클릭된 좌표의 마커 생성
-  const displayClickedMarker = (map: TMap) => {
+  const displayClickedMarker = () => {
     if (clickedMarker) {
       clickedMarker.setMap(null);
     }
@@ -87,14 +83,14 @@ function MarkerProvider({ children }: Props): JSX.Element {
         clickedCoordinate.longitude,
       ),
       icon: 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_g_m_m.png',
-      map,
+      map: mapInstance,
     });
     marker.id = 'clickedMarker';
     setClickedMarker(marker);
   };
 
   // coordinates를 받아서 marker를 생성하고, marker를 markers 배열에 추가
-  const createMarkers = (map: TMap) => {
+  const createMarkers = () => {
     let markerType = -1;
     let currentTopicId = '-1';
 
@@ -107,7 +103,7 @@ function MarkerProvider({ children }: Props): JSX.Element {
         markerType = (markerType + 1) % 7;
         currentTopicId = coordinate.topicId;
       }
-      const marker = createMarker(coordinate, map, markerType);
+      const marker = createMarker(coordinate, markerType);
       marker.id = String(coordinate.id);
       return marker;
     });
@@ -126,7 +122,7 @@ function MarkerProvider({ children }: Props): JSX.Element {
     setMarkers(newMarkers);
   };
 
-  const createInfowindows = (map: TMap) => {
+  const createInfowindows = () => {
     let markerType = -1;
     let currentTopicId = '-1';
 
@@ -149,7 +145,7 @@ function MarkerProvider({ children }: Props): JSX.Element {
         };">${coordinate.pinName}</div>`,
         offset: new Tmapv3.Point(0, -60),
         type: 2,
-        map,
+        map: mapInstance,
       });
       return infoWindow;
     });

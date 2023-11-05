@@ -64,7 +64,7 @@ function Map() {
   useUpdateCoordinates();
 
   useFocusToMarker(markers);
-  onFocusClickedPin(markers);
+  onFocusClickedPin();
 
   return (
     <MapContainer>
