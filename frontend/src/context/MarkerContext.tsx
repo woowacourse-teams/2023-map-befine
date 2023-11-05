@@ -3,6 +3,8 @@ import { useLocation, useParams } from 'react-router-dom';
 
 import { pinColors, pinImageMap } from '../constants/pinImage';
 import useNavigator from '../hooks/useNavigator';
+import useMapStore from '../store/mapInstance';
+import useMapSidebarCoordinates from '../store/mapSidebarCoordinates';
 import { Coordinate, CoordinatesContext } from './CoordinatesContext';
 
 type MarkerContextType = {
@@ -35,13 +37,33 @@ interface Props {
 
 function MarkerProvider({ children }: Props): JSX.Element {
   const { Tmapv3 } = window;
+  const { mapInstance } = useMapStore((state) => state);
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [infoWindows, setInfoWindows] = useState<InfoWindow[] | null>(null);
   const [clickedMarker, setClickedMarker] = useState<Marker | null>(null);
   const { coordinates, clickedCoordinate } = useContext(CoordinatesContext);
+  const { sidebarCoordinates } = useMapSidebarCoordinates((state) => state);
   const { topicId } = useParams<{ topicId: string }>();
   const { routePage } = useNavigator();
   const { pathname } = useLocation();
+
+  const createElementsInScreenSize = () => {
+    if (!mapInstance) return;
+
+    const mapBounds = mapInstance.getBounds();
+    const northEast = mapBounds._ne;
+    const southWest = mapBounds._sw;
+
+    const coordinatesInScreenSize = coordinates.filter(
+      (coordinate: any) =>
+        coordinate.latitude <= northEast._lat &&
+        coordinate.latitude >= southWest._lat &&
+        coordinate.longitude <= northEast._lng &&
+        coordinate.longitude >= southWest._lng,
+    );
+
+    return coordinatesInScreenSize;
+  };
 
   const createMarker = (
     coordinate: Coordinate,
@@ -76,7 +98,11 @@ function MarkerProvider({ children }: Props): JSX.Element {
     let markerType = -1;
     let currentTopicId = '-1';
 
-    const newMarkers = coordinates.map((coordinate: any) => {
+    const markersInScreenSize = createElementsInScreenSize();
+
+    if (!markersInScreenSize) return;
+
+    const newMarkers = markersInScreenSize.map((coordinate: any) => {
       if (currentTopicId !== coordinate.topicId) {
         markerType = (markerType + 1) % 7;
         currentTopicId = coordinate.topicId;
@@ -104,7 +130,11 @@ function MarkerProvider({ children }: Props): JSX.Element {
     let markerType = -1;
     let currentTopicId = '-1';
 
-    const newInfowindows = coordinates.map((coordinate: any) => {
+    const windowsInScreenSize = createElementsInScreenSize();
+
+    if (!windowsInScreenSize) return;
+
+    const newInfowindows = windowsInScreenSize.map((coordinate: any) => {
       if (currentTopicId !== coordinate.topicId) {
         markerType = (markerType + 1) % 7;
         currentTopicId = coordinate.topicId;
@@ -116,7 +146,7 @@ function MarkerProvider({ children }: Props): JSX.Element {
         background: 'transparent',
         content: `<div style="padding: 4px 12px; display:flex; border-radius: 20px; justify-contents: center; align-items: center; height:32px; font-size:14px; color:#ffffff; background-color: ${
           pinColors[markerType + 1]
-        };" >${coordinate.pinName}</div>`,
+        };">${coordinate.pinName}</div>`,
         offset: new Tmapv3.Point(0, -60),
         type: 2,
         map,
