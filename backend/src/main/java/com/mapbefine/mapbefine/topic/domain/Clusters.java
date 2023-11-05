@@ -33,13 +33,20 @@ public class Clusters {
         int[] parentOfPins = getInitializeParentOfPins(pins.size());
 
         for (int i = 0; i < pins.size(); i++) {
+            if (parentOfPins[i] != i) {
+                continue;
+            }
+
             for (int j = 0; j < pins.size(); j++) {
                 if (i == j) {
                     continue;
                 }
 
-                if (isReachTwoPin(pins.get(i), pins.get(j), diameter)) {
-                    union(parentOfPins, find(parentOfPins, i), find(parentOfPins, j));
+                int firstParentPinIndex = find(parentOfPins, i);
+                int secondParentPinIndex = find(parentOfPins, j);
+
+                if (isReachTwoPin(pins.get(firstParentPinIndex), pins.get(secondParentPinIndex), diameter)) {
+                    union(parentOfPins, firstParentPinIndex, secondParentPinIndex, pins);
                 }
             }
         }
@@ -73,22 +80,32 @@ public class Clusters {
         return parentOfPins[pinIndex];
     }
 
-    private static void union(int[] parentOfPins, int parentPinIndex, int childPinIndex) {
-        parentOfPins[childPinIndex] = parentPinIndex;
+    private static void union(int[] parentOfPins, int firstPinIndex, int secondPinIndex, List<Pin> pins) {
+        if (firstPinIndex == secondPinIndex) {
+            return;
+        }
+        Pin firstPin = pins.get(firstPinIndex);
+        Pin secondPin = pins.get(secondPinIndex);
+        if (firstPin.getId() < secondPin.getId()) {
+            parentOfPins[secondPinIndex] = firstPinIndex;
+            return;
+        }
+        parentOfPins[firstPinIndex] = secondPinIndex;
     }
 
     private static List<Cluster> getClustersByParentOfPins(List<Pin> pins, int[] parentOfPins) {
-        Map<Integer, List<Pin>> clusters = new HashMap<>();
+        Map<Pin, List<Pin>> clusters = new HashMap<>();
 
         for (int pinIndex = 0; pinIndex < pins.size(); pinIndex++) {
             int parentPinIndex = find(parentOfPins, pinIndex);
-            clusters.computeIfAbsent(parentPinIndex, ArrayList::new);
-            clusters.get(parentPinIndex).add(pins.get(pinIndex));
+            Pin parentPin = pins.get(parentPinIndex);
+            clusters.computeIfAbsent(parentPin, ignored -> new ArrayList<>());
+            clusters.get(parentPin).add(pins.get(pinIndex));
         }
 
-        return clusters.values()
+        return clusters.entrySet()
                 .stream()
-                .map(Cluster::from)
+                .map(clustersEntry -> Cluster.from(clustersEntry.getKey(), clustersEntry.getValue()))
                 .toList();
     }
 

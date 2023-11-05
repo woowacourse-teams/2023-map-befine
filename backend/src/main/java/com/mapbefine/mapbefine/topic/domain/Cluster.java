@@ -17,22 +17,8 @@ public class Cluster {
         this.pins = pins;
     }
 
-    public static Cluster from(List<Pin> pins) {
-        double[] average = averageCoordinateOfPins(pins);
-
-        return new Cluster(average[0], average[1], pins);
-    }
-
-    private static double[] averageCoordinateOfPins(List<Pin> pins) {
-        double latitudeSum = 0;
-        double longitudeSum = 0;
-
-        for (Pin pin : pins) {
-            latitudeSum += pin.getLatitude();
-            longitudeSum += pin.getLongitude();
-        }
-
-        return new double[] {latitudeSum / pins.size(), longitudeSum / pins.size()};
+    public static Cluster from(Pin representPin, List<Pin> pins) {
+        return new Cluster(representPin.getLatitude(), representPin.getLongitude(), pins);
     }
 
 }
