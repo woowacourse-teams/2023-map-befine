@@ -14,7 +14,6 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useTags from '../hooks/useTags';
 import useMapStore from '../store/mapInstance';
-import useMapSidebarMarkers from '../store/mapSidebarMarkers';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
 
@@ -28,11 +27,12 @@ function SelectedTopic() {
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
-  const { setCoordinates } = useContext(CoordinatesContext);
+  const { coordinates, setCoordinates } = useContext(CoordinatesContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
   const zoomTimerIdRef = useRef<NodeJS.Timeout | null>(null);
   const dragTimerIdRef = useRef<NodeJS.Timeout | null>(null);
-  const { mapInstance, setMapInstance } = useMapStore((state) => state);
+  const { mapInstance } = useMapStore((state) => state);
+
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
     useTags();
   useSetNavbarHighlight('none');
@@ -45,62 +45,6 @@ function SelectedTopic() {
     const topic = topicInArray[0];
 
     setTopicDetail(topic);
-  };
-
-  const setCoordinatesTopicDetail = async () => {
-    if (!topicDetail) return;
-
-    const newCoordinates: any = [];
-    const distanceOfPinSize = getDistanceOfPin();
-
-    const diameterPins = await getApi<any>(
-      `/topics/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
-    );
-
-    // const diameterPins = 붕어빵지도;
-
-    diameterPins.forEach((clusterOrPin: any, idx: number) => {
-      newCoordinates.push({
-        topicId,
-        id: clusterOrPin.pins[0].id || `cluster ${idx}`,
-        pinName:
-          clusterOrPin.pins.length > 1
-            ? `${clusterOrPin.pins[0].name} 💬 + ${clusterOrPin.pins.length} 개`
-            : clusterOrPin.pins[0].name,
-        latitude: clusterOrPin.latitude,
-        longitude: clusterOrPin.longitude,
-      });
-    });
-
-    // topicDetail.pins.forEach((pin: PinProps) => {
-    //   newCoordinates.push({
-    //     id: pin.id,
-    //     topicId,
-    //     pinName: pin.name,
-    //     latitude: pin.latitude,
-    //     longitude: pin.longitude,
-    //   });
-    // });
-
-    checkCoordinatesInScreenSize(newCoordinates);
-  };
-
-  const checkCoordinatesInScreenSize = (newCoordinates: any) => {
-    if (!mapInstance) return;
-
-    const mapBounds = mapInstance.getBounds();
-    const northEast = mapBounds._ne;
-    const southWest = mapBounds._sw;
-
-    const newCoordinatesInScreenSize = newCoordinates.filter(
-      (coordinate: any) =>
-        coordinate.latitude <= northEast._lat &&
-        coordinate.latitude >= southWest._lat &&
-        coordinate.longitude <= northEast._lng &&
-        coordinate.longitude >= southWest._lng,
-    );
-
-    setCoordinates(newCoordinatesInScreenSize);
   };
 
   const getDistanceOfPin = () => {
@@ -122,13 +66,46 @@ function SelectedTopic() {
     return (realDistanceOfScreen / currentScreenSize) * PIN_SIZE;
   };
 
+  const setClusteredCoordinates = async () => {
+    if (!topicDetail) return;
+
+    const newCoordinates: any = [];
+    const distanceOfPinSize = getDistanceOfPin();
+
+    // const diameterPins = await getApi<any>(
+    //   `/topics/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
+    // );
+
+    const diameterPins = 붕어빵지도;
+
+    diameterPins.forEach((clusterOrPin: any, idx: number) => {
+      newCoordinates.push({
+        topicId,
+        id: clusterOrPin.pins[0].id || `cluster ${idx}`,
+        pinName:
+          clusterOrPin.pins.length > 1
+            ? `${clusterOrPin.pins[0].name} 💬 + ${clusterOrPin.pins.length} 개`
+            : clusterOrPin.pins[0].name,
+        latitude: clusterOrPin.latitude,
+        longitude: clusterOrPin.longitude,
+        pins: clusterOrPin.pins,
+      });
+    });
+
+    setCoordinates(newCoordinates);
+  };
+
+  const setPrevCoordinates = () => {
+    setCoordinates([...coordinates]);
+  };
+
   useEffect(() => {
     getAndSetDataFromServer();
     setTags([]);
   }, []);
 
   useEffect(() => {
-    setCoordinatesTopicDetail();
+    setClusteredCoordinates();
 
     const onDragEnd = (evt: evt) => {
       if (dragTimerIdRef.current) {
@@ -136,27 +113,27 @@ function SelectedTopic() {
       }
 
       dragTimerIdRef.current = setTimeout(() => {
-        setCoordinatesTopicDetail();
+        setPrevCoordinates();
       }, 100);
     };
-    const onZoom = (evt: evt) => {
+    const onZoomEnd = (evt: evt) => {
       if (zoomTimerIdRef.current) {
         clearTimeout(zoomTimerIdRef.current);
       }
 
       zoomTimerIdRef.current = setTimeout(() => {
-        setCoordinatesTopicDetail();
+        setClusteredCoordinates();
       }, 100);
     };
 
     if (!mapInstance) return;
 
     mapInstance.on('DragEnd', onDragEnd);
-    mapInstance.on('Zoom', onZoom);
+    mapInstance.on('ZoomEnd', onZoomEnd);
 
     return () => {
       mapInstance.off('DragEnd', onDragEnd);
-      mapInstance.off('Zoom', onZoom);
+      mapInstance.off('ZoomEnd', onZoomEnd);
     };
   }, [topicDetail]);
 
