@@ -33,11 +33,11 @@ public class Clusters {
         int[] parentOfPins = getInitializeParentOfPins(pins.size());
 
         for (int i = 0; i < pins.size(); i++) {
-            if (parentOfPins[i] != i) {
-                continue;
-            }
-
             for (int j = 0; j < pins.size(); j++) {
+                if (isNotRepresentPin(parentOfPins, i)) {
+                    break;
+                }
+
                 if (i == j) {
                     continue;
                 }
@@ -52,6 +52,10 @@ public class Clusters {
         }
 
         return parentOfPins;
+    }
+
+    private static boolean isNotRepresentPin(int[] parentOfPins, int i) {
+        return parentOfPins[i] != i;
     }
 
     private static int[] getInitializeParentOfPins(int pinsSize) {
