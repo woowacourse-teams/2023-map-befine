@@ -244,7 +244,7 @@ public class TopicQueryService {
                 )).toList();
     }
 
-    public List<ClusterResponse> findClusteringPinsByIds(
+    public List<ClusterResponse> findClustersPinsByIds(
             AuthMember authMember,
             List<Long> topicIds,
             double imageDiameter

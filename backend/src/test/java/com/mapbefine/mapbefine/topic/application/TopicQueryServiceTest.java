@@ -613,7 +613,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         );
 
         // when
-        List<ClusterResponse> actual = topicQueryService.findClusteringPinsByIds(
+        List<ClusterResponse> actual = topicQueryService.findClustersPinsByIds(
                 createUser(member),
                 of(firstTopic.getId(), secondTopic.getId()),
                 9000
@@ -643,7 +643,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         Topic topic = topicRepository.save(TopicFixture.createPrivateAndGroupOnlyTopic(creator));
 
         // when then
-        assertThatThrownBy(() -> topicQueryService.findClusteringPinsByIds(
+        assertThatThrownBy(() -> topicQueryService.findClustersPinsByIds(
                 createUser(nonCreator),
                 List.of(topic.getId()),
                 9000)
