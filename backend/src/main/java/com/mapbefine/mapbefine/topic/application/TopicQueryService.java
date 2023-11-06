@@ -247,7 +247,7 @@ public class TopicQueryService {
     public List<ClusterResponse> findClustersPinsByIds(
             AuthMember authMember,
             List<Long> topicIds,
-            double imageDiameter
+            Double imageDiameter
     ) {
         List<Topic> topics = topicRepository.findByIdIn(topicIds);
 

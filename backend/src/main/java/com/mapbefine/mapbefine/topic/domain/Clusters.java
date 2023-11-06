@@ -2,10 +2,13 @@ package com.mapbefine.mapbefine.topic.domain;
 
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.topic.exception.TopicErrorCode;
+import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.Getter;
 
 @Getter
@@ -17,10 +20,19 @@ public class Clusters {
         this.clusters = clusters;
     }
 
-    public static Clusters from(List<Pin> pins, double diameterInMeter) {
+    public static Clusters from(List<Pin> pins, Double diameterInMeter) {
+        validateDiameter(diameterInMeter);
         List<Cluster> clusters = executeCluster(pins, diameterInMeter);
 
         return new Clusters(clusters);
+    }
+
+    private static void validateDiameter(Double diameterInMeter) {
+        if (Objects.nonNull(diameterInMeter)) {
+            return;
+        }
+
+        throw new TopicBadRequestException(TopicErrorCode.ILLEGAL_DIAMETER_NULL);
     }
 
     private static List<Cluster> executeCluster(List<Pin> pins, double diameterInMeter) {

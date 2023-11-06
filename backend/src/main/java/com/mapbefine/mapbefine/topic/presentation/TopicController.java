@@ -151,7 +151,7 @@ public class TopicController {
     public ResponseEntity<List<ClusterResponse>> getClustersOfPins(
             AuthMember authMember,
             @RequestParam("ids") List<Long> topicIds,
-            @RequestParam("image-diameter") double imageDiameter
+            @RequestParam("image-diameter") Double imageDiameter
     ) {
         List<ClusterResponse> responses = topicQueryService.findClustersPinsByIds(
                 authMember,

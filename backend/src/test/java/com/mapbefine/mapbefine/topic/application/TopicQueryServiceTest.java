@@ -616,9 +616,8 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         List<ClusterResponse> actual = topicQueryService.findClustersPinsByIds(
                 createUser(member),
                 of(firstTopic.getId(), secondTopic.getId()),
-                9000
+                9000D
         );
-
 
         // then
         List<ClusterResponse> expected = List.of(
@@ -646,7 +645,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         assertThatThrownBy(() -> topicQueryService.findClustersPinsByIds(
                 createUser(nonCreator),
                 List.of(topic.getId()),
-                9000)
+                9000D)
         ).isInstanceOf(TopicForbiddenException.class);
     }
 
