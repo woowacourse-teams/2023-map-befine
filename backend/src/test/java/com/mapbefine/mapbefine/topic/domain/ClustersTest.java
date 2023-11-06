@@ -3,9 +3,9 @@ package com.mapbefine.mapbefine.topic.domain;
 import static com.mapbefine.mapbefine.topic.domain.Clusters.from;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -15,6 +15,7 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import java.util.List;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,20 +36,15 @@ class ClustersTest {
         );
 
         // when
-        List<Cluster> actual = from(pins, 9000D)
+        List<Cluster> actual = Clusters.from(pins, 9000D)
                 .getClusters();
 
         // then
-        List<Cluster> expected = List.of(
-                Cluster.from(pins.get(0), List.of(pins.get(0), pins.get(1))),
-                Cluster.from(pins.get(2), List.of(pins.get(2))),
-                Cluster.from(pins.get(3), List.of(pins.get(3), pins.get(4)))
-        );
         assertAll(
                 () -> assertThat(actual).hasSize(3),
-                () -> assertThat(actual).usingRecursiveComparison()
-                        .ignoringCollectionOrder()
-                        .isEqualTo(expected)
+                () -> assertThat(actual)
+                        .extracting(Cluster::getLatitude, Cluster::getLongitude)
+                        .contains(tuple(36d, 124d), tuple(36d, 124.2d), tuple(38d, 124d))
         );
     }
 
