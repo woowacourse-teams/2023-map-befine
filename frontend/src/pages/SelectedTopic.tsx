@@ -82,10 +82,7 @@ function SelectedTopic() {
       newCoordinates.push({
         topicId,
         id: clusterOrPin.pins[0].id || `cluster ${idx}`,
-        pinName:
-          clusterOrPin.pins.length > 1
-            ? `${clusterOrPin.pins[0].name} 💬 + ${clusterOrPin.pins.length} 개`
-            : clusterOrPin.pins[0].name,
+        pinName: clusterOrPin.pins[0].name,
         latitude: clusterOrPin.latitude,
         longitude: clusterOrPin.longitude,
         pins: clusterOrPin.pins,

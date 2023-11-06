@@ -52,6 +52,7 @@ const useAnimateClickedPin = () => {
           })
           .find((latLng) => latLng);
 
+        // TODO: useUpdateCoordinates 훅이랑 실행 순서 차이로 인한 업데이트 오류 있는 듯 보임. 이 훅은 sidebar 전용으로 만들어볼 것
         if (clickedMarker && mapInstance) {
           removeMarkers();
           removeInfowindows();

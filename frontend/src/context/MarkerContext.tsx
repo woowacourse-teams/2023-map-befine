@@ -1,7 +1,11 @@
 import { createContext, useContext, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 
-import { pinColors, pinImageMap } from '../constants/pinImage';
+import {
+  getInfoWindowTemplate,
+  pinColors,
+  pinImageMap,
+} from '../constants/pinImage';
 import useNavigator from '../hooks/useNavigator';
 import useMapStore from '../store/mapInstance';
 import useMapSidebarCoordinates from '../store/mapSidebarCoordinates';
@@ -140,13 +144,16 @@ function MarkerProvider({ children }: Props): JSX.Element {
         position: new Tmapv3.LatLng(coordinate.latitude, coordinate.longitude),
         border: 0,
         background: 'transparent',
-        content: `<div style="padding: 4px 12px; display:flex; border-radius: 20px; justify-contents: center; align-items: center; height:32px; font-size:14px; color:#ffffff; background-color: ${
-          pinColors[markerType + 1]
-        };">${coordinate.pinName}</div>`,
-        offset: new Tmapv3.Point(0, -60),
+        content: getInfoWindowTemplate({
+          backgroundColor: pinColors[markerType + 1],
+          pinName: coordinate.pinName,
+          pinLength: coordinate.pins.length,
+        }),
+        offset: new Tmapv3.Point(0, -64),
         type: 2,
         map: mapInstance,
       });
+
       return infoWindow;
     });
 
