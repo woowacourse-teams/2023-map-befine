@@ -126,6 +126,16 @@ function MarkerProvider({ children }: Props): JSX.Element {
     setMarkers(newMarkers);
   };
 
+  const getCondition = (pins: any) => {
+    if (!mapInstance) return;
+
+    if (mapInstance.getZoom() === 17 && pins.length > 1) {
+      return pins.length;
+    }
+
+    return 1;
+  };
+
   const createInfowindows = () => {
     let markerType = -1;
     let currentTopicId = '-1';
@@ -147,7 +157,8 @@ function MarkerProvider({ children }: Props): JSX.Element {
         content: getInfoWindowTemplate({
           backgroundColor: pinColors[markerType + 1],
           pinName: coordinate.pinName,
-          pinLength: coordinate.pins.length,
+          pins: coordinate.pins,
+          condition: getCondition(coordinate.pins),
         }),
         offset: new Tmapv3.Point(0, -64),
         type: 2,
@@ -166,7 +177,9 @@ function MarkerProvider({ children }: Props): JSX.Element {
   };
 
   const removeInfowindows = () => {
-    infoWindows?.forEach((infoWindow: InfoWindow) => infoWindow.setMap(null));
+    infoWindows?.forEach((infoWindow: InfoWindow) => {
+      infoWindow.setMap(null);
+    });
     setInfoWindows([]);
   };
 

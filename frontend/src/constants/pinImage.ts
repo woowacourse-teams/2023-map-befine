@@ -84,24 +84,39 @@ export const pinColors: PinImageMap = {
   7: '#C340B6',
 };
 
-const showExpendedPopUp = () => {
-  const infoWindow = document.querySelector('.info-window-default');
-};
-
 export const getInfoWindowTemplate = ({
   backgroundColor,
   pinName,
-  pinLength,
+  pins,
+  condition,
 }: {
   backgroundColor: string;
   pinName: string;
-  pinLength: number;
+  pins: [];
+  condition: number;
 }) => `
-<div class="info-window-default" onclick="" style="position: relative; padding: 4px 12px; display:flex; border-radius: 20px; justify-content: center; align-items: center; height:32px; font-size:14px; color:#ffffff; background-color: ${backgroundColor};">
-${pinName}
+<div style="position: relative;">
 ${
-  pinLength > 1 &&
-  `<div style="position: absolute; top: -16px; right: -12px; padding: 2px 4px; font-size: 14px; background-color: #fff; border-radius: 4px; border: 1px solid ${backgroundColor}; color: ${backgroundColor}"> + ${pinLength}</div>`
+  condition !== 1
+    ? pins
+        .map(
+          (
+            pin: any,
+          ) => `<div style="border-bottom: 1px solid white; padding: 4px 12px; display:flex; border-radius: 20px; justify-content: center; align-items: center; height:32px; font-size:14px; color:#ffffff; background-color: ${backgroundColor};">
+  ${pin.name}
+  </div>`,
+        )
+        .join('')
+    : `<div style="padding: 4px 12px; display:flex; border-radius: 20px; justify-content: center; align-items: center; height:32px; font-size:14px; color:#ffffff; background-color: ${backgroundColor};">
+  ${pinName}
+  </div>
+  ${
+    pins.length > 1
+      ? `
+      <div style="position: absolute; top: -14px; right: -12px; padding: 2px 4px; font-size: 14px; background-color: #fff; border-radius: 50%; border: 1px solid ${backgroundColor}; color: ${backgroundColor}">+${pins.length}</div>
+      `
+      : ''
+  }
+  </div>`
 }
-</div>
 `;
