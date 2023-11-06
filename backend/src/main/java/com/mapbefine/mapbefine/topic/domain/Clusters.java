@@ -17,19 +17,19 @@ public class Clusters {
         this.clusters = clusters;
     }
 
-    public static Clusters from(List<Pin> pins, double diameter) {
-        List<Cluster> clusters = executeCluster(pins, diameter);
+    public static Clusters from(List<Pin> pins, double diameterInMeter) {
+        List<Cluster> clusters = executeCluster(pins, diameterInMeter);
 
         return new Clusters(clusters);
     }
 
-    private static List<Cluster> executeCluster(List<Pin> pins, double diameter) {
-        int[] parentOfPins = getParentOfPins(pins, diameter);
+    private static List<Cluster> executeCluster(List<Pin> pins, double diameterInMeter) {
+        int[] parentOfPins = getParentOfPins(pins, diameterInMeter);
 
         return getClustersByParentOfPins(pins, parentOfPins);
     }
 
-    private static int[] getParentOfPins(List<Pin> pins, double diameter) {
+    private static int[] getParentOfPins(List<Pin> pins, double diameterInMeter) {
         int[] parentOfPins = getInitializeParentOfPins(pins.size());
 
         for (int i = 0; i < pins.size(); i++) {
@@ -45,7 +45,7 @@ public class Clusters {
                 int firstParentPinIndex = find(parentOfPins, i);
                 int secondParentPinIndex = find(parentOfPins, j);
 
-                if (isReachTwoPin(pins.get(firstParentPinIndex), pins.get(secondParentPinIndex), diameter)) {
+                if (isReachTwoPin(pins.get(firstParentPinIndex), pins.get(secondParentPinIndex), diameterInMeter)) {
                     union(parentOfPins, firstParentPinIndex, secondParentPinIndex, pins);
                 }
             }
@@ -68,11 +68,11 @@ public class Clusters {
         return parentOfPins;
     }
 
-    private static boolean isReachTwoPin(Pin firstPin, Pin secondPin, double diameter) {
+    private static boolean isReachTwoPin(Pin firstPin, Pin secondPin, double diameterInMeter) {
         Coordinate firstPinCoordinate = firstPin.getLocation().getCoordinate();
         Coordinate secondPinCoordinate = secondPin.getLocation().getCoordinate();
 
-        return firstPinCoordinate.calculateDistance(secondPinCoordinate) <= diameter;
+        return firstPinCoordinate.calculateDistance(secondPinCoordinate) <= diameterInMeter;
     }
 
     private static int find(int[] parentOfPins, int pinIndex) {
@@ -90,11 +90,18 @@ public class Clusters {
         }
         Pin firstPin = pins.get(firstPinIndex);
         Pin secondPin = pins.get(secondPinIndex);
-        if (firstPin.getId() < secondPin.getId()) {
+        if (isFirstPinOnLeft(firstPin, secondPin)) {
             parentOfPins[secondPinIndex] = firstPinIndex;
             return;
         }
         parentOfPins[firstPinIndex] = secondPinIndex;
+    }
+
+    private static boolean isFirstPinOnLeft(Pin firstPin, Pin secondPin) {
+        Coordinate firstPinCoordinate = firstPin.getLocation().getCoordinate();
+        Coordinate secondPinCoordinate = secondPin.getLocation().getCoordinate();
+
+        return firstPinCoordinate.getLongitude() < secondPinCoordinate.getLongitude();
     }
 
     private static List<Cluster> getClustersByParentOfPins(List<Pin> pins, int[] parentOfPins) {

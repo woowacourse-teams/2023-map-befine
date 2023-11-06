@@ -31,13 +31,13 @@ class ClusterTest {
         );
 
         // when
-        Cluster cluster = Cluster.from(pins.get(0), pins);
+        Cluster actual = Cluster.from(pins.get(0), pins);
 
         // then
         assertAll(
-                () -> assertThat(cluster.getLatitude()).isEqualTo(36),
-                () -> assertThat(cluster.getLongitude()).isEqualTo(124),
-                () -> assertThat(cluster.getPins()).usingRecursiveComparison()
+                () -> assertThat(actual.getLatitude()).isEqualTo(36),
+                () -> assertThat(actual.getLongitude()).isEqualTo(124),
+                () -> assertThat(actual.getPins()).usingRecursiveComparison()
                         .isEqualTo(pins)
         );
     }
