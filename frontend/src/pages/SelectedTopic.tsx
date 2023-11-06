@@ -72,11 +72,9 @@ function SelectedTopic() {
     const newCoordinates: any = [];
     const distanceOfPinSize = getDistanceOfPin();
 
-    // const diameterPins = await getApi<any>(
-    //   `/topics/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
-    // );
-
-    const diameterPins = 붕어빵지도;
+    const diameterPins = await getApi<any>(
+      `/topics/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
+    );
 
     diameterPins.forEach((clusterOrPin: any, idx: number) => {
       newCoordinates.push({
