@@ -93,7 +93,7 @@ function SelectedTopic() {
   };
 
   const setPrevCoordinates = () => {
-    setCoordinates([...coordinates]);
+    setCoordinates((prev) => [...prev]);
   };
 
   useEffect(() => {
