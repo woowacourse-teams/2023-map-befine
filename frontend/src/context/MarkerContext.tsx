@@ -8,7 +8,6 @@ import {
 } from '../constants/pinImage';
 import useNavigator from '../hooks/useNavigator';
 import useMapStore from '../store/mapInstance';
-import useMapSidebarCoordinates from '../store/mapSidebarCoordinates';
 import { Coordinate, CoordinatesContext } from './CoordinatesContext';
 
 type MarkerContextType = {
@@ -46,7 +45,6 @@ function MarkerProvider({ children }: Props): JSX.Element {
   const [infoWindows, setInfoWindows] = useState<InfoWindow[] | null>(null);
   const [clickedMarker, setClickedMarker] = useState<Marker | null>(null);
   const { coordinates, clickedCoordinate } = useContext(CoordinatesContext);
-  const { sidebarCoordinates } = useMapSidebarCoordinates((state) => state);
   const { topicId } = useParams<{ topicId: string }>();
   const { routePage } = useNavigator();
   const { pathname } = useLocation();

@@ -2,7 +2,6 @@ import { useContext, useEffect } from 'react';
 
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
-import useMapSidebarCoordinates from '../store/mapSidebarCoordinates';
 
 export default function useUpdateCoordinates() {
   const { coordinates } = useContext(CoordinatesContext);
