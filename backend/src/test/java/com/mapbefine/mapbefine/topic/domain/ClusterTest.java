@@ -37,6 +37,7 @@ class ClusterTest {
         assertAll(
                 () -> assertThat(actual.getLatitude()).isEqualTo(36),
                 () -> assertThat(actual.getLongitude()).isEqualTo(124),
+                () -> assertThat(actual.getPins().get(0)).isEqualTo(pins.get(0)),
                 () -> assertThat(actual.getPins()).usingRecursiveComparison()
                         .isEqualTo(pins)
         );
