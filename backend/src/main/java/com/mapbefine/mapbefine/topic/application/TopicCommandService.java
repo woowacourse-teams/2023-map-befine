@@ -55,11 +55,10 @@ public class TopicCommandService {
         Topic topic = convertToTopic(member, request);
         List<Long> pinIds = request.pins();
 
+        topicRepository.save(topic);
         if (!pinIds.isEmpty()) {
             copyPinsToTopic(member, topic, pinIds);
         }
-
-        topicRepository.save(topic);
 
         return topic.getId();
     }
@@ -105,14 +104,14 @@ public class TopicCommandService {
     ) {
         List<Pin> originalPins = findAllPins(pinIds);
         validateCopyablePins(member, originalPins);
+        topic.increasePinCount(pinIds.size());
+        pinRepository.flush();
 
-        Member creator = findCreatorByAuthMember(member);
-
-        originalPins.forEach(pin -> pin.copyToTopic(creator, topic));
+        pinRepository.saveAllToTopic(topic, originalPins);
     }
 
     private List<Pin> findAllPins(List<Long> pinIds) {
-        List<Pin> findPins = pinRepository.findAllById(pinIds);
+        List<Pin> findPins = pinRepository.findAllByIdIn(pinIds);
 
         if (pinIds.size() != findPins.size()) {
             throw new PinBadRequestException(ILLEGAL_PIN_ID);
@@ -134,15 +133,13 @@ public class TopicCommandService {
     public Long merge(AuthMember member, TopicMergeRequest request) {
         Topic topic = convertToTopic(member, request);
         List<Topic> originalTopics = findAllTopics(request.topics());
-
         validateCopyableTopics(member, originalTopics);
-
-        Member creator = findCreatorByAuthMember(member);
         List<Pin> originalPins = getAllPinsFromTopics(originalTopics);
-        originalPins.forEach(pin -> pin.copyToTopic(creator, topic));
+
+        topic.increasePinCount(originalPins.size());
 
         topicRepository.save(topic);
-
+        pinRepository.saveAllToTopic(topic, originalPins);
         return topic.getId();
     }
 
