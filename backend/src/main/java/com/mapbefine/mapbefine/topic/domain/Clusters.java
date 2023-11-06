@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import lombok.Getter;
 
-@Getter
 public class Clusters {
 
     private final List<Cluster> clusters;
@@ -130,6 +128,10 @@ public class Clusters {
                 .stream()
                 .map(clustersEntry -> Cluster.from(clustersEntry.getKey(), clustersEntry.getValue()))
                 .toList();
+    }
+
+    public List<Cluster> getClusters() {
+        return clusters;
     }
 
 }

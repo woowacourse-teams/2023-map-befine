@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.location.LocationFixture;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -46,6 +47,7 @@ class ClustersTest {
         assertAll(
                 () -> assertThat(actual).hasSize(3),
                 () -> assertThat(actual).usingRecursiveComparison()
+                        .ignoringCollectionOrder()
                         .isEqualTo(expected)
         );
     }
