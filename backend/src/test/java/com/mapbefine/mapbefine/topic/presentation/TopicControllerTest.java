@@ -277,7 +277,7 @@ class TopicControllerTest extends RestDocsIntegration {
                 )
         );
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/topics/clusters/ids?ids=1,2&image-diameter=9000")
+        mockMvc.perform(MockMvcRequestBuilders.get("/topics/clusters?ids=1,2&image-diameter=9000")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(restDocs.document());

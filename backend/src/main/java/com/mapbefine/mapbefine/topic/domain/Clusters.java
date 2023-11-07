@@ -36,13 +36,13 @@ public class Clusters {
     }
 
     private static List<Cluster> executeCluster(List<Pin> pins, double diameterInMeter) {
-        int[] parentOfPins = getParentOfPins(pins, diameterInMeter);
+        List<Integer> parentOfPins = getParentOfPins(pins, diameterInMeter);
 
         return getClustersByParentOfPins(pins, parentOfPins);
     }
 
-    private static int[] getParentOfPins(List<Pin> pins, double diameterInMeter) {
-        int[] parentOfPins = getInitializeParentOfPins(pins.size());
+    private static List<Integer> getParentOfPins(List<Pin> pins, double diameterInMeter) {
+        List<Integer> parentOfPins = getInitializeParentOfPins(pins.size());
 
         for (int i = 0; i < pins.size(); i++) {
             for (int j = 0; j < pins.size(); j++) {
@@ -66,15 +66,15 @@ public class Clusters {
         return parentOfPins;
     }
 
-    private static boolean isNotRepresentPin(int[] parentOfPins, int i) {
-        return parentOfPins[i] != i;
+    private static boolean isNotRepresentPin(List<Integer> parentOfPins, int i) {
+        return parentOfPins.get(i) != i;
     }
 
-    private static int[] getInitializeParentOfPins(int pinsSize) {
-        int[] parentOfPins = new int[pinsSize];
+    private static List<Integer> getInitializeParentOfPins(int pinsSize) {
+        List<Integer> parentOfPins = new ArrayList<>();
 
-        for (int i = 0; i < parentOfPins.length; i++) {
-            parentOfPins[i] = i;
+        for (int i = 0; i < pinsSize; i++) {
+            parentOfPins.add(i);
         }
 
         return parentOfPins;
@@ -87,26 +87,26 @@ public class Clusters {
         return firstPinCoordinate.calculateDistance(secondPinCoordinate) <= diameterInMeter;
     }
 
-    private static int findParentOfSet(int[] parentOfPins, int pinIndex) {
-        if (parentOfPins[pinIndex] == pinIndex) {
+    private static int findParentOfSet(List<Integer> parentOfPins, int pinIndex) {
+        if (parentOfPins.get(pinIndex) == pinIndex) {
             return pinIndex;
         }
 
-        parentOfPins[pinIndex] = findParentOfSet(parentOfPins, parentOfPins[pinIndex]);
-        return parentOfPins[pinIndex];
+        parentOfPins.set(pinIndex, findParentOfSet(parentOfPins, parentOfPins.get(pinIndex)));
+        return parentOfPins.get(pinIndex);
     }
 
-    private static void union(int[] parentOfPins, int firstPinIndex, int secondPinIndex, List<Pin> pins) {
+    private static void union(List<Integer> parentOfPins, int firstPinIndex, int secondPinIndex, List<Pin> pins) {
         if (firstPinIndex == secondPinIndex) {
             return;
         }
         Pin firstPin = pins.get(firstPinIndex);
         Pin secondPin = pins.get(secondPinIndex);
         if (isFirstPinOnLeft(firstPin, secondPin)) {
-            parentOfPins[secondPinIndex] = firstPinIndex;
+            parentOfPins.set(secondPinIndex, firstPinIndex);
             return;
         }
-        parentOfPins[firstPinIndex] = secondPinIndex;
+        parentOfPins.set(firstPinIndex, secondPinIndex);
     }
 
     private static boolean isFirstPinOnLeft(Pin firstPin, Pin secondPin) {
@@ -116,7 +116,7 @@ public class Clusters {
         return firstPinCoordinate.getLongitude() < secondPinCoordinate.getLongitude();
     }
 
-    private static List<Cluster> getClustersByParentOfPins(List<Pin> pins, int[] parentOfPins) {
+    private static List<Cluster> getClustersByParentOfPins(List<Pin> pins, List<Integer> parentOfPins) {
         Map<Pin, List<Pin>> clusters = new HashMap<>();
 
         for (int pinIndex = 0; pinIndex < pins.size(); pinIndex++) {

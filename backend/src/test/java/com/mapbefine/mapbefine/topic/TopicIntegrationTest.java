@@ -561,7 +561,7 @@ class TopicIntegrationTest extends IntegrationTest {
                 .header(AUTHORIZATION, authHeader)
                 .param("ids", List.of(topicId))
                 .param("image-diameter", 1)
-                .when().get("/topics/clusters/ids")
+                .when().get("/topics/clusters")
                 .then().log().all()
                 .extract();
 
