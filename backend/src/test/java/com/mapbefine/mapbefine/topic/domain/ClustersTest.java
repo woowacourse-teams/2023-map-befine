@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.topic.domain;
 
-import static com.mapbefine.mapbefine.topic.domain.Clusters.from;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
@@ -15,7 +14,6 @@ import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import java.util.List;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -59,7 +57,7 @@ class ClustersTest {
         );
 
         // when then
-        assertThatThrownBy(() -> from(pins, null))
+        assertThatThrownBy(() -> Clusters.from(pins, null))
                 .isInstanceOf(TopicBadRequestException.class);
     }
 
