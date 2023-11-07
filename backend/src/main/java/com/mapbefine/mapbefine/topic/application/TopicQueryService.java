@@ -8,8 +8,11 @@ import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.pin.domain.Pin;
+import com.mapbefine.mapbefine.topic.domain.Clusters;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import com.mapbefine.mapbefine.topic.dto.response.ClusterResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
@@ -239,6 +242,26 @@ public class TopicQueryService {
                         isInAtlas(member.getId(), topic.getId()),
                         isBookMarked(member.getId(), topic.getId())
                 )).toList();
+    }
+
+    public List<ClusterResponse> findClustersPinsByIds(
+            AuthMember authMember,
+            List<Long> topicIds,
+            Double imageDiameter
+    ) {
+        List<Topic> topics = topicRepository.findByIdIn(topicIds);
+        topics.forEach(topic -> validateReadableTopic(authMember, topic));
+
+        List<Pin> allPins = topics.stream()
+                .map(Topic::getPins)
+                .flatMap(List::stream)
+                .toList();
+
+        return Clusters.from(allPins, imageDiameter)
+                .getClusters()
+                .stream()
+                .map(ClusterResponse::from)
+                .toList();
     }
 
 }

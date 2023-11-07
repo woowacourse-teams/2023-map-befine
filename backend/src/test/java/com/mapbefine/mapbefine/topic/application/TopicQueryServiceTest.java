@@ -1,7 +1,10 @@
 package com.mapbefine.mapbefine.topic.application;
 
+import static com.mapbefine.mapbefine.member.MemberFixture.createUser;
+import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
@@ -22,8 +25,10 @@ import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
+import com.mapbefine.mapbefine.topic.domain.Cluster;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import com.mapbefine.mapbefine.topic.dto.response.ClusterResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
@@ -88,7 +93,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         saveAllReadableTopicOfCount(1);
         saveOnlyMemberReadableTopicOfCount(2);
 
-        AuthMember user = MemberFixture.createUser(member);
+        AuthMember user = createUser(member);
 
         //when
         List<TopicResponse> topics = topicQueryService.findAllReadable(user);
@@ -174,7 +179,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when then
-        AuthMember user = MemberFixture.createUser(member);
+        AuthMember user = createUser(member);
         List<TopicResponse> topics = topicQueryService.findAllReadable(user);
 
         assertThat(topics).hasSize(2);
@@ -288,7 +293,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.deleteById(topic.getId());
 
         //when then
-        AuthMember user = MemberFixture.createUser(member);
+        AuthMember user = createUser(member);
         assertThatThrownBy(() -> topicQueryService.findDetailById(user, topic.getId()))
                 .isInstanceOf(TopicNotFoundException.class);
     }
@@ -304,7 +309,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when then
-        AuthMember user = MemberFixture.createUser(member);
+        AuthMember user = createUser(member);
         TopicDetailResponse topicDetail = topicQueryService.findDetailById(user, topic.getId());
 
         assertThat(topicDetail.id()).isEqualTo(topic.getId());
@@ -348,7 +353,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
 
         List<TopicDetailResponse> details = topicQueryService.findDetailsByIds(
                 guest,
-                List.of(topic1.getId(), topic2.getId())
+                of(topic1.getId(), topic2.getId())
         );
 
         //then
@@ -368,11 +373,11 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic2);
 
         //when
-        AuthMember user = MemberFixture.createUser(member);
+        AuthMember user = createUser(member);
 
         List<TopicDetailResponse> details = topicQueryService.findDetailsByIds(
                 user,
-                List.of(topic1.getId(), topic2.getId())
+                of(topic1.getId(), topic2.getId())
         );
 
         //then
@@ -393,7 +398,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
 
         //when then
         AuthMember guest = new Guest();
-        List<Long> topicIds = List.of(topic1.getId(), topic2.getId());
+        List<Long> topicIds = of(topic1.getId(), topic2.getId());
 
         assertThatThrownBy(() -> topicQueryService.findDetailsByIds(guest, topicIds))
                 .isInstanceOf(TopicForbiddenException.class);
@@ -411,8 +416,8 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.deleteById(topic2.getId());
 
         //when then
-        AuthMember user = MemberFixture.createUser(member);
-        List<Long> topicIds = List.of(topic1.getId(), topic2.getId());
+        AuthMember user = createUser(member);
+        List<Long> topicIds = of(topic1.getId(), topic2.getId());
 
         assertThatThrownBy(() -> topicQueryService.findDetailsByIds(user, topicIds))
                 .isInstanceOf(TopicNotFoundException.class);
@@ -431,9 +436,9 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when //then
-        AuthMember user = MemberFixture.createUser(member);
+        AuthMember user = createUser(member);
         List<TopicDetailResponse> topicDetails =
-                topicQueryService.findDetailsByIds(user, List.of(topic1.getId(), topic2.getId()));
+                topicQueryService.findDetailsByIds(user, of(topic1.getId(), topic2.getId()));
 
         assertThat(topicDetails).hasSize(2);
         assertThat(topicDetails).extractingResultOf("id")
@@ -457,7 +462,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         //when //then
         AuthMember guest = new Guest();
         List<TopicDetailResponse> topicDetails =
-                topicQueryService.findDetailsByIds(guest, List.of(topic1.getId(), topic2.getId()));
+                topicQueryService.findDetailsByIds(guest, of(topic1.getId(), topic2.getId()));
 
         assertThat(topicDetails).hasSize(2);
         assertThat(topicDetails).extractingResultOf("id")
@@ -472,7 +477,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         //given
         AuthMember authMember = new Admin(member.getId());
 
-        List<Topic> expected = topicRepository.saveAll(List.of(
+        List<Topic> expected = topicRepository.saveAll(of(
                 TopicFixture.createPublicAndAllMembersTopic(member),
                 TopicFixture.createPublicAndAllMembersTopic(member),
                 TopicFixture.createPublicAndAllMembersTopic(member)
@@ -497,7 +502,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         Location location = LocationFixture.create();
         locationRepository.save(location);
 
-        List<Topic> topics = List.of(
+        List<Topic> topics = of(
                 TopicFixture.createByName("5등", member),
                 TopicFixture.createByName("4등", member),
                 TopicFixture.createByName("3등", member),
@@ -544,7 +549,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         saveBookmark(topicWithTwoBookmark, otherMember);
 
         //when
-        AuthMember user = MemberFixture.createUser(member);
+        AuthMember user = createUser(member);
         List<TopicResponse> actual = topicQueryService.findAllBestTopics(user);
 
         //then
@@ -575,7 +580,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         saveBookmark(privateTopicWithOneBookmark, member);
 
         //when
-        AuthMember otherUser = MemberFixture.createUser(otherMember);
+        AuthMember otherUser = createUser(otherMember);
 
         List<TopicResponse> actual = topicQueryService.findAllBestTopics(otherUser);
         List<TopicResponse> expect = topicQueryService.findAllReadable(otherUser);
@@ -583,6 +588,65 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         //then
         assertThat(actual).usingRecursiveComparison()
                 .isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("여러 지도를 한번에 렌더링 할 때, 클러스터링 된 결과를 반환받는다.")
+    void findClusteringPinsByIds_success() {
+        // given
+        Topic firstTopic = topicRepository.save(TopicFixture.createByName("firstTopic", member));
+        Topic secondTopic = topicRepository.save(TopicFixture.createByName("secondTopic", member));
+        Pin representPinOfSet1 = pinRepository.save(PinFixture.create(
+                locationRepository.save(LocationFixture.createByCoordinate(36, 124)), firstTopic, member)
+        );
+        Pin pinOfSet1 = pinRepository.save(PinFixture.create(
+                locationRepository.save(LocationFixture.createByCoordinate(36, 124.1)), secondTopic, member)
+        );
+        Pin representPinOfSet2 = pinRepository.save(PinFixture.create(
+                locationRepository.save(LocationFixture.createByCoordinate(36, 124.2)), firstTopic, member)
+        );
+        Pin representPinOfSet3 = pinRepository.save(PinFixture.create(
+                locationRepository.save(LocationFixture.createByCoordinate(38, 124)), firstTopic, member)
+        );
+        Pin pinOfSet3 = pinRepository.save(PinFixture.create(
+                locationRepository.save(LocationFixture.createByCoordinate(38, 124.1)), secondTopic, member)
+        );
+
+        // when
+        List<ClusterResponse> actual = topicQueryService.findClustersPinsByIds(
+                createUser(member),
+                List.of(firstTopic.getId(), secondTopic.getId()),
+                9000D
+        );
+
+        // then
+        List<ClusterResponse> expected = List.of(
+                ClusterResponse.from(Cluster.from(representPinOfSet1, List.of(representPinOfSet1, pinOfSet1))),
+                ClusterResponse.from(Cluster.from(representPinOfSet2, List.of(representPinOfSet2))),
+                ClusterResponse.from(Cluster.from(representPinOfSet3, List.of(representPinOfSet3, pinOfSet3)))
+        );
+        assertAll(
+                () -> assertThat(actual).hasSize(3),
+                () -> assertThat(actual).usingRecursiveComparison()
+                        .ignoringCollectionOrder()
+                        .isEqualTo(expected)
+        );
+    }
+
+    @Test
+    @DisplayName("여러 지도를 한번에 렌더링 할 떄, 조회하지 못하는 지도가 있어 예외가 발생한다.")
+    void findClusteringPinsByIds_fail() {
+        // given
+        Member nonCreator = memberRepository.save(MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER));
+        Member creator = memberRepository.save(MemberFixture.create("creator", "creator@naver.com", Role.USER));
+        Topic topic = topicRepository.save(TopicFixture.createPrivateAndGroupOnlyTopic(creator));
+
+        // when then
+        assertThatThrownBy(() -> topicQueryService.findClustersPinsByIds(
+                createUser(nonCreator),
+                List.of(topic.getId()),
+                9000D
+        )).isInstanceOf(TopicForbiddenException.class);
     }
 
     private Bookmark saveBookmark(Topic topic, Member member) {

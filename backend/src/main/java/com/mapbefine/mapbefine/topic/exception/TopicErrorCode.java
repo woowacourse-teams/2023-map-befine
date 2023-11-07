@@ -14,6 +14,7 @@ public enum TopicErrorCode {
     ILLEGAL_PERMISSION_FOR_PUBLICITY_PRIVATE("09007", "비공개 지도인 경우, 권한 설정이 소속 회원이어야합니다."),
     ILLEGAL_PUBLICITY_FOR_PERMISSION_ALL_MEMBERS("09008", "권한 범위가 모든 회원인 경우, 비공개 지도로 설정할 수 없습니다."),
     ILLEGAL_PERMISSION_UPDATE("09009", "권한 범위를 모든 회원에서 소속 회원으로 수정할 수 없습니다."),
+    ILLEGAL_DIAMETER_NULL("09010", "이미지의 실제 크기는 필수로 입력해야합니다."),
     FORBIDDEN_TOPIC_CREATE("09300", "로그인하지 않은 사용자는 지도를 생성할 수 없습니다."),
     FORBIDDEN_TOPIC_UPDATE("09301", "지도 수정 권한이 없습니다."),
     FORBIDDEN_TOPIC_DELETE("09302", "지도 삭제 권한이 없습니다."),
