@@ -73,7 +73,7 @@ function SelectedTopic() {
     const distanceOfPinSize = getDistanceOfPin();
 
     const diameterPins = await getApi<any>(
-      `/topics/clusters/ids?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
+      `/topics/clusters?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
     );
 
     diameterPins.forEach((clusterOrPin: any, idx: number) => {
