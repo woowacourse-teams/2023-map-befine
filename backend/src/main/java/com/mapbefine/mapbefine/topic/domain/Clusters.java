@@ -54,8 +54,8 @@ public class Clusters {
                     continue;
                 }
 
-                int firstParentPinIndex = find(parentOfPins, i);
-                int secondParentPinIndex = find(parentOfPins, j);
+                int firstParentPinIndex = findParentOfSet(parentOfPins, i);
+                int secondParentPinIndex = findParentOfSet(parentOfPins, j);
 
                 if (isReachTwoPin(pins.get(firstParentPinIndex), pins.get(secondParentPinIndex), diameterInMeter)) {
                     union(parentOfPins, firstParentPinIndex, secondParentPinIndex, pins);
@@ -87,12 +87,12 @@ public class Clusters {
         return firstPinCoordinate.calculateDistance(secondPinCoordinate) <= diameterInMeter;
     }
 
-    private static int find(int[] parentOfPins, int pinIndex) {
+    private static int findParentOfSet(int[] parentOfPins, int pinIndex) {
         if (parentOfPins[pinIndex] == pinIndex) {
             return pinIndex;
         }
 
-        parentOfPins[pinIndex] = find(parentOfPins, parentOfPins[pinIndex]);
+        parentOfPins[pinIndex] = findParentOfSet(parentOfPins, parentOfPins[pinIndex]);
         return parentOfPins[pinIndex];
     }
 
@@ -120,7 +120,7 @@ public class Clusters {
         Map<Pin, List<Pin>> clusters = new HashMap<>();
 
         for (int pinIndex = 0; pinIndex < pins.size(); pinIndex++) {
-            int parentPinIndex = find(parentOfPins, pinIndex);
+            int parentPinIndex = findParentOfSet(parentOfPins, pinIndex);
             Pin parentPin = pins.get(parentPinIndex);
             clusters.computeIfAbsent(parentPin, ignored -> new ArrayList<>());
             clusters.get(parentPin).add(pins.get(pinIndex));

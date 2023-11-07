@@ -250,10 +250,7 @@ public class TopicQueryService {
             Double imageDiameter
     ) {
         List<Topic> topics = topicRepository.findByIdIn(topicIds);
-
-        for (Topic topic : topics) {
-            validateReadableTopic(authMember, topic);
-        }
+        topics.forEach(topic -> validateReadableTopic(authMember, topic));
 
         List<Pin> allPins = topics.stream()
                 .map(Topic::getPins)
