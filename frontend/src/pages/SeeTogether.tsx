@@ -95,7 +95,10 @@ function SeeTogether() {
     diameterPins.forEach((clusterOrPin: any, idx: number) => {
       newCoordinates.push({
         topicId:
-          clusterOrPin.pins.length > 1
+          clusterOrPin.pins.length > 1 &&
+          clusterOrPin.pins.filter(
+            (pin: any) => pin.topicId !== clusterOrPin.pins[0].topicId,
+          ).length !== 0
             ? 'clustered'
             : clusterOrPin.pins[0].topicId,
         id: clusterOrPin.pins[0].id || `cluster ${idx}`,
