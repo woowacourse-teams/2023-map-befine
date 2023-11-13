@@ -1,4 +1,11 @@
-import { Fragment, Suspense, useContext, useEffect, useState } from 'react';
+import {
+  Fragment,
+  Suspense,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
@@ -16,10 +23,12 @@ import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 import { SeeTogetherContext } from '../context/SeeTogetherContext';
 import useNavigator from '../hooks/useNavigator';
+import useRealDistanceOfPin from '../hooks/useRealDistanceOfPin';
 import useResizeMap from '../hooks/useResizeMap';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useTags from '../hooks/useTags';
+import useMapStore from '../store/mapInstance';
 import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
@@ -39,6 +48,11 @@ function SeeTogether() {
     null,
   );
 
+  const zoomTimerIdRef = useRef<NodeJS.Timeout | null>(null);
+  const dragTimerIdRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { mapInstance } = useMapStore((state) => state);
+  const { getDistanceOfPin } = useRealDistanceOfPin();
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
     useTags();
   const { setCoordinates } = useContext(CoordinatesContext);
@@ -64,29 +78,79 @@ function SeeTogether() {
       `/topics/ids?ids=${requestTopicIds}`,
     );
 
-    setTopicDetails([...topics]);
-    setCoordinatesTopicDetailWithHashMap(topics);
+    setTopicDetails(topics);
+    setClusteredCoordinates();
   };
 
-  const setCoordinatesTopicDetailWithHashMap = (topics: TopicDetailProps[]) => {
-    if (topicId === '-1' || !topicId) return;
+  const setClusteredCoordinates = async () => {
+    if (topicId === '-1' || !topicId || !topicDetails || !mapInstance) return;
 
     const newCoordinates: any = [];
+    const distanceOfPinSize = getDistanceOfPin(mapInstance);
 
-    topics.forEach((topic: TopicDetailProps) => {
-      topic.pins.forEach((pin: PinProps) => {
-        newCoordinates.push({
-          id: pin.id,
-          topicId: topic.id,
-          pinName: pin.name,
-          latitude: pin.latitude,
-          longitude: pin.longitude,
-        });
+    const diameterPins = await getApi<any>(
+      `/topics/clusters?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
+    );
+
+    diameterPins.forEach((clusterOrPin: any, idx: number) => {
+      newCoordinates.push({
+        topicId:
+          clusterOrPin.pins.length > 1
+            ? 'clustered'
+            : clusterOrPin.pins[0].topicId,
+        id: clusterOrPin.pins[0].id || `cluster ${idx}`,
+        pinName: clusterOrPin.pins[0].name,
+        latitude: clusterOrPin.latitude,
+        longitude: clusterOrPin.longitude,
+        pins: clusterOrPin.pins,
       });
     });
 
-    setCoordinates(newCoordinates);
+    const sortedNewCoordinates = newCoordinates.sort((a: any, b: any) => {
+      if (a.topicId === 'clustered') {
+        return -1;
+      }
+
+      return a.topicId - b.topicId;
+    });
+
+    setCoordinates(sortedNewCoordinates);
   };
+
+  const setPrevCoordinates = () => {
+    setCoordinates((prev) => [...prev]);
+  };
+
+  useEffect(() => {
+    const onDragEnd = (evt: evt) => {
+      if (dragTimerIdRef.current) {
+        clearTimeout(dragTimerIdRef.current);
+      }
+
+      dragTimerIdRef.current = setTimeout(() => {
+        setPrevCoordinates();
+      }, 100);
+    };
+    const onZoomEnd = (evt: evt) => {
+      if (zoomTimerIdRef.current) {
+        clearTimeout(zoomTimerIdRef.current);
+      }
+
+      zoomTimerIdRef.current = setTimeout(() => {
+        setClusteredCoordinates();
+      }, 100);
+    };
+
+    if (!mapInstance) return;
+
+    mapInstance.on('DragEnd', onDragEnd);
+    mapInstance.on('ZoomEnd', onZoomEnd);
+
+    return () => {
+      mapInstance.off('DragEnd', onDragEnd);
+      mapInstance.off('ZoomEnd', onZoomEnd);
+    };
+  }, [topicDetails]);
 
   const togglePinDetail = () => {
     setIsOpen(!isOpen);

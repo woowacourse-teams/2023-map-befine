@@ -96,15 +96,21 @@ function MarkerProvider({ children }: Props): JSX.Element {
     let markerType = -1;
     let currentTopicId = '-1';
 
-    const markersInScreenSize = createElementsInScreenSize();
+    const coordinatesInScreenSize = createElementsInScreenSize();
 
-    if (!markersInScreenSize) return;
+    if (!coordinatesInScreenSize) return;
 
-    const newMarkers = markersInScreenSize.map((coordinate: any) => {
-      if (currentTopicId !== coordinate.topicId) {
+    console.log(coordinatesInScreenSize);
+
+    const newMarkers = coordinatesInScreenSize.map((coordinate: any) => {
+      if (coordinate.topicId === 'clustered') {
+        markerType = -1;
+      } else if (currentTopicId !== coordinate.topicId) {
         markerType = (markerType + 1) % 7;
         currentTopicId = coordinate.topicId;
       }
+      console.log(markerType);
+
       const marker = createMarker(coordinate, markerType);
       marker.id = String(coordinate.id);
       return marker;
@@ -138,12 +144,14 @@ function MarkerProvider({ children }: Props): JSX.Element {
     let markerType = -1;
     let currentTopicId = '-1';
 
-    const windowsInScreenSize = createElementsInScreenSize();
+    const coordinatesInScreenSize = createElementsInScreenSize();
 
-    if (!windowsInScreenSize) return;
+    if (!coordinatesInScreenSize) return;
 
-    const newInfowindows = windowsInScreenSize.map((coordinate: any) => {
-      if (currentTopicId !== coordinate.topicId) {
+    const newInfowindows = coordinatesInScreenSize.map((coordinate: any) => {
+      if (coordinate.topicId === 'clustered') {
+        markerType = -1;
+      } else if (currentTopicId !== coordinate.topicId) {
         markerType = (markerType + 1) % 7;
         currentTopicId = coordinate.topicId;
       }
