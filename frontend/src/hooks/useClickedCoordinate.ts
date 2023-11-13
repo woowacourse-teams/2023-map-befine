@@ -13,7 +13,7 @@ export default function useClickedCoordinate() {
   useEffect(() => {
     if (!mapInstance) return;
     const currentZoom = mapInstance.getZoom();
-    if (clickedCoordinate.address) displayClickedMarker(mapInstance);
+    if (clickedCoordinate.address) displayClickedMarker();
 
     // 선택된 좌표가 있으면 해당 좌표로 지도의 중심을 이동
     if (clickedCoordinate.latitude && clickedCoordinate.longitude) {
