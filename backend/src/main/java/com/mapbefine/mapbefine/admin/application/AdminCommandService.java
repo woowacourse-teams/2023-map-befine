@@ -117,6 +117,7 @@ public class AdminCommandService {
                 .orElseThrow(() -> new PinNotFoundException(PIN_NOT_FOUND, pinId));
 
         pin.decreaseTopicPinCount();
+        pinRepository.flush();
         pinImageRepository.deleteAllByPinId(pinId);
         pinRepository.deleteById(pin.getId());
     }
