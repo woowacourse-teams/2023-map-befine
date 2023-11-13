@@ -20,6 +20,8 @@ type MarkerContextType = {
   displayClickedMarker: () => void;
 };
 
+type ElementType = 'marker' | 'infoWindow';
+
 const defaultMarkerContext = () => {
   throw new Error('MarkerContext가 제공되지 않았습니다.');
 };
@@ -48,8 +50,6 @@ function MarkerProvider({ children }: Props): JSX.Element {
   const { topicId } = useParams<{ topicId: string }>();
   const { routePage } = useNavigator();
   const { pathname } = useLocation();
-
-  type ElementType = 'marker' | 'infoWindow';
 
   const createElementsColor = (elementType: ElementType = 'marker') => {
     let markerType = -1;
