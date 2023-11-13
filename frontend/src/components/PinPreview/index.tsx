@@ -36,7 +36,7 @@ function PinPreview({
   const { pathname } = useLocation();
   const { routePage } = useNavigator();
   const { tags, setTags } = useContext(TagContext);
-  const [announceText, setAnnounceText] = useState<string>('토픽 핀 선택');
+  const [announceText, setAnnounceText] = useState<string>('지도 핀 선택');
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
