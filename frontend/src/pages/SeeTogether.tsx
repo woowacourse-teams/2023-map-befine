@@ -29,7 +29,6 @@ import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import useTags from '../hooks/useTags';
 import useMapStore from '../store/mapInstance';
-import { PinProps } from '../types/Pin';
 import { TopicDetailProps } from '../types/Topic';
 import PinDetail from './PinDetail';
 
@@ -38,7 +37,7 @@ function SeeTogether() {
 
   const { topicId } = useParams();
   const { routePage } = useNavigator();
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const location = useLocation();
 
   const [isOpen, setIsOpen] = useState(true);
@@ -79,7 +78,6 @@ function SeeTogether() {
     );
 
     setTopicDetails(topics);
-    setClusteredCoordinates();
   };
 
   const setClusteredCoordinates = async () => {
@@ -124,7 +122,22 @@ function SeeTogether() {
     setCoordinates((prev) => [...prev]);
   };
 
+  const togglePinDetail = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const initMarkerWhenSeeTogetherIsEmpty = () => {
+    setCoordinates([]);
+
+    if (markers && markers.length > 0) {
+      removeMarkers();
+      removeInfowindows();
+    }
+  };
+
   useEffect(() => {
+    setClusteredCoordinates();
+
     const onDragEnd = (evt: evt) => {
       if (dragTimerIdRef.current) {
         clearTimeout(dragTimerIdRef.current);
@@ -155,10 +168,6 @@ function SeeTogether() {
     };
   }, [topicDetails]);
 
-  const togglePinDetail = () => {
-    setIsOpen(!isOpen);
-  };
-
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
 
@@ -173,15 +182,9 @@ function SeeTogether() {
 
   useEffect(() => {
     getAndSetDataFromServer();
-  }, [topicId]);
-
-  useEffect(() => {
     setTags([]);
 
-    if (markers && markers.length > 0) {
-      removeMarkers();
-      removeInfowindows();
-    }
+    initMarkerWhenSeeTogetherIsEmpty();
   }, []);
 
   if (!seeTogetherTopics || !topicId) return <></>;
