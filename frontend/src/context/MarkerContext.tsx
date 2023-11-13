@@ -49,14 +49,38 @@ function MarkerProvider({ children }: Props): JSX.Element {
   const { routePage } = useNavigator();
   const { pathname } = useLocation();
 
-  const createElementsInScreenSize = () => {
+  type ElementType = 'marker' | 'infoWindow';
+
+  const createElementsColor = (elementType: ElementType = 'marker') => {
+    let markerType = -1;
+    let currentTopicId = '-1';
+
+    const colorMap = elementType === 'marker' ? pinImageMap : pinColors;
+
+    const addedMarkerTypeCoordinates = coordinates.map((coordinate) => {
+      if (coordinate.topicId === 'clustered') {
+        markerType = -1;
+      } else if (coordinate.topicId && currentTopicId !== coordinate.topicId) {
+        markerType += 1;
+        currentTopicId = coordinate.topicId;
+      }
+
+      return { ...coordinate, elementColor: colorMap[markerType + 1] };
+    });
+
+    return addedMarkerTypeCoordinates;
+  };
+
+  const createElementsInScreenSize = (elementType: ElementType) => {
     if (!mapInstance) return;
 
     const mapBounds = mapInstance.getBounds();
     const northEast = mapBounds._ne;
     const southWest = mapBounds._sw;
 
-    const coordinatesInScreenSize = coordinates.filter(
+    const addedMarkerTypeCoordinates = createElementsColor(elementType);
+
+    const coordinatesInScreenSize = addedMarkerTypeCoordinates.filter(
       (coordinate: any) =>
         coordinate.latitude <= northEast._lat &&
         coordinate.latitude >= southWest._lat &&
@@ -66,13 +90,6 @@ function MarkerProvider({ children }: Props): JSX.Element {
 
     return coordinatesInScreenSize;
   };
-
-  const createMarker = (coordinate: Coordinate, markerType: number) =>
-    new Tmapv3.Marker({
-      position: new Tmapv3.LatLng(coordinate.latitude, coordinate.longitude),
-      iconHTML: pinImageMap[markerType + 1],
-      map: mapInstance,
-    });
 
   // 현재 클릭된 좌표의 마커 생성
   const displayClickedMarker = () => {
@@ -93,25 +110,16 @@ function MarkerProvider({ children }: Props): JSX.Element {
 
   // coordinates를 받아서 marker를 생성하고, marker를 markers 배열에 추가
   const createMarkers = () => {
-    let markerType = -1;
-    let currentTopicId = '-1';
-
-    const coordinatesInScreenSize = createElementsInScreenSize();
+    const coordinatesInScreenSize = createElementsInScreenSize('marker');
 
     if (!coordinatesInScreenSize) return;
 
-    console.log(coordinatesInScreenSize);
-
     const newMarkers = coordinatesInScreenSize.map((coordinate: any) => {
-      if (coordinate.topicId === 'clustered') {
-        markerType = -1;
-      } else if (currentTopicId !== coordinate.topicId) {
-        markerType = (markerType + 1) % 7;
-        currentTopicId = coordinate.topicId;
-      }
-      console.log(markerType);
-
-      const marker = createMarker(coordinate, markerType);
+      const marker = new Tmapv3.Marker({
+        position: new Tmapv3.LatLng(coordinate.latitude, coordinate.longitude),
+        iconHTML: coordinate.elementColor,
+        map: mapInstance,
+      });
       marker.id = String(coordinate.id);
       return marker;
     });
@@ -141,27 +149,17 @@ function MarkerProvider({ children }: Props): JSX.Element {
   };
 
   const createInfowindows = () => {
-    let markerType = -1;
-    let currentTopicId = '-1';
-
-    const coordinatesInScreenSize = createElementsInScreenSize();
+    const coordinatesInScreenSize = createElementsInScreenSize('infoWindow');
 
     if (!coordinatesInScreenSize) return;
 
     const newInfowindows = coordinatesInScreenSize.map((coordinate: any) => {
-      if (coordinate.topicId === 'clustered') {
-        markerType = -1;
-      } else if (currentTopicId !== coordinate.topicId) {
-        markerType = (markerType + 1) % 7;
-        currentTopicId = coordinate.topicId;
-      }
-
       const infoWindow = new Tmapv3.InfoWindow({
         position: new Tmapv3.LatLng(coordinate.latitude, coordinate.longitude),
         border: 0,
         background: 'transparent',
         content: getInfoWindowTemplate({
-          backgroundColor: pinColors[markerType + 1],
+          backgroundColor: coordinate.elementColor,
           pinName: coordinate.pinName,
           pins: coordinate.pins,
           condition: getCondition(coordinate.pins),
