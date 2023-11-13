@@ -59,6 +59,7 @@ interface InfoWindow {
   map?: Map;
   setMap(mapOrNull?: Map | null): void;
   setPosition(positionOrLatLng?: Position | LatLng): void;
+  getPosition(): LatLng;
   setContent(contentOrString?: Content | string): void;
   open(map?: Map, marker?: Marker, latlng?: LatLng): void;
   close(): void;
