@@ -1,6 +1,6 @@
 package com.mapbefine.mapbefine.admin;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -23,7 +23,8 @@ import com.mapbefine.mapbefine.pin.domain.PinRepository;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.common.mapper.TypeRef;
+import io.restassured.common.mapper.*;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import java.util.List;
 
 class AdminIntegrationTest extends IntegrationTest {
 
@@ -124,15 +123,13 @@ class AdminIntegrationTest extends IntegrationTest {
                 .extract()
                 .as(new TypeRef<>() {
                 });
-        System.out.println("====" + topic.getPinCount());
-        //then
 
+        //then
         AdminMemberDetailResponse expected = AdminMemberDetailResponse.of(
                 member,
                 member.getCreatedTopics(),
                 member.getCreatedPins()
         );
-
         assertThat(response).usingRecursiveComparison()
                 .ignoringFields("updatedAt")
                 .ignoringFields("topics.updatedAt")
@@ -218,6 +215,9 @@ class AdminIntegrationTest extends IntegrationTest {
                 .when().delete("/admin/pins/" + pin.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+
+        Topic updatedTopic = topicRepository.findById(topic.getId()).get();
+        assertThat(updatedTopic.getPinCount()).isEqualTo(0);
     }
 
     @Test
