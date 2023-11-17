@@ -34,6 +34,8 @@ interface TMap {
   getBounds(): LatLngBounds;
   realToScreen(latLng: LatLng): Point;
   off(eventType: string, callback: (event: evt) => void): void;
+  setBearing(value: number): void;
+  setPitch(value: number): void;
 }
 
 interface Marker {
