@@ -76,6 +76,13 @@ function SelectedTopic() {
     setCoordinates((prev) => [...prev]);
   };
 
+  const adjustMapDirection = () => {
+    if (!mapInstance) return;
+
+    mapInstance.setBearing(0);
+    mapInstance.setPitch(0);
+  };
+
   useEffect(() => {
     getAndSetDataFromServer();
     setTags([]);
@@ -91,6 +98,7 @@ function SelectedTopic() {
 
       dragTimerIdRef.current = setTimeout(() => {
         setPrevCoordinates();
+        adjustMapDirection();
       }, 100);
     };
     const onZoomEnd = (evt: evt) => {
@@ -100,6 +108,7 @@ function SelectedTopic() {
 
       zoomTimerIdRef.current = setTimeout(() => {
         setClusteredCoordinates();
+        adjustMapDirection();
       }, 100);
     };
 
