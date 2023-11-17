@@ -7,8 +7,8 @@ import Space from '../components/common/Space';
 import PullPin from '../components/PullPin';
 import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
 import { LAYOUT_PADDING, PIN_SIZE, SIDEBAR } from '../constants';
-import { 붕어빵지도 } from '../constants/cluster';
 import { CoordinatesContext } from '../context/CoordinatesContext';
+import useRealDistanceOfPin from '../hooks/useRealDistanceOfPin';
 import useResizeMap from '../hooks/useResizeMap';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
@@ -32,6 +32,7 @@ function SelectedTopic() {
   const zoomTimerIdRef = useRef<NodeJS.Timeout | null>(null);
   const dragTimerIdRef = useRef<NodeJS.Timeout | null>(null);
   const { mapInstance } = useMapStore((state) => state);
+  const { getDistanceOfPin } = useRealDistanceOfPin();
 
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
     useTags();
@@ -47,30 +48,11 @@ function SelectedTopic() {
     setTopicDetail(topic);
   };
 
-  const getDistanceOfPin = () => {
-    if (!mapInstance) return;
-
-    const mapBounds = mapInstance.getBounds();
-
-    const leftWidth = new Tmapv3.LatLng(mapBounds._ne._lat, mapBounds._sw._lng);
-    const rightWidth = new Tmapv3.LatLng(
-      mapBounds._ne._lat,
-      mapBounds._ne._lng,
-    );
-
-    const realDistanceOfScreen = leftWidth.distanceTo(rightWidth);
-    const currentScreenSize =
-      mapInstance.realToScreen(rightWidth).x -
-      mapInstance.realToScreen(leftWidth).x;
-
-    return (realDistanceOfScreen / currentScreenSize) * PIN_SIZE;
-  };
-
   const setClusteredCoordinates = async () => {
-    if (!topicDetail) return;
+    if (!topicDetail || !mapInstance) return;
 
     const newCoordinates: any = [];
-    const distanceOfPinSize = getDistanceOfPin();
+    const distanceOfPinSize = getDistanceOfPin(mapInstance);
 
     const diameterPins = await getApi<any>(
       `/topics/clusters?ids=${topicId}&image-diameter=${distanceOfPinSize}`,

@@ -46,7 +46,7 @@ function PullPin({
               tabIndex={1}
               aria-label={
                 confirmButton === '같이보기'
-                  ? `선택된 ${tag.title} 토픽 태그`
+                  ? `선택된 ${tag.title} 지도 태그`
                   : `선택된 ${tag.title} 핀 태그`
               }
             >
@@ -64,7 +64,7 @@ function PullPin({
           onClick={onClickClose}
           aria-label={
             confirmButton === '같이보기'
-              ? '선택된 토픽들 같이보기 취소하기'
+              ? '선택된 지도들 같이보기 취소하기'
               : '선택된 핀들 뽑아오기 취소하기'
           }
         >
@@ -76,7 +76,7 @@ function PullPin({
           onClick={onClickConfirm}
           aria-label={
             confirmButton === '같이보기'
-              ? '선택된 토픽들 같이보기'
+              ? '선택된 지도들 같이보기'
               : '선택된 핀들 뽑아오기'
           }
         >

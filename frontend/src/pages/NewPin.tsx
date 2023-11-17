@@ -356,7 +356,7 @@ function NewPin() {
         <ModalContentsWrapper>
           <Space size={5} />
           <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
-            내 토픽 리스트
+            내 지도 리스트
           </Text>
           <Text color="gray" $fontSize="small" $fontWeight="normal">
             핀을 저장할 지도를 선택해주세요.

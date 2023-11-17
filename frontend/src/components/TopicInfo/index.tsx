@@ -60,9 +60,9 @@ function TopicInfo({
     try {
       const topicUrl = window.location.href.split('?')[0];
       await navigator.clipboard.writeText(topicUrl);
-      showToast('info', '토픽 링크가 복사되었습니다.');
+      showToast('info', '지도 링크가 복사되었습니다.');
     } catch (err) {
-      showToast('error', '토픽 링크를 복사하는데 실패했습니다.');
+      showToast('error', '지도 링크를 복사하는데 실패했습니다.');
     }
   };
 
