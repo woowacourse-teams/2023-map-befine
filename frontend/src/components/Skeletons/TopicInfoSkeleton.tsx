@@ -1,9 +1,9 @@
 import { keyframes, styled } from 'styled-components';
-import Flex from '../common/Flex';
-import Space from '../common/Space';
-import Box from '../common/Box';
 
-const TopicInfoSkeleton = () => {
+import Box from '../common/Box';
+import Space from '../common/Space';
+
+function TopicInfoSkeleton() {
   return (
     <Box>
       <SkeletonImg />
@@ -13,7 +13,7 @@ const TopicInfoSkeleton = () => {
       <SkeletonDescription />
     </Box>
   );
-};
+}
 
 const skeletonAnimation = keyframes`
     from {
@@ -30,7 +30,7 @@ const SkeletonImg = styled.div`
 
   border-radius: 8px;
 
-  background: ${({ theme }) => theme.color['lightGray']};
+  background: ${({ theme }) => theme.color.lightGray};
   animation: ${skeletonAnimation} 1s infinite;
 `;
 
@@ -40,7 +40,7 @@ const SkeletonTitle = styled.div`
 
   border-radius: 8px;
 
-  background: ${({ theme }) => theme.color['lightGray']};
+  background: ${({ theme }) => theme.color.lightGray};
   animation: ${skeletonAnimation} 1s infinite;
 `;
 

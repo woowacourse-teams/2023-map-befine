@@ -1,28 +1,43 @@
+import { lazy, Suspense, useContext, useEffect } from 'react';
+import { styled } from 'styled-components';
+
+import Banner from '../components/Banner';
 import Space from '../components/common/Space';
-import useNavigator from '../hooks/useNavigator';
-import { css, styled } from 'styled-components';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { FULLSCREEN } from '../constants';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import { Suspense, lazy, useContext, useEffect } from 'react';
-import { MarkerContext } from '../context/MarkerContext';
+import MediaSpace from '../components/common/Space/MediaSpace';
+import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { setFullScreenResponsive } from '../constants/responsive';
+import { FULLSCREEN } from '../constants';
+import { MarkerContext } from '../context/MarkerContext';
+import { SeeTogetherContext } from '../context/SeeTogetherContext';
+import useNavigator from '../hooks/useNavigator';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
+import useToast from '../hooks/useToast';
 
 const TopicListContainer = lazy(
   () => import('../components/TopicCardContainer'),
 );
 
-const Home = () => {
+function Home() {
+  const accessToken = localStorage.getItem('userToken');
   const { routingHandlers } = useNavigator();
   const { goToPopularTopics, goToLatestTopics, goToNearByMeTopics } =
     routingHandlers;
-
+  const { seeTogetherTopics, setSeeTogetherTopics } =
+    useContext(SeeTogetherContext);
   const { markers, removeMarkers, removeInfowindows } =
     useContext(MarkerContext);
+  const { showToast } = useToast();
 
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
+
+  useEffect(() => {
+    if (accessToken === null && seeTogetherTopics?.length !== 0) {
+      setSeeTogetherTopics([]);
+      showToast('info', '로그인을 하면 모아보기가 유지돼요.');
+    }
+  }, []);
 
   useEffect(() => {
     if (markers && markers.length > 0) {
@@ -33,7 +48,12 @@ const Home = () => {
 
   return (
     <Wrapper>
-      <Space size={5} />
+      <SearchBar />
+      <Space size={4} />
+
+      <Banner />
+      <Space size={6} />
+
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
           url="/topics/bests"
@@ -43,7 +63,7 @@ const Home = () => {
         />
       </Suspense>
 
-      <Space size={9} />
+      <MediaSpace size={9} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
@@ -54,7 +74,7 @@ const Home = () => {
         />
       </Suspense>
 
-      <Space size={9} />
+      <MediaSpace size={9} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicListContainer
@@ -65,17 +85,19 @@ const Home = () => {
         />
       </Suspense>
 
-      <Space size={5} />
+      <Space size={8} />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.article`
-  width: 1036px;
+  width: 1140px;
   margin: 0 auto;
   position: relative;
 
-  ${setFullScreenResponsive()}
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
 `;
 
 export default Home;

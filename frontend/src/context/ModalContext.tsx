@@ -20,7 +20,7 @@ export const ModalContext = createContext<ModalContextProps>({
   closeModal: () => {},
 });
 
-const ModalProvider = ({ children }: ModalProviderProps) => {
+function ModalProvider({ children }: ModalProviderProps) {
   const [modalOpens, setModalOpens] = useState<ModalOpensProps>({});
 
   const openModal = (key: string) => {
@@ -48,6 +48,6 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
       {children}
     </ModalContext.Provider>
   );
-};
+}
 
 export default ModalProvider;

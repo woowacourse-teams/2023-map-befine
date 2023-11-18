@@ -1,9 +1,11 @@
 import { styled } from 'styled-components';
+
 import { TopicDetailProps } from '../../types/Topic';
 import PinPreview from '../PinPreview';
 import TopicInfo from '../TopicInfo';
 
 interface PinsOfTopicProps {
+  urlTopicId?: string;
   topicId: string;
   topicDetail: TopicDetailProps;
   setSelectedPinId: React.Dispatch<React.SetStateAction<number | null>>;
@@ -11,13 +13,14 @@ interface PinsOfTopicProps {
   setTopicsFromServer: () => void;
 }
 
-const PinsOfTopic = ({
+function PinsOfTopic({
+  urlTopicId,
   topicId,
   topicDetail,
   setSelectedPinId,
   setIsEditPinDetail,
   setTopicsFromServer,
-}: PinsOfTopicProps) => {
+}: PinsOfTopicProps) {
   return (
     <Wrapper>
       <TopicInfo
@@ -37,20 +40,21 @@ const PinsOfTopic = ({
       {topicDetail.pins.map((pin, idx) => (
         <li key={pin.id}>
           <PinPreview
+            urlTopicId={urlTopicId || topicId}
             idx={idx}
+            pinId={Number(pin.id)}
+            topicId={topicId}
             pinTitle={pin.name}
             pinLocation={pin.address}
             pinInformation={pin.description}
             setSelectedPinId={setSelectedPinId}
-            pinId={Number(pin.id)}
-            topicId={topicId}
             setIsEditPinDetail={setIsEditPinDetail}
           />
         </li>
       ))}
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled.ul``;
 

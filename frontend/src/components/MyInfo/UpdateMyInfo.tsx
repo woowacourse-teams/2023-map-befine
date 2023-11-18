@@ -1,12 +1,13 @@
 import { styled } from 'styled-components';
-import Flex from '../common/Flex';
-import Box from '../common/Box';
-import Space from '../common/Space';
-import { ProfileProps } from '../../types/Profile';
-import Button from '../common/Button';
-import Text from '../common/Text';
+
 import usePatch from '../../apiHooks/usePatch';
 import useToast from '../../hooks/useToast';
+import { ProfileProps } from '../../types/Profile';
+import Box from '../common/Box';
+import Button from '../common/Button';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Text from '../common/Text';
 
 interface UpdateMyInfoProps {
   myInfo: ProfileProps;
@@ -14,11 +15,11 @@ interface UpdateMyInfoProps {
   setMyInfo: React.Dispatch<React.SetStateAction<ProfileProps>>;
 }
 
-const UpdateMyInfo = ({
+function UpdateMyInfo({
   myInfo,
   setIsModifyMyInfo,
   setMyInfo,
-}: UpdateMyInfoProps) => {
+}: UpdateMyInfoProps) {
   const { fetchPatch } = usePatch();
   const { showToast } = useToast();
 
@@ -65,7 +66,7 @@ const UpdateMyInfo = ({
       </Button>
     </MyInfoContainer>
   );
-};
+}
 
 const MyInfoContainer = styled(Flex)`
   border: 1px solid ${({ theme }) => theme.color.lightGray};

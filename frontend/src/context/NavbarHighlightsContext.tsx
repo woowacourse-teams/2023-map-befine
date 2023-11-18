@@ -1,8 +1,8 @@
 import {
+  createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
-  createContext,
   useState,
 } from 'react';
 
@@ -35,9 +35,7 @@ export const NavbarHighlightsContext = createContext<{
   setNavbarHighlights: () => {},
 });
 
-const NavbarHighlightsProvider = ({
-  children,
-}: NavbarHighlightsProviderProps) => {
+function NavbarHighlightsProvider({ children }: NavbarHighlightsProviderProps) {
   const [navbarHighlights, setNavbarHighlights] = useState<NavbarHighlights>({
     home: true,
     seeTogether: false,
@@ -53,6 +51,6 @@ const NavbarHighlightsProvider = ({
       {children}
     </NavbarHighlightsContext.Provider>
   );
-};
+}
 
 export default NavbarHighlightsProvider;

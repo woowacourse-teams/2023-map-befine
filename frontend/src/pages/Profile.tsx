@@ -1,20 +1,21 @@
+import { lazy, Suspense } from 'react';
 import { styled } from 'styled-components';
+
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
+import MediaSpace from '../components/common/Space/MediaSpace';
+import MediaText from '../components/common/Text/MediaText';
 import MyInfo from '../components/MyInfo';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { FULLSCREEN } from '../constants';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { Suspense, lazy } from 'react';
-import Text from '../components/common/Text';
+import { FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
-import { setFullScreenResponsive } from '../constants/responsive';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
-const Profile = () => {
+function Profile() {
   const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('profile');
@@ -33,27 +34,27 @@ const Profile = () => {
 
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
-          <Text
+          <MediaText
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
             tabIndex={0}
           >
             나의 지도
-          </Text>
+          </MediaText>
           <Space size={0} />
-          <Text
+          <MediaText
             color="gray"
             $fontSize="default"
             $fontWeight="normal"
             tabIndex={1}
           >
             내가 만든 지도를 확인해보세요.
-          </Text>
+          </MediaText>
         </Box>
       </Flex>
 
-      <Space size={6} />
+      <MediaSpace size={6} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicCardList
@@ -64,15 +65,20 @@ const Profile = () => {
           routePage={goToNewTopic}
         />
       </Suspense>
+
+      <Space size={8} />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled(Box)`
-  width: 1036px;
+  width: 1140px;
   margin: 0 auto;
+  position: relative;
 
-  ${setFullScreenResponsive()}
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
 `;
 
 const MyInfoWrapper = styled(Flex)`

@@ -1,8 +1,8 @@
 import {
+  createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
-  createContext,
   useState,
 } from 'react';
 
@@ -22,7 +22,7 @@ export const LayoutWidthContext = createContext<LayoutWidthContextProps>({
   setWidth: () => {},
 });
 
-const LayoutWidthProvider = ({ children }: LayoutWidthProviderProps) => {
+function LayoutWidthProvider({ children }: LayoutWidthProviderProps) {
   const [width, setWidth] = useState<LayoutWidthValue>('100vw');
 
   return (
@@ -35,6 +35,6 @@ const LayoutWidthProvider = ({ children }: LayoutWidthProviderProps) => {
       {children}
     </LayoutWidthContext.Provider>
   );
-};
+}
 
 export default LayoutWidthProvider;

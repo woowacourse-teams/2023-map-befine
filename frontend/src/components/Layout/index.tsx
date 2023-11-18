@@ -1,20 +1,22 @@
 import { useContext, useEffect } from 'react';
-import Map from '../Map';
-import Flex from '../common/Flex';
-import Logo from './Logo';
-import CoordinatesProvider from '../../context/CoordinatesContext';
-import MarkerProvider from '../../context/MarkerContext';
-import ToastProvider from '../../context/ToastContext';
-import Toast from '../Toast';
 import { css, styled } from 'styled-components';
+
+import CoordinatesProvider from '../../context/CoordinatesContext';
+import ImageModalContext from '../../context/ImageModalContext';
 import { LayoutWidthContext } from '../../context/LayoutWidthContext';
-import SeeTogetherProvider from '../../context/SeeTogetherContext';
-import Space from '../common/Space';
-import Navbar from './Navbar';
+import MarkerProvider from '../../context/MarkerContext';
 import ModalProvider from '../../context/ModalContext';
 import { NavbarHighlightsContext } from '../../context/NavbarHighlightsContext';
+import SeeTogetherProvider from '../../context/SeeTogetherContext';
 import TagProvider from '../../context/TagContext';
+import ToastProvider from '../../context/ToastContext';
 import Box from '../common/Box';
+import Flex from '../common/Flex';
+import Space from '../common/Space';
+import Map from '../Map';
+import Toast from '../Toast';
+import Logo from './Logo';
+import Navbar from './Navbar';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -25,7 +27,7 @@ const initViewPortHeight = () => {
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 };
 
-const Layout = ({ children }: LayoutProps) => {
+function Layout({ children }: LayoutProps) {
   const { width } = useContext(LayoutWidthContext);
   const { navbarHighlights } = useContext(NavbarHighlightsContext);
 
@@ -42,48 +44,49 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <ToastProvider>
       <ModalProvider>
-        <CoordinatesProvider>
-          <MarkerProvider>
-            <SeeTogetherProvider>
-              <TagProvider>
-                <MediaWrapper
-                  $isAddPage={navbarHighlights.addMapOrPin}
-                  $layoutWidth={width}
-                >
-                  <LayoutFlex
-                    $flexDirection="column"
-                    $minWidth={width}
-                    height="calc(var(--vh, 1vh) * 100)"
-                    $backgroundColor="white"
+        <ImageModalContext>
+          <CoordinatesProvider>
+            <MarkerProvider>
+              <SeeTogetherProvider>
+                <TagProvider>
+                  <MediaWrapper
+                    $isAddPage={navbarHighlights.addMapOrPin}
                     $layoutWidth={width}
                   >
-                    <LogoWrapper $layoutWidth={width}>
-                      <Box>
-                        <Logo />
-                        <Space size={2} />
-                      </Box>
-                    </LogoWrapper>
-                    <Flex
+                    <LayoutFlex
                       $flexDirection="column"
-                      height="inherit"
-                      overflow="auto"
-                      padding="0 20px 20px 20px"
+                      $minWidth={width}
+                      height="calc(var(--vh, 1vh) * 100)"
+                      $backgroundColor="white"
+                      $layoutWidth={width}
                     >
-                      {children}
-                    </Flex>
-                    <Navbar $layoutWidth={width} />
-                    <Toast />
-                  </LayoutFlex>
-                  <Map />
-                </MediaWrapper>
-              </TagProvider>
-            </SeeTogetherProvider>
-          </MarkerProvider>
-        </CoordinatesProvider>
+                      <LogoWrapper $layoutWidth={width}>
+                        <Box>
+                          <Logo />
+                          <Space size={2} />
+                        </Box>
+                      </LogoWrapper>
+                      <Flex
+                        $flexDirection="column"
+                        height="inherit"
+                        overflow="auto"
+                      >
+                        {children}
+                      </Flex>
+                      <Navbar $layoutWidth={width} />
+                      <Toast />
+                    </LayoutFlex>
+                    <Map />
+                  </MediaWrapper>
+                </TagProvider>
+              </SeeTogetherProvider>
+            </MarkerProvider>
+          </CoordinatesProvider>
+        </ImageModalContext>
       </ModalProvider>
     </ToastProvider>
   );
-};
+}
 
 const LogoWrapper = styled.section<{
   $layoutWidth: '372px' | '100vw';

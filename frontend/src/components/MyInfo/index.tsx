@@ -1,19 +1,21 @@
+import { SyntheticEvent, useState } from 'react';
 import { styled } from 'styled-components';
-import Flex from '../common/Flex';
-import Box from '../common/Box';
-import Text from '../common/Text';
-import Space from '../common/Space';
-import { useState } from 'react';
-import { ProfileProps } from '../../types/Profile';
-import UpdateMyInfo from './UpdateMyInfo';
-import Button from '../common/Button';
+
+import Setting from '../../assets/updateBtn.svg';
+import { DEFAULT_PROD_URL, DEFAULT_PROFILE_IMAGE } from '../../constants';
 import useToast from '../../hooks/useToast';
-import { DEFAULT_PROD_URL } from '../../constants';
-import Setting from '../../assets/setting.svg';
+import { ProfileProps } from '../../types/Profile';
+import Box from '../common/Box';
+import Button from '../common/Button';
+import Flex from '../common/Flex';
+import Image from '../common/Image';
+import Space from '../common/Space';
+import Text from '../common/Text';
+import UpdateMyInfo from './UpdateMyInfo';
 
 const accessToken = localStorage.getItem('userToken');
 
-const MyInfo = () => {
+function MyInfo() {
   const { showToast } = useToast();
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -28,7 +30,7 @@ const MyInfo = () => {
     setIsModifyMyInfo(true);
   };
 
-  const onClickLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickLogout = async () => {
     try {
       fetch(`${DEFAULT_PROD_URL}/logout`, {
         method: 'POST',
@@ -37,7 +39,7 @@ const MyInfo = () => {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          accessToken: accessToken,
+          accessToken,
         }),
       });
 
@@ -71,7 +73,14 @@ const MyInfo = () => {
       <SettingContainer onClick={onClickSetting}>
         <Setting />
       </SettingContainer>
-      <MyInfoImg src={user.imageUrl} />
+      <Image
+        width="80px"
+        height="80px"
+        src={user.imageUrl || DEFAULT_PROFILE_IMAGE}
+        alt="프로필 이미지"
+        $errorDefaultSrc={DEFAULT_PROFILE_IMAGE}
+        radius="50%"
+      />
       <Space size={5} />
       <Box>
         <Flex $justifyContent="space-between" $alignItems="center">
@@ -88,7 +97,7 @@ const MyInfo = () => {
       </Box>
     </MyInfoContainer>
   );
-};
+}
 
 const MyInfoContainer = styled(Flex)`
   position: relative;

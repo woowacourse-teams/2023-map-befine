@@ -1,15 +1,14 @@
 import {
+  createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
-  createContext,
   useState,
 } from 'react';
-import { TopicCardProps } from '../types/Topic';
 
 interface SeeTogetherContextProps {
-  seeTogetherTopics: TopicCardProps[] | null;
-  setSeeTogetherTopics: Dispatch<SetStateAction<TopicCardProps[] | null>>;
+  seeTogetherTopics: number[] | null;
+  setSeeTogetherTopics: Dispatch<SetStateAction<number[] | []>>;
 }
 
 interface SeeTogetherProviderProps {
@@ -21,10 +20,8 @@ export const SeeTogetherContext = createContext<SeeTogetherContextProps>({
   setSeeTogetherTopics: () => {},
 });
 
-const SeeTogetherProvider = ({ children }: SeeTogetherProviderProps) => {
-  const [seeTogetherTopics, setSeeTogetherTopics] = useState<
-    TopicCardProps[] | null
-  >(null);
+function SeeTogetherProvider({ children }: SeeTogetherProviderProps) {
+  const [seeTogetherTopics, setSeeTogetherTopics] = useState<number[] | []>([]);
 
   return (
     <SeeTogetherContext.Provider
@@ -36,6 +33,6 @@ const SeeTogetherProvider = ({ children }: SeeTogetherProviderProps) => {
       {children}
     </SeeTogetherContext.Provider>
   );
-};
+}
 
 export default SeeTogetherProvider;

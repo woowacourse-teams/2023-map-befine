@@ -1,12 +1,12 @@
 import styled, { keyframes } from 'styled-components';
 
-const Loader = () => {
+function Loader() {
   return (
     <LoaderBackWrapper>
       <LoaderWrapper />
     </LoaderBackWrapper>
   );
-};
+}
 
 const Rotate = keyframes`
   0% {

@@ -160,6 +160,20 @@ class AdminCommandServiceTest extends TestDatabaseContainer {
         assertThat(pinRepository.existsById(pin.getId())).isFalse();
     }
 
+    @DisplayName("핀 삭제 시, 토픽의 핀 개수를 1 감소시킨다.")
+    @Test
+    void deletePin_Success_decreaseTopicPinCount() {
+        //given
+        assertThat(pin.isDeleted()).isFalse();
+        int pinCountBeforeDelete = topic.getPinCount();
+
+        //when
+        adminCommandService.deletePin(pin.getId());
+
+        //then
+        assertThat(topic.getPinCount()).isEqualTo(pinCountBeforeDelete - 1);
+    }
+
     @DisplayName("Admin인 경우, 핀 이미지를 삭제할 수 있다.")
     @Test
     void deletePinImage_Success() {

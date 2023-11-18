@@ -1,51 +1,115 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-interface locationType {
-  loaded: boolean;
-  currentLocation?: { latitude: number; longitude: number };
+import { USER_LOCATION_IMAGE } from '../constants/pinImage';
+import useToast from './useToast';
+
+type GeoLocationState = {
+  coordinates: { lat: string | number; lng: string | number };
   error?: { code: number; message: string };
-}
+};
 
-const useGeolocation = () => {
-  const [location, setLocation] = useState<locationType>({
-    loaded: false,
-    currentLocation: { latitude: 0, longitude: 0 },
+const INIT_VALUE = '';
+
+const useGeoLocation = (mapInstance: TMap | null) => {
+  const { Tmapv3 } = window;
+  const { showToast } = useToast();
+  const [userMarker, setUserMarker] = useState<Marker | null>(null);
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
+  const [location, setLocation] = useState<GeoLocationState>({
+    coordinates: { lat: '', lng: '' },
   });
 
-  // 성공에 대한 로직
-  const onSuccess = (location: {
-    coords: { latitude: number; longitude: number };
-  }) => {
+  const removeUserMarker = () => {
     setLocation({
-      loaded: true,
-      currentLocation: {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      },
+      coordinates: { lat: INIT_VALUE, lng: INIT_VALUE },
     });
+
+    if (userMarker) {
+      userMarker.setMap(null);
+      setUserMarker(null);
+    }
   };
 
-  // 에러에 대한 로직
-  const onError = (error: { code: number; message: string }) => {
-    setLocation({
-      loaded: true,
-      error,
+  const createUserMarkerWithZoomingMap = () => {
+    if (!mapInstance) return;
+
+    const userCoordinates = new Tmapv3.LatLng(
+      Number(location.coordinates.lat),
+      Number(location.coordinates.lng),
+    );
+
+    mapInstance.setCenter(userCoordinates);
+    mapInstance.setZoom(17);
+
+    const userPositionMarker = new Tmapv3.Marker({
+      position: userCoordinates,
+      iconHTML: USER_LOCATION_IMAGE,
+      map: mapInstance,
     });
+
+    setUserMarker(userPositionMarker);
+  };
+
+  const onSuccess = (position: GeolocationPosition) => {
+    setLocation({
+      coordinates: {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      },
+    });
+
+    setIsRequesting(false);
+  };
+
+  const onError = (
+    error: Pick<GeolocationPositionError, 'code' | 'message'>,
+  ) => {
+    setLocation({
+      coordinates: { lat: INIT_VALUE, lng: INIT_VALUE },
+      error: {
+        code: error.code,
+        message: error.message,
+      },
+    });
+
+    showToast(
+      'error',
+      '현재 위치를 사용하려면 설정에서 위치 권한을 허용해주세요.',
+    );
+    setIsRequesting(false);
+  };
+
+  const requestUserLocation = () => {
+    if (!('geolocation' in navigator)) {
+      onError({ code: 0, message: 'Geolocation not supported' });
+    }
+
+    if (isRequesting) {
+      showToast('info', '현재 위치를 찾고 있어요.');
+      return;
+    }
+
+    removeUserMarker();
+
+    showToast('info', '현재 위치를 불러옵니다.');
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+    setIsRequesting(true);
   };
 
   useEffect(() => {
-    // navigator 객체 안에 geolocation이 없다면
-    // 위치 정보가 없는 것.
-    if (!('geolocation' in navigator)) {
-      onError({
-        code: 0,
-        message: 'Geolocation not supported',
-      });
+    if (location.coordinates.lat === INIT_VALUE) {
+      return;
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+    createUserMarkerWithZoomingMap();
   }, [location]);
 
-  return location;
+  return {
+    location,
+    requestUserLocation,
+  };
 };
 
-export default useGeolocation;
+export default useGeoLocation;

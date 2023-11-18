@@ -1,23 +1,14 @@
-interface Window {
-  Tmapv3: {
-    Map: new (
-      element: HTMLElement,
-      options?: { center?: LatLng; scaleBar: boolean },
-    ) => TMap;
-    LatLng: new (lat: number, lng: number) => LatLng;
-    LatLngBounds: new () => LatLngBounds;
-    Marker: new (options?: MarkerOptions) => Marker;
-    InfoWindow: new (options?: InfoWindowOptions) => InfoWindow;
-    Point: new (x: number, y: number) => Point;
-  };
-  daum: any;
+interface LatLng {}
+
+interface LatLngBounds {
+  extend(latLng: LatLng): void;
 }
 
 interface evt {
   data: {
     lngLat: {
-      _lat: number;
-      _lng: number;
+      lat: number;
+      lng: number;
     };
   };
 }
@@ -29,14 +20,10 @@ interface TMap {
   fitBounds(bounds: LatLngBounds): void;
   setCenter(latLng: LatLng): void;
   setZoom(zoomLevel: number): void;
-  on(eventType: string, callback: (evt: evt) => void): void;
-  removeListener(eventType: string, callback: (evt: evt) => void): void;
-}
-
-interface LatLng {}
-
-interface LatLngBounds {
-  extend(latLng: LatLng): void;
+  getZoom(): number;
+  on(eventType: string, callback: (event: evt) => void): void;
+  removeListener(eventType: string, callback: (event: evt) => void): void;
+  resize(width: number, height: number): void;
 }
 
 interface Marker {
@@ -45,7 +32,7 @@ interface Marker {
   map?: Map;
   id?: string;
   getPosition(): LatLng;
-  on(eventType: string, callback: (evt: Event) => void): void;
+  on(eventType: string, callback: (event: evt) => void): void;
   setMap(mapOrNull?: Map | null): void;
 }
 
@@ -65,4 +52,19 @@ interface InfoWindow {
   setContent(contentOrString?: Content | string): void;
   open(map?: Map, marker?: Marker, latlng?: LatLng): void;
   close(): void;
+}
+
+interface Window {
+  Tmapv3: {
+    Map: new (
+      element: HTMLElement,
+      options?: { center?: LatLng; scaleBar: boolean },
+    ) => TMap;
+    LatLng: new (lat: number, lng: number) => LatLng;
+    LatLngBounds: new () => LatLngBounds;
+    Marker: new (options?: MarkerOptions) => Marker;
+    InfoWindow: new (options?: InfoWindowOptions) => InfoWindow;
+    Point: new (x: number, y: number) => Point;
+  };
+  daum: any;
 }

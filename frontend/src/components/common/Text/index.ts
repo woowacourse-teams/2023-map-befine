@@ -1,15 +1,17 @@
+import { ReactNode } from 'react';
 import { styled } from 'styled-components';
+
+import theme from '../../../themes';
 import { colorThemeKey } from '../../../themes/color';
 import { fontSizeThemeKey } from '../../../themes/fontSize';
 import { fontWeightThemeKey } from '../../../themes/fontWeight';
-import theme from '../../../themes';
 
 export interface TextProps {
   color: colorThemeKey;
   $fontSize: fontSizeThemeKey;
   $fontWeight: fontWeightThemeKey;
   $textAlign?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const Text = styled.span<TextProps>`

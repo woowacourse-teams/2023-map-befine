@@ -1,12 +1,14 @@
 import { Fragment, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import TopicCard from '../TopicCard';
-import { TopicCardProps } from '../../types/Topic';
+
 import useGet from '../../apiHooks/useGet';
+import { TopicCardProps } from '../../types/Topic';
+import Button from '../common/Button';
 import Flex from '../common/Flex';
+import Grid from '../common/Grid';
 import Space from '../common/Space';
 import Text from '../common/Text';
-import Button from '../common/Button';
+import TopicCard from '../TopicCard';
 
 interface TopicCardListProps {
   url: string;
@@ -17,14 +19,14 @@ interface TopicCardListProps {
   children?: React.ReactNode;
 }
 
-const TopicCardList = ({
+function TopicCardList({
   url,
   errorMessage,
   commentWhenEmpty,
   pageCommentWhenEmpty,
   routePage,
   children,
-}: TopicCardListProps) => {
+}: TopicCardListProps) {
   const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
   const { fetchGet } = useGet();
 
@@ -38,7 +40,7 @@ const TopicCardList = ({
     getTopicsFromServer();
   }, []);
 
-  if (!topics) return <></>;
+  if (!topics) return null;
 
   if (topics.length === 0) {
     return (
@@ -61,26 +63,39 @@ const TopicCardList = ({
 
   return (
     <Wrapper>
-      {topics.map((topic) => (
-        <Fragment key={topic.id}>
-          <TopicCard
-            cardType="default"
-            id={topic.id}
-            image={topic.image}
-            name={topic.name}
-            creator={topic.creator}
-            updatedAt={topic.updatedAt}
-            pinCount={topic.pinCount}
-            bookmarkCount={topic.bookmarkCount}
-            isInAtlas={topic.isInAtlas}
-            isBookmarked={topic.isBookmarked}
-            getTopicsFromServer={getTopicsFromServer}
-          />
-        </Fragment>
-      ))}
+      <Grid
+        rows="auto"
+        columns={5}
+        gap={20}
+        width="100%"
+        $mediaQueries={[
+          [1180, 4],
+          [900, 3],
+          [660, 2],
+          [320, 1],
+        ]}
+      >
+        {topics.map((topic) => (
+          <Fragment key={topic.id}>
+            <TopicCard
+              cardType="default"
+              id={topic.id}
+              image={topic.image}
+              name={topic.name}
+              creator={topic.creator}
+              updatedAt={topic.updatedAt}
+              pinCount={topic.pinCount}
+              bookmarkCount={topic.bookmarkCount}
+              isInAtlas={topic.isInAtlas}
+              isBookmarked={topic.isBookmarked}
+              getTopicsFromServer={getTopicsFromServer}
+            />
+          </Fragment>
+        ))}
+      </Grid>
     </Wrapper>
   );
-};
+}
 
 const EmptyWrapper = styled.section`
   height: 240px;

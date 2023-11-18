@@ -4,10 +4,10 @@ import withTokenRefresh from './utils';
 
 export const patchApi = async (
   url: string,
-  data: {},
+  payload: {},
   contentType?: ContentTypeType,
 ) => {
-  return await withTokenRefresh(async () => {
+  const data = await withTokenRefresh(async () => {
     const apiUrl = `${DEFAULT_PROD_URL + url}`;
     const userToken = localStorage.getItem('userToken');
     const headers: any = {
@@ -15,7 +15,7 @@ export const patchApi = async (
     };
 
     if (userToken) {
-      headers['Authorization'] = `Bearer ${userToken}`;
+      headers.Authorization = `Bearer ${userToken}`;
     }
 
     if (contentType) {
@@ -25,7 +25,7 @@ export const patchApi = async (
     const response = await fetch(apiUrl, {
       method: 'PATCH',
       headers,
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
 
     if (response.status >= 400) {
@@ -34,4 +34,6 @@ export const patchApi = async (
 
     return response;
   });
+
+  return data;
 };

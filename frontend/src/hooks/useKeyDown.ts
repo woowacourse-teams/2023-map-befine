@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef } from 'react';
 
 const useKeyDown = <T extends HTMLElement>() => {
   const elementRef = useRef<T | null>(null);
@@ -10,7 +10,7 @@ const useKeyDown = <T extends HTMLElement>() => {
     }
   };
 
-  return {elementRef, onElementKeyDown}
+  return { elementRef, onElementKeyDown };
 };
 
 export default useKeyDown;

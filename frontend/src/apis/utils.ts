@@ -25,7 +25,7 @@ async function refreshToken(headers: Headers): Promise<Response> {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        accessToken: accessToken,
+        accessToken,
       }),
     });
 
@@ -61,8 +61,6 @@ async function updateToken(headers: Headers) {
     localStorage.setItem('userToken', newToken.accessToken);
   } catch (e) {
     console.error(e);
-
-    return;
   }
 }
 

@@ -1,10 +1,11 @@
 import {
+  createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
-  createContext,
   useState,
 } from 'react';
+
 import ToastProps from '../types/Toast';
 
 interface ToastContextProps {
@@ -21,7 +22,7 @@ export const ToastContext = createContext<ToastContextProps>({
   setToast: () => {},
 });
 
-const ToastProvider = ({ children }: ToastProviderProps) => {
+function ToastProvider({ children }: ToastProviderProps) {
   const [toast, setToast] = useState<ToastProps>({
     show: false,
     type: 'info',
@@ -38,6 +39,6 @@ const ToastProvider = ({ children }: ToastProviderProps) => {
       {children}
     </ToastContext.Provider>
   );
-};
+}
 
 export default ToastProvider;

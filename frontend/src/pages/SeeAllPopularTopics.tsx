@@ -1,18 +1,19 @@
-import Text from '../components/common/Text';
-import Space from '../components/common/Space';
+import { lazy, Suspense } from 'react';
 import { styled } from 'styled-components';
+
 import Box from '../components/common/Box';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import { FULLSCREEN } from '../constants';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import { Suspense, lazy } from 'react';
+import Space from '../components/common/Space';
+import MediaSpace from '../components/common/Space/MediaSpace';
+import MediaText from '../components/common/Text/MediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import { FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
-import { setFullScreenResponsive } from '../constants/responsive';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
-const SeeAllTopics = () => {
+function SeeAllTopics() {
   const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
@@ -24,11 +25,11 @@ const SeeAllTopics = () => {
   return (
     <Wrapper>
       <Space size={5} />
-      <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+      <MediaText color="black" $fontSize="extraLarge" $fontWeight="bold">
         인기 급상승할 지도?
-      </Text>
+      </MediaText>
 
-      <Space size={5} />
+      <MediaSpace size={6} />
 
       <Suspense fallback={<TopicCardContainerSkeleton />}>
         <TopicCardList
@@ -39,15 +40,20 @@ const SeeAllTopics = () => {
           routePage={goToHome}
         />
       </Suspense>
+
+      <Space size={8} />
     </Wrapper>
   );
-};
+}
 
 const Wrapper = styled(Box)`
-  width: 1036px;
+  width: 1140px;
   margin: 0 auto;
+  position: relative;
 
-  ${setFullScreenResponsive()}
+  @media (max-width: 1180px) {
+    width: 100%;
+  }
 `;
 
 export default SeeAllTopics;
