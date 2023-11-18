@@ -101,7 +101,7 @@ function TopicCard({
               color="black"
               $fontSize="default"
               $fontWeight="bold"
-              aria-label={`토픽 이름 ${name}`}
+              aria-label={`지도 이름 ${name}`}
             >
               {name}
             </MediaText>

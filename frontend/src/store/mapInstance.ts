@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
-interface MapState {
+interface MapContext {
   mapInstance: TMap | null;
   setMapInstance: (instance: TMap) => void;
 }
 
-const useMapStore = create<MapState>((set) => ({
+const useMapStore = create<MapContext>((set) => ({
   mapInstance: null,
   setMapInstance: (instance: TMap) => set(() => ({ mapInstance: instance })),
 }));

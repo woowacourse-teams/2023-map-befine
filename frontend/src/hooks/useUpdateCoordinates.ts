@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 
-export default function useUpdateCoordinates(map: TMap | null) {
+export default function useUpdateCoordinates() {
   const { coordinates } = useContext(CoordinatesContext);
   const {
     markers,
@@ -13,15 +13,17 @@ export default function useUpdateCoordinates(map: TMap | null) {
     removeInfowindows,
   } = useContext(MarkerContext);
 
+  const removePins = (markers: Marker[]) => {
+    removeMarkers();
+    removeInfowindows();
+  };
+
   useEffect(() => {
-    if (!map) return;
-    if (markers && markers.length > 0) {
-      removeMarkers();
-      removeInfowindows();
-    }
+    removePins(markers);
+
     if (coordinates.length > 0) {
-      createMarkers(map);
-      createInfowindows(map);
+      createMarkers();
+      createInfowindows();
     }
   }, [coordinates]);
 }
