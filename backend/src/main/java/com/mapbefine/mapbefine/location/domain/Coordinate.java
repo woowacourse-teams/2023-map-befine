@@ -21,6 +21,8 @@ public class Coordinate {
     private static final double LATITUDE_UPPER_BOUND = 43;
     private static final double LONGITUDE_LOWER_BOUND = 124;
     private static final double LONGITUDE_UPPER_BOUND = 132;
+    private static final double EARTH_RADIUS = 6371.0;
+    private static final int CONVERT_TO_METER = 1000;
 
     /*
      * 4326은 데이터베이스에서 사용하는 여러 SRID 값 중, 일반적인 GPS기반의 위/경도 좌표를 저장할 때 쓰이는 값입니다.
@@ -33,7 +35,6 @@ public class Coordinate {
     private Coordinate(Point point) {
         this.coordinate = point;
     }
-
 
     public static Coordinate of(double latitude, double longitude) {
         validateRange(latitude, longitude);
@@ -60,6 +61,15 @@ public class Coordinate {
 
     public double getLongitude() {
         return coordinate.getX();
+    }
+
+    public double calculateDistance(Coordinate coordinate) {
+        return Math.acos(
+                Math.sin(Math.toRadians(coordinate.getLatitude())) * Math.sin(Math.toRadians(this.getLatitude()))
+                        + (Math.cos(Math.toRadians(coordinate.getLatitude())) * Math.cos(
+                        Math.toRadians(this.getLatitude())) * Math.cos(
+                        Math.toRadians(coordinate.getLongitude() - this.getLongitude())))
+        ) * EARTH_RADIUS * CONVERT_TO_METER;
     }
 
 }

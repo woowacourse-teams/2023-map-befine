@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.topic.presentation;
 
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
@@ -18,6 +19,8 @@ import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
+import com.mapbefine.mapbefine.topic.dto.response.ClusterResponse;
+import com.mapbefine.mapbefine.topic.dto.response.RenderPinResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import java.time.LocalDateTime;
@@ -238,6 +241,43 @@ class TopicControllerTest extends RestDocsIntegration {
         given(topicQueryService.findAllBestTopics(any())).willReturn(RESPONSES);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/topics/bests")
+                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(restDocs.document());
+    }
+
+    @Test
+    @DisplayName("클러스터링 된 핀들을 조회할 수 있다.")
+    void getClustersOfPins() throws Exception {
+        given(topicQueryService.findClustersPinsByIds(any(), any(), anyDouble())).willReturn(
+                List.of(
+                    new ClusterResponse(
+                            36.0,
+                            124.0,
+                            List.of(
+                                    new RenderPinResponse(1L, "firstTopic의 핀", 1L),
+                                    new RenderPinResponse(2L, "secondTopic의 핀", 2L)
+                            )
+                    ),
+                    new ClusterResponse(
+                            36.0,
+                            124.2,
+                            List.of(
+                                    new RenderPinResponse(3L, "firstTopic의 핀", 1L)
+                            )
+                    ),
+                    new ClusterResponse(
+                            38.0,
+                            124.0,
+                            List.of(
+                                    new RenderPinResponse(4L, "firstTopic의 핀", 1L),
+                                    new RenderPinResponse(5L, "secondTopic의 핀", 2L)
+                            )
+                    )
+                )
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/topics/clusters?ids=1,2&image-diameter=9000")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(restDocs.document());

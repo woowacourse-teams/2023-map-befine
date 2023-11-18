@@ -25,19 +25,17 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
+import io.restassured.*;
+import io.restassured.response.*;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
 
 class TopicIntegrationTest extends IntegrationTest {
 
@@ -106,7 +104,10 @@ class TopicIntegrationTest extends IntegrationTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> createNewTopicExcludeImage(TopicCreateRequestWithoutImage request, String authHeader) {
+    private ExtractableResponse<Response> createNewTopicExcludeImage(
+            TopicCreateRequestWithoutImage request,
+            String authHeader
+    ) {
         return RestAssured.given()
                 .log().all()
                 .header(AUTHORIZATION, authHeader)
@@ -119,19 +120,13 @@ class TopicIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("Pin 목록과 함께 Topic을 생성하면 201을 반환한다")
     void createNewTopicWithPins_Success() {
-        PinFixture.create(location, topic, member);
-
-        List<Pin> pins = pinRepository.findAll();
-        List<Long> pinIds = pins.stream()
-                .map(Pin::getId)
-                .toList();
-
+        Pin pin = pinRepository.save(PinFixture.create(location, topic, member));
         TopicCreateRequestWithoutImage 준팍의_또간집 = new TopicCreateRequestWithoutImage(
                 "준팍의 또간집",
                 "준팍이 2번 이상 간집 ",
                 Publicity.PUBLIC,
                 PermissionType.ALL_MEMBERS,
-                pinIds
+                List.of(pin.getId())
         );
 
         // when
@@ -538,6 +533,35 @@ class TopicIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .multiPart("image", mockFile)
                 .when().put("/topics/images/{id}", topicId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("Topic의 클러스터링 된 핀들을 조회할 때 200을 반환한다.")
+    void getClustersOfPins() {
+        ExtractableResponse<Response> newTopic = createNewTopic(
+                new TopicCreateRequestWithoutImage(
+                        "매튜의 헬스장",
+                        "맛있는 음식들이 즐비한 헬스장!",
+                        Publicity.PUBLIC,
+                        PermissionType.ALL_MEMBERS,
+                        Collections.emptyList()
+                ),
+                authHeader
+        );
+        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .param("ids", List.of(topicId))
+                .param("image-diameter", 1)
+                .when().get("/topics/clusters")
                 .then().log().all()
                 .extract();
 

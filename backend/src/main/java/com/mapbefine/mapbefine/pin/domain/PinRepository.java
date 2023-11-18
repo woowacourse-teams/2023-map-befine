@@ -1,5 +1,6 @@
 package com.mapbefine.mapbefine.pin.domain;
 
+import com.mapbefine.mapbefine.pin.infrastructure.PinBatchRepositoryCustom;
 import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,10 +10,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PinRepository extends JpaRepository<Pin, Long> {
+public interface PinRepository extends JpaRepository<Pin, Long>, PinBatchRepositoryCustom {
 
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
     List<Pin> findAll();
+
+    @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
+    List<Pin> findAllByIdIn(List<Long> pinIds);
 
     @EntityGraph(attributePaths = {"location", "topic", "creator", "pinImages"})
     List<Pin> findAllByTopicId(Long topicId);

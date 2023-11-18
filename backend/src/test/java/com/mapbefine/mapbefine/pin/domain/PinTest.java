@@ -9,13 +9,11 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Set;
 
 class PinTest {
 
@@ -62,35 +60,6 @@ class PinTest {
                 .isEqualTo(pin);
         assertThat(pinsInMember.get(0)).usingRecursiveComparison()
                 .isEqualTo(pin);
-    }
-
-    @Test
-    @DisplayName("Pin을 복사하면 Topic, Member 외 정보가 모두 같은 새로운 Pin을 생성해 반환한다.")
-    void copy_Success() {
-        // given
-        Pin original = Pin.createPinAssociatedWithLocationAndTopicAndMember(
-                "before name",
-                "before description",
-                location,
-                topic,
-                member
-        );
-        PinImage.createPinImageAssociatedWithPin("https://example.com/image.jpg", original);
-        Member memberForCopy = MemberFixture.create("복사해 갈 회원", "other@gmail.com", Role.USER);
-        Topic topicForCopy = TopicFixture.createByName("복사해 갈 토픽 이름", memberForCopy);
-
-        // when
-        original.copyToTopic(memberForCopy, topicForCopy);
-        Pin actual = topicForCopy.getPins().iterator().next();
-
-        // then
-        assertThat(original).usingRecursiveComparison()
-                .ignoringFieldsOfTypes(Topic.class, Member.class)
-                .isEqualTo(actual);
-        assertThat(actual.getTopic()).usingRecursiveComparison()
-                .isEqualTo(topicForCopy);
-        assertThat(actual.getCreator()).usingRecursiveComparison()
-                .isEqualTo(memberForCopy);
     }
 
     @Nested

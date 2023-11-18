@@ -43,3 +43,6 @@ operation::topic-controller-test/update[snippets='http-request,http-response']
 === 토픽 이미지 수정
 
 operation::topic-controller-test/update-image[snippets='http-request,http-response']
+
+=== 토픽 클러스터링 조회
+operation::topic-controller-test/get-clusters-of-pins[snippets='http-request,http-response']
