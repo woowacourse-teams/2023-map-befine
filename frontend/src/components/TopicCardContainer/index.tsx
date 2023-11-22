@@ -48,6 +48,7 @@ function TopicCardContainer({
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
           <MediaText
+            as="h2"
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
@@ -97,7 +98,7 @@ function TopicCardContainer({
             (topic, index) =>
               index < 10 && (
                 <Tab label={`${index}`} key={topic.id}>
-                  <Flex>
+                  <Flex as="li">
                     <CustomSpace />
                     <TopicCard
                       cardType="default"

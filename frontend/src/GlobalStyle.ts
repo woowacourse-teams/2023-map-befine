@@ -3,6 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 const GlobalStyle = createGlobalStyle`
   html,
   body,
+  h2,
   textarea{
     padding:0;
     margin:0;

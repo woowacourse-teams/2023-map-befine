@@ -174,7 +174,7 @@ function TopicCard({
   );
 }
 
-const Wrapper = styled.li`
+const Wrapper = styled.article`
   cursor: pointer;
   border-radius: ${({ theme }) => theme.radius.small};
 `;
