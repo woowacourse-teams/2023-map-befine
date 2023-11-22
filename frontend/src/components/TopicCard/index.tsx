@@ -79,6 +79,7 @@ function TopicCard({
       onKeyDown={onElementKeyDown}
     >
       <Flex
+        as="article"
         $flexDirection="column"
         position="relative"
         tabIndex={0}
@@ -174,7 +175,7 @@ function TopicCard({
   );
 }
 
-const Wrapper = styled.article`
+const Wrapper = styled.li`
   cursor: pointer;
   border-radius: ${({ theme }) => theme.radius.small};
 `;

@@ -98,7 +98,7 @@ function TopicCardContainer({
             (topic, index) =>
               index < 10 && (
                 <Tab label={`${index}`} key={topic.id}>
-                  <Flex as="li">
+                  <Flex>
                     <CustomSpace />
                     <TopicCard
                       cardType="default"
