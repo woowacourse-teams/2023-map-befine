@@ -10,10 +10,15 @@ import Space from '../components/common/Space';
 import MediaText from '../components/common/Text/MediaText';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCard from '../components/TopicCard';
+import { FULLSCREEN } from '../constants';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { TopicCardProps } from '../types/Topic';
 
 function Search() {
   const { fetchGet } = useGet();
+  useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('none');
 
   const [originalTopics, setOriginalTopics] = useState<TopicCardProps[] | null>(
     null,
