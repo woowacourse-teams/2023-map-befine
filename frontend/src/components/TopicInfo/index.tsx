@@ -90,6 +90,7 @@ function TopicInfo({
 
   return (
     <Flex
+      as="article"
       position="relative"
       $flexDirection="column"
       $backgroundColor="white"
