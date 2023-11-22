@@ -23,6 +23,7 @@ export default function Banner() {
 
   return (
     <Swiper
+      as="section"
       width={1140}
       height={400}
       $simpleTab
