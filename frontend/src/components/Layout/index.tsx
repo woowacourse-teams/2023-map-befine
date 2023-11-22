@@ -67,6 +67,7 @@ function Layout({ children }: LayoutProps) {
                         </Box>
                       </LogoWrapper>
                       <Flex
+                        as="main"
                         $flexDirection="column"
                         height="inherit"
                         overflow="auto"
@@ -88,7 +89,7 @@ function Layout({ children }: LayoutProps) {
   );
 }
 
-const LogoWrapper = styled.section<{
+const LogoWrapper = styled.header<{
   $layoutWidth: '372px' | '100vw';
 }>`
   width: 372px;
@@ -107,7 +108,7 @@ const LogoWrapper = styled.section<{
   }
 `;
 
-const MediaWrapper = styled.section<{
+const MediaWrapper = styled.div<{
   $isAddPage: boolean;
   $layoutWidth: '372px' | '100vw';
 }>`
