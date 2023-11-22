@@ -223,7 +223,7 @@ function NewPin() {
           width={`calc(${width} - ${LAYOUT_PADDING})`}
           $flexDirection="column"
         >
-          <Text color="black" $fontSize="large" $fontWeight="bold">
+          <Text as="h3" color="black" $fontSize="large" $fontWeight="bold">
             핀 생성
           </Text>
 

@@ -58,6 +58,7 @@ function Search() {
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
           <MediaText
+            as="h2"
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
@@ -128,7 +129,7 @@ function Search() {
 
 export default Search;
 
-const Wrapper = styled.article`
+const Wrapper = styled.section`
   width: 1140px;
   margin: 0 auto;
   position: relative;

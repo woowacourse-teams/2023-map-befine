@@ -23,9 +23,14 @@ function SeeAllNearTopics() {
   };
 
   return (
-    <Wrapper>
+    <Wrapper as="section">
       <Space size={5} />
-      <MediaText color="black" $fontSize="extraLarge" $fontWeight="bold">
+      <MediaText
+        as="h2"
+        color="black"
+        $fontSize="extraLarge"
+        $fontWeight="bold"
+      >
         내 주변일 지도?
       </MediaText>
 

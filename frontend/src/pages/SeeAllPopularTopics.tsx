@@ -23,9 +23,14 @@ function SeeAllTopics() {
   };
 
   return (
-    <Wrapper>
+    <Wrapper as="section">
       <Space size={5} />
-      <MediaText color="black" $fontSize="extraLarge" $fontWeight="bold">
+      <MediaText
+        as="h2"
+        color="black"
+        $fontSize="extraLarge"
+        $fontWeight="bold"
+      >
         인기 급상승할 지도?
       </MediaText>
 

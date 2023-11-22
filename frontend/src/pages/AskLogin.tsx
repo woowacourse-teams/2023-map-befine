@@ -19,6 +19,7 @@ function AskLogin() {
 
   return (
     <Flex
+      as="section"
       $flexDirection="column"
       $justifyContent="center"
       $alignItems="center"
