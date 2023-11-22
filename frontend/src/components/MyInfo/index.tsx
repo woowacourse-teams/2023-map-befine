@@ -104,13 +104,6 @@ const MyInfoContainer = styled(Flex)`
   border: 1px solid ${({ theme }) => theme.color.lightGray};
 `;
 
-const MyInfoImg = styled.img`
-  width: 80px;
-  height: 80px;
-
-  border-radius: 50%;
-`;
-
 const SettingContainer = styled.div`
   position: absolute;
   top: 10px;
