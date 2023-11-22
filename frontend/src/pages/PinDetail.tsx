@@ -183,7 +183,7 @@ function PinDetail({
   return (
     <Wrapper $layoutWidth={width} $selectedPinId={pinId} data-cy="pin-detail">
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
-        <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+        <Text as="h2" color="black" $fontSize="extraLarge" $fontWeight="bold">
           {pin.name}
         </Text>
       </Flex>
@@ -218,7 +218,7 @@ function PinDetail({
       <PinImageContainer images={pin.images} getPinData={getPinData} />
       <Space size={6} />
       <Flex $flexDirection="column">
-        <Text color="black" $fontSize="large" $fontWeight="bold">
+        <Text as="h3" color="black" $fontSize="large" $fontWeight="bold">
           어디에 있나요?
         </Text>
         <Space size={1} />
@@ -227,7 +227,7 @@ function PinDetail({
         </Text>
       </Flex>
       <Space size={6} />
-      <Flex $flexDirection="column">
+      <Flex as="h3" $flexDirection="column">
         <Text color="black" $fontSize="large" $fontWeight="bold">
           어떤 곳인가요?
         </Text>
@@ -252,8 +252,8 @@ function PinDetail({
 
       {/*  Comment Section */}
 
-      <Text color="black" $fontSize="large" $fontWeight="bold">
-        어떻게 생각하나요?{' '}
+      <Text as="h3" color="black" $fontSize="large" $fontWeight="bold">
+        어떻게 생각하나요?
       </Text>
       <Space size={1} />
       {userToken && (
