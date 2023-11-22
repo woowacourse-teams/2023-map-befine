@@ -104,7 +104,7 @@ const EmptyWrapper = styled.section`
   align-items: center;
 `;
 
-const Wrapper = styled.ul`
+const Wrapper = styled.section`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
