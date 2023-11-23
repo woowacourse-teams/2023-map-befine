@@ -106,6 +106,7 @@ function TopicInfo({
         $objectFit="cover"
         radius="medium"
         $errorDefaultSrc={DEFAULT_TOPIC_IMAGE}
+        isAriaHidden
       />
 
       <Space size={1} />
@@ -115,14 +116,24 @@ function TopicInfo({
           <Flex $alignItems="center" width="72px">
             <SmallTopicPin />
             <Space size={0} />
-            <Text color="black" $fontSize="small" $fontWeight="normal">
+            <Text
+              color="black"
+              $fontSize="small"
+              $fontWeight="normal"
+              aria-hidden
+            >
               {topicPinCount > 999 ? '+999' : topicPinCount}개
             </Text>
           </Flex>
           <Flex $alignItems="center" width="72px">
             <SmallTopicStar />
             <Space size={0} />
-            <Text color="black" $fontSize="small" $fontWeight="normal">
+            <Text
+              color="black"
+              $fontSize="small"
+              $fontWeight="normal"
+              aria-hidden
+            >
               {topicBookmarkCount > 999 ? '+999' : topicBookmarkCount}명
             </Text>
           </Flex>
@@ -136,19 +147,41 @@ function TopicInfo({
 
       <Space size={0} />
 
-      <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+      <Text
+        color="black"
+        $fontSize="extraLarge"
+        $fontWeight="bold"
+        aria-label={`지도 이름은 ${topicTitle} 이며`}
+      >
         {topicTitle}
       </Text>
       <Space size={1} />
-      <Text color="black" $fontSize="small" $fontWeight="normal">
+      <Text
+        color="black"
+        $fontSize="small"
+        $fontWeight="normal"
+        aria-label={`지도 작성자는 ${topicCreator} 입니다.`}
+      >
         {topicCreator}
       </Text>
       <Space size={1} />
-      <Text color="black" $fontSize="small" $fontWeight="normal">
+      <Text
+        color="black"
+        $fontSize="small"
+        $fontWeight="normal"
+        aria-label={`다음은 이 지도의 설명입니다. ${topicDescription}`}
+      >
         {topicDescription}
       </Text>
       <Space size={3} />
-      <Text color="gray" $fontSize="small" $fontWeight="normal">
+      <Text
+        color="gray"
+        $fontSize="small"
+        $fontWeight="normal"
+        aria-label={`이 지도의 마지막 업데이트는 ${topicUpdatedAt
+          .split('T')[0]
+          .replaceAll('-', '.')} 입니다.`}
+      >
         {topicUpdatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
       </Text>
 

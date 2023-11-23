@@ -2,6 +2,7 @@ import { styled } from 'styled-components';
 
 import { deleteApi } from '../../apis/deleteApi';
 import { postApi } from '../../apis/postApi';
+import { ARIA_FOCUS } from '../../constants';
 import useToast from '../../hooks/useToast';
 
 interface AddFavoriteProps {
@@ -48,7 +49,12 @@ function AddFavorite({
   };
 
   return (
-    <Wrapper onClick={isBookmarked ? deleteFavoriteList : addFavoriteList}>
+    <Wrapper
+      tabIndex={ARIA_FOCUS}
+      role="button"
+      aria-label="즐겨찾기 추가 버튼"
+      onClick={isBookmarked ? deleteFavoriteList : addFavoriteList}
+    >
       {children}
     </Wrapper>
   );

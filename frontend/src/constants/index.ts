@@ -13,3 +13,5 @@ export const DEFAULT_PROD_URL =
   process.env.APP_URL || 'https://mapbefine.kro.kr/api';
 
 export const PIN_SIZE = 60;
+
+export const ARIA_FOCUS = 0;
