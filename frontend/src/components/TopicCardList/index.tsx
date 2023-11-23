@@ -76,7 +76,7 @@ function TopicCardList({
         ]}
       >
         {topics.map((topic) => (
-          <Fragment key={topic.id}>
+          <ul key={topic.id}>
             <TopicCard
               cardType="default"
               id={topic.id}
@@ -90,7 +90,7 @@ function TopicCardList({
               isBookmarked={topic.isBookmarked}
               getTopicsFromServer={getTopicsFromServer}
             />
-          </Fragment>
+          </ul>
         ))}
       </Grid>
     </Wrapper>

@@ -73,7 +73,8 @@ function TopicCardContainer({
           $fontWeight="normal"
           tabIndex={0}
           onClick={routeWhenSeeAll}
-          aria-label={`${containerTitle} 전체보기 버튼`}
+          role="button"
+          aria-label={`${containerTitle} 전체보기`}
           ref={elementRef}
           onKeyDown={onElementKeyDown}
         >
