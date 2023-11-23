@@ -17,8 +17,8 @@ function Logo() {
       onKeyDown={onElementKeyDown}
       ref={elementRef}
       onClick={goToHome}
-      aria-label="괜찮을지도 로고 및 홈으로 이동 버튼"
       tabIndex={0}
+      aria-label="괜찮을지도 로고 및 홈으로 이동하기"
     >
       <LogoImage />
     </Box>
