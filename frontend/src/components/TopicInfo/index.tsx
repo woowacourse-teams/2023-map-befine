@@ -9,7 +9,7 @@ import SeeTogetherSVG from '../../assets/topicInfo_seeTogetherBtn_filled.svg';
 import SeeTogetherNotFilledSVG from '../../assets/topicInfo_seeTogetherBtn_notFilled.svg';
 import TopicShareUrlSVG from '../../assets/topicInfo_shareUrl.svg';
 import UpdateBtnSVG from '../../assets/updateBtn.svg';
-import { DEFAULT_TOPIC_IMAGE } from '../../constants';
+import { ARIA_FOCUS, DEFAULT_TOPIC_IMAGE } from '../../constants';
 import useToast from '../../hooks/useToast';
 import AddFavorite from '../AddFavorite';
 import AddSeeTogether from '../AddSeeTogether';
@@ -210,7 +210,13 @@ function TopicInfo({
           {isBookmarked ? <FavoriteSVG /> : <FavoriteNotFilledSVG />}
         </AddFavorite>
         <Space size={5} />
-        <TopicShareUrlSVG cursor="pointer" onClick={copyContent} />
+        <TopicShareUrlSVG
+          cursor="pointer"
+          onClick={copyContent}
+          tabIndex={ARIA_FOCUS}
+          role="button"
+          aria-label="URL 주소 공유하기 버튼"
+        />
       </ButtonsWrapper>
 
       <Space size={3} />
