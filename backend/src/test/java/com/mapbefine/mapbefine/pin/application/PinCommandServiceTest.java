@@ -1,16 +1,5 @@
 package com.mapbefine.mapbefine.pin.application;
 
-import static com.mapbefine.mapbefine.topic.domain.PermissionType.ALL_MEMBERS;
-import static com.mapbefine.mapbefine.topic.domain.PermissionType.GROUP_ONLY;
-import static com.mapbefine.mapbefine.topic.domain.Publicity.PRIVATE;
-import static com.mapbefine.mapbefine.topic.domain.Publicity.PUBLIC;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
@@ -28,17 +17,8 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.pin.PinCommentFixture;
 import com.mapbefine.mapbefine.pin.PinFixture;
-import com.mapbefine.mapbefine.pin.domain.Pin;
-import com.mapbefine.mapbefine.pin.domain.PinComment;
-import com.mapbefine.mapbefine.pin.domain.PinCommentRepository;
-import com.mapbefine.mapbefine.pin.domain.PinImage;
-import com.mapbefine.mapbefine.pin.domain.PinImageRepository;
-import com.mapbefine.mapbefine.pin.domain.PinRepository;
-import com.mapbefine.mapbefine.pin.dto.request.PinCommentCreateRequest;
-import com.mapbefine.mapbefine.pin.dto.request.PinCommentUpdateRequest;
-import com.mapbefine.mapbefine.pin.dto.request.PinCreateRequest;
-import com.mapbefine.mapbefine.pin.dto.request.PinImageCreateRequest;
-import com.mapbefine.mapbefine.pin.dto.request.PinUpdateRequest;
+import com.mapbefine.mapbefine.pin.domain.*;
+import com.mapbefine.mapbefine.pin.dto.request.*;
 import com.mapbefine.mapbefine.pin.dto.response.PinDetailResponse;
 import com.mapbefine.mapbefine.pin.dto.response.PinImageResponse;
 import com.mapbefine.mapbefine.pin.event.PinUpdateEvent;
@@ -50,10 +30,6 @@ import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,6 +40,20 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.ALL_MEMBERS;
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.GROUP_ONLY;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PRIVATE;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PUBLIC;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ServiceTest
 class PinCommandServiceTest extends TestDatabaseContainer {
@@ -398,7 +388,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         PinCommentCreateRequest request = new PinCommentCreateRequest(
                 savedPin.getId(), null, "댓글"
         );
-        AuthMember creatorUser = MemberFixture.createUser(user);
+        AuthMember creatorUser = MemberFixture.createUser(user, Collections.emptyList());
 
         // when
         Long pinCommentId = pinCommandService.savePinComment(creatorUser, request);
@@ -427,7 +417,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
         );
-        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator);
+        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator, Collections.emptyList());
 
         // when then
         assertThatThrownBy(() -> pinCommandService.savePinComment(nonCreatorUser, request))
@@ -446,7 +436,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         PinCommentCreateRequest request = new PinCommentCreateRequest(
                 savedPin.getId(), childPinComment.getId(), "대대댓글"
         );
-        AuthMember creatorUser = MemberFixture.createUser(user);
+        AuthMember creatorUser = MemberFixture.createUser(user, Collections.emptyList());
 
         // when then
         assertThatThrownBy(() -> pinCommandService.savePinComment(creatorUser, request))
@@ -467,7 +457,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("admin", "admin@naver.com", Role.ADMIN)
         );
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator, Collections.emptyList());
 
         // when
         Long pinCommentId = pinCommandService.savePinComment(nonCreatorAdmin, request);
@@ -506,7 +496,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         PinCommentUpdateRequest request = new PinCommentUpdateRequest(
                 "댓글 수정!"
         );
-        AuthMember creatorUser = MemberFixture.createUser(user);
+        AuthMember creatorUser = MemberFixture.createUser(user, Collections.emptyList());
 
         // when
         pinCommandService.updatePinComment(creatorUser, pinComment.getId(), request);
@@ -533,7 +523,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
         );
-        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator);
+        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator, Collections.emptyList());
 
         // when then
         assertThatThrownBy(() -> pinCommandService.updatePinComment(nonCreatorUser, pinComment.getId(), request))
@@ -576,7 +566,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN)
         );
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator, Collections.emptyList());
 
         // when
         pinCommandService.updatePinComment(nonCreatorAdmin, pinComment.getId(), request);
@@ -609,7 +599,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         // given
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
-        AuthMember creatorUser = MemberFixture.createUser(user);
+        AuthMember creatorUser = MemberFixture.createUser(user, Collections.emptyList());
 
         // when
         pinCommandService.deletePinComment(creatorUser, pinComment.getId());
@@ -627,7 +617,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
         );
-        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator);
+        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator, Collections.emptyList());
 
         // when then
         assertThatThrownBy(() -> pinCommandService.deletePinComment(nonCreatorUser, pinComment.getId()))
@@ -656,7 +646,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
         Member nonCreator = MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN);
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
+        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator, Collections.emptyList());
 
         // when
         pinCommandService.deletePinComment(nonCreatorAdmin, pinComment.getId());

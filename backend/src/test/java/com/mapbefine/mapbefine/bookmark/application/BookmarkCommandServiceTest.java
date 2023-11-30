@@ -1,8 +1,5 @@
 package com.mapbefine.mapbefine.bookmark.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
@@ -20,6 +17,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
+import java.util.Collections;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ServiceTest
 class BookmarkCommandServiceTest extends TestDatabaseContainer {
@@ -61,7 +63,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         );
         memberRepository.save(otherMember);
         Long bookmarkId = bookmarkCommandService.addTopicInBookmark(
-                MemberFixture.createUser(otherMember),
+                MemberFixture.createUser(otherMember, Collections.emptyList()),
                 topic.getId()
         );
 
@@ -96,7 +98,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
 
         //then
         assertThatThrownBy(() -> bookmarkCommandService.addTopicInBookmark(
-                MemberFixture.createUser(otherMember),
+                MemberFixture.createUser(otherMember, Collections.emptyList()),
                 topic.getId()
         )).isInstanceOf(BookmarkForbiddenException.class);
     }
@@ -126,7 +128,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when
-        AuthMember user = MemberFixture.createUser(otherMember);
+        AuthMember user = MemberFixture.createUser(otherMember, Collections.emptyList());
         assertThat(bookmarkRepository.existsById(bookmark.getId())).isTrue();
 
         bookmarkCommandService.deleteTopicInBookmark(user, topic.getId());
@@ -160,7 +162,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         memberRepository.save(otherMember);
 
         //when then
-        AuthMember otherUser = MemberFixture.createUser(otherMember);
+        AuthMember otherUser = MemberFixture.createUser(otherMember, Collections.emptyList());
 
         assertThatThrownBy(() -> bookmarkCommandService.deleteTopicInBookmark(otherUser, topic.getId()))
                 .isInstanceOf(BookmarkForbiddenException.class);
@@ -193,7 +195,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         //when
         assertThat(creatorBefore.getBookmarks()).hasSize(2);
 
-        AuthMember user = MemberFixture.createUser(creatorBefore);
+        AuthMember user = MemberFixture.createUser(creatorBefore, Collections.emptyList());
         bookmarkCommandService.deleteAllBookmarks(user);
         testEntityManager.flush();
         testEntityManager.clear();

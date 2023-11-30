@@ -1,11 +1,5 @@
 package com.mapbefine.mapbefine.topic.application;
 
-import static com.mapbefine.mapbefine.member.MemberFixture.createUser;
-import static java.util.List.of;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
@@ -33,12 +27,19 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
+import java.util.List;
+
+import static com.mapbefine.mapbefine.member.MemberFixture.createUser;
+import static java.util.List.of;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ServiceTest
 class TopicQueryServiceTest extends TestDatabaseContainer {
@@ -93,7 +94,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         saveAllReadableTopicOfCount(1);
         saveOnlyMemberReadableTopicOfCount(2);
 
-        AuthMember user = createUser(member);
+        AuthMember user = createUser(member, Collections.emptyList());
 
         //when
         List<TopicResponse> topics = topicQueryService.findAllReadable(user);
@@ -179,7 +180,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when then
-        AuthMember user = createUser(member);
+        AuthMember user = createUser(member, Collections.emptyList());
         List<TopicResponse> topics = topicQueryService.findAllReadable(user);
 
         assertThat(topics).hasSize(2);
@@ -293,7 +294,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.deleteById(topic.getId());
 
         //when then
-        AuthMember user = createUser(member);
+        AuthMember user = createUser(member, Collections.emptyList());
         assertThatThrownBy(() -> topicQueryService.findDetailById(user, topic.getId()))
                 .isInstanceOf(TopicNotFoundException.class);
     }
@@ -309,7 +310,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when then
-        AuthMember user = createUser(member);
+        AuthMember user = createUser(member, Collections.emptyList());
         TopicDetailResponse topicDetail = topicQueryService.findDetailById(user, topic.getId());
 
         assertThat(topicDetail.id()).isEqualTo(topic.getId());
@@ -373,7 +374,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic2);
 
         //when
-        AuthMember user = createUser(member);
+        AuthMember user = createUser(member, Collections.emptyList());
 
         List<TopicDetailResponse> details = topicQueryService.findDetailsByIds(
                 user,
@@ -416,7 +417,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.deleteById(topic2.getId());
 
         //when then
-        AuthMember user = createUser(member);
+        AuthMember user = createUser(member, Collections.emptyList());
         List<Long> topicIds = of(topic1.getId(), topic2.getId());
 
         assertThatThrownBy(() -> topicQueryService.findDetailsByIds(user, topicIds))
@@ -436,7 +437,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when //then
-        AuthMember user = createUser(member);
+        AuthMember user = createUser(member, Collections.emptyList());
         List<TopicDetailResponse> topicDetails =
                 topicQueryService.findDetailsByIds(user, of(topic1.getId(), topic2.getId()));
 
@@ -549,7 +550,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         saveBookmark(topicWithTwoBookmark, otherMember);
 
         //when
-        AuthMember user = createUser(member);
+        AuthMember user = createUser(member, Collections.emptyList());
         List<TopicResponse> actual = topicQueryService.findAllBestTopics(user);
 
         //then
@@ -580,7 +581,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         saveBookmark(privateTopicWithOneBookmark, member);
 
         //when
-        AuthMember otherUser = createUser(otherMember);
+        AuthMember otherUser = createUser(otherMember, Collections.emptyList());
 
         List<TopicResponse> actual = topicQueryService.findAllBestTopics(otherUser);
         List<TopicResponse> expect = topicQueryService.findAllReadable(otherUser);
@@ -614,7 +615,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
 
         // when
         List<ClusterResponse> actual = topicQueryService.findClustersPinsByIds(
-                createUser(member),
+                createUser(member, Collections.emptyList()),
                 List.of(firstTopic.getId(), secondTopic.getId()),
                 9000D
         );
@@ -643,7 +644,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
 
         // when then
         assertThatThrownBy(() -> topicQueryService.findClustersPinsByIds(
-                createUser(nonCreator),
+                createUser(nonCreator, Collections.emptyList()),
                 List.of(topic.getId()),
                 9000D
         )).isInstanceOf(TopicForbiddenException.class);

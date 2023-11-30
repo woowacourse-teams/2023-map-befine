@@ -48,7 +48,7 @@ class AuthServiceTest extends TestDatabaseContainer {
         member = memberRepository.save(MemberFixture.create("member", "member1@member.com", Role.USER));
         topicWithPermission = topicRepository.save(TopicFixture.createPrivateAndGroupOnlyTopic(admin));
         createdTopic = topicRepository.save(TopicFixture.createPublicAndAllMembersTopic(admin));
-        permissionRepository.save(Permission.createPermissionAssociatedWithTopicAndMember(topicWithPermission, member));
+        permissionRepository.save(Permission.of(topicWithPermission.getId(), member.getId()));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

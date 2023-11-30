@@ -5,6 +5,6 @@ import java.util.List;
 
 public record TopicAccessDetailResponse(
         Publicity publicity,
-        List<PermissionedMemberResponse> permissionedMembers
+        List<permittedMemberResponse> permittedMembers
 ) {
 }

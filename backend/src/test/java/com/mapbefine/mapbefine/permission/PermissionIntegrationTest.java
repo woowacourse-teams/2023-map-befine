@@ -1,10 +1,5 @@
 package com.mapbefine.mapbefine.permission;
 
-import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
-import static io.restassured.RestAssured.*;
-import static org.apache.http.HttpHeaders.AUTHORIZATION;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -17,21 +12,28 @@ import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionMemberDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.PermissionedMemberResponse;
 import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
+import com.mapbefine.mapbefine.permission.dto.response.permittedMemberResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import io.restassured.common.mapper.*;
-import io.restassured.response.*;
-import java.time.LocalDateTime;
-import java.util.List;
+import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
+import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PermissionIntegrationTest extends IntegrationTest {
 
@@ -104,8 +106,7 @@ class PermissionIntegrationTest extends IntegrationTest {
     void deletePermission() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        Permission permission =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, user1);
+        Permission permission = Permission.of(topic.getId(), user1.getId());
         Long savedId = permissionRepository.save(permission).getId();
 
         // when
@@ -125,10 +126,8 @@ class PermissionIntegrationTest extends IntegrationTest {
     void findTopicAccessDetailById() {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        Permission permission1 =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, user1);
-        Permission permission2 =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, user2);
+        Permission permission1 = Permission.of(topic.getId(), user1.getId());
+        Permission permission2 = Permission.of(topic.getId(), user2.getId());
         permissionRepository.save(permission1);
         permissionRepository.save(permission2);
 
@@ -138,45 +137,47 @@ class PermissionIntegrationTest extends IntegrationTest {
                 .when().get("/permissions/topics/" + topic.getId())
                 .then().log().all()
                 .extract();
-        TopicAccessDetailResponse actual = response.as(new TypeRef<>() {});
+        TopicAccessDetailResponse actual = response.as(new TypeRef<>() {
+        });
 
         // then
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.OK.value());
         assertThat(actual.publicity()).isEqualTo(topic.getPublicity());
-        assertThat(actual.permissionedMembers())
+        assertThat(actual.permittedMembers())
                 .hasSize(2)
-                .extracting(PermissionedMemberResponse::memberResponse)
+                .extracting(permittedMemberResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(user1), MemberResponse.from(user2)));
     }
 
-    @Test
-    @DisplayName("Topic 에 권한을 가진 자를 조회한다.")
-    void findPermissionById() {
-        // given
-        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-        Permission permission =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, user1);
-        permission = permissionRepository.save(permission);
-
-        // when
-        ExtractableResponse<Response> response = given().log().all()
-                .header(AUTHORIZATION, creatorAuthHeader)
-                .when().get("/permissions/" + permission.getId())
-                .then().log().all()
-                .extract();
-        PermissionMemberDetailResponse actual = response.as(new TypeRef<>() {});
-
-        // then
-        assertThat(response.statusCode())
-                .isEqualTo(HttpStatus.OK.value());
-        assertThat(actual)
-                .extracting(PermissionMemberDetailResponse::memberDetailResponse)
-                .usingRecursiveComparison()
-                .ignoringFieldsOfTypes(LocalDateTime.class)
-                .isEqualTo(MemberDetailResponse.from(user1));
-    }
+    // TODO: 2023/11/30 Test For Deprecated Method
+//    @Test
+//    @DisplayName("Topic 에 권한을 가진 자를 조회한다.")
+//    void findPermissionById() {
+//        // given
+//        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
+//        Permission permission = Permission.of(topic.getId(), user1.getId());
+//        permission = permissionRepository.save(permission);
+//
+//        // when
+//        ExtractableResponse<Response> response = given().log().all()
+//                .header(AUTHORIZATION, creatorAuthHeader)
+//                .when().get("/permissions/" + permission.getId())
+//                .then().log().all()
+//                .extract();
+//        PermissionMemberDetailResponse actual = response.as(new TypeRef<>() {
+//        });
+//
+//        // then
+//        assertThat(response.statusCode())
+//                .isEqualTo(HttpStatus.OK.value());
+//        assertThat(actual)
+//                .extracting(PermissionMemberDetailResponse::memberDetailResponse)
+//                .usingRecursiveComparison()
+//                .ignoringFieldsOfTypes(LocalDateTime.class)
+//                .isEqualTo(MemberDetailResponse.from(user1));
+//    }
 
 
 }

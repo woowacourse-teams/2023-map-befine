@@ -7,7 +7,6 @@ public record MemberResponse(
         Long id,
         String nickName
 ) {
-
     public static MemberResponse from(Member member) {
         MemberInfo memberInfo = member.getMemberInfo();
 
@@ -15,6 +14,10 @@ public record MemberResponse(
                 member.getId(),
                 memberInfo.getNickName()
         );
+    }
+
+    public static MemberResponse of(Long id, String nickName) {
+        return new MemberResponse(id, nickName);
     }
 
 }

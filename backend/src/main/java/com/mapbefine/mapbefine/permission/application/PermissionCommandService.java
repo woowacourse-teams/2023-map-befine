@@ -40,7 +40,7 @@ public class PermissionCommandService {
 
     public void addPermission(AuthMember authMember, PermissionRequest request) {
         validateGuest(authMember);
-        Topic topic = findTopic(request);
+        Topic topic = findTopic(request.topicId());
         validateMemberCanTopicUpdate(authMember, topic);
 
         List<Member> members = findTargetMembers(request);
@@ -63,7 +63,7 @@ public class PermissionCommandService {
         return members.stream()
                 .filter(member -> isNotSelfMember(authMember, member))
                 .filter(member -> isNotWithPermission(topic.getId(), member))
-                .map(member -> Permission.createPermissionAssociatedWithTopicAndMember(topic, member))
+                .map(member -> Permission.of(topic.getId(), member.getId()))
                 .toList();
     }
 
@@ -75,8 +75,7 @@ public class PermissionCommandService {
         return !Objects.equals(authMember.getMemberId(), member.getId());
     }
 
-    private Topic findTopic(PermissionRequest request) {
-        Long topicId = request.topicId();
+    private Topic findTopic(Long topicId) {
         return topicRepository.findById(topicId)
                 .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_TOPIC_ID, topicId));
     }
@@ -96,7 +95,8 @@ public class PermissionCommandService {
         Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_PERMISSION_ID, permissionId));
 
-        validateMemberCanTopicUpdate(authMember, permission.getTopic());
+        Topic topic = findTopic(permission.getTopicId());
+        validateMemberCanTopicUpdate(authMember, topic);
 
         permissionRepository.delete(permission);
     }

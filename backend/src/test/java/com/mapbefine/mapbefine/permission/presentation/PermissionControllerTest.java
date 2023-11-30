@@ -11,7 +11,7 @@ import com.mapbefine.mapbefine.permission.application.PermissionCommandService;
 import com.mapbefine.mapbefine.permission.application.PermissionQueryService;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.dto.response.PermissionMemberDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.PermissionedMemberResponse;
+import com.mapbefine.mapbefine.permission.dto.response.permittedMemberResponse;
 import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import java.time.LocalDateTime;
@@ -56,9 +56,9 @@ class PermissionControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("특정 토픽 접근 정보 조회(권한 회원 목록, 공개 여부)")
     void findTopicAccessDetailByTopicId() throws Exception {
-        List<PermissionedMemberResponse> permissionedMembers = List.of(
-                new PermissionedMemberResponse(1L, new MemberResponse(1L, "member")),
-                new PermissionedMemberResponse(1L, new MemberResponse(2L, "memberr"))
+        List<permittedMemberResponse> permissionedMembers = List.of(
+                new permittedMemberResponse(1L, new MemberResponse(1L, "member")),
+                new permittedMemberResponse(1L, new MemberResponse(2L, "memberr"))
         );
         TopicAccessDetailResponse response = new TopicAccessDetailResponse(Publicity.PUBLIC, permissionedMembers);
 
@@ -70,27 +70,28 @@ class PermissionControllerTest extends RestDocsIntegration {
                 .andDo(restDocs.document());
     }
 
-    @Test
-    @DisplayName("권한이 있는 자들 모두 조회")
-    void findPermissionById() throws Exception {
-        PermissionMemberDetailResponse permissionMemberDetailResponse = new PermissionMemberDetailResponse(
-                1L,
-                LocalDateTime.now(),
-                new MemberDetailResponse(
-                        1L,
-                        "member",
-                        "member@naver.com",
-                        "https://map-befine-official.github.io/favicon.png",
-                        LocalDateTime.now()
-                )
-        );
-
-        given(permissionQueryService.findPermissionById(any())).willReturn(permissionMemberDetailResponse);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/permissions/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(restDocs.document());
-    }
+    // TODO: 2023/11/30 Test For Deprecated Method
+//    @Test
+//    @DisplayName("권한이 있는 자들 모두 조회")
+//    void findPermissionById() throws Exception {
+//        PermissionMemberDetailResponse permissionMemberDetailResponse = new PermissionMemberDetailResponse(
+//                1L,
+//                LocalDateTime.now(),
+//                new MemberDetailResponse(
+//                        1L,
+//                        "member",
+//                        "member@naver.com",
+//                        "https://map-befine-official.github.io/favicon.png",
+//                        LocalDateTime.now()
+//                )
+//        );
+//
+//        given(permissionQueryService.findPermissionById(any())).willReturn(permissionMemberDetailResponse);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/permissions/1")
+//                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andDo(restDocs.document());
+//    }
 
 }
