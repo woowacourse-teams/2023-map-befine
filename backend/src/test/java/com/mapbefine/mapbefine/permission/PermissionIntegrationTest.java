@@ -6,14 +6,12 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
-import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
-import com.mapbefine.mapbefine.permission.dto.response.PermissionMemberDetailResponse;
 import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.permittedMemberResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermittedMemberResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -27,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
@@ -146,7 +143,7 @@ class PermissionIntegrationTest extends IntegrationTest {
         assertThat(actual.publicity()).isEqualTo(topic.getPublicity());
         assertThat(actual.permittedMembers())
                 .hasSize(2)
-                .extracting(permittedMemberResponse::memberResponse)
+                .extracting(PermittedMemberResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(user1), MemberResponse.from(user2)));
     }

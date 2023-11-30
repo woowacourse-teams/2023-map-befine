@@ -10,7 +10,7 @@ import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.permittedMemberResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermittedMemberResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -61,13 +61,13 @@ class PermissionQueryServiceTest extends TestDatabaseContainer {
 
         // then
         assertThat(accessDetailResponse.publicity()).isEqualTo(topic1.getPublicity());
-        List<permittedMemberResponse> permittedMembers = accessDetailResponse.permittedMembers();
+        List<PermittedMemberResponse> permittedMembers = accessDetailResponse.permittedMembers();
         assertThat(permittedMembers).hasSize(2)
-                .extracting(permittedMemberResponse::memberResponse)
+                .extracting(PermittedMemberResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(member1Response, member2Response));
         assertThat(permittedMembers)
-                .extracting(permittedMemberResponse::memberResponse)
+                .extracting(PermittedMemberResponse::memberResponse)
                 .map(MemberResponse::id)
                 .doesNotContain(topic1.getCreator().getId());
     }

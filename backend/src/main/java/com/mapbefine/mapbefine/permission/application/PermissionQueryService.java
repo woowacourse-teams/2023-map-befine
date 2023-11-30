@@ -5,7 +5,7 @@ import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.permittedMemberResponse;
+import com.mapbefine.mapbefine.permission.dto.response.PermittedMemberResponse;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -41,9 +41,9 @@ public class PermissionQueryService {
         List<Permission> permissions = permissionRepository.findAllByTopicId(topicId);
 
         // TODO: 2023/11/30 Mapper로 빼는것도 고려
-        List<permittedMemberResponse> permittedMembers = permissions
+        List<PermittedMemberResponse> permittedMembers = permissions
                 .stream()
-                .map(permission -> permittedMemberResponse.of(
+                .map(permission -> PermittedMemberResponse.of(
                                 permission.getId(),
                                 MemberResponse.of(
                                         permission.getMemberId(),
