@@ -69,40 +69,4 @@ class PermissionQueryServiceTest extends TestDatabaseContainer {
                 .doesNotContain(topic1.getCreator().getId());
     }
 
-    // TODO: 2023/11/30 Test For Deprecated Method
-//    @Test
-//    @DisplayName("ID 를 통해서 토픽에 권한이 있는자를 조회한다.")
-//    void findPermissionById() {
-//        // given
-//        Member creator = memberRepository.save(
-//                MemberFixture.create("member", "member@naver.com", Role.USER)
-//        );
-//        Member permissionUser = memberRepository.save(
-//                MemberFixture.create("members", "members@naver.com", Role.USER)
-//        );
-//        Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
-//        Long savedId = permissionRepository.save(Permission.of(topic.getId(), permissionUser.getId())).getId();
-//
-//        // when
-//        PermissionMemberDetailResponse permissionMemberDetailResponse =
-//                permissionQueryService.findPermissionById(savedId);
-//        MemberDetailResponse permissionUserResponse = MemberDetailResponse.from(permissionUser);
-//
-//        // then
-//        assertThat(permissionMemberDetailResponse)
-//                .extracting(PermissionMemberDetailResponse::memberDetailResponse)
-//                .usingRecursiveComparison()
-//                .isEqualTo(permissionUserResponse);
-//    }
-
-    // TODO: 2023/11/30 Test For Deprecated Method
-//    @Test
-//    @DisplayName("ID 를 통해서 토픽에 권한이 있는자를 조회하려 할 때, 결과가 존재하지 않을 때 예외가 발생한다.")
-//    void findPermissionById_whenNoneExistsPermission_thenFail() {
-//        // given when then
-//        assertThatThrownBy(() -> permissionQueryService.findPermissionById(Long.MAX_VALUE))
-//                .isInstanceOf(PermissionNotFoundException.class);
-//    }
-
-
 }

@@ -294,34 +294,6 @@ class TopicIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Topic을 삭제하면 204를 반환한다")
-    void deleteTopic_Success() {
-        ExtractableResponse<Response> newTopic = createNewTopic(
-                new TopicCreateRequestWithoutImage(
-                        "준팍의 또간집",
-                        "준팍이 두번 간집 ",
-                        Publicity.PUBLIC,
-                        PermissionType.ALL_MEMBERS,
-                        Collections.emptyList()
-                ),
-                authHeader
-        );
-        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
-
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .header(AUTHORIZATION, authHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/topics/{id}", topicId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @Test
     @DisplayName("Topic 목록을 조회하면 200을 반환한다")
     void findTopics_Success() {
         // when

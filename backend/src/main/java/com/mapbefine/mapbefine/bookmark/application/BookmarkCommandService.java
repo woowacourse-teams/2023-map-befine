@@ -105,9 +105,4 @@ public class BookmarkCommandService {
         throw new BookmarkForbiddenException(FORBIDDEN_TOPIC_DELETE);
     }
 
-    @Deprecated
-    public void deleteAllBookmarks(AuthMember authMember) {
-        bookmarkRepository.deleteAllByMemberId(authMember.getMemberId());
-    }
-
 }

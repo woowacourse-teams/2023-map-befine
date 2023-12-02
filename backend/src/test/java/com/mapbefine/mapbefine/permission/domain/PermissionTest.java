@@ -33,32 +33,4 @@ class PermissionTest {
         assertThat(permission.getMemberId()).isEqualTo(member.getId());
     }
 
-    // TODO: 2023/11/30 간접 참조로 인한 무의미한 테스트 ?
-//    @Test
-//    @DisplayName("MemberTopicPermission 을 생성하면, Topic 과 Member 에 등록이 된다.")
-//    void createPermissionAssociatedWithTopicAndMember() {
-//        // given
-//        Member member = MemberFixture.create(
-//                "member",
-//                "member@naver.com",
-//                Role.ADMIN
-//        );
-//        Topic topic = TopicFixture.createByName("topic", member);
-//
-//        // when
-//        Permission permission = Permission.of(topic.getId(), member.getId());
-//        List<Topic> topicsWithPermission = member.getTopicsWithPermissions();
-//        List<Permission> permissions = topic.getPermissions();
-//
-//        // then
-//        assertThat(topicsWithPermission).hasSize(1);
-//        assertThat(permissions).hasSize(1);
-//        assertThat(topicsWithPermission.get(0)).usingRecursiveComparison()
-//                .ignoringFields("createdAt", "updatedAt")
-//                .isEqualTo(topic);
-//        assertThat(permissions.iterator().next()).usingRecursiveComparison()
-//                .ignoringFields("createdAt", "updatedAt")
-//                .isEqualTo(permission);
-//    }
-
 }

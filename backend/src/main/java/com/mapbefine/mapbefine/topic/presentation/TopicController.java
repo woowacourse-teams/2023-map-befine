@@ -2,7 +2,6 @@ package com.mapbefine.mapbefine.topic.presentation;
 
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
-import com.mapbefine.mapbefine.topic.dto.response.ClusterResponse;
 import com.mapbefine.mapbefine.topic.application.TopicCommandService;
 import com.mapbefine.mapbefine.topic.application.TopicQueryService;
 import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequest;
@@ -10,13 +9,11 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicCreateRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
+import com.mapbefine.mapbefine.topic.dto.response.ClusterResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import java.net.URI;
-import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/topics")
@@ -175,15 +175,6 @@ public class TopicController {
         topicCommandService.updateTopicImage(authMember, topicId, image);
 
         return ResponseEntity.ok().build();
-    }
-
-    @Deprecated(since = "2023.10.06")
-    @LoginRequired
-    @DeleteMapping("/{topicId}")
-    public ResponseEntity<Void> delete(AuthMember member, @PathVariable Long topicId) {
-        topicCommandService.delete(member, topicId);
-
-        return ResponseEntity.noContent().build();
     }
 
 }

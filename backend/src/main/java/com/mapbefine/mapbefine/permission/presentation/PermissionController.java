@@ -60,13 +60,4 @@ public class PermissionController {
         return ResponseEntity.ok(response);
     }
 
-//    @Deprecated(since = "2023.10.06")
-//    @LoginRequired
-//    @GetMapping("/{permissionId}")
-//    public ResponseEntity<PermissionMemberDetailResponse> findPermissionById(@PathVariable Long permissionId) {
-//        PermissionMemberDetailResponse response = permissionQueryService.findPermissionById(permissionId);
-//
-//        return ResponseEntity.ok(response);
-//    }
-
 }

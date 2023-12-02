@@ -147,33 +147,4 @@ class PermissionIntegrationTest extends IntegrationTest {
                 .isEqualTo(List.of(MemberResponse.from(user1), MemberResponse.from(user2)));
     }
 
-    // TODO: 2023/11/30 Test For Deprecated Method
-//    @Test
-//    @DisplayName("Topic 에 권한을 가진 자를 조회한다.")
-//    void findPermissionById() {
-//        // given
-//        Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
-//        Permission permission = Permission.of(topic.getId(), user1.getId());
-//        permission = permissionRepository.save(permission);
-//
-//        // when
-//        ExtractableResponse<Response> response = given().log().all()
-//                .header(AUTHORIZATION, creatorAuthHeader)
-//                .when().get("/permissions/" + permission.getId())
-//                .then().log().all()
-//                .extract();
-//        PermissionMemberDetailResponse actual = response.as(new TypeRef<>() {
-//        });
-//
-//        // then
-//        assertThat(response.statusCode())
-//                .isEqualTo(HttpStatus.OK.value());
-//        assertThat(actual)
-//                .extracting(PermissionMemberDetailResponse::memberDetailResponse)
-//                .usingRecursiveComparison()
-//                .ignoringFieldsOfTypes(LocalDateTime.class)
-//                .isEqualTo(MemberDetailResponse.from(user1));
-//    }
-
-
 }

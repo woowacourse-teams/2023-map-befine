@@ -168,42 +168,4 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
                 .isInstanceOf(BookmarkForbiddenException.class);
     }
 
-    @Test
-    @DisplayName("즐겨찾기 목록에 있는 모든 토픽을 삭제할 수 있다")
-    void deleteAllBookmarks_Success() {
-        //given
-        Member creatorBefore = memberRepository.save(MemberFixture.create(
-                "member",
-                "member@naver.com",
-                Role.USER
-        ));
-        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(creatorBefore);
-        Topic topic2 = TopicFixture.createPrivateAndGroupOnlyTopic(creatorBefore);
-
-        topicRepository.save(topic1);
-        topicRepository.save(topic2);
-
-        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creatorBefore);
-        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic2, creatorBefore);
-
-        bookmarkRepository.save(bookmark1);
-        bookmarkRepository.save(bookmark2);
-
-        testEntityManager.flush();
-        testEntityManager.clear();
-
-        //when
-        assertThat(creatorBefore.getBookmarks()).hasSize(2);
-
-        AuthMember user = MemberFixture.createUser(creatorBefore, Collections.emptyList());
-        bookmarkCommandService.deleteAllBookmarks(user);
-        testEntityManager.flush();
-        testEntityManager.clear();
-
-        //then
-        assertThat(bookmarkRepository.findById(creatorBefore.getId())).isEmpty();
-        Member creatorAfter = memberRepository.findById(creatorBefore.getId()).get();
-        assertThat(creatorAfter.getBookmarks()).isEmpty();
-    }
-
 }

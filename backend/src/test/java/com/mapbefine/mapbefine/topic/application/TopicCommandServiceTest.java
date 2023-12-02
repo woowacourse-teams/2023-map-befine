@@ -379,43 +379,6 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
     }
 
     @Test
-    @DisplayName("Admin은 토픽을 삭제할 수 있다.")
-    void delete_Success() {
-        //given
-        Member admin = MemberFixture.create(
-                "topicOwner",
-                "topicOwner@naver.com",
-                Role.ADMIN
-        );
-        memberRepository.save(admin);
-
-        Topic topic = TopicFixture.createPublicAndAllMembersTopic(admin);
-        topicRepository.save(topic);
-
-        //when
-        AuthMember adminAuthMember = new Admin(admin.getId());
-
-        assertThat(topic.isDeleted()).isFalse();
-
-        topicCommandService.delete(adminAuthMember, topic.getId());
-
-        //then
-        assertThat(topicRepository.existsById(topic.getId())).isFalse();
-    }
-
-    @Test
-    @DisplayName("Admin이 아닌 경우, 토픽을 삭제할 수 없다.")
-    void delete_Fail() {
-        //given
-        Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
-        topicRepository.save(topic);
-
-        //when then
-        assertThatThrownBy(() -> topicCommandService.delete(user, topic.getId()))
-                .isInstanceOf(TopicForbiddenException.class);
-    }
-
-    @Test
     @DisplayName("Guest는 토픽의 이미지를 변경할 수 없다.")
     void updateTopicImage_FailByGuest() {
         // given

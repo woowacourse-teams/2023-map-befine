@@ -1,12 +1,5 @@
 package com.mapbefine.mapbefine.topic.application;
 
-import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
-import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
-import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_CREATE;
-import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_DELETE;
-import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_UPDATE;
-import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.ILLEGAL_TOPIC_ID;
-
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.image.application.ImageService;
 import com.mapbefine.mapbefine.member.domain.Member;
@@ -22,13 +15,18 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequest;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.FORBIDDEN_PIN_CREATE_OR_UPDATE;
+import static com.mapbefine.mapbefine.pin.exception.PinErrorCode.ILLEGAL_PIN_ID;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.*;
 
 @Transactional
 @Service
@@ -229,24 +227,6 @@ public class TopicCommandService {
             return;
         }
         throw new TopicForbiddenException(FORBIDDEN_TOPIC_UPDATE);
-    }
-
-    @Deprecated(since = "2023.10.06")
-    public void delete(AuthMember member, Long topicId) {
-        Topic topic = findTopic(topicId);
-        validateDeleteAuth(member, topic);
-
-        /// TODO: 2023/10/06 연관관계 다 삭제해야 하는데, 관리자 API와 중복 로직이며 관리자 API에서만 사용됨
-        pinRepository.deleteAllByTopicId(topicId);
-        topicRepository.deleteById(topicId);
-    }
-
-    @Deprecated(since = "2023.10.06")
-    private void validateDeleteAuth(AuthMember member, Topic topic) {
-        if (member.canDelete(topic)) {
-            return;
-        }
-        throw new TopicForbiddenException(FORBIDDEN_TOPIC_DELETE);
     }
 
     public void updateTopicImage(AuthMember member, Long topicId, MultipartFile image) {

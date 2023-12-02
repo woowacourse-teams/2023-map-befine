@@ -59,11 +59,4 @@ public class PermissionQueryService {
                 .orElseThrow(() -> new TopicNotFoundException(TopicErrorCode.TOPIC_NOT_FOUND, topicId));
     }
 
-//    @Deprecated(since = "2023.10.06")
-//    public PermissionMemberDetailResponse findPermissionById(Long permissionId) {
-//        Permission permission = permissionRepository.findById(permissionId)
-//                .orElseThrow(() -> new PermissionNotFoundException(PERMISSION_NOT_FOUND, permissionId));
-//
-//        return PermissionMemberDetailResponse.from(permission);
-//    }
 }

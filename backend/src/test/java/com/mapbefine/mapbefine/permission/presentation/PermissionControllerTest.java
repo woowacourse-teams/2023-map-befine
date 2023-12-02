@@ -67,28 +67,4 @@ class PermissionControllerTest extends RestDocsIntegration {
                 .andDo(restDocs.document());
     }
 
-    // TODO: 2023/11/30 Test For Deprecated Method
-//    @Test
-//    @DisplayName("권한이 있는 자들 모두 조회")
-//    void findPermissionById() throws Exception {
-//        PermissionMemberDetailResponse permissionMemberDetailResponse = new PermissionMemberDetailResponse(
-//                1L,
-//                LocalDateTime.now(),
-//                new MemberDetailResponse(
-//                        1L,
-//                        "member",
-//                        "member@naver.com",
-//                        "https://map-befine-official.github.io/favicon.png",
-//                        LocalDateTime.now()
-//                )
-//        );
-//
-//        given(permissionQueryService.findPermissionById(any())).willReturn(permissionMemberDetailResponse);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/permissions/1")
-//                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andDo(restDocs.document());
-//    }
-
 }
