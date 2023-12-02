@@ -1,8 +1,8 @@
 package com.mapbefine.mapbefine.permission.domain;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,11 +24,11 @@ public class Permission extends BaseTimeEntity {
         return new Permission(PermissionId.of(topicId, memberId));
     }
 
-    public Long getTopicId(){
+    public Long getTopicId() {
         return id.getTopicId();
     }
 
-    public Long getMemberId(){
+    public Long getMemberId() {
         return id.getMemberId();
     }
 
