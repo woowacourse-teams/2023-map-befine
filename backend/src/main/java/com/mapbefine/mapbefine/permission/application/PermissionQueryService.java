@@ -47,7 +47,7 @@ public class PermissionQueryService {
                                 permission.getId(),
                                 MemberResponse.of(
                                         permission.getMemberId(),
-                                        memberRepository.findMemberInfoNicknameById(permission.getMemberId())
+                                        memberRepository.findNicknameById(permission.getMemberId())
                                 )
                         )
                 )

@@ -16,6 +16,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findAllByMemberInfoRole(Role role);
 
     @Query(value = "SELECT m.memberInfo.nickName FROM Member m WHERE m.id = :id")
-    String findMemberInfoNicknameById(@Param("id") Long id);
+    String findNicknameById(@Param("id") Long id);
 
 }
