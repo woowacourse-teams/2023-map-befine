@@ -1,10 +1,5 @@
 package com.mapbefine.mapbefine.topic.application;
 
-import static com.mapbefine.mapbefine.image.FileFixture.createFile;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
@@ -32,14 +27,20 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicBadRequestException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import static com.mapbefine.mapbefine.image.FileFixture.createFile;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ServiceTest
 class TopicCommandServiceTest extends TestDatabaseContainer {
@@ -70,7 +71,7 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
         member = memberRepository.save(MemberFixture.create("member", "member@naver.com", Role.USER));
         location = locationRepository.save(LocationFixture.create());
 
-        user = MemberFixture.createUser(member,Collections.emptyList());
+        user = MemberFixture.createUserWithoutTopics(member);
         guest = new Guest();
     }
 
@@ -335,7 +336,7 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
         assertThat(topic.getTopicInfo().getName()).isEqualTo("토픽 회원만 읽을 수 있는 토픽");
         assertThat(topic.getTopicInfo().getDescription()).isEqualTo("토픽 회원만 읽을 수 있습니다.");
 
-        AuthMember user = MemberFixture.createUser(member,Collections.emptyList());
+        AuthMember user = MemberFixture.createUserWithoutTopics(member);
         TopicUpdateRequest request = new TopicUpdateRequest(
                 "수정된 이름",
                 "수정된 설명",
@@ -397,7 +398,7 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
         Member otherMember = MemberFixture.create("토픽을 만든자가 아님", "member@naver.com", Role.USER);
-        AuthMember otherAuthMember = MemberFixture.createUser(otherMember,Collections.emptyList());
+        AuthMember otherAuthMember = MemberFixture.createUserWithoutTopics(otherMember);
 
         // when then
         assertThatThrownBy(() -> topicCommandService.updateTopicImage(otherAuthMember, topic.getId(), createFile()))
@@ -411,7 +412,7 @@ class TopicCommandServiceTest extends TestDatabaseContainer {
         String originalImageUrl = "https://originalImageUrl";
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(originalImageUrl, member);
         topicRepository.save(topic);
-        AuthMember authMember = MemberFixture.createUser(member,Collections.emptyList());
+        AuthMember authMember = MemberFixture.createUserWithoutTopics(member);
 
         // when
         topicCommandService.updateTopicImage(authMember, topic.getId(), createFile());

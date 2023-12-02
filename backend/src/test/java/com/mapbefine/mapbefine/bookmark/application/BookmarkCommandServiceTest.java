@@ -18,8 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import java.util.Collections;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -63,7 +61,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         );
         memberRepository.save(otherMember);
         Long bookmarkId = bookmarkCommandService.addTopicInBookmark(
-                MemberFixture.createUser(otherMember, Collections.emptyList()),
+                MemberFixture.createUserWithoutTopics(otherMember),
                 topic.getId()
         );
 
@@ -98,7 +96,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
 
         //then
         assertThatThrownBy(() -> bookmarkCommandService.addTopicInBookmark(
-                MemberFixture.createUser(otherMember, Collections.emptyList()),
+                MemberFixture.createUserWithoutTopics(otherMember),
                 topic.getId()
         )).isInstanceOf(BookmarkForbiddenException.class);
     }
@@ -128,7 +126,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when
-        AuthMember user = MemberFixture.createUser(otherMember, Collections.emptyList());
+        AuthMember user = MemberFixture.createUserWithoutTopics(otherMember);
         assertThat(bookmarkRepository.existsById(bookmark.getId())).isTrue();
 
         bookmarkCommandService.deleteTopicInBookmark(user, topic.getId());
@@ -162,7 +160,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         memberRepository.save(otherMember);
 
         //when then
-        AuthMember otherUser = MemberFixture.createUser(otherMember, Collections.emptyList());
+        AuthMember otherUser = MemberFixture.createUserWithoutTopics(otherMember);
 
         assertThatThrownBy(() -> bookmarkCommandService.deleteTopicInBookmark(otherUser, topic.getId()))
                 .isInstanceOf(BookmarkForbiddenException.class);

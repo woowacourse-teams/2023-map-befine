@@ -251,7 +251,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
         PinCommentResponse expected = PinCommentResponse.of(savedPinComment, true);
-        AuthMember creatorUser = MemberFixture.createUser(user1, Collections.emptyList());
+        AuthMember creatorUser = MemberFixture.createUserWithoutTopics(user1);
 
         // when
         List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(creatorUser, savedPin.getId());
@@ -269,7 +269,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Topic savedTopic = topicRepository.save(topic);
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
-        AuthMember nonCreatorUser = MemberFixture.createUser(user2, Collections.emptyList());
+        AuthMember nonCreatorUser = MemberFixture.createUserWithoutTopics(user2);
 
         // when then
         assertThatThrownBy(() -> pinQueryService.findAllPinCommentsByPinId(nonCreatorUser, savedPin.getId()))
@@ -289,7 +289,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN)
         );
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator, Collections.emptyList());
+        AuthMember nonCreatorAdmin = MemberFixture.createUserWithoutTopics(nonCreator);
 
         // when
         List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(nonCreatorAdmin, savedPin.getId());

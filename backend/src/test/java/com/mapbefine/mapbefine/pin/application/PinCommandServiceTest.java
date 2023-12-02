@@ -397,7 +397,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         PinCommentCreateRequest request = new PinCommentCreateRequest(
                 savedPin.getId(), null, "댓글"
         );
-        AuthMember creatorUser = MemberFixture.createUser(user, Collections.emptyList());
+        AuthMember creatorUser = MemberFixture.createUserWithoutTopics(user);
 
         // when
         Long pinCommentId = pinCommandService.savePinComment(creatorUser, request);
@@ -426,7 +426,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
         );
-        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator, Collections.emptyList());
+        AuthMember nonCreatorUser = MemberFixture.createUserWithoutTopics(nonCreator);
 
         // when then
         assertThatThrownBy(() -> pinCommandService.savePinComment(nonCreatorUser, request))
@@ -445,7 +445,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         PinCommentCreateRequest request = new PinCommentCreateRequest(
                 savedPin.getId(), childPinComment.getId(), "대대댓글"
         );
-        AuthMember creatorUser = MemberFixture.createUser(user, Collections.emptyList());
+        AuthMember creatorUser = MemberFixture.createUserWithoutTopics(user);
 
         // when then
         assertThatThrownBy(() -> pinCommandService.savePinComment(creatorUser, request))
@@ -466,7 +466,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("admin", "admin@naver.com", Role.ADMIN)
         );
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator, Collections.emptyList());
+        AuthMember nonCreatorAdmin = MemberFixture.createUserWithoutTopics(nonCreator);
 
         // when
         Long pinCommentId = pinCommandService.savePinComment(nonCreatorAdmin, request);
@@ -505,7 +505,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         PinCommentUpdateRequest request = new PinCommentUpdateRequest(
                 "댓글 수정!"
         );
-        AuthMember creatorUser = MemberFixture.createUser(user, Collections.emptyList());
+        AuthMember creatorUser = MemberFixture.createUserWithoutTopics(user);
 
         // when
         pinCommandService.updatePinComment(creatorUser, pinComment.getId(), request);
@@ -532,7 +532,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
         );
-        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator, Collections.emptyList());
+        AuthMember nonCreatorUser = MemberFixture.createUserWithoutTopics(nonCreator);
 
         // when then
         assertThatThrownBy(() -> pinCommandService.updatePinComment(nonCreatorUser, pinComment.getId(), request))
@@ -575,7 +575,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN)
         );
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator, Collections.emptyList());
+        AuthMember nonCreatorAdmin = MemberFixture.createUserWithoutTopics(nonCreator);
 
         // when
         pinCommandService.updatePinComment(nonCreatorAdmin, pinComment.getId(), request);
@@ -608,7 +608,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         // given
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
-        AuthMember creatorUser = MemberFixture.createUser(user, Collections.emptyList());
+        AuthMember creatorUser = MemberFixture.createUserWithoutTopics(user);
 
         // when
         pinCommandService.deletePinComment(creatorUser, pinComment.getId());
@@ -626,7 +626,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.USER)
         );
-        AuthMember nonCreatorUser = MemberFixture.createUser(nonCreator, Collections.emptyList());
+        AuthMember nonCreatorUser = MemberFixture.createUserWithoutTopics(nonCreator);
 
         // when then
         assertThatThrownBy(() -> pinCommandService.deletePinComment(nonCreatorUser, pinComment.getId()))
@@ -655,7 +655,7 @@ class PinCommandServiceTest extends TestDatabaseContainer {
         Pin savedPin = pinRepository.save(PinFixture.create(location, topic, user));
         PinComment pinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user));
         Member nonCreator = MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN);
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator, Collections.emptyList());
+        AuthMember nonCreatorAdmin = MemberFixture.createUserWithoutTopics(nonCreator);
 
         // when
         pinCommandService.deletePinComment(nonCreatorAdmin, pinComment.getId());

@@ -10,6 +10,7 @@ import com.mapbefine.mapbefine.member.domain.Status;
 import com.mapbefine.mapbefine.oauth.domain.OauthServerType;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MemberFixture {
@@ -45,6 +46,18 @@ public class MemberFixture {
                 member.getId(),
                 member.getCreatedTopics().stream().map(Topic::getId).toList(),
                 permittedTopicIds
+        );
+    }
+
+    public static AuthMember createUserWithoutTopics(Member member) {
+        if (member.isAdmin()) {
+            return new Admin(member.getId());
+        }
+
+        return new User(
+                member.getId(),
+                member.getCreatedTopics().stream().map(Topic::getId).toList(),
+                Collections.emptyList()
         );
     }
 
