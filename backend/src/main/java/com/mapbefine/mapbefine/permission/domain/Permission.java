@@ -1,10 +1,7 @@
 package com.mapbefine.mapbefine.permission.domain;
 
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,24 +13,23 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 public class Permission extends BaseTimeEntity {
 
-    // TODO 매핑 테이블인데 Id를 가져야 할까?
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private PermissionId id;
 
-    @NotNull
-    private Long topicId;
-
-    @NotNull
-    private Long memberId;
-
-    private Permission(Long topicId, Long memberId) {
-        this.topicId = topicId;
-        this.memberId = memberId;
+    private Permission(PermissionId permissionId) {
+        this.id = permissionId;
     }
 
     public static Permission of(Long topicId, Long memberId) {
-        return new Permission(topicId, memberId);
+        return new Permission(PermissionId.of(topicId, memberId));
+    }
+
+    public Long getTopicId(){
+        return id.getTopicId();
+    }
+
+    public Long getMemberId(){
+        return id.getMemberId();
     }
 
 }

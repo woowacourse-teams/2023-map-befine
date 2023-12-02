@@ -5,7 +5,6 @@ import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.PermittedMemberResponse;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -38,17 +37,14 @@ public class PermissionQueryService {
     public TopicAccessDetailResponse findTopicAccessDetailById(Long topicId) {
         Publicity publicity = findTopicPublicityById(topicId);
         /// TODO: 2023/09/15 이럴거면 topic.getPermissions 로 하는 게 나을 수도 있나? TopicController 에서 하는 게 더 자연스러운 것 같기도..
-        List<Permission> permissions = permissionRepository.findAllByTopicId(topicId);
+        List<Permission> permissions = permissionRepository.findAllByIdTopicId(topicId);
 
         // TODO: 2023/11/30 Mapper로 빼는것도 고려
-        List<PermittedMemberResponse> permittedMembers = permissions
+        List<MemberResponse> permittedMembers = permissions
                 .stream()
-                .map(permission -> PermittedMemberResponse.of(
-                                permission.getId(),
-                                MemberResponse.of(
-                                        permission.getMemberId(),
-                                        memberRepository.findNicknameById(permission.getMemberId())
-                                )
+                .map(permission -> (MemberResponse.of(
+                                permission.getMemberId(),
+                                memberRepository.findNicknameById(permission.getMemberId()))
                         )
                 )
                 .toList();

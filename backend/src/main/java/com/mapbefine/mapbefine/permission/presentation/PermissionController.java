@@ -34,9 +34,13 @@ public class PermissionController {
     }
 
     @LoginRequired
-    @DeleteMapping("/{permissionId}")
-    public ResponseEntity<Void> deleteMemberTopicPermission(AuthMember authMember, @PathVariable Long permissionId) {
-        permissionCommandService.deleteMemberTopicPermission(authMember, permissionId);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMemberTopicPermission(
+            AuthMember authMember,
+            @RequestParam Long memberId,
+            @RequestParam Long topicId
+    ) {
+        permissionCommandService.deleteMemberTopicPermission(authMember, memberId, topicId);
 
         return ResponseEntity.noContent().build();
     }

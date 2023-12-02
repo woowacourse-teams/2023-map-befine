@@ -8,10 +8,10 @@ import com.mapbefine.mapbefine.member.domain.OauthId;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
 import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionId;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
-import com.mapbefine.mapbefine.permission.dto.response.PermittedMemberResponse;
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
@@ -104,12 +104,12 @@ class PermissionIntegrationTest extends IntegrationTest {
         // given
         Topic topic = topicRepository.save(TopicFixture.createByName("topicName", creator));
         Permission permission = Permission.of(topic.getId(), user1.getId());
-        Long savedId = permissionRepository.save(permission).getId();
+        PermissionId savedId = permissionRepository.save(permission).getId();
 
         // when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
-                .when().delete("/permissions/" + savedId)
+                .when().delete("/permissions?memberId=" + savedId.getMemberId() + "&topicId=" + savedId.getTopicId())
                 .then().log().all()
                 .extract();
 
@@ -143,7 +143,6 @@ class PermissionIntegrationTest extends IntegrationTest {
         assertThat(actual.publicity()).isEqualTo(topic.getPublicity());
         assertThat(actual.permittedMembers())
                 .hasSize(2)
-                .extracting(PermittedMemberResponse::memberResponse)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(MemberResponse.from(user1), MemberResponse.from(user2)));
     }
