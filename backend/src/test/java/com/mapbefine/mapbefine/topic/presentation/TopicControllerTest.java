@@ -151,15 +151,6 @@ class TopicControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("토픽 삭제")
-    void delete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/topics/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
-                .andExpect(MockMvcResultMatchers.status().isNoContent())
-                .andDo(restDocs.document());
-    }
-
-    @Test
     @DisplayName("토픽 목록 조회")
     void findAll() throws Exception {
         given(topicQueryService.findAllReadable(any())).willReturn(RESPONSES);

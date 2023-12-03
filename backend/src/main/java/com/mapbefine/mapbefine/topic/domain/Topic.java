@@ -1,11 +1,8 @@
 package com.mapbefine.mapbefine.topic.domain;
 
-import static lombok.AccessLevel.PROTECTED;
-
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,13 +16,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -46,9 +46,6 @@ public class Topic extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member creator;
-
-    @OneToMany(mappedBy = "topic")
-    private List<Permission> permissions = new ArrayList<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
@@ -134,10 +131,6 @@ public class Topic extends BaseTimeEntity {
     public void addBookmark(Bookmark bookmark) {
         bookmarks.add(bookmark);
         bookmarkCount++;
-    }
-
-    public void addMemberTopicPermission(Permission permission) {
-        permissions.add(permission);
     }
 
     public int countBookmarks() {

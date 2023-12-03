@@ -12,22 +12,22 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
-    @EntityGraph(attributePaths = {"creator", "permissions"})
+    @EntityGraph(attributePaths = {"creator"})
     Optional<Topic> findById(Long id);
 
-    @EntityGraph(attributePaths = {"creator", "permissions"})
+    @EntityGraph(attributePaths = {"creator"})
     List<Topic> findAll();
 
-    @EntityGraph(attributePaths = {"creator", "permissions"})
+    @EntityGraph(attributePaths = {"creator"})
     List<Topic> findByIdIn(List<Long> ids);
 
-    @EntityGraph(attributePaths = {"creator", "permissions"})
+    @EntityGraph(attributePaths = {"creator"})
     List<Topic> findAllByOrderByLastPinUpdatedAtDesc();
 
-    @EntityGraph(attributePaths = {"creator", "permissions"})
+    @EntityGraph(attributePaths = {"creator"})
     List<Topic> findAllByCreatorId(Long creatorId);
 
-    @EntityGraph(attributePaths = {"creator", "permissions"})
+    @EntityGraph(attributePaths = {"creator"})
     List<Topic> findTopicsByBookmarksMemberId(Long memberId);
 
     @Modifying(clearAutomatically = true)

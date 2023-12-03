@@ -1,12 +1,11 @@
 package com.mapbefine.mapbefine.member.domain;
 
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+import java.util.List;
+import java.util.Optional;
 
-    Optional<Member> findById(Long id);
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByOauthId(OauthId oauthId);
 

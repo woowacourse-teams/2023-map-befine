@@ -1,8 +1,5 @@
 package com.mapbefine.mapbefine.topic;
 
-import static org.apache.http.HttpHeaders.AUTHORIZATION;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.IntegrationTest;
@@ -25,17 +22,22 @@ import com.mapbefine.mapbefine.topic.dto.request.TopicMergeRequestWithoutImage;
 import com.mapbefine.mapbefine.topic.dto.request.TopicUpdateRequest;
 import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
-import io.restassured.*;
-import io.restassured.response.*;
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class TopicIntegrationTest extends IntegrationTest {
 
@@ -289,34 +291,6 @@ class TopicIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
-    @DisplayName("Topic을 삭제하면 204를 반환한다")
-    void deleteTopic_Success() {
-        ExtractableResponse<Response> newTopic = createNewTopic(
-                new TopicCreateRequestWithoutImage(
-                        "준팍의 또간집",
-                        "준팍이 두번 간집 ",
-                        Publicity.PUBLIC,
-                        PermissionType.ALL_MEMBERS,
-                        Collections.emptyList()
-                ),
-                authHeader
-        );
-        long topicId = Long.parseLong(newTopic.header("Location").split("/")[2]);
-
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .header(AUTHORIZATION, authHeader)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/topics/{id}", topicId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test

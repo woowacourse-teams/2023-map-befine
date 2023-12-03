@@ -1,9 +1,5 @@
 package com.mapbefine.mapbefine.permission.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
@@ -15,6 +11,7 @@ import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionId;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionBadRequestException;
@@ -22,11 +19,15 @@ import com.mapbefine.mapbefine.permission.exception.PermissionException.Permissi
 import com.mapbefine.mapbefine.topic.TopicFixture;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @ServiceTest
 class PermissionCommandServiceTest extends TestDatabaseContainer {
@@ -63,10 +64,8 @@ class PermissionCommandServiceTest extends TestDatabaseContainer {
         permissionCommandService.addPermission(authAdmin, request);
 
         // then
-        Member memberWithPermission = memberRepository.findById(permissionTargetMemberId)
-                .orElseThrow(NoSuchElementException::new);
-        assertThat(memberWithPermission.getTopicsWithPermissions())
-                .contains(topic);
+        List<Long> permittedTopicIds = permissionRepository.findAllTopicIdsByMemberId(permissionTargetMemberId);
+        assertThat(permittedTopicIds).contains(topic.getId());
     }
 
     @Test
@@ -93,10 +92,8 @@ class PermissionCommandServiceTest extends TestDatabaseContainer {
         permissionCommandService.addPermission(authCreator, request);
 
         // then
-        Member memberWithPermission = memberRepository.findById(permissionTargetMemberId)
-                .orElseThrow(NoSuchElementException::new);
-        assertThat(memberWithPermission.getTopicsWithPermissions())
-                .contains(topic);
+        List<Long> permittedTopicIds = permissionRepository.findAllTopicIdsByMemberId(permissionTargetMemberId);
+        assertThat(permittedTopicIds).contains(topic.getId());
     }
 
     @Test
@@ -173,7 +170,7 @@ class PermissionCommandServiceTest extends TestDatabaseContainer {
         permissionCommandService.addPermission(authCreator, request);
 
         // then
-        assertThat(permissionRepository.existsByTopicIdAndMemberId(topicId, creatorId))
+        assertThat(permissionRepository.existsByIdTopicIdAndIdMemberId(topicId, creatorId))
                 .isFalse();
     }
 
@@ -197,8 +194,7 @@ class PermissionCommandServiceTest extends TestDatabaseContainer {
         );
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", creator));
         Long topicId = topic.getId();
-        Permission permission =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Permission permission = Permission.of(topic.getId(), member.getId());
         permissionRepository.save(permission);
 
         // when
@@ -225,16 +221,15 @@ class PermissionCommandServiceTest extends TestDatabaseContainer {
         Member member = memberRepository.save(
                 MemberFixture.create("members", "members@naver.com", Role.USER));
         Topic topic = topicRepository.save(TopicFixture.createByName("topic", admin));
-        Permission permission =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
-        Long savedId = permissionRepository.save(permission).getId();
+        Permission permission = Permission.of(topic.getId(), member.getId());
+        PermissionId permissionId = permissionRepository.save(permission).getId();
 
         // when
         AuthMember authAdmin = new Admin(admin.getId());
-        permissionCommandService.deleteMemberTopicPermission(authAdmin, savedId);
+        permissionCommandService.deleteMemberTopicPermission(authAdmin, permissionId.getMemberId(), permissionId.getTopicId());
 
         // then
-        assertThat(permissionRepository.existsById(savedId)).isFalse();
+        assertThat(permissionRepository.existsById(permissionId)).isFalse();
     }
 
     @Test
@@ -253,13 +248,12 @@ class PermissionCommandServiceTest extends TestDatabaseContainer {
         );
 
         // when
-        Permission permission =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
-        Long savedId = permissionRepository.save(permission).getId();
-        permissionCommandService.deleteMemberTopicPermission(authCreator, savedId);
+        Permission permission = Permission.of(topic.getId(), member.getId());
+        PermissionId permissionId = permissionRepository.save(permission).getId();
+        permissionCommandService.deleteMemberTopicPermission(authCreator, permissionId.getMemberId(), permissionId.getTopicId());
 
         // then
-        assertThat(permissionRepository.existsById(savedId)).isFalse();
+        assertThat(permissionRepository.existsById(permissionId)).isFalse();
     }
 
     @Test
@@ -280,12 +274,11 @@ class PermissionCommandServiceTest extends TestDatabaseContainer {
         );
 
         // when
-        Permission permission =
-                Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
-        Long savedId = permissionRepository.save(permission).getId();
+        Permission permission = Permission.of(topic.getId(), member.getId());
+        PermissionId permissionId = permissionRepository.save(permission).getId();
 
         // then
-        assertThatThrownBy(() -> permissionCommandService.deleteMemberTopicPermission(authNonCreator, savedId))
+        assertThatThrownBy(() -> permissionCommandService.deleteMemberTopicPermission(authNonCreator, permissionId.getMemberId(), permissionId.getTopicId()))
                 .isInstanceOf(PermissionForbiddenException.class);
     }
 
@@ -307,15 +300,12 @@ class PermissionCommandServiceTest extends TestDatabaseContainer {
         );
 
         // when then
-        assertThatThrownBy(() -> permissionCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE))
+        assertThatThrownBy(() -> permissionCommandService.deleteMemberTopicPermission(authCreator, Long.MAX_VALUE, Long.MAX_VALUE))
                 .isInstanceOf(PermissionBadRequestException.class);
     }
 
     private List<Long> getTopicsWithPermission(Member member) {
-        return member.getTopicsWithPermissions()
-                .stream()
-                .map(Topic::getId)
-                .toList();
+        return permissionRepository.findAllTopicIdsByMemberId(member.getId());
     }
 
     private List<Long> getCreatedTopics(Member member) {

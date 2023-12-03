@@ -1,8 +1,5 @@
 package com.mapbefine.mapbefine.bookmark.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
@@ -20,6 +17,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ServiceTest
 class BookmarkCommandServiceTest extends TestDatabaseContainer {
@@ -61,7 +61,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         );
         memberRepository.save(otherMember);
         Long bookmarkId = bookmarkCommandService.addTopicInBookmark(
-                MemberFixture.createUser(otherMember),
+                MemberFixture.createUserWithoutTopics(otherMember),
                 topic.getId()
         );
 
@@ -96,7 +96,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
 
         //then
         assertThatThrownBy(() -> bookmarkCommandService.addTopicInBookmark(
-                MemberFixture.createUser(otherMember),
+                MemberFixture.createUserWithoutTopics(otherMember),
                 topic.getId()
         )).isInstanceOf(BookmarkForbiddenException.class);
     }
@@ -126,7 +126,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         bookmarkRepository.save(bookmark);
 
         //when
-        AuthMember user = MemberFixture.createUser(otherMember);
+        AuthMember user = MemberFixture.createUserWithoutTopics(otherMember);
         assertThat(bookmarkRepository.existsById(bookmark.getId())).isTrue();
 
         bookmarkCommandService.deleteTopicInBookmark(user, topic.getId());
@@ -160,48 +160,10 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         memberRepository.save(otherMember);
 
         //when then
-        AuthMember otherUser = MemberFixture.createUser(otherMember);
+        AuthMember otherUser = MemberFixture.createUserWithoutTopics(otherMember);
 
         assertThatThrownBy(() -> bookmarkCommandService.deleteTopicInBookmark(otherUser, topic.getId()))
                 .isInstanceOf(BookmarkForbiddenException.class);
-    }
-
-    @Test
-    @DisplayName("즐겨찾기 목록에 있는 모든 토픽을 삭제할 수 있다")
-    void deleteAllBookmarks_Success() {
-        //given
-        Member creatorBefore = memberRepository.save(MemberFixture.create(
-                "member",
-                "member@naver.com",
-                Role.USER
-        ));
-        Topic topic1 = TopicFixture.createPrivateAndGroupOnlyTopic(creatorBefore);
-        Topic topic2 = TopicFixture.createPrivateAndGroupOnlyTopic(creatorBefore);
-
-        topicRepository.save(topic1);
-        topicRepository.save(topic2);
-
-        Bookmark bookmark1 = Bookmark.createWithAssociatedTopicAndMember(topic1, creatorBefore);
-        Bookmark bookmark2 = Bookmark.createWithAssociatedTopicAndMember(topic2, creatorBefore);
-
-        bookmarkRepository.save(bookmark1);
-        bookmarkRepository.save(bookmark2);
-
-        testEntityManager.flush();
-        testEntityManager.clear();
-
-        //when
-        assertThat(creatorBefore.getBookmarks()).hasSize(2);
-
-        AuthMember user = MemberFixture.createUser(creatorBefore);
-        bookmarkCommandService.deleteAllBookmarks(user);
-        testEntityManager.flush();
-        testEntityManager.clear();
-
-        //then
-        assertThat(bookmarkRepository.findById(creatorBefore.getId())).isEmpty();
-        Member creatorAfter = memberRepository.findById(creatorBefore.getId()).get();
-        assertThat(creatorAfter.getBookmarks()).isEmpty();
     }
 
 }

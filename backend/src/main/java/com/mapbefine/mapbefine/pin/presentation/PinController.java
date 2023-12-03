@@ -68,15 +68,6 @@ public class PinController {
                 .build();
     }
 
-    @Deprecated(since = "2023.10.10 (이미지 삭제 로직 불완전, 사용되지 않는 API)")
-    @LoginRequired
-    @DeleteMapping("/{pinId}")
-    public ResponseEntity<Void> delete(AuthMember member, @PathVariable Long pinId) {
-        pinCommandService.removeById(member, pinId);
-
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/{pinId}")
     public ResponseEntity<PinDetailResponse> findById(AuthMember member, @PathVariable Long pinId) {
         PinDetailResponse response = pinQueryService.findDetailById(member, pinId);

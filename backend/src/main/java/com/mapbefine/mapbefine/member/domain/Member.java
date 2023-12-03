@@ -1,12 +1,8 @@
 package com.mapbefine.mapbefine.member.domain;
 
-import static java.util.UUID.randomUUID;
-import static lombok.AccessLevel.PROTECTED;
-
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import com.mapbefine.mapbefine.permission.domain.Permission;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import jakarta.persistence.Embedded;
@@ -15,10 +11,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.UUID.randomUUID;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -44,9 +44,6 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "creator")
     private List<Pin> createdPins = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Permission> topicsWithPermissions = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private List<Bookmark> bookmarks = new ArrayList<>();
@@ -122,10 +119,6 @@ public class Member extends BaseTimeEntity {
         createdPins.add(pin);
     }
 
-    public void addPermission(Permission permission) {
-        topicsWithPermissions.add(permission);
-    }
-
     public void addBookmark(Bookmark bookmark) {
         bookmarks.add(bookmark);
     }
@@ -140,12 +133,6 @@ public class Member extends BaseTimeEntity {
 
     public boolean isUser() {
         return memberInfo.getRole() == Role.USER;
-    }
-
-    public List<Topic> getTopicsWithPermissions() {
-        return topicsWithPermissions.stream()
-                .map(Permission::getTopic)
-                .toList();
     }
 
     public boolean isNormalStatus() {

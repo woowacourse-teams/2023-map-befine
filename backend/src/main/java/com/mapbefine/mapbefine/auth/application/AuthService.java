@@ -1,27 +1,31 @@
 package com.mapbefine.mapbefine.auth.application;
 
-import static com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
-
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Admin;
 import com.mapbefine.mapbefine.auth.domain.member.User;
 import com.mapbefine.mapbefine.auth.exception.AuthErrorCode;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.topic.domain.Topic;
-import java.util.List;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+
+import static com.mapbefine.mapbefine.auth.exception.AuthException.AuthUnauthorizedException;
 
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final PermissionRepository permissionRepository;
 
-    public AuthService(MemberRepository memberRepository) {
+    public AuthService(MemberRepository memberRepository, PermissionRepository permissionRepository) {
         this.memberRepository = memberRepository;
+        this.permissionRepository = permissionRepository;
     }
 
     public void validateMember(Long memberId) {
@@ -52,10 +56,7 @@ public class AuthService {
     }
 
     private List<Long> getTopicsWithPermission(Member member) {
-        return member.getTopicsWithPermissions()
-                .stream()
-                .map(Topic::getId)
-                .toList();
+        return permissionRepository.findAllTopicIdsByMemberId(member.getId());
     }
 
     private List<Long> getCreatedTopics(Member member) {

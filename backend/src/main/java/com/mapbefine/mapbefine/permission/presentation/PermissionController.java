@@ -5,7 +5,6 @@ import com.mapbefine.mapbefine.common.interceptor.LoginRequired;
 import com.mapbefine.mapbefine.permission.application.PermissionCommandService;
 import com.mapbefine.mapbefine.permission.application.PermissionQueryService;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
-import com.mapbefine.mapbefine.permission.dto.response.PermissionMemberDetailResponse;
 import com.mapbefine.mapbefine.permission.dto.response.TopicAccessDetailResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,9 +41,13 @@ public class PermissionController {
     }
 
     @LoginRequired
-    @DeleteMapping("/{permissionId}")
-    public ResponseEntity<Void> deleteMemberTopicPermission(AuthMember authMember, @PathVariable Long permissionId) {
-        permissionCommandService.deleteMemberTopicPermission(authMember, permissionId);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMemberTopicPermission(
+            AuthMember authMember,
+            @RequestParam Long memberId,
+            @RequestParam Long topicId
+    ) {
+        permissionCommandService.deleteMemberTopicPermission(authMember, memberId, topicId);
 
         return ResponseEntity.noContent().build();
     }
@@ -52,15 +56,6 @@ public class PermissionController {
     @GetMapping("/topics/{topicId}")
     public ResponseEntity<TopicAccessDetailResponse> findTopicAccessDetailByTopicId(@PathVariable Long topicId) {
         TopicAccessDetailResponse response = permissionQueryService.findTopicAccessDetailById(topicId);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @Deprecated(since = "2023.10.06")
-    @LoginRequired
-    @GetMapping("/{permissionId}")
-    public ResponseEntity<PermissionMemberDetailResponse> findPermissionById(@PathVariable Long permissionId) {
-        PermissionMemberDetailResponse response = permissionQueryService.findPermissionById(permissionId);
 
         return ResponseEntity.ok(response);
     }

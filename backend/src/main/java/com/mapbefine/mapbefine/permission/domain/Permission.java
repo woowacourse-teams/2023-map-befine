@@ -1,51 +1,35 @@
 package com.mapbefine.mapbefine.permission.domain;
 
-import static lombok.AccessLevel.PROTECTED;
-
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
-import com.mapbefine.mapbefine.member.domain.Member;
-import com.mapbefine.mapbefine.topic.domain.Topic;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Permission extends BaseTimeEntity {
 
-    // TODO 매핑 테이블인데 Id를 가져야 할까?
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private PermissionId id;
 
-    @ManyToOne
-    @JoinColumn(name = "topic_id", nullable = false)
-    private Topic topic;
-
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
-
-    private Permission(Topic topic, Member member) {
-        this.topic = topic;
-        this.member = member;
+    private Permission(PermissionId permissionId) {
+        this.id = permissionId;
     }
 
-    public static Permission createPermissionAssociatedWithTopicAndMember(
-            Topic topic,
-            Member member
-    ) {
-        Permission permission = new Permission(topic, member);
-        topic.addMemberTopicPermission(permission);
-        member.addPermission(permission);
+    public static Permission of(Long topicId, Long memberId) {
+        return new Permission(PermissionId.of(topicId, memberId));
+    }
 
-        return permission;
+    public Long getTopicId() {
+        return id.getTopicId();
+    }
+
+    public Long getMemberId() {
+        return id.getMemberId();
     }
 
 }

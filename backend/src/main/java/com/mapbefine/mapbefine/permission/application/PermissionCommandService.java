@@ -1,24 +1,23 @@
 package com.mapbefine.mapbefine.permission.application;
 
-import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.FORBIDDEN_ADD_PERMISSION;
-import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.FORBIDDEN_ADD_PERMISSION_GUEST;
-import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.ILLEGAL_PERMISSION_ID;
-import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.ILLEGAL_TOPIC_ID;
-
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.permission.domain.Permission;
+import com.mapbefine.mapbefine.permission.domain.PermissionId;
 import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.permission.dto.request.PermissionRequest;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionBadRequestException;
 import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionForbiddenException;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.List;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+
+import static com.mapbefine.mapbefine.permission.exception.PermissionErrorCode.*;
 
 @Service
 @Transactional
@@ -40,7 +39,7 @@ public class PermissionCommandService {
 
     public void addPermission(AuthMember authMember, PermissionRequest request) {
         validateGuest(authMember);
-        Topic topic = findTopic(request);
+        Topic topic = findTopic(request.topicId());
         validateMemberCanTopicUpdate(authMember, topic);
 
         List<Member> members = findTargetMembers(request);
@@ -63,20 +62,19 @@ public class PermissionCommandService {
         return members.stream()
                 .filter(member -> isNotSelfMember(authMember, member))
                 .filter(member -> isNotWithPermission(topic.getId(), member))
-                .map(member -> Permission.createPermissionAssociatedWithTopicAndMember(topic, member))
+                .map(member -> Permission.of(topic.getId(), member.getId()))
                 .toList();
     }
 
     private boolean isNotWithPermission(Long topicId, Member member) {
-        return !permissionRepository.existsByTopicIdAndMemberId(topicId, member.getId());
+        return !permissionRepository.existsByIdTopicIdAndIdMemberId(topicId, member.getId());
     }
 
     private boolean isNotSelfMember(AuthMember authMember, Member member) {
         return !Objects.equals(authMember.getMemberId(), member.getId());
     }
 
-    private Topic findTopic(PermissionRequest request) {
-        Long topicId = request.topicId();
+    private Topic findTopic(Long topicId) {
         return topicRepository.findById(topicId)
                 .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_TOPIC_ID, topicId));
     }
@@ -92,11 +90,13 @@ public class PermissionCommandService {
         return memberRepository.findAllById(request.memberIds());
     }
 
-    public void deleteMemberTopicPermission(AuthMember authMember, Long permissionId) {
+    public void deleteMemberTopicPermission(AuthMember authMember, Long memberId, Long topicId) {
+        PermissionId permissionId = PermissionId.of(topicId, memberId);
         Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow(() -> new PermissionBadRequestException(ILLEGAL_PERMISSION_ID, permissionId));
 
-        validateMemberCanTopicUpdate(authMember, permission.getTopic());
+        Topic topic = findTopic(permission.getTopicId());
+        validateMemberCanTopicUpdate(authMember, topic);
 
         permissionRepository.delete(permission);
     }

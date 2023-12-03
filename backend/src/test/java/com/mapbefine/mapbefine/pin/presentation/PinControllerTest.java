@@ -84,15 +84,6 @@ class PinControllerTest extends RestDocsIntegration {
     }
 
     @Test
-    @DisplayName("핀 삭제")
-    void delete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/pins/1")
-                        .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
-                .andExpect(MockMvcResultMatchers.status().isNoContent())
-                .andDo(restDocs.document());
-    }
-
-    @Test
     @DisplayName("핀 상세 조회")
     void findById() throws Exception {
         PinDetailResponse pinDetailResponse = new PinDetailResponse(

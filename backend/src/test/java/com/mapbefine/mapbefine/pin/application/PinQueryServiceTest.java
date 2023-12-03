@@ -1,12 +1,5 @@
 package com.mapbefine.mapbefine.pin.application;
 
-import static com.mapbefine.mapbefine.topic.domain.PermissionType.ALL_MEMBERS;
-import static com.mapbefine.mapbefine.topic.domain.PermissionType.GROUP_ONLY;
-import static com.mapbefine.mapbefine.topic.domain.Publicity.PRIVATE;
-import static com.mapbefine.mapbefine.topic.domain.Publicity.PUBLIC;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.auth.domain.member.Guest;
@@ -19,6 +12,7 @@ import com.mapbefine.mapbefine.member.MemberFixture;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.member.domain.Role;
+import com.mapbefine.mapbefine.permission.domain.PermissionRepository;
 import com.mapbefine.mapbefine.pin.PinCommentFixture;
 import com.mapbefine.mapbefine.pin.PinFixture;
 import com.mapbefine.mapbefine.pin.PinImageFixture;
@@ -36,9 +30,6 @@ import com.mapbefine.mapbefine.topic.domain.PermissionType;
 import com.mapbefine.mapbefine.topic.domain.Publicity;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,6 +37,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.ALL_MEMBERS;
+import static com.mapbefine.mapbefine.topic.domain.PermissionType.GROUP_ONLY;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PRIVATE;
+import static com.mapbefine.mapbefine.topic.domain.Publicity.PUBLIC;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ServiceTest
 class PinQueryServiceTest extends TestDatabaseContainer {
@@ -62,6 +65,8 @@ class PinQueryServiceTest extends TestDatabaseContainer {
     private MemberRepository memberRepository;
     @Autowired
     private PinCommentRepository pinCommentRepository;
+    @Autowired
+    private PermissionRepository permissionRepository;
 
     private Location location;
     private Topic publicUser1Topic;
@@ -78,10 +83,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         publicUser1Topic = topicRepository.save(TopicFixture.createByName("topic", user1));
         privateUser2Topic = topicRepository.save(TopicFixture.createPrivateByName("private", user2));
 
-        List<Long> topicIdsWithPermissions = user1.getTopicsWithPermissions()
-                .stream()
-                .map(Topic::getId)
-                .toList();
+        List<Long> topicIdsWithPermissions = permissionRepository.findAllTopicIdsByMemberId(user1.getId());
         List<Long> createdTopicIds = user1.getCreatedTopics()
                 .stream()
                 .map(Topic::getId)
@@ -249,7 +251,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         PinComment savedPinComment = pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
         PinCommentResponse expected = PinCommentResponse.of(savedPinComment, true);
-        AuthMember creatorUser = MemberFixture.createUser(user1);
+        AuthMember creatorUser = MemberFixture.createUserWithoutTopics(user1);
 
         // when
         List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(creatorUser, savedPin.getId());
@@ -267,7 +269,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Topic savedTopic = topicRepository.save(topic);
         Pin savedPin = pinRepository.save(PinFixture.create(location, savedTopic, user1));
         pinCommentRepository.save(PinCommentFixture.createParentComment(savedPin, user1));
-        AuthMember nonCreatorUser = MemberFixture.createUser(user2);
+        AuthMember nonCreatorUser = MemberFixture.createUserWithoutTopics(user2);
 
         // when then
         assertThatThrownBy(() -> pinQueryService.findAllPinCommentsByPinId(nonCreatorUser, savedPin.getId()))
@@ -287,7 +289,7 @@ class PinQueryServiceTest extends TestDatabaseContainer {
         Member nonCreator = memberRepository.save(
                 MemberFixture.create("nonCreator", "nonCreator@naver.com", Role.ADMIN)
         );
-        AuthMember nonCreatorAdmin = MemberFixture.createUser(nonCreator);
+        AuthMember nonCreatorAdmin = MemberFixture.createUserWithoutTopics(nonCreator);
 
         // when
         List<PinCommentResponse> actual = pinQueryService.findAllPinCommentsByPinId(nonCreatorAdmin, savedPin.getId());

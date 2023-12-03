@@ -80,7 +80,7 @@ class AdminCommandServiceTest extends TestDatabaseContainer {
         //given
         Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
         Atlas atlas = Atlas.createWithAssociatedMember(topic, member);
-        Permission permission = Permission.createPermissionAssociatedWithTopicAndMember(topic, member);
+        Permission permission = Permission.of(topic.getId(), member.getId());
 
         bookmarkRepository.save(bookmark);
         atlasRepository.save(atlas);
@@ -93,7 +93,7 @@ class AdminCommandServiceTest extends TestDatabaseContainer {
             assertThat(pinImage.isDeleted()).isFalse();
             assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
             assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
-            assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId())).isTrue();
+            assertThat(permissionRepository.existsByIdTopicIdAndIdMemberId(topic.getId(), member.getId())).isTrue();
         });
 
         //when
@@ -110,7 +110,7 @@ class AdminCommandServiceTest extends TestDatabaseContainer {
             assertThat(pinImageRepository.existsById(pinImage.getId())).isFalse();
             assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
             assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
-            assertThat(permissionRepository.existsByTopicIdAndMemberId(topic.getId(), member.getId())).isFalse();
+            assertThat(permissionRepository.existsByIdTopicIdAndIdMemberId(topic.getId(), member.getId())).isFalse();
         });
     }
 

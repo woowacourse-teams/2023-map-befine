@@ -1,10 +1,5 @@
 package com.mapbefine.mapbefine.member;
 
-import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
-import static io.restassured.RestAssured.*;
-import static org.apache.http.HttpHeaders.AUTHORIZATION;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -13,10 +8,10 @@ import com.mapbefine.mapbefine.member.domain.Role;
 import com.mapbefine.mapbefine.member.dto.request.MemberUpdateRequest;
 import com.mapbefine.mapbefine.member.dto.response.MemberDetailResponse;
 import com.mapbefine.mapbefine.member.dto.response.MemberResponse;
-import io.restassured.*;
-import io.restassured.common.mapper.*;
-import io.restassured.response.*;
-import java.util.List;
+import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
+
+import static com.mapbefine.mapbefine.oauth.domain.OauthServerType.KAKAO;
+import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberIntegrationTest extends IntegrationTest {
 
@@ -79,7 +81,8 @@ class MemberIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {});
+        List<MemberResponse> memberResponses = response.as(new TypeRef<>() {
+        });
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
