@@ -13,6 +13,7 @@ public record MemberResponse(
     * 해당 기본 생성자를 삭제하더라도, 오류가 발생하진 않지만, 경고 문구가 발생합니다. (빨간줄)
     * 이 부분 어떻게 할까요 ?
     * */
+    // TODO: 2023/12/03 해당 기본 생성자 제거후, Domain -> Service 계층으로 넘기는 DTO 사용
 
     public MemberResponse {
     }

@@ -20,7 +20,7 @@ public class PermissionId implements Serializable {
     @Column(nullable = false, updatable = false)
     private Long memberId;
 
-    public PermissionId(Long topicId, Long memberId) {
+    private PermissionId(Long topicId, Long memberId) {
         this.topicId = topicId;
         this.memberId = memberId;
     }
