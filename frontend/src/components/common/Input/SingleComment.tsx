@@ -77,7 +77,6 @@ function SingleComment({
       await refetch(Number(pinDetail));
       showToast('info', '댓글이 삭제되었습니다.');
     } catch (e) {
-      console.error(e);
       showToast('error', '댓글을 다시 작성해주세요');
     }
   };
@@ -99,7 +98,6 @@ function SingleComment({
       setIsEditing(false);
       showToast('info', '댓글이 수정되었습니다.');
     } catch (e) {
-      console.error(e);
       showToast('error', '댓글을 다시 작성해주세요');
     }
   };
