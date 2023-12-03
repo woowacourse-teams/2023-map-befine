@@ -13,7 +13,7 @@ import Text from '../components/common/Text';
 import InputContainer from '../components/InputContainer';
 import Modal from '../components/Modal';
 import ModalMyTopicList from '../components/ModalMyTopicList';
-import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { ARIA_FOCUS, LAYOUT_PADDING, SIDEBAR } from '../constants';
 import { CoordinatesContext } from '../context/CoordinatesContext';
 import { MarkerContext } from '../context/MarkerContext';
 import { ModalContext } from '../context/ModalContext';
@@ -223,7 +223,14 @@ function NewPin() {
           width={`calc(${width} - ${LAYOUT_PADDING})`}
           $flexDirection="column"
         >
-          <Text as="h3" color="black" $fontSize="large" $fontWeight="bold">
+          <Text
+            as="h3"
+            color="black"
+            $fontSize="large"
+            $fontWeight="bold"
+            tabIndex={ARIA_FOCUS}
+            aria-label="장소 생성 페이지입니다. 아래 항목을 입력하세요."
+          >
             핀 생성
           </Text>
 
@@ -260,7 +267,13 @@ function NewPin() {
           </Text>
           <Space size={0} />
           <Flex>
-            <ImageInputLabel htmlFor="file">파일 찾기</ImageInputLabel>
+            <ImageInputLabel
+              htmlFor="file"
+              tabIndex={ARIA_FOCUS}
+              aria-label="장소에 해당하는 사진을 선택해주세요."
+            >
+              파일 찾기
+            </ImageInputLabel>
             <ImageInputButton
               id="file"
               type="file"
@@ -289,7 +302,7 @@ function NewPin() {
             value={formValues.name}
             placeholder="50글자 이내로 장소의 이름을 입력해주세요."
             onChangeInput={onChangeInput}
-            tabIndex={1}
+            tabIndex={ARIA_FOCUS}
             errorMessage={errorMessages.name}
             maxLength={50}
           />
@@ -321,7 +334,7 @@ function NewPin() {
             value={formValues.description}
             placeholder="1000자 이내로 장소에 대한 의견을 남겨주세요."
             onChangeInput={onChangeInput}
-            tabIndex={3}
+            tabIndex={ARIA_FOCUS}
             errorMessage={errorMessages.description}
             maxLength={1000}
           />
@@ -330,7 +343,8 @@ function NewPin() {
 
           <Flex $justifyContent="end">
             <Button
-              tabIndex={5}
+              tabIndex={ARIA_FOCUS}
+              aria-label="장소 생성 취소하기"
               type="button"
               variant="secondary"
               onClick={goToBack}
@@ -338,7 +352,11 @@ function NewPin() {
               취소하기
             </Button>
             <Space size={3} />
-            <Button tabIndex={4} variant="primary">
+            <Button
+              tabIndex={ARIA_FOCUS}
+              aria-label="장소 생성하기"
+              variant="primary"
+            >
               추가하기
             </Button>
           </Flex>
