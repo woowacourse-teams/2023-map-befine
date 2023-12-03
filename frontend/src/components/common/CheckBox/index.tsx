@@ -66,7 +66,7 @@ const CheckboxInput = styled.input`
   height: 1.6em;
   border-radius: 0.15em;
   margin-right: 0.5em;
-  border: 0.15em solid ${({ theme }) => theme.color.primary};
+  border: 0.1em solid ${({ theme }) => theme.color.black};
   background-color: ${({ theme }) => theme.color.white};
   outline: none;
   cursor: pointer;
@@ -77,7 +77,7 @@ const CheckboxInput = styled.input`
     background-size: 100% 100%;
     background-position: 50%;
     background-repeat: no-repeat;
-    background-color: ${({ theme }) => theme.color.primary};
+    background-color: ${({ theme }) => theme.color.checked};
   }
 `;
 
