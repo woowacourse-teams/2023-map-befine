@@ -1,11 +1,8 @@
 package com.mapbefine.mapbefine.location.application;
 
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
-
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
-import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.location.domain.Coordinate;
 import com.mapbefine.mapbefine.location.domain.Location;
 import com.mapbefine.mapbefine.location.domain.LocationRepository;
@@ -14,14 +11,18 @@ import com.mapbefine.mapbefine.member.domain.MemberRepository;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,10 +32,16 @@ public class LocationQueryService {
 
     private final LocationRepository locationRepository;
     private final MemberRepository memberRepository;
+    private final BookmarkRepository bookmarkRepository;
 
-    public LocationQueryService(LocationRepository locationRepository, MemberRepository memberRepository) {
+    public LocationQueryService(
+            LocationRepository locationRepository,
+            MemberRepository memberRepository,
+            BookmarkRepository bookmarkRepository
+    ) {
         this.locationRepository = locationRepository;
         this.memberRepository = memberRepository;
+        this.bookmarkRepository = bookmarkRepository;
     }
 
     public List<TopicResponse> findNearbyTopicsSortedByPinCount(
@@ -73,7 +80,7 @@ public class LocationQueryService {
 
     private List<TopicResponse> getUserTopicResponses(final Map<Topic, Long> topicCounts, final AuthMember authMember) {
         Member member = findMemberById(authMember.getMemberId());
-        List<Topic> bookmarkedTopics = findBookMarkedTopics(member);
+        List<Long> bookmarkedTopicIds = bookmarkRepository.findAllIdTopicIdByIdMemberId(member.getId());
         List<Topic> topicsInAtlas = findTopicsInAtlas(member);
 
         return topicCounts.entrySet().stream()
@@ -85,7 +92,7 @@ public class LocationQueryService {
                     return TopicResponse.from(
                             topic,
                             isInAtlas(topicsInAtlas, topic),
-                            isInBookmark(bookmarkedTopics, topic)
+                            isInBookmark(bookmarkedTopicIds, topic.getId())
                     );
                 })
                 .toList();
@@ -123,15 +130,8 @@ public class LocationQueryService {
         return topicsInAtlas.contains(topic);
     }
 
-    private List<Topic> findBookMarkedTopics(Member member) {
-        return member.getBookmarks()
-                .stream()
-                .map(Bookmark::getTopic)
-                .toList();
-    }
-
-    private boolean isInBookmark(List<Topic> bookmarkedTopics, Topic topic) {
-        return bookmarkedTopics.contains(topic);
+    private boolean isInBookmark(List<Long> bookmarkedTopics, Long topicId) {
+        return bookmarkedTopics.contains(topicId);
     }
 
 }

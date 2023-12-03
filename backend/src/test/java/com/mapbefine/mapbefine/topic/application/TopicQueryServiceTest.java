@@ -35,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 
-import static com.mapbefine.mapbefine.member.MemberFixture.createUser;
 import static com.mapbefine.mapbefine.member.MemberFixture.createUserWithoutTopics;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -177,7 +176,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
+        Bookmark bookmark = Bookmark.of(topic1.getId(), member.getId());
         bookmarkRepository.save(bookmark);
 
         //when then
@@ -200,7 +199,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
+        Bookmark bookmark = Bookmark.of(topic1.getId(), member.getId());
         bookmarkRepository.save(bookmark);
 
         //when //then
@@ -307,7 +306,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
+        Bookmark bookmark = Bookmark.of(topic.getId(), member.getId());
         bookmarkRepository.save(bookmark);
 
         //when then
@@ -327,7 +326,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
+        Bookmark bookmark = Bookmark.of(topic.getId(), member.getId());
         bookmarkRepository.save(bookmark);
 
         //when then
@@ -434,7 +433,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
+        Bookmark bookmark = Bookmark.of(topic1.getId(), member.getId());
         bookmarkRepository.save(bookmark);
 
         //when //then
@@ -458,7 +457,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic1, member);
+        Bookmark bookmark = Bookmark.of(topic1.getId(), member.getId());
         bookmarkRepository.save(bookmark);
 
         //when //then
@@ -542,6 +541,9 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         Topic topicWithNoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topicWithOneBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topicWithTwoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
+        increaseBookmarkCount(topicWithOneBookmark, 1);
+        increaseBookmarkCount(topicWithTwoBookmark, 2);
+
         topicRepository.save(topicWithNoBookmark);
         topicRepository.save(topicWithOneBookmark);
         topicRepository.save(topicWithTwoBookmark);
@@ -652,7 +654,13 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
     }
 
     private Bookmark saveBookmark(Topic topic, Member member) {
-        return bookmarkRepository.save(Bookmark.createWithAssociatedTopicAndMember(topic, member));
+        return bookmarkRepository.save(Bookmark.of(topic.getId(), member.getId()));
+    }
+
+    private void increaseBookmarkCount(Topic topic, int count) {
+        for (int i = 0; i < count; i++) {
+            topic.increaseBookmarkCount();
+        }
     }
 
 }

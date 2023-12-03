@@ -2,6 +2,8 @@ package com.mapbefine.mapbefine.topic.dto.response;
 
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicInfo;
+import com.mapbefine.mapbefine.topic.dto.TopicDto;
+
 import java.time.LocalDateTime;
 
 public record TopicResponse(
@@ -29,6 +31,20 @@ public record TopicResponse(
                 topic.countBookmarks(),
                 isBookmarked,
                 topic.getLastPinUpdatedAt()
+        );
+    }
+
+    public static TopicResponse from(TopicDto topicDto, Boolean isInAtlas, Boolean isBookmarked) {
+        return new TopicResponse(
+                topicDto.getId(),
+                topicDto.getName(),
+                topicDto.getImageUrl(),
+                topicDto.getCreatorNickName(),
+                topicDto.getPinCounts(),
+                isInAtlas,
+                topicDto.getBookmarkCounts(),
+                isBookmarked,
+                topicDto.getLastPinUpdatedAt()
         );
     }
 

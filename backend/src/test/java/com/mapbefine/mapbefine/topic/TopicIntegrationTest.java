@@ -25,6 +25,7 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.apache.http.auth.AUTH;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -379,10 +380,12 @@ class TopicIntegrationTest extends IntegrationTest {
         Topic bestOneTopic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(bestOneTopic);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(bestOneTopic, member);
-        bookmarkRepository.save(bookmark);
+        RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .when().post("/bookmarks/topics/" + bestOneTopic.getId())
+                .then().log().all();
 
-        topicRepository.save(bestOneTopic);
+        bestOneTopic = topicRepository.findById(bestOneTopic.getId()).get();
 
         // when
         List<TopicResponse> expect = List.of(

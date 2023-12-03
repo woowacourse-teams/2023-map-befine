@@ -52,17 +52,6 @@ public class TopicFixture {
         );
     }
 
-    public static Topic createPublicAndGroupOnlyTopic(Member member) {
-        return Topic.createTopicAssociatedWithCreator(
-                "아무나 읽을 수 있는 토픽",
-                "아무나 읽지만 아무나 생성할 수는 없습니다.",
-                IMAGE_URL,
-                Publicity.PUBLIC,
-                PermissionType.GROUP_ONLY,
-                member
-        );
-    }
-
     public static Topic createPublicAndAllMembersTopic(String imageUrl, Member member) {
         return Topic.createTopicAssociatedWithCreator(
                 "아무나 읽을 수 있는 토픽",

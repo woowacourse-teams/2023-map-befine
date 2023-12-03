@@ -21,10 +21,10 @@ class BookmarkControllerTest extends RestDocsIntegration {
     @Test
     @DisplayName("토픽을 회원의 즐겨찾기에 추가")
     void addTopicInBookmark() throws Exception {
-        given(bookmarkCommandService.addTopicInBookmark(any(), any())).willReturn(1L);
+        // TODO: 2023/12/03 void는 아마 ... 아무것도 안하는걸로 아는데 ?
+//        given(bookmarkCommandService.addTopicInBookmark(any(), any())).willReturn(1L);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/bookmarks/topics")
-                        .queryParam("id", String.valueOf(1))
+        mockMvc.perform(MockMvcRequestBuilders.post("/bookmarks/topics/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andDo(restDocs.document());
@@ -35,8 +35,7 @@ class BookmarkControllerTest extends RestDocsIntegration {
     void deleteTopicInBookmark() throws Exception {
         doNothing().when(bookmarkCommandService).deleteTopicInBookmark(any(), any());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/bookmarks/topics")
-                        .queryParam("id", String.valueOf(1L))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/bookmarks/topics/1")
                         .header(AUTHORIZATION, testAuthHeaderProvider.createAuthHeaderById(1L)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(restDocs.document());

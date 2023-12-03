@@ -68,7 +68,7 @@ class MemberQueryServiceTest extends TestDatabaseContainer {
 
         createTopics(member);
         topics.forEach(topic -> atlasRepository.save(Atlas.createWithAssociatedMember(topic, member)));
-        topics.forEach(topic -> bookmarkRepository.save(Bookmark.createWithAssociatedTopicAndMember(topic, member)));
+        topics.forEach(topic -> bookmarkRepository.save(Bookmark.of(topic.getId(), member.getId())));
     }
 
     private void createTopics(Member member) {
