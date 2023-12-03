@@ -208,7 +208,12 @@ function PinDetail({
         </Text>
         <Flex $flexDirection="column" $alignItems="flex-end">
           {pin.canUpdate ? (
-            <Box cursor="pointer">
+            <Box
+              cursor="pointer"
+              tabIndex={ARIA_FOCUS}
+              role="button"
+              aria-label="장소 정보 수정하기"
+            >
               <UpdateBtnSVG onClick={onClickEditPin} />
             </Box>
           ) : (

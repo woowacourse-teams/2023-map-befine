@@ -139,7 +139,13 @@ function TopicInfo({
           </Flex>
         </Flex>
         {canUpdate && (
-          <Box cursor="pointer" onClick={updateTopicInfo}>
+          <Box
+            cursor="pointer"
+            onClick={updateTopicInfo}
+            tabIndex={ARIA_FOCUS}
+            role="button"
+            aria-label="지도 정보 수정하기"
+          >
             <UpdateBtnSVG />
           </Box>
         )}

@@ -74,9 +74,14 @@ function MyInfo() {
       $justifyContent="center"
       $alignItems="center"
       tabIndex={ARIA_FOCUS}
-      aria-label={`내 정보 영역입니다. 나의 이름은 ${user.nickName}이고 이메일은 ${user.email} 입니다.`}
+      aria-label={`내 정보 영역입니다. 나의 닉네임은 ${user.nickName}이고 이메일은 ${user.email} 입니다.`}
     >
-      <SettingContainer onClick={onClickSetting}>
+      <SettingContainer
+        onClick={onClickSetting}
+        tabIndex={ARIA_FOCUS}
+        role="button"
+        aria-label="내 닉네임 수정하기"
+      >
         <Setting />
       </SettingContainer>
       <Image
