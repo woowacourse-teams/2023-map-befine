@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.topic;
 
-import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -25,7 +24,6 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.apache.http.auth.AUTH;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
