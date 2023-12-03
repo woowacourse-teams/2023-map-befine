@@ -2,7 +2,11 @@ import { SyntheticEvent, useState } from 'react';
 import { styled } from 'styled-components';
 
 import Setting from '../../assets/updateBtn.svg';
-import { DEFAULT_PROD_URL, DEFAULT_PROFILE_IMAGE } from '../../constants';
+import {
+  ARIA_FOCUS,
+  DEFAULT_PROD_URL,
+  DEFAULT_PROFILE_IMAGE,
+} from '../../constants';
 import useToast from '../../hooks/useToast';
 import { ProfileProps } from '../../types/Profile';
 import Box from '../common/Box';
@@ -69,6 +73,8 @@ function MyInfo() {
       $borderRadius="medium"
       $justifyContent="center"
       $alignItems="center"
+      tabIndex={ARIA_FOCUS}
+      aria-label={`내 정보 영역입니다. 나의 이름은 ${user.nickName}이고 이메일은 ${user.email} 입니다.`}
     >
       <SettingContainer onClick={onClickSetting}>
         <Setting />
