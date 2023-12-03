@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import styled from 'styled-components';
 
 import useGet from '../../apiHooks/useGet';
+import { ARIA_FOCUS } from '../../constants';
 import { ModalContext } from '../../context/ModalContext';
 import {
   TopicAuthorMember,
@@ -80,7 +81,7 @@ function AuthorityRadioContainer({
             id="publicity-public"
             checked={!isPrivate}
             onChange={() => setIsPrivate(false)}
-            tabIndex={4}
+            tabIndex={ARIA_FOCUS}
           />
           <Space size={1} />
           <label htmlFor="publicity-public">공개 지도</label>
@@ -93,7 +94,7 @@ function AuthorityRadioContainer({
           id="publicity-private"
           checked={isPrivate}
           onChange={() => setIsPrivate(true)}
-          tabIndex={4}
+          tabIndex={ARIA_FOCUS}
         />
         <Space size={1} />
         <label htmlFor="publicity-private">비공개 지도</label>
@@ -115,7 +116,7 @@ function AuthorityRadioContainer({
             id="permission-all"
             checked={isAllPermissioned}
             onChange={onChangeInitAuthMembersWithSetIsAllPermissioned}
-            tabIndex={5}
+            tabIndex={ARIA_FOCUS}
           />
           <Space size={1} />
           {isPrivate ? (
@@ -135,7 +136,7 @@ function AuthorityRadioContainer({
           onClick={() => {
             isAllPermissioned === false && openModal('newTopic');
           }}
-          tabIndex={5}
+          tabIndex={ARIA_FOCUS}
         />
         <Space size={1} />
         <label htmlFor="permission-group">친구들에게</label>
@@ -237,7 +238,7 @@ function AuthorityRadioContainer({
 
           <Flex $justifyContent="end" padding="12px" bottom="0px">
             <Button
-              tabIndex={6}
+              tabIndex={ARIA_FOCUS}
               type="button"
               variant="secondary"
               onClick={() => {
@@ -252,7 +253,7 @@ function AuthorityRadioContainer({
             <Space size={3} />
 
             <Button
-              tabIndex={6}
+              tabIndex={ARIA_FOCUS}
               variant="primary"
               onClick={() => {
                 closeModal('newTopic');

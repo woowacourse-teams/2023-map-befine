@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
+import { ARIA_FOCUS } from '../../../constants';
 import useKeyDown from '../../../hooks/useKeyDown';
 import Flex from '../Flex';
 
@@ -31,7 +32,7 @@ function Checkbox({ id, isAlreadyChecked, label, onChecked }: CheckboxProps) {
             id={label}
             checked={isChecked}
             onChange={updateCheckedMembers}
-            tabIndex={6}
+            tabIndex={ARIA_FOCUS}
             ref={elementRef}
             onKeyDown={onElementKeyDown}
           />
