@@ -20,6 +20,10 @@ public class PermissionException {
         public PermissionBadRequestException(PermissionErrorCode errorCode, Long id) {
             super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage(), id));
         }
+
+        public PermissionBadRequestException(PermissionErrorCode errorCode) {
+            super(new ErrorCode<>(errorCode.getCode(), errorCode.getMessage()));
+        }
     }
 
     public static class PermissionForbiddenException extends ForbiddenException {

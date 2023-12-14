@@ -1,5 +1,7 @@
 package com.mapbefine.mapbefine.permission.domain;
 
+import com.mapbefine.mapbefine.permission.exception.PermissionErrorCode;
+import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -26,7 +28,19 @@ public class PermissionId implements Serializable {
     }
 
     public static PermissionId of(Long topicId, Long memberId) {
+        validateNotNull(topicId, memberId);
+
         return new PermissionId(topicId, memberId);
+    }
+
+    private static void validateNotNull(Long topicId, Long memberId) {
+        if (Objects.isNull(topicId)) {
+            throw new PermissionBadRequestException(PermissionErrorCode.ILLEGAL_TOPIC_ID);
+        }
+
+        if (Objects.isNull(memberId)) {
+            throw new PermissionBadRequestException(PermissionErrorCode.ILLEGAL_MEMBER_ID);
+        }
     }
 
     @Override
