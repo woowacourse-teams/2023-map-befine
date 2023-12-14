@@ -79,7 +79,7 @@ class AdminCommandServiceTest extends TestDatabaseContainer {
     @Test
     void blockMember_Success() {
         //given
-        Bookmark bookmark = Bookmark.of(topic.getId(), member.getId());
+        Bookmark bookmark = Bookmark.of(topic, member.getId());
         Atlas atlas = Atlas.createWithAssociatedMember(topic, member);
         Permission permission = Permission.of(topic.getId(), member.getId());
 

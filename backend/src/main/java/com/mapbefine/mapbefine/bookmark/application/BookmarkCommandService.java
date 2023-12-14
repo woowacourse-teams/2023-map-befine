@@ -35,7 +35,7 @@ public class BookmarkCommandService {
         Topic topic = getTopicById(topicId);
         validateBookmarkingPermission(authMember, topic);
 
-        Bookmark bookmark = Bookmark.of(topicId, authMember.getMemberId());
+        Bookmark bookmark = Bookmark.of(topic, authMember.getMemberId());
         bookmarkRepository.save(bookmark);
         topic.increaseBookmarkCount();
     }

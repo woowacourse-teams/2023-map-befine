@@ -69,7 +69,7 @@ class BookmarkIntegrationTest extends IntegrationTest {
         Topic topic = TopicFixture.createByName("topic1", creator);
         topicRepository.save(topic);
 
-        Bookmark bookmark = Bookmark.of(topic.getId(), creator.getId());
+        Bookmark bookmark = Bookmark.of(topic, creator.getId());
         bookmarkRepository.save(bookmark);
 
         String creatorAuthHeader = testAuthHeaderProvider.createAuthHeader(creator);

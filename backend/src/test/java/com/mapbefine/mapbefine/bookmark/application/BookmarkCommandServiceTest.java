@@ -122,7 +122,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         );
         memberRepository.save(otherMember);
 
-        Bookmark bookmark = Bookmark.of(topic.getId(), otherMember.getId());
+        Bookmark bookmark = Bookmark.of(topic, otherMember.getId());
         bookmarkRepository.save(bookmark);
 
         //when
@@ -149,7 +149,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         memberRepository.save(creator);
         topicRepository.save(topic);
 
-        Bookmark bookmark = Bookmark.of(topic.getId(), creator.getId());
+        Bookmark bookmark = Bookmark.of(topic, creator.getId());
         bookmarkRepository.save(bookmark);
 
         Member otherMember = MemberFixture.create(

@@ -176,7 +176,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark = Bookmark.of(topic1.getId(), member.getId());
+        Bookmark bookmark = Bookmark.of(topic1, member.getId());
         bookmarkRepository.save(bookmark);
 
         //when then
@@ -199,7 +199,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark = Bookmark.of(topic1.getId(), member.getId());
+        Bookmark bookmark = Bookmark.of(topic1, member.getId());
         bookmarkRepository.save(bookmark);
 
         //when //then
@@ -306,7 +306,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
 
-        Bookmark bookmark = Bookmark.of(topic.getId(), member.getId());
+        Bookmark bookmark = Bookmark.of(topic, member.getId());
         bookmarkRepository.save(bookmark);
 
         //when then
@@ -326,7 +326,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         Topic topic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(topic);
 
-        Bookmark bookmark = Bookmark.of(topic.getId(), member.getId());
+        Bookmark bookmark = Bookmark.of(topic, member.getId());
         bookmarkRepository.save(bookmark);
 
         //when then
@@ -433,7 +433,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark = Bookmark.of(topic1.getId(), member.getId());
+        Bookmark bookmark = Bookmark.of(topic1, member.getId());
         bookmarkRepository.save(bookmark);
 
         //when //then
@@ -457,7 +457,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         topicRepository.save(topic1);
         topicRepository.save(topic2);
 
-        Bookmark bookmark = Bookmark.of(topic1.getId(), member.getId());
+        Bookmark bookmark = Bookmark.of(topic1, member.getId());
         bookmarkRepository.save(bookmark);
 
         //when //then
@@ -654,7 +654,7 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
     }
 
     private Bookmark saveBookmark(Topic topic, Member member) {
-        return bookmarkRepository.save(Bookmark.of(topic.getId(), member.getId()));
+        return bookmarkRepository.save(Bookmark.of(topic, member.getId()));
     }
 
     private void increaseBookmarkCount(Topic topic, int count) {
