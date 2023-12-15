@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.topic.domain;
 
-import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.pin.domain.Pin;
@@ -50,13 +49,11 @@ public class Topic extends BaseTimeEntity {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST)
     private List<Pin> pins = new ArrayList<>();
 
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Bookmark> bookmarks = new ArrayList<>();
-
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     private int pinCount = 0;
 
+    // TODO: 2023/12/03 간접 참조에 따른 bookmark Count 정합성을 어떻게 맞출 것인가 ?
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     private int bookmarkCount = 0;
@@ -128,11 +125,6 @@ public class Topic extends BaseTimeEntity {
         pinCount++;
     }
 
-    public void addBookmark(Bookmark bookmark) {
-        bookmarks.add(bookmark);
-        bookmarkCount++;
-    }
-
     public int countBookmarks() {
         return bookmarkCount;
     }
@@ -153,8 +145,12 @@ public class Topic extends BaseTimeEntity {
         pinCount--;
     }
 
-    public void removeBookmark(Bookmark bookmark) {
-        bookmarks.remove(bookmark);
+    public void increaseBookmarkCount() {
+        bookmarkCount++;
+    }
+
+    public void decreaseBookmarkCount() {
         bookmarkCount--;
     }
+
 }

@@ -2,6 +2,7 @@ package com.mapbefine.mapbefine.topic.dto.response;
 
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicInfo;
+
 import java.time.LocalDateTime;
 
 public record TopicResponse(

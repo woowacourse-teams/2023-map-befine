@@ -1,7 +1,7 @@
-package com.mapbefine.mapbefine.permission.domain;
+package com.mapbefine.mapbefine.bookmark.domain;
 
-import com.mapbefine.mapbefine.permission.exception.PermissionErrorCode;
-import com.mapbefine.mapbefine.permission.exception.PermissionException.PermissionBadRequestException;
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode;
+import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkBadRequestException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class PermissionId implements Serializable {
+public class BookmarkId implements Serializable {
 
     @Column(nullable = false, updatable = false)
     private Long topicId;
@@ -22,24 +22,24 @@ public class PermissionId implements Serializable {
     @Column(nullable = false, updatable = false)
     private Long memberId;
 
-    private PermissionId(Long topicId, Long memberId) {
+    private BookmarkId(Long topicId, Long memberId) {
         this.topicId = topicId;
         this.memberId = memberId;
     }
 
-    public static PermissionId of(Long topicId, Long memberId) {
+    public static BookmarkId of(Long topicId, Long memberId) {
         validateNotNull(topicId, memberId);
 
-        return new PermissionId(topicId, memberId);
+        return new BookmarkId(topicId, memberId);
     }
 
     private static void validateNotNull(Long topicId, Long memberId) {
         if (Objects.isNull(topicId)) {
-            throw new PermissionBadRequestException(PermissionErrorCode.ILLEGAL_TOPIC_ID);
+            throw new BookmarkBadRequestException(BookmarkErrorCode.ILLEGAL_TOPIC_ID);
         }
 
         if (Objects.isNull(memberId)) {
-            throw new PermissionBadRequestException(PermissionErrorCode.ILLEGAL_MEMBER_ID);
+            throw new BookmarkBadRequestException(BookmarkErrorCode.ILLEGAL_MEMBER_ID);
         }
     }
 
@@ -47,7 +47,7 @@ public class PermissionId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PermissionId that = (PermissionId) o;
+        BookmarkId that = (BookmarkId) o;
         return Objects.equals(getTopicId(), that.getTopicId()) && Objects.equals(getMemberId(), that.getMemberId());
     }
 
@@ -55,5 +55,4 @@ public class PermissionId implements Serializable {
     public int hashCode() {
         return Objects.hash(getTopicId(), getMemberId());
     }
-
 }

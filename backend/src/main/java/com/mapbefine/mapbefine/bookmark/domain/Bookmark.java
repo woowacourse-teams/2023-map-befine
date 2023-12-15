@@ -1,18 +1,12 @@
 package com.mapbefine.mapbefine.bookmark.domain;
 
-import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.ILLEGAL_MEMBER_ID;
-import static com.mapbefine.mapbefine.bookmark.exception.BookmarkErrorCode.ILLEGAL_TOPIC_ID;
-
-import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkBadRequestException;
-import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.topic.domain.Topic;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.util.Objects;
+import jakarta.persistence.MapsId;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,40 +16,29 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Bookmark {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private BookmarkId id;
 
-    @ManyToOne
+    @MapsId("topicId")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
-
-    private Bookmark(Topic topic, Member member) {
+    private Bookmark(BookmarkId id, Topic topic) {
+        this.id = id;
         this.topic = topic;
-        this.member = member;
     }
 
-    public static Bookmark createWithAssociatedTopicAndMember(Topic topic, Member member) {
-        validateNotNull(topic, member);
-        Bookmark bookmark = new Bookmark(topic, member);
-
-        topic.addBookmark(bookmark);
-        member.addBookmark(bookmark);
-
-        return bookmark;
+    public static Bookmark of(Topic topic, Long memberId) {
+        return new Bookmark(BookmarkId.of(topic.getId(), memberId), topic);
     }
 
-    private static void validateNotNull(Topic topic, Member member) {
-        if (Objects.isNull(topic)) {
-            throw new BookmarkBadRequestException(ILLEGAL_TOPIC_ID);
-        }
-        if (Objects.isNull(member)) {
-            throw new BookmarkBadRequestException(ILLEGAL_MEMBER_ID);
-        }
+    public Long getTopicId() {
+        return id.getTopicId();
+    }
+
+    public Long getMemberId() {
+        return id.getMemberId();
     }
 
 }

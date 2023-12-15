@@ -1,6 +1,5 @@
 package com.mapbefine.mapbefine.topic;
 
-import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.IntegrationTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -379,10 +378,12 @@ class TopicIntegrationTest extends IntegrationTest {
         Topic bestOneTopic = TopicFixture.createPublicAndAllMembersTopic(member);
         topicRepository.save(bestOneTopic);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(bestOneTopic, member);
-        bookmarkRepository.save(bookmark);
+        RestAssured.given().log().all()
+                .header(AUTHORIZATION, authHeader)
+                .when().post("/bookmarks/topics/" + bestOneTopic.getId())
+                .then().log().all();
 
-        topicRepository.save(bestOneTopic);
+        bestOneTopic = topicRepository.findById(bestOneTopic.getId()).get();
 
         // when
         List<TopicResponse> expect = List.of(

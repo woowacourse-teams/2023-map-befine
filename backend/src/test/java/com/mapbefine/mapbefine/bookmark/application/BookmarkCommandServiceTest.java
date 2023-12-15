@@ -3,6 +3,7 @@ package com.mapbefine.mapbefine.bookmark.application;
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkId;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkForbiddenException;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
@@ -60,16 +61,15 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
                 Role.USER
         );
         memberRepository.save(otherMember);
-        Long bookmarkId = bookmarkCommandService.addTopicInBookmark(
-                MemberFixture.createUserWithoutTopics(otherMember),
-                topic.getId()
-        );
+        AuthMember user = MemberFixture.createUserWithoutTopics(otherMember);
+        bookmarkCommandService.addTopicInBookmark(user, topic.getId());
 
         //then
-        Bookmark bookmark = bookmarkRepository.findById(bookmarkId).get();
 
-        assertThat(bookmark.getTopic().getId()).isEqualTo(topic.getId());
-        assertThat(bookmark.getMember().getId()).isEqualTo(otherMember.getId());
+        Bookmark bookmark = bookmarkRepository.findById(BookmarkId.of(topic.getId(), user.getMemberId())).get();
+
+        assertThat(bookmark.getTopicId()).isEqualTo(topic.getId());
+        assertThat(bookmark.getMemberId()).isEqualTo(otherMember.getId());
     }
 
     @Test
@@ -122,7 +122,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         );
         memberRepository.save(otherMember);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, otherMember);
+        Bookmark bookmark = Bookmark.of(topic, otherMember.getId());
         bookmarkRepository.save(bookmark);
 
         //when
@@ -149,7 +149,7 @@ class BookmarkCommandServiceTest extends TestDatabaseContainer {
         memberRepository.save(creator);
         topicRepository.save(topic);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, creator);
+        Bookmark bookmark = Bookmark.of(topic, creator.getId());
         bookmarkRepository.save(bookmark);
 
         Member otherMember = MemberFixture.create(

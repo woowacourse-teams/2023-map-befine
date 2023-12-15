@@ -1,10 +1,8 @@
 package com.mapbefine.mapbefine.topic.application;
 
-import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_READ;
-import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
-
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.auth.domain.AuthMember;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkId;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.member.domain.Member;
 import com.mapbefine.mapbefine.member.domain.MemberRepository;
@@ -17,12 +15,16 @@ import com.mapbefine.mapbefine.topic.dto.response.TopicDetailResponse;
 import com.mapbefine.mapbefine.topic.dto.response.TopicResponse;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicForbiddenException;
 import com.mapbefine.mapbefine.topic.exception.TopicException.TopicNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.FORBIDDEN_TOPIC_READ;
+import static com.mapbefine.mapbefine.topic.exception.TopicErrorCode.TOPIC_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
@@ -83,7 +85,7 @@ public class TopicQueryService {
     }
 
     private boolean isBookMarked(Long memberId, Long topicId) {
-        return bookmarkRepository.existsByMemberIdAndTopicId(memberId, topicId);
+        return bookmarkRepository.existsById(BookmarkId.of(topicId, memberId));
     }
 
     public TopicDetailResponse findDetailById(AuthMember authMember, Long topicId) {

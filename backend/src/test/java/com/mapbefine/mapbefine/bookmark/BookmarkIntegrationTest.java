@@ -51,15 +51,12 @@ class BookmarkIntegrationTest extends IntegrationTest {
         //when
         ExtractableResponse<Response> response = given().log().all()
                 .header(AUTHORIZATION, otherUserAuthHeader)
-                .param("id", topic.getId())
-                .when().post("/bookmarks/topics")
+                .when().post("/bookmarks/topics/" + topic.getId())
                 .then().log().all()
                 .extract();
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).startsWith("/bookmarks/topics")
-                .isNotNull();
     }
 
     @Test
@@ -72,7 +69,7 @@ class BookmarkIntegrationTest extends IntegrationTest {
         Topic topic = TopicFixture.createByName("topic1", creator);
         topicRepository.save(topic);
 
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, creator);
+        Bookmark bookmark = Bookmark.of(topic, creator.getId());
         bookmarkRepository.save(bookmark);
 
         String creatorAuthHeader = testAuthHeaderProvider.createAuthHeader(creator);
@@ -80,8 +77,7 @@ class BookmarkIntegrationTest extends IntegrationTest {
         //when then
         given().log().all()
                 .header(AUTHORIZATION, creatorAuthHeader)
-                .param("id", topic.getId())
-                .when().delete("/bookmarks/topics")
+                .when().delete("/bookmarks/topics/" + topic.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }

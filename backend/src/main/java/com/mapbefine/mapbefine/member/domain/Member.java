@@ -1,7 +1,6 @@
 package com.mapbefine.mapbefine.member.domain;
 
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
-import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
 import com.mapbefine.mapbefine.common.entity.BaseTimeEntity;
 import com.mapbefine.mapbefine.pin.domain.Pin;
 import com.mapbefine.mapbefine.topic.domain.Topic;
@@ -44,9 +43,6 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "creator")
     private List<Pin> createdPins = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Bookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private List<Atlas> atlantes = new ArrayList<>();
@@ -117,10 +113,6 @@ public class Member extends BaseTimeEntity {
 
     public void addPin(Pin pin) {
         createdPins.add(pin);
-    }
-
-    public void addBookmark(Bookmark bookmark) {
-        bookmarks.add(bookmark);
     }
 
     public void addAtlas(Atlas atlas) {

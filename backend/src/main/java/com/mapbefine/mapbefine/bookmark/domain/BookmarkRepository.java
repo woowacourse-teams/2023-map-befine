@@ -1,23 +1,26 @@
 package com.mapbefine.mapbefine.bookmark.domain;
 
-import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
+import java.util.List;
 
-    Optional<Bookmark> findByMemberIdAndTopicId(Long memberId, Long topicId);
+public interface BookmarkRepository extends JpaRepository<Bookmark, BookmarkId> {
 
-    boolean existsByMemberIdAndTopicId(Long memberId, Long topicId);
+    List<Long> findAllIdTopicIdByIdMemberId(Long memberId);
+
+    @EntityGraph(attributePaths = "topic")
+    List<Bookmark> findAllByIdMemberId(Long memberId);
 
     @Modifying(clearAutomatically = true)
-    @Query("delete from Bookmark b where b.member.id = :memberId")
+    @Query("delete from Bookmark b where b.id.memberId = :memberId")
     void deleteAllByMemberId(@Param("memberId") Long memberId);
 
     @Modifying(clearAutomatically = true)
-    @Query("delete from Bookmark b where b.topic.id = :topicId")
+    @Query("delete from Bookmark b where b.id.topicId = :topicId")
     void deleteAllByTopicId(@Param("topicId") Long topicId);
 
 }

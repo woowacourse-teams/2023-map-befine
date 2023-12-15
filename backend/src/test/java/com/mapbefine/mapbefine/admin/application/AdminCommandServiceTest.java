@@ -1,12 +1,10 @@
 package com.mapbefine.mapbefine.admin.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
 import com.mapbefine.mapbefine.TestDatabaseContainer;
 import com.mapbefine.mapbefine.atlas.domain.Atlas;
 import com.mapbefine.mapbefine.atlas.domain.AtlasRepository;
 import com.mapbefine.mapbefine.bookmark.domain.Bookmark;
+import com.mapbefine.mapbefine.bookmark.domain.BookmarkId;
 import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.common.annotation.ServiceTest;
 import com.mapbefine.mapbefine.location.LocationFixture;
@@ -33,6 +31,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @ServiceTest
 class AdminCommandServiceTest extends TestDatabaseContainer {
@@ -78,7 +79,7 @@ class AdminCommandServiceTest extends TestDatabaseContainer {
     @Test
     void blockMember_Success() {
         //given
-        Bookmark bookmark = Bookmark.createWithAssociatedTopicAndMember(topic, member);
+        Bookmark bookmark = Bookmark.of(topic, member.getId());
         Atlas atlas = Atlas.createWithAssociatedMember(topic, member);
         Permission permission = Permission.of(topic.getId(), member.getId());
 
@@ -91,8 +92,8 @@ class AdminCommandServiceTest extends TestDatabaseContainer {
             assertThat(topic.isDeleted()).isFalse();
             assertThat(pin.isDeleted()).isFalse();
             assertThat(pinImage.isDeleted()).isFalse();
-            assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
-            assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isTrue();
+            assertThat(bookmarkRepository.existsById(BookmarkId.of(topic.getId(), member.getId()))).isTrue();
+            assertThat(atlasRepository.existsByMemberIdAndTopicId(topic.getId(), member.getId())).isTrue();
             assertThat(permissionRepository.existsByIdTopicIdAndIdMemberId(topic.getId(), member.getId())).isTrue();
         });
 
@@ -108,7 +109,7 @@ class AdminCommandServiceTest extends TestDatabaseContainer {
             assertThat(topicRepository.existsById(topic.getId())).isFalse();
             assertThat(pinRepository.existsById(pin.getId())).isFalse();
             assertThat(pinImageRepository.existsById(pinImage.getId())).isFalse();
-            assertThat(bookmarkRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
+            assertThat(bookmarkRepository.existsById(BookmarkId.of(topic.getId(), member.getId()))).isFalse();
             assertThat(atlasRepository.existsByMemberIdAndTopicId(member.getId(), topic.getId())).isFalse();
             assertThat(permissionRepository.existsByIdTopicIdAndIdMemberId(topic.getId(), member.getId())).isFalse();
         });
