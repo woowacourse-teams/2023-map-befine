@@ -541,8 +541,6 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
         Topic topicWithNoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topicWithOneBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
         Topic topicWithTwoBookmark = TopicFixture.createPublicAndAllMembersTopic(member);
-        increaseBookmarkCount(topicWithOneBookmark, 1);
-        increaseBookmarkCount(topicWithTwoBookmark, 2);
 
         topicRepository.save(topicWithNoBookmark);
         topicRepository.save(topicWithOneBookmark);
@@ -654,13 +652,10 @@ class TopicQueryServiceTest extends TestDatabaseContainer {
     }
 
     private Bookmark saveBookmark(Topic topic, Member member) {
-        return bookmarkRepository.save(Bookmark.of(topic, member.getId()));
-    }
+        Bookmark bookmark = bookmarkRepository.save(Bookmark.of(topic, member.getId()));
+        topicRepository.increaseBookmarkCountById(topic.getId());
 
-    private void increaseBookmarkCount(Topic topic, int count) {
-        for (int i = 0; i < count; i++) {
-            topic.increaseBookmarkCount();
-        }
+        return bookmark;
     }
 
 }

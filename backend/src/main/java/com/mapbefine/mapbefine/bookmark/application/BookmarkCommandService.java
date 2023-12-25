@@ -7,8 +7,11 @@ import com.mapbefine.mapbefine.bookmark.domain.BookmarkRepository;
 import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkBadRequestException;
 import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkConflictException;
 import com.mapbefine.mapbefine.bookmark.exception.BookmarkException.BookmarkForbiddenException;
+import com.mapbefine.mapbefine.topic.domain.BookmarkAdditionEvent;
+import com.mapbefine.mapbefine.topic.domain.BookmarkDeleteEvent;
 import com.mapbefine.mapbefine.topic.domain.Topic;
 import com.mapbefine.mapbefine.topic.domain.TopicRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +25,16 @@ public class BookmarkCommandService {
 
     private final TopicRepository topicRepository;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public BookmarkCommandService(
             BookmarkRepository bookmarkRepository,
-            TopicRepository topicRepository
+            TopicRepository topicRepository,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.bookmarkRepository = bookmarkRepository;
         this.topicRepository = topicRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public void addTopicInBookmark(AuthMember authMember, Long topicId) {
@@ -37,7 +44,7 @@ public class BookmarkCommandService {
 
         Bookmark bookmark = Bookmark.of(topic, authMember.getMemberId());
         bookmarkRepository.save(bookmark);
-        topic.increaseBookmarkCount();
+        eventPublisher.publishEvent(new BookmarkAdditionEvent(topicId));
     }
 
     private void validateBookmarkDuplication(AuthMember authMember, Long topicId) {
@@ -63,14 +70,12 @@ public class BookmarkCommandService {
         throw new BookmarkForbiddenException(FORBIDDEN_TOPIC_ADD);
     }
 
-    // TODO: 2023/12/03 BookmarkCount의 정합성을 어떻게 맞출 것인가 ? 매번 topic 조회하는 것은 불필요한 행위같아보임
     public void deleteTopicInBookmark(AuthMember authMember, Long topicId) {
         validateBookmarkDeletingPermission(authMember, topicId);
         BookmarkId bookmarkId = BookmarkId.of(topicId, authMember.getMemberId());
 
         bookmarkRepository.deleteById(bookmarkId);
-        Topic topic = getTopicById(topicId);
-        topic.decreaseBookmarkCount();
+        eventPublisher.publishEvent(new BookmarkDeleteEvent(topicId));
     }
 
     private void validateBookmarkDeletingPermission(AuthMember authMember, Long topicId) {

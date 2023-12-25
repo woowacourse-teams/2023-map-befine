@@ -53,7 +53,6 @@ public class Topic extends BaseTimeEntity {
     @ColumnDefault(value = "0")
     private int pinCount = 0;
 
-    // TODO: 2023/12/03 간접 참조에 따른 bookmark Count 정합성을 어떻게 맞출 것인가 ?
     @Column(nullable = false)
     @ColumnDefault(value = "0")
     private int bookmarkCount = 0;
@@ -143,14 +142,6 @@ public class Topic extends BaseTimeEntity {
 
     public void decreasePinCount() {
         pinCount--;
-    }
-
-    public void increaseBookmarkCount() {
-        bookmarkCount++;
-    }
-
-    public void decreaseBookmarkCount() {
-        bookmarkCount--;
     }
 
 }
