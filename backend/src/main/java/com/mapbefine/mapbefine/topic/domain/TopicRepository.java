@@ -29,6 +29,15 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     List<Topic> findAllByCreatorId(Long creatorId);
 
     @Modifying(clearAutomatically = true)
+    @Query("update Topic t set t.bookmarkCount = t.bookmarkCount - 1 where t.id = :topicId")
+    void decreaseBookmarkCountById(@Param("topicId") Long topicId);
+
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Topic t set t.bookmarkCount = t.bookmarkCount + 1 where t.id = :topicId")
+    void increaseBookmarkCountById(@Param("topicId") Long topicId);
+
+    @Modifying(clearAutomatically = true)
     @Query("update Topic t set t.isDeleted = true where t.id = :topicId")
     void deleteById(@Param("topicId") Long topicId);
 
