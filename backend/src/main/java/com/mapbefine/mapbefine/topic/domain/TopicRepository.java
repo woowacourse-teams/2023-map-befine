@@ -33,7 +33,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     void decreaseBookmarkCountById(@Param("topicId") Long topicId);
 
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Topic t set t.bookmarkCount = t.bookmarkCount + 1 where t.id = :topicId")
     void increaseBookmarkCountById(@Param("topicId") Long topicId);
 
