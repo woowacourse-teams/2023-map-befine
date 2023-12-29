@@ -4,9 +4,7 @@ describe('메인 페이지', () => {
   });
 
   it('로고와 다양한 지도 소개 글이 보인다.', () => {
-    cy.get('div[aria-label="괜찮을지도 로고 및 홈으로 이동 버튼"]').should(
-      'be.visible',
-    );
+    cy.get('[data-cy="logo"]').should('be.visible');
 
     cy.contains('인기 급상승할 지도').should('be.visible');
   });

@@ -9,7 +9,7 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import Text from '../components/common/Text';
 import InputContainer from '../components/InputContainer';
-import { LAYOUT_PADDING, SIDEBAR } from '../constants';
+import { ARIA_FOCUS, LAYOUT_PADDING, SIDEBAR } from '../constants';
 import { MarkerContext } from '../context/MarkerContext';
 import { TagContext } from '../context/TagContext';
 import useCompressImage from '../hooks/useCompressImage';
@@ -167,7 +167,14 @@ function NewTopic() {
         width={`calc(${width} - ${LAYOUT_PADDING})`}
         $flexDirection="column"
       >
-        <Text color="black" $fontSize="large" $fontWeight="bold">
+        <Text
+          as="h3"
+          color="black"
+          $fontSize="large"
+          $fontWeight="bold"
+          tabIndex={ARIA_FOCUS}
+          aria-label="지도 생성 페이지입니다. 아래 항목을 입력하세요."
+        >
           지도 생성
         </Text>
 
@@ -187,7 +194,14 @@ function NewTopic() {
             </>
           )}
 
-          <ImageInputLabel htmlFor="file">파일 찾기</ImageInputLabel>
+          <ImageInputLabel
+            htmlFor="file"
+            role="button"
+            tabIndex={ARIA_FOCUS}
+            aria-label="지도를 대표하는 사진을 선택해주세요."
+          >
+            파일 찾기
+          </ImageInputLabel>
           <ImageInputButton
             id="file"
             type="file"
@@ -206,7 +220,7 @@ function NewTopic() {
           value={formValues.name}
           placeholder="20자 이내로 지도의 이름을 입력해주세요."
           onChangeInput={onChangeInput}
-          tabIndex={2}
+          tabIndex={ARIA_FOCUS}
           errorMessage={errorMessages.name}
           maxLength={20}
         />
@@ -221,7 +235,7 @@ function NewTopic() {
           value={formValues.description}
           placeholder="100글자 이내로 지도에 대해서 설명해주세요."
           onChangeInput={onChangeInput}
-          tabIndex={3}
+          tabIndex={ARIA_FOCUS}
           errorMessage={errorMessages.description}
           maxLength={100}
         />
@@ -241,7 +255,8 @@ function NewTopic() {
 
         <Flex $justifyContent="end">
           <Button
-            tabIndex={7}
+            tabIndex={ARIA_FOCUS}
+            aria-label="지도 생성 취소하기"
             type="button"
             variant="secondary"
             onClick={goToBack}
@@ -250,7 +265,8 @@ function NewTopic() {
           </Button>
           <Space size={3} />
           <Button
-            tabIndex={7}
+            tabIndex={ARIA_FOCUS}
+            aria-label="지도 생성하기"
             variant="primary"
             onClick={() => {
               setTags([]);

@@ -8,7 +8,7 @@ import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
 import MyInfo from '../components/MyInfo';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { FULLSCREEN } from '../constants';
+import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
@@ -35,20 +35,17 @@ function Profile() {
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
           <MediaText
+            as="h2"
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
-            tabIndex={0}
+            tabIndex={ARIA_FOCUS}
+            aria-label="나의 지도 영역입니다. 내가 만든 지도들을 확인할 수 있습니다."
           >
             나의 지도
           </MediaText>
           <Space size={0} />
-          <MediaText
-            color="gray"
-            $fontSize="default"
-            $fontWeight="normal"
-            tabIndex={1}
-          >
+          <MediaText color="gray" $fontSize="default" $fontWeight="normal">
             내가 만든 지도를 확인해보세요.
           </MediaText>
         </Box>

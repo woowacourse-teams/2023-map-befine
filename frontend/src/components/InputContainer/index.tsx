@@ -52,7 +52,7 @@ function InputContainer({
   };
 
   return (
-    <>
+    <section>
       <Flex>
         <Text color="black" $fontSize="default" $fontWeight="normal">
           {containerTitle}
@@ -106,7 +106,7 @@ function InputContainer({
       )}
       <Space size={0} />
       <ErrorText>{errorMessage}</ErrorText>
-    </>
+    </section>
   );
 }
 const ErrorText = styled.span`

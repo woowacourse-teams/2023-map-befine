@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 import { deleteApi } from '../../apis/deleteApi';
 import { getApi } from '../../apis/getApi';
 import { postApi } from '../../apis/postApi';
+import { ARIA_FOCUS } from '../../constants';
 import { SeeTogetherContext } from '../../context/SeeTogetherContext';
 import useNavigator from '../../hooks/useNavigator';
 import useToast from '../../hooks/useToast';
@@ -108,7 +109,12 @@ function AddSeeTogether({
   }
 
   return (
-    <Wrapper onClick={isInAtlas ? deleteSeeTogether : addSeeTogetherList}>
+    <Wrapper
+      tabIndex={ARIA_FOCUS}
+      role="button"
+      aria-label="모아보기 추가 버튼"
+      onClick={isInAtlas ? deleteSeeTogether : addSeeTogetherList}
+    >
       {children}
     </Wrapper>
   );

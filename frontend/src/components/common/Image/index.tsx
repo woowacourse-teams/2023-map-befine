@@ -8,6 +8,7 @@ interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   $objectFit?: string;
   radius?: 'small' | 'medium' | '50%';
   ratio?: string;
+  isAriaHidden?: boolean;
 }
 
 export default function Image({
@@ -19,6 +20,7 @@ export default function Image({
   $errorDefaultSrc,
   radius,
   ratio,
+  isAriaHidden,
 }: ImageProps) {
   return (
     <StyledImage
@@ -32,6 +34,7 @@ export default function Image({
       onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
         if ($errorDefaultSrc) e.currentTarget.src = $errorDefaultSrc;
       }}
+      aria-hidden={isAriaHidden}
     />
   );
 }

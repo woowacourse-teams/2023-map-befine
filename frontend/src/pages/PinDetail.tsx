@@ -16,6 +16,7 @@ import Text from '../components/common/Text';
 import Modal from '../components/Modal';
 import AddToMyTopicList from '../components/ModalMyTopicList/addToMyTopicList';
 import PinImageContainer from '../components/PinImageContainer';
+import { ARIA_FOCUS } from '../constants';
 import { ModalContext } from '../context/ModalContext';
 import useCompressImage from '../hooks/useCompressImage';
 import useFormValues from '../hooks/useFormValues';
@@ -183,24 +184,51 @@ function PinDetail({
   return (
     <Wrapper $layoutWidth={width} $selectedPinId={pinId} data-cy="pin-detail">
       <Flex $justifyContent="space-between" $alignItems="baseline" width="100%">
-        <Text color="black" $fontSize="extraLarge" $fontWeight="bold">
+        <Text
+          as="h2"
+          color="black"
+          $fontSize="extraLarge"
+          $fontWeight="bold"
+          tabIndex={ARIA_FOCUS}
+          aria-label={`장소 이름은 ${pin.name} 입니다.`}
+        >
           {pin.name}
         </Text>
       </Flex>
       <Space size={1} />
       <Flex $justifyContent="space-between" $alignItems="flex-end" width="100%">
-        <Text color="black" $fontSize="small" $fontWeight="normal">
+        <Text
+          color="black"
+          $fontSize="small"
+          $fontWeight="normal"
+          tabIndex={ARIA_FOCUS}
+          aria-label={`장소 작성자는 ${pin.creator} 입니다.`}
+        >
           {pin.creator}
         </Text>
         <Flex $flexDirection="column" $alignItems="flex-end">
           {pin.canUpdate ? (
-            <Box cursor="pointer">
+            <Box
+              cursor="pointer"
+              tabIndex={ARIA_FOCUS}
+              role="button"
+              aria-label="장소 정보 수정하기"
+            >
               <UpdateBtnSVG onClick={onClickEditPin} />
             </Box>
           ) : (
             <Space size={5} />
           )}
-          <Text color="black" $fontSize="small" $fontWeight="normal">
+          <Text
+            color="black"
+            $fontSize="small"
+            $fontWeight="normal"
+            tabIndex={ARIA_FOCUS}
+            aria-label={`마지막 수정일자는 ${pin.updatedAt
+              .split('T')[0]
+              .split('-')
+              .join('.')} 입니다.`}
+          >
             {pin.updatedAt.split('T')[0].split('-').join('.')}
           </Text>
         </Flex>
@@ -218,21 +246,33 @@ function PinDetail({
       <PinImageContainer images={pin.images} getPinData={getPinData} />
       <Space size={6} />
       <Flex $flexDirection="column">
-        <Text color="black" $fontSize="large" $fontWeight="bold">
+        <Text as="h3" color="black" $fontSize="large" $fontWeight="bold">
           어디에 있나요?
         </Text>
         <Space size={1} />
-        <Text color="black" $fontSize="default" $fontWeight="normal">
+        <Text
+          color="black"
+          $fontSize="default"
+          $fontWeight="normal"
+          tabIndex={ARIA_FOCUS}
+          aria-label={`장소의 위치는 ${pin.address} 입니다.`}
+        >
           {pin.address}
         </Text>
       </Flex>
       <Space size={6} />
-      <Flex $flexDirection="column">
+      <Flex as="h3" $flexDirection="column">
         <Text color="black" $fontSize="large" $fontWeight="bold">
           어떤 곳인가요?
         </Text>
         <Space size={1} />
-        <Text color="black" $fontSize="default" $fontWeight="normal">
+        <Text
+          color="black"
+          $fontSize="default"
+          $fontWeight="normal"
+          tabIndex={ARIA_FOCUS}
+          aria-label={`장소에 대한 설명은 다음과 같습니다. ${pin.description}`}
+        >
           {pin.description}
         </Text>
       </Flex>
@@ -243,7 +283,11 @@ function PinDetail({
           내 지도에 저장하기
         </SaveToMyMapButton>
         <Space size={3} />
-        <ShareButton variant="secondary" onClick={copyContent}>
+        <ShareButton
+          variant="secondary"
+          onClick={copyContent}
+          aria-label="URL 공유하기 "
+        >
           공유하기
         </ShareButton>
       </ButtonsWrapper>
@@ -252,8 +296,8 @@ function PinDetail({
 
       {/*  Comment Section */}
 
-      <Text color="black" $fontSize="large" $fontWeight="bold">
-        어떻게 생각하나요?{' '}
+      <Text as="h3" color="black" $fontSize="large" $fontWeight="bold">
+        어떻게 생각하나요?
       </Text>
       <Space size={1} />
       {userToken && (
@@ -265,11 +309,13 @@ function PinDetail({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setNewComment(e.target.value)
               }
+              aria-label="댓글을 추가하려면 텍스트를 입력하세요."
               placeholder="댓글 추가"
             />
             <ConfirmCommentButton
               variant="secondary"
               onClick={onClickCommentBtn}
+              aria-label="댓글 등록"
             >
               등록
             </ConfirmCommentButton>

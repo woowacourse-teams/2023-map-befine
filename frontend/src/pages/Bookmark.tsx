@@ -8,7 +8,7 @@ import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { FULLSCREEN } from '../constants';
+import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
@@ -30,20 +30,17 @@ function Bookmark() {
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
           <MediaText
+            as="h2"
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
-            tabIndex={0}
+            tabIndex={ARIA_FOCUS}
+            aria-label="즐겨찾기 페이지 입니다. 즐겨찾기한 지도들을 확인할 수 있습니다."
           >
             즐겨찾기
           </MediaText>
           <Space size={0} />
-          <MediaText
-            color="gray"
-            $fontSize="default"
-            $fontWeight="normal"
-            tabIndex={1}
-          >
+          <MediaText color="gray" $fontSize="default" $fontWeight="normal">
             즐겨찾기한 지도들을 한 눈에 보세요.
           </MediaText>
         </Box>
@@ -68,7 +65,7 @@ function Bookmark() {
   );
 }
 
-const Wrapper = styled.article`
+const Wrapper = styled.section`
   width: 1140px;
   margin: 0 auto;
   position: relative;

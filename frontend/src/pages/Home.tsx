@@ -90,7 +90,7 @@ function Home() {
   );
 }
 
-const Wrapper = styled.article`
+const Wrapper = styled.div`
   width: 1140px;
   margin: 0 auto;
   position: relative;

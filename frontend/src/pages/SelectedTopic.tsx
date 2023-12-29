@@ -27,7 +27,7 @@ function SelectedTopic() {
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
-  const { coordinates, setCoordinates } = useContext(CoordinatesContext);
+  const { setCoordinates } = useContext(CoordinatesContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
   const zoomTimerIdRef = useRef<NodeJS.Timeout | null>(null);
   const dragTimerIdRef = useRef<NodeJS.Timeout | null>(null);
@@ -170,6 +170,7 @@ function SelectedTopic() {
             onClick={() => {
               setIsOpen(!isOpen);
             }}
+            aria-label={`장소 상세 설명 버튼 ${isOpen ? '닫기' : '열기'}`}
           >
             ◀
           </ToggleButton>

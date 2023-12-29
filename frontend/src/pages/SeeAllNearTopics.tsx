@@ -6,7 +6,7 @@ import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
 import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
-import { FULLSCREEN } from '../constants';
+import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
@@ -23,10 +23,17 @@ function SeeAllNearTopics() {
   };
 
   return (
-    <Wrapper>
+    <Wrapper as="section">
       <Space size={5} />
-      <MediaText color="black" $fontSize="extraLarge" $fontWeight="bold">
-        내 주변일 지도?
+      <MediaText
+        as="h2"
+        color="black"
+        $fontSize="extraLarge"
+        $fontWeight="bold"
+        tabIndex={ARIA_FOCUS}
+        aria-label="모두일 지도 전체보기 페이지 입니다."
+      >
+        모두일 지도?
       </MediaText>
 
       <MediaSpace size={6} />

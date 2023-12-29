@@ -10,10 +10,15 @@ import Space from '../components/common/Space';
 import MediaText from '../components/common/Text/MediaText';
 import SearchBar from '../components/SearchBar/SearchBar';
 import TopicCard from '../components/TopicCard';
+import { FULLSCREEN } from '../constants';
+import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 import { TopicCardProps } from '../types/Topic';
 
 function Search() {
   const { fetchGet } = useGet();
+  useSetLayoutWidth(FULLSCREEN);
+  useSetNavbarHighlight('none');
 
   const [originalTopics, setOriginalTopics] = useState<TopicCardProps[] | null>(
     null,
@@ -58,6 +63,7 @@ function Search() {
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
           <MediaText
+            as="h2"
             color="black"
             $fontSize="extraLarge"
             $fontWeight="bold"
@@ -128,7 +134,7 @@ function Search() {
 
 export default Search;
 
-const Wrapper = styled.article`
+const Wrapper = styled.section`
   width: 1140px;
   margin: 0 auto;
   position: relative;

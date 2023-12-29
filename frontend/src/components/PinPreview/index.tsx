@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import { TagContext } from '../../context/TagContext';
+import useAriaLive from '../../hooks/useAriaLive';
 import useNavigator from '../../hooks/useNavigator';
 import theme from '../../themes';
 import Box from '../common/Box';
@@ -36,8 +37,32 @@ function PinPreview({
   const { pathname } = useLocation();
   const { routePage } = useNavigator();
   const { tags, setTags } = useContext(TagContext);
-  const [announceText, setAnnounceText] = useState<string>('지도 핀 선택');
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const { setAriaLiveTagInnerText } = useAriaLive({
+    liveTagId: 'live-region',
+    defaultAnnounceText: '지도 핀 선택',
+  });
+
+  const addTagsAnnounceText = () => {
+    if (tags.length === 0) {
+      setAriaLiveTagInnerText(
+        `핀 ${pinTitle}이 뽑아오기 목록에 추가됨. 뽑아오기 기능을 활성화 합니다.`,
+      );
+      return;
+    }
+
+    setAriaLiveTagInnerText(`핀 ${pinTitle}이 뽑아오기 목록에 추가됨`);
+  };
+
+  const deleteTagsAnnounceText = () => {
+    if (tags.length === 1) {
+      setAriaLiveTagInnerText(
+        `핀 ${pinTitle}이 뽑아오기 목록에서 삭제됨. 뽑아오기 기능을 비활성화 합니다.`,
+      );
+      return;
+    }
+    setAriaLiveTagInnerText(`핀 ${pinTitle}이 뽑아오기 목록에서 삭제됨`);
+  };
 
   const onAddTagOfTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
@@ -45,21 +70,11 @@ function PinPreview({
     if (e.target.checked) {
       setTags((prevTags) => [...prevTags, { id: pinId, title: pinTitle }]);
 
-      if (tags.length === 0) {
-        setAnnounceText(`핀 ${pinTitle}이 태그에 추가됨. 뽑아오기 기능 활성화`);
-        return;
-      }
-      setAnnounceText(`핀 ${pinTitle}이 태그에 추가됨`);
+      addTagsAnnounceText();
     } else {
       setTags(tags.filter((tag) => tag.id !== pinId));
 
-      if (tags.length === 1) {
-        setAnnounceText(
-          `핀 ${pinTitle}이 태그에서 삭제됨. 뽑아오기 기능 비활성화`,
-        );
-        return;
-      }
-      setAnnounceText(`핀 ${pinTitle}이 태그에서 삭제됨`);
+      deleteTagsAnnounceText();
     }
   };
 
@@ -82,15 +97,6 @@ function PinPreview({
     }
   };
 
-  useEffect(() => {
-    if (announceText) {
-      const liveRegion = document.getElementById('live-region');
-      if (liveRegion) {
-        liveRegion.innerText = announceText;
-      }
-    }
-  }, [announceText]);
-
   return (
     <Flex
       height="152px"
@@ -110,11 +116,21 @@ function PinPreview({
         role="button"
       >
         <Space size={1} />
-        <EllipsisTitle color="black" $fontSize="default" $fontWeight="bold">
+        <EllipsisTitle
+          color="black"
+          $fontSize="default"
+          $fontWeight="bold"
+          aria-label={`장소 이름은 ${pinTitle} 이고`}
+        >
           {pinTitle}
         </EllipsisTitle>
         <Space size={0} />
-        <Text color="gray" $fontSize="small" $fontWeight="normal">
+        <Text
+          color="gray"
+          $fontSize="small"
+          $fontWeight="normal"
+          aria-label={`장소의 위치는 ${pinLocation} 입니다.`}
+        >
           {pinLocation}
         </Text>
         <Space size={3} />
@@ -122,6 +138,7 @@ function PinPreview({
           color="black"
           $fontSize="small"
           $fontWeight="normal"
+          aria-label={`이 장소에 대한 미리보기 설명은 다음과 같습니다. ${pinInformation}`}
         >
           {pinInformation}
         </EllipsisDescription>
@@ -133,7 +150,7 @@ function PinPreview({
           onChange={onAddTagOfTopic}
           onKeyDown={onInputKeyDown}
           checked={Boolean(tags.map((tag) => tag.id).includes(pinId))}
-          aria-label={`${pinTitle} 핀 선택`}
+          aria-label={`${pinTitle} 장소 뽑아오기 선택`}
           ref={inputRef}
         />
       </Box>
@@ -150,6 +167,23 @@ const MultiSelectButton = styled.input`
   width: 24px;
   height: 24px;
   cursor: pointer;
+
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0.15em;
+  margin-right: 0.5em;
+  border: 0.1em solid ${({ theme }) => theme.color.black};
+  background-color: ${({ theme }) => theme.color.white};
+  outline: none;
+
+  &:checked {
+    border-color: transparent;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M5.707 7.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L7 8.586 5.707 7.293z'/%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-color: ${({ theme }) => theme.color.checked};
+  }
 `;
 
 const EllipsisTitle = styled(Text)`

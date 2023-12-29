@@ -14,7 +14,8 @@ function NotFound() {
   useSetLayoutWidth(FULLSCREEN);
 
   return (
-    <NotFoundContainer
+    <Wrapper
+      as="section"
       $justifyContent="center"
       $alignItems="center"
       width="100vw"
@@ -38,11 +39,11 @@ function NotFound() {
           메인페이지로 가기
         </NotFoundButton>
       </Flex>
-    </NotFoundContainer>
+    </Wrapper>
   );
 }
 
-const NotFoundContainer = styled(Flex)`
+const Wrapper = styled(Flex)`
   flex-direction: row;
   @media screen and (max-width: 700px) {
     flex-direction: column;

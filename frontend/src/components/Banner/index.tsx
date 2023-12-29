@@ -23,6 +23,7 @@ export default function Banner() {
 
   return (
     <Swiper
+      as="section"
       width={1140}
       height={400}
       $simpleTab
@@ -38,13 +39,18 @@ export default function Banner() {
             width="100%"
             src={BannerItemBoongWEBP}
             alt="붕어빵 배너"
+            aria-label="대동붕어빵여지도로 이동"
           />
         </Box>
       </Tab>
       <Tab label="사용법">
         <Box cursor="pointer">
           <a href={USAGE_URL} target="blank">
-            <BannerImage src={BannerItemUsageWEBP} alt="사용법 배너" />
+            <BannerImage
+              src={BannerItemUsageWEBP}
+              alt="사용법 배너"
+              aria-label="새 창을 띄워 사용법 페이지로 이동"
+            />
           </a>
         </Box>
       </Tab>

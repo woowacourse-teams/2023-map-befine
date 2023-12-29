@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { deleteApi } from '../../../apis/deleteApi';
 import { postApi } from '../../../apis/postApi';
 import { putApi } from '../../../apis/putApi';
+import { ARIA_FOCUS } from '../../../constants';
 import useToast from '../../../hooks/useToast';
 import { ConfirmCommentButton, CustomInput } from '../../../pages/PinDetail';
 import Flex from '../Flex';
@@ -76,7 +77,6 @@ function SingleComment({
       await refetch(Number(pinDetail));
       showToast('info', '댓글이 삭제되었습니다.');
     } catch (e) {
-      console.error(e);
       showToast('error', '댓글을 다시 작성해주세요');
     }
   };
@@ -98,7 +98,6 @@ function SingleComment({
       setIsEditing(false);
       showToast('info', '댓글이 수정되었습니다.');
     } catch (e) {
-      console.error(e);
       showToast('error', '댓글을 다시 작성해주세요');
     }
   };
@@ -119,7 +118,13 @@ function SingleComment({
           <Flex $justifyContent="space-between">
             <div>
               <Writer>
-                <Text $fontSize="default" $fontWeight="bold" color="black">
+                <Text
+                  $fontSize="default"
+                  $fontWeight="bold"
+                  color="black"
+                  tabIndex={ARIA_FOCUS}
+                  aria-label={`댓글 작성자는 ${comment.creator} 이고 댓글 내용은 ${comment.content}입니다.`}
+                >
                   @{comment.creator}
                 </Text>
               </Writer>
@@ -131,6 +136,9 @@ function SingleComment({
                   color="gray"
                   $fontWeight="bold"
                   onClick={onClickModifyBtn}
+                  tabIndex={ARIA_FOCUS}
+                  role="button"
+                  aria-label="댓글 수정"
                 >
                   수정
                 </Text>
@@ -139,6 +147,9 @@ function SingleComment({
                   color="primary"
                   $fontWeight="bold"
                   onClick={onClickDeleteBtn}
+                  tabIndex={ARIA_FOCUS}
+                  role="button"
+                  aria-label="댓글 삭제"
                 >
                   삭제
                 </Text>
@@ -176,7 +187,13 @@ function SingleComment({
                 onClick={toggleReplyOpen}
                 style={{ cursor: 'pointer', marginBottom: '8px' }}
               >
-                <Text color="black" $fontSize="small" $fontWeight="bold">
+                <Text
+                  color="black"
+                  $fontSize="small"
+                  $fontWeight="bold"
+                  role="button"
+                  tabIndex={ARIA_FOCUS}
+                >
                   답글 작성
                 </Text>
               </div>
@@ -214,7 +231,10 @@ function SingleComment({
                 width="28px"
                 height="28px"
               />
-              <MoreReplyButton onClick={toggleSeeMore}>
+              <MoreReplyButton
+                onClick={toggleSeeMore}
+                aria-label={seeMore ? '답글 숨기기' : '답글 보기'}
+              >
                 {seeMore ? '\u25B2' : '\u25BC'} 답글 {replyCount}개
               </MoreReplyButton>
             </Flex>

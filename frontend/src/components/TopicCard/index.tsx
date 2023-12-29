@@ -79,6 +79,7 @@ function TopicCard({
       onKeyDown={onElementKeyDown}
     >
       <Flex
+        as="article"
         $flexDirection="column"
         position="relative"
         tabIndex={0}
@@ -93,6 +94,7 @@ function TopicCard({
           $errorDefaultSrc={DEFAULT_TOPIC_IMAGE}
           radius="small"
           ratio="1.6 / 1"
+          isAriaHidden
         />
 
         <Box width="100%" $maxWidth="212px" padding={1}>
@@ -101,7 +103,7 @@ function TopicCard({
               color="black"
               $fontSize="default"
               $fontWeight="bold"
-              aria-label={`지도 이름 ${name}`}
+              aria-label={`지도 이름은 ${name} 입니다.`}
             >
               {name}
             </MediaText>
@@ -111,14 +113,21 @@ function TopicCard({
             color="black"
             $fontSize="small"
             $fontWeight="normal"
-            aria-label={`작성자 ${creator}`}
+            aria-label={`작성자는 ${creator} 이며`}
           >
             {creator}
           </MediaText>
 
           <Space size={0} />
 
-          <MediaText color="gray" $fontSize="small" $fontWeight="normal">
+          <MediaText
+            color="gray"
+            $fontSize="small"
+            $fontWeight="normal"
+            aria-label={`${updatedAt
+              .split('T')[0]
+              .replaceAll('-', '.')}에 마지막으로 업데이트 되었습니다.`}
+          >
             {updatedAt.split('T')[0].replaceAll('-', '.')} 업데이트
           </MediaText>
 
@@ -132,7 +141,7 @@ function TopicCard({
                 color="black"
                 $fontSize="extraSmall"
                 $fontWeight="normal"
-                aria-label={`핀 갯수 ${pinCount}개`}
+                aria-label={`핀 갯수는 ${pinCount}개 이며`}
               >
                 {pinCount > 999 ? '+999' : pinCount}개
               </MediaText>
@@ -144,7 +153,7 @@ function TopicCard({
                 color="black"
                 $fontSize="extraSmall"
                 $fontWeight="normal"
-                aria-label={`즐겨찾기 ${bookmarkCount}명`}
+                aria-label={`즐겨찾기는 ${bookmarkCount}명 입니다.`}
               >
                 {bookmarkCount > 999 ? '+999' : bookmarkCount}명
               </MediaText>
