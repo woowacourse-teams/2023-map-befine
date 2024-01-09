@@ -16,9 +16,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tanstack/react-query": "^5.17.9",
+    "@tanstack/react-query-devtools": "^5.17.9",
+    "axios": "^1.5.1",
     "history": "^5.3.0",
     "map-befine-swiper": "^0.8.3",
-    "msw-storybook-addon": "^1.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ga4": "^2.1.0",
@@ -27,6 +29,7 @@
     "zustand": "^4.4.3"
   },
   "devDependencies": {
+    "msw-storybook-addon": "^1.8.0",
     "@babel/core": "^7.22.8",
     "@babel/preset-env": "^7.22.7",
     "@babel/preset-react": "^7.22.5",
