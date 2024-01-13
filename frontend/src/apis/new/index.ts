@@ -7,6 +7,6 @@ export const getBookmarks = () =>
 export const getNewestTopics = () =>
   http.get<TopicCardProps[]>('/topics/newest');
 
-export const getAllTopics = () => http.get<TopicCardProps>('/topics');
+export const getAllTopics = () => http.get<TopicCardProps[]>('/topics');
 
-export const getBestTopics = () => http.get('/topics/bests');
+export const getBestTopics = () => http.get<TopicCardProps[]>('/topics/bests');
