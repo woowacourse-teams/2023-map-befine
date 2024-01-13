@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 import TopicCardSkeleton from './TopicCardSkeleton';
 
-function TopicCardContainerSkeleton() {
+function TopicListSkeleton() {
   return (
     <Wrapper>
       <TopicCardSkeleton />
@@ -19,8 +19,7 @@ const Wrapper = styled.section`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  width: 1036px;
-  height: 300px;
+  width: 1140px;
 `;
 
-export default TopicCardContainerSkeleton;
+export default TopicListSkeleton;

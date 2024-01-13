@@ -5,7 +5,7 @@ import Box from '../components/common/Box';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
@@ -38,7 +38,7 @@ function SeeAllNearTopics() {
 
       <MediaSpace size={6} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      <Suspense fallback={<TopicListSkeleton />}>
         <TopicCardList
           url="/topics"
           errorMessage="로그인 후 이용해주세요."

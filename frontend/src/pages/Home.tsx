@@ -5,7 +5,7 @@ import Banner from '../components/Banner';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import SearchBar from '../components/SearchBar/SearchBar';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { FULLSCREEN } from '../constants';
 import { MarkerContext } from '../context/MarkerContext';
 import { SeeTogetherContext } from '../context/SeeTogetherContext';
@@ -54,7 +54,7 @@ function Home() {
       <Banner />
       <Space size={6} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      <Suspense fallback={<TopicListSkeleton />}>
         <TopicListContainer
           url="/topics/bests"
           containerTitle="인기 급상승할 지도?"
@@ -65,7 +65,7 @@ function Home() {
 
       <MediaSpace size={9} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      <Suspense fallback={<TopicListSkeleton />}>
         <TopicListContainer
           url="/topics/newest"
           containerTitle="새로울 지도?"
@@ -76,7 +76,7 @@ function Home() {
 
       <MediaSpace size={9} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      <Suspense fallback={<TopicListSkeleton />}>
         <TopicListContainer
           url="/topics"
           containerTitle="모두일 지도?"
