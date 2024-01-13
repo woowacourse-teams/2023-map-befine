@@ -1,21 +1,38 @@
-import { styled } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
+import Space from '../common/Space';
+import SkeletonBox from './common/SkeletonBox';
 import TopicCardSkeleton from './TopicCardSkeleton';
 
 function TopicListSkeleton() {
   return (
-    <Wrapper>
-      <TopicCardSkeleton />
-      <TopicCardSkeleton />
-      <TopicCardSkeleton />
-      <TopicCardSkeleton />
-      <TopicCardSkeleton />
-      <TopicCardSkeleton />
-    </Wrapper>
+    <>
+      <SkeletonBox width={160} height={32} />
+      <Space size={0} />
+      <SkeletonBox width={230} height={16} />
+
+      <Space size={5} />
+
+      <TopicCardWrapper>
+        <TopicCardSkeleton />
+        <TopicCardSkeleton />
+        <TopicCardSkeleton />
+        <TopicCardSkeleton />
+        <TopicCardSkeleton />
+      </TopicCardWrapper>
+      <Space size={4} />
+      <TopicCardWrapper>
+        <TopicCardSkeleton />
+        <TopicCardSkeleton />
+        <TopicCardSkeleton />
+        <TopicCardSkeleton />
+        <TopicCardSkeleton />
+      </TopicCardWrapper>
+    </>
   );
 }
 
-const Wrapper = styled.section`
+const TopicCardWrapper = styled.section`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;

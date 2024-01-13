@@ -2,60 +2,20 @@ import { keyframes, styled } from 'styled-components';
 
 import Box from '../common/Box';
 import Space from '../common/Space';
+import SkeletonBox from './common/SkeletonBox';
 
 function TopicCardSkeleton() {
   return (
     <Box>
-      <SkeletonImg />
+      <SkeletonBox width="100%" $maxWidth={212} ratio="1.6 / 1" />
       <Space size={1} />
-      <SkeletonTitle />
+      <SkeletonBox width={212} height={25} />
       <Space size={5} />
-      <SkeletonSubTitle />
+      <SkeletonBox width={100} height={25} />
       <Space size={1} />
-      <SkeletonDescription />
+      <SkeletonBox width={212} height={46} />
     </Box>
   );
 }
-
-const skeletonAnimation = keyframes`
-  from {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const SkeletonImg = styled.div`
-  width: 100%;
-  max-width: 212px;
-  aspect-ratio: 1.6 / 1;
-
-  border-radius: 4px;
-
-  background: ${({ theme }) => theme.color.lightGray};
-  animation: ${skeletonAnimation} 1s infinite;
-`;
-
-const SkeletonTitle = styled.div`
-  width: 212px;
-  height: 25px;
-
-  border-radius: 4px;
-
-  background: ${({ theme }) => theme.color.lightGray};
-  animation: ${skeletonAnimation} 1s infinite;
-`;
-
-const SkeletonSubTitle = styled(SkeletonTitle)`
-  width: 100px;
-`;
-
-const SkeletonDescription = styled(SkeletonTitle)`
-  height: 46px;
-`;
 
 export default TopicCardSkeleton;

@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { styled } from 'styled-components';
 
 import useGetBookmarks from '../apiHooks/new/useGetBookmarks';
@@ -12,7 +11,7 @@ import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import Text from '../components/common/Text';
 import MediaText from '../components/common/Text/MediaText';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
 import TopicCard from '../components/TopicCard';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
@@ -24,26 +23,17 @@ function Bookmark() {
   useSetNavbarHighlight('favorite');
 
   const { routingHandlers } = useNavigator();
-  const topics = useGetBookmarks();
+  const { isLoading, bookmarks: topics } = useGetBookmarks();
 
-  if (!topics) {
+  if (isLoading)
     return (
-      <EmptyWrapper>
-        <Flex $alignItems="center">
-          <FavoriteNotFilledSVG />
-          <Space size={1} />
-          <Text color="black" $fontSize="default" $fontWeight="normal">
-            버튼으로 지도를 즐겨찾기에 담아보세요.
-          </Text>
-          <Space size={4} />
-        </Flex>
-        <Space size={5} />
-        <Button variant="primary" onClick={routingHandlers.home}>
-          메인페이지로 가기
-        </Button>
-      </EmptyWrapper>
+      <>
+        <Wrapper>
+          <Space size={5} />
+          <TopicListSkeleton />
+        </Wrapper>
+      </>
     );
-  }
 
   return (
     <Wrapper>
@@ -69,7 +59,7 @@ function Bookmark() {
 
       <MediaSpace size={6} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      {topics ? (
         <TopicsWrapper>
           <Grid
             rows="auto"
@@ -102,8 +92,22 @@ function Bookmark() {
             ))}
           </Grid>
         </TopicsWrapper>
-      </Suspense>
-
+      ) : (
+        <EmptyWrapper>
+          <Flex $alignItems="center">
+            <FavoriteNotFilledSVG />
+            <Space size={1} />
+            <Text color="black" $fontSize="default" $fontWeight="normal">
+              버튼으로 지도를 즐겨찾기에 담아보세요.
+            </Text>
+            <Space size={4} />
+          </Flex>
+          <Space size={5} />
+          <Button variant="primary" onClick={routingHandlers.home}>
+            메인페이지로 가기
+          </Button>
+        </EmptyWrapper>
+      )}
       <Space size={8} />
     </Wrapper>
   );
