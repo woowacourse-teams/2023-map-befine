@@ -4,7 +4,7 @@ import { getNewestTopics } from '../../apis/new';
 
 const useGetNewestTopics = () => {
   const { isLoading, data: newestTopics } = useQuery({
-    queryKey: ['NewestTopics'],
+    queryKey: ['GetNewestTopics'],
     queryFn: getNewestTopics,
   });
 

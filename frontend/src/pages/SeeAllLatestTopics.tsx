@@ -37,7 +37,7 @@ function SeeAllLatestTopics() {
     );
 
   return (
-    <Wrapper as="section">
+    <Wrapper>
       <Space size={5} />
       <MediaText
         as="h2"
