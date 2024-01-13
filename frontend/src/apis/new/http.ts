@@ -5,6 +5,7 @@ const BASE_URL = process.env.APP_URL || `https://mapbefine.com/${API_POSTFIX}`;
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
+  headers: { Authorization: `Bearer ${localStorage.getItem('userToken')}` },
 });
 
 export interface HttpClient extends AxiosInstance {
@@ -28,3 +29,6 @@ export interface HttpClient extends AxiosInstance {
 }
 
 export const http: HttpClient = axiosInstance;
+
+// http.interceptors.request.use(())
+http.interceptors.response.use((res) => res.data);

@@ -3,12 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { getBookmarks } from '../../apis/new';
 
 const useGetBookmarks = () => {
-  const { data: bookmarks } = useQuery({
+  const { isLoading, data: bookmarks } = useQuery({
     queryKey: ['GetBookmarks'],
     queryFn: getBookmarks,
   });
 
-  return bookmarks;
+  return { isLoading, bookmarks };
 };
 
 export default useGetBookmarks;
