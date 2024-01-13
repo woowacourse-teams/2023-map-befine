@@ -11,6 +11,7 @@ import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import Text from '../components/common/Text';
 import MediaText from '../components/common/Text/MediaText';
+import SkeletonBox from '../components/Skeletons/common/SkeletonBox';
 import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
 import TopicCard from '../components/TopicCard';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
@@ -29,6 +30,11 @@ function Bookmark() {
     return (
       <>
         <Wrapper>
+          <Space size={5} />
+          <SkeletonBox width={160} height={32} />
+          <Space size={0} />
+          <SkeletonBox width={230} height={16} />
+
           <Space size={5} />
           <TopicListSkeleton />
         </Wrapper>
@@ -60,7 +66,7 @@ function Bookmark() {
       <MediaSpace size={6} />
 
       {topics ? (
-        <TopicsWrapper>
+        <Flex $flexWrap="wrap" $gap="20px">
           <Grid
             rows="auto"
             columns={5}
@@ -91,9 +97,9 @@ function Bookmark() {
               </ul>
             ))}
           </Grid>
-        </TopicsWrapper>
+        </Flex>
       ) : (
-        <EmptyWrapper>
+        <Flex height="240px" $flexDirection="column" $alignItems="center">
           <Flex $alignItems="center">
             <FavoriteNotFilledSVG />
             <Space size={1} />
@@ -106,7 +112,7 @@ function Bookmark() {
           <Button variant="primary" onClick={routingHandlers.home}>
             메인페이지로 가기
           </Button>
-        </EmptyWrapper>
+        </Flex>
       )}
       <Space size={8} />
     </Wrapper>
@@ -121,19 +127,6 @@ const Wrapper = styled.section`
   @media (max-width: 1180px) {
     width: 100%;
   }
-`;
-
-const EmptyWrapper = styled.section`
-  height: 240px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const TopicsWrapper = styled.section`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
 `;
 
 export default Bookmark;
