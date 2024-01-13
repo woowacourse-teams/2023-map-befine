@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ReactDOM from 'react-dom/client';
 import ReactGA from 'react-ga4';
 import { ThemeProvider } from 'styled-components';
@@ -7,6 +8,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 import GlobalStyle from './GlobalStyle';
 import NotFound from './pages/NotFound';
 import theme from './themes';
+
+const queryClient = new QueryClient();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
@@ -22,10 +25,12 @@ if (process.env.REACT_APP_GOOGLE_ANALYTICS) {
 }
 
 root.render(
-  <ThemeProvider theme={theme}>
-    <GlobalStyle />
-    <ErrorBoundary fallback={NotFound}>
-      <App />
-    </ErrorBoundary>
-  </ThemeProvider>,
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <ErrorBoundary fallback={NotFound}>
+        <App />
+      </ErrorBoundary>
+    </ThemeProvider>
+  </QueryClientProvider>,
 );
