@@ -10,9 +10,9 @@ import Search from './pages/Search';
 const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
 const NewPin = lazy(() => import('./pages/NewPin'));
 const NewTopic = lazy(() => import('./pages/NewTopic'));
-const SeeAllPopularTopics = lazy(() => import('./pages/SeeAllBestTopics'));
-const SeeAllNearTopics = lazy(() => import('./pages/SeeAllAllTopics'));
-const SeeAllLatestTopics = lazy(() => import('./pages/SeeAllNewestTopics'));
+const SeeAllBestTopics = lazy(() => import('./pages/SeeAllBestTopics'));
+const SeeAllAllTopics = lazy(() => import('./pages/SeeAllAllTopics'));
+const SeeAllNewestTopics = lazy(() => import('./pages/SeeAllNewestTopics'));
 const KakaoRedirect = lazy(() => import('./pages/KakaoRedirect'));
 const Profile = lazy(() => import('./pages/Profile'));
 const AskLogin = lazy(() => import('./pages/AskLogin'));
@@ -80,7 +80,7 @@ const routes: routeElement[] = [
         path: 'see-all/popularity',
         element: (
           <SuspenseComp>
-            <SeeAllPopularTopics />
+            <SeeAllBestTopics />
           </SuspenseComp>
         ),
         withAuth: false,
@@ -89,7 +89,7 @@ const routes: routeElement[] = [
         path: 'see-all/near',
         element: (
           <SuspenseComp>
-            <SeeAllNearTopics />
+            <SeeAllAllTopics />
           </SuspenseComp>
         ),
         withAuth: false,
@@ -98,7 +98,7 @@ const routes: routeElement[] = [
         path: 'see-all/latest',
         element: (
           <SuspenseComp>
-            <SeeAllLatestTopics />
+            <SeeAllNewestTopics />
           </SuspenseComp>
         ),
         withAuth: false,
