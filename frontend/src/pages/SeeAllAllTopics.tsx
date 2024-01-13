@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 
-import useGetNewestTopics from '../apiHooks/new/useGetNewestTopics';
-import { getNewestTopics } from '../apis/new';
+import useGetAllTopics from '../apiHooks/new/useGetAllTopics';
+import { getAllTopics } from '../apis/new';
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Grid from '../components/common/Grid';
@@ -15,11 +15,11 @@ import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-function SeeAllLatestTopics() {
+function SeeAllAllTopics() {
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
 
-  const { isLoading, newestTopics: topics } = useGetNewestTopics();
+  const { isLoading, allTopics: topics } = useGetAllTopics();
 
   if (isLoading)
     return (
@@ -45,9 +45,9 @@ function SeeAllLatestTopics() {
         $fontSize="extraLarge"
         $fontWeight="bold"
         tabIndex={ARIA_FOCUS}
-        aria-label="새로울 지도 전체보기 페이지 입니다."
+        aria-label="모두일 지도 전체보기 페이지 입니다."
       >
-        새로울 지도?
+        모두일 지도?
       </MediaText>
 
       <MediaSpace size={6} />
@@ -79,7 +79,7 @@ function SeeAllLatestTopics() {
                   bookmarkCount={topic.bookmarkCount}
                   isInAtlas={topic.isInAtlas}
                   isBookmarked={topic.isBookmarked}
-                  getTopicsFromServer={getNewestTopics}
+                  getTopicsFromServer={getAllTopics}
                 />
               </ul>
             ))}
@@ -101,4 +101,4 @@ const Wrapper = styled(Box)`
   }
 `;
 
-export default SeeAllLatestTopics;
+export default SeeAllAllTopics;

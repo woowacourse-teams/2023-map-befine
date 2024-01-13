@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 
-import useGetAllTopics from '../apiHooks/new/useGetAllTopics';
-import { getAllTopics } from '../apis/new';
+import useGetBestTopics from '../apiHooks/new/useGetBestTopics';
+import { getBestTopics } from '../apis/new';
 import Box from '../components/common/Box';
 import Flex from '../components/common/Flex';
 import Grid from '../components/common/Grid';
@@ -15,11 +15,11 @@ import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-function SeeAllNearTopics() {
+function SeeAllBestTopics() {
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
 
-  const { isLoading, allTopics: topics } = useGetAllTopics();
+  const { isLoading, bestTopics: topics } = useGetBestTopics();
 
   if (isLoading)
     return (
@@ -45,9 +45,9 @@ function SeeAllNearTopics() {
         $fontSize="extraLarge"
         $fontWeight="bold"
         tabIndex={ARIA_FOCUS}
-        aria-label="모두일 지도 전체보기 페이지 입니다."
+        aria-label="인기 급상승할 지도 전체보기 페이지 입니다."
       >
-        모두일 지도?
+        인기 급상승할 지도?
       </MediaText>
 
       <MediaSpace size={6} />
@@ -79,13 +79,14 @@ function SeeAllNearTopics() {
                   bookmarkCount={topic.bookmarkCount}
                   isInAtlas={topic.isInAtlas}
                   isBookmarked={topic.isBookmarked}
-                  getTopicsFromServer={getAllTopics}
+                  getTopicsFromServer={getBestTopics}
                 />
               </ul>
             ))}
           </Grid>
         </Flex>
       )}
+
       <Space size={8} />
     </Wrapper>
   );
@@ -101,4 +102,4 @@ const Wrapper = styled(Box)`
   }
 `;
 
-export default SeeAllNearTopics;
+export default SeeAllBestTopics;
