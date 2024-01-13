@@ -1,18 +1,11 @@
-import { keyframes, styled } from 'styled-components';
+import { styled } from 'styled-components';
 
 import Space from '../common/Space';
-import SkeletonBox from './common/SkeletonBox';
 import TopicCardSkeleton from './TopicCardSkeleton';
 
 function TopicListSkeleton() {
   return (
     <>
-      <SkeletonBox width={160} height={32} />
-      <Space size={0} />
-      <SkeletonBox width={230} height={16} />
-
-      <Space size={5} />
-
       <TopicCardWrapper>
         <TopicCardSkeleton />
         <TopicCardSkeleton />

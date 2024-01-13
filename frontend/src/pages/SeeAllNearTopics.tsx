@@ -1,29 +1,43 @@
-import { lazy, Suspense } from 'react';
 import { styled } from 'styled-components';
 
+import useGetAllTopics from '../apiHooks/new/useGetAllTopics';
+import { getAllTopics } from '../apis/new';
 import Box from '../components/common/Box';
+import Flex from '../components/common/Flex';
+import Grid from '../components/common/Grid';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
+import SkeletonBox from '../components/Skeletons/common/SkeletonBox';
 import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicCard from '../components/TopicCard';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
-import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-const TopicCardList = lazy(() => import('../components/TopicCardList'));
-
 function SeeAllNearTopics() {
-  const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
 
-  const goToHome = () => {
-    routePage('/new-topic');
-  };
+  const { isLoading, allTopics: topics } = useGetAllTopics();
+
+  if (isLoading)
+    return (
+      <>
+        <Wrapper>
+          <Space size={5} />
+
+          <SkeletonBox width={160} height={32} />
+          <Space size={4} />
+
+          <Space size={5} />
+          <TopicListSkeleton />
+        </Wrapper>
+      </>
+    );
 
   return (
-    <Wrapper as="section">
+    <Wrapper>
       <Space size={5} />
       <MediaText
         as="h2"
@@ -38,16 +52,40 @@ function SeeAllNearTopics() {
 
       <MediaSpace size={6} />
 
-      <Suspense fallback={<TopicListSkeleton />}>
-        <TopicCardList
-          url="/topics"
-          errorMessage="로그인 후 이용해주세요."
-          commentWhenEmpty="지도가 없습니다. 추가하기 버튼을 눌러 지도를 추가해보세요."
-          pageCommentWhenEmpty="지도 만들러 가기"
-          routePage={goToHome}
-        />
-      </Suspense>
-
+      {topics && (
+        <Flex as="section" $flexWrap="wrap" $gap="20px">
+          <Grid
+            rows="auto"
+            columns={5}
+            gap={20}
+            width="100%"
+            $mediaQueries={[
+              [1180, 4],
+              [900, 3],
+              [660, 2],
+              [320, 1],
+            ]}
+          >
+            {topics.map((topic) => (
+              <ul key={topic.id}>
+                <TopicCard
+                  cardType="default"
+                  id={topic.id}
+                  image={topic.image}
+                  name={topic.name}
+                  creator={topic.creator}
+                  updatedAt={topic.updatedAt}
+                  pinCount={topic.pinCount}
+                  bookmarkCount={topic.bookmarkCount}
+                  isInAtlas={topic.isInAtlas}
+                  isBookmarked={topic.isBookmarked}
+                  getTopicsFromServer={getAllTopics}
+                />
+              </ul>
+            ))}
+          </Grid>
+        </Flex>
+      )}
       <Space size={8} />
     </Wrapper>
   );
