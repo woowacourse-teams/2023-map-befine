@@ -1,11 +1,8 @@
 import { Swiper, Tab } from 'map-befine-swiper';
-import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
-import useGet from '../../apiHooks/useGet';
 import useTopicsQuery from '../../hooks/api/useTopicsQuery';
 import useKeyDown from '../../hooks/useKeyDown';
-import { TopicCardProps } from '../../types/Topic';
 import Box from '../common/Box';
 import Flex from '../common/Flex';
 import Space from '../common/Space';
@@ -26,20 +23,8 @@ function TopicCardContainer({
   containerDescription,
   routeWhenSeeAll,
 }: TopicCardContainerProps) {
-  const [_, setTopics] = useState<TopicCardProps[] | null>(null);
+  const { topics, refetchTopics } = useTopicsQuery(url);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLSpanElement>();
-  const { fetchGet } = useGet();
-
-  const setTopicsFromServer = async () => {
-    await fetchGet<TopicCardProps[]>(
-      url,
-      '지도를 가져오는데 실패했습니다. 잠시 후 다시 시도해주세요.',
-      (response) => {
-        setTopics(response);
-      },
-    );
-  };
-  const { topics } = useTopicsQuery(url);
 
   return (
     <section>
@@ -110,7 +95,7 @@ function TopicCardContainer({
                       bookmarkCount={topic.bookmarkCount}
                       isInAtlas={topic.isInAtlas}
                       isBookmarked={topic.isBookmarked}
-                      getTopicsFromServer={setTopicsFromServer}
+                      getTopicsFromServer={refetchTopics}
                     />
                     <CustomSpace />
                   </Flex>
