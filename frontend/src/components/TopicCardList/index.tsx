@@ -9,6 +9,7 @@ import Grid from '../common/Grid';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import TopicCard from '../TopicCard';
+import useProfileList from '../../hooks/queries/useProfileList';
 
 interface TopicCardListProps {
   url: string;
@@ -29,11 +30,12 @@ function TopicCardList({
 }: TopicCardListProps) {
   const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
   const { fetchGet } = useGet();
+  const { data } = useProfileList(url);
 
   const getTopicsFromServer = async () => {
-    fetchGet<TopicCardProps[]>(url, errorMessage, (response) => {
-      setTopics(response);
-    });
+    if (data !== undefined) {
+      setTopics(data);
+    }
   };
 
   useEffect(() => {
