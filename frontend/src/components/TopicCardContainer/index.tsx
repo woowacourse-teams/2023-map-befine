@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
 import useGet from '../../apiHooks/useGet';
+import useTopicsQuery from '../../hooks/api/useTopicsQuery';
 import useKeyDown from '../../hooks/useKeyDown';
 import { TopicCardProps } from '../../types/Topic';
 import Box from '../common/Box';
@@ -25,7 +26,7 @@ function TopicCardContainer({
   containerDescription,
   routeWhenSeeAll,
 }: TopicCardContainerProps) {
-  const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
+  const [_, setTopics] = useState<TopicCardProps[] | null>(null);
   const { elementRef, onElementKeyDown } = useKeyDown<HTMLSpanElement>();
   const { fetchGet } = useGet();
 
@@ -38,10 +39,7 @@ function TopicCardContainer({
       },
     );
   };
-
-  useEffect(() => {
-    setTopicsFromServer();
-  }, []);
+  const { topics } = useTopicsQuery(url);
 
   return (
     <section>
