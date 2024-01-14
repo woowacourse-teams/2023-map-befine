@@ -3,11 +3,11 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 const API_POSTFIX = 'api';
 const BASE_URL = process.env.APP_URL || `https://mapbefine.com/${API_POSTFIX}`;
 
+const token = localStorage.getItem('userToken');
+
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('userToken')}`,
-  },
+  headers: token ? { Authorization: `Bearer ${token}` } : {},
 });
 
 export interface HttpClient extends AxiosInstance {
