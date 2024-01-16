@@ -11,8 +11,6 @@ import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import Text from '../components/common/Text';
 import MediaText from '../components/common/Text/MediaText';
-import SkeletonBox from '../components/Skeletons/common/SkeletonBox';
-import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
 import TopicCard from '../components/TopicCard';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
@@ -24,22 +22,7 @@ function Bookmark() {
   useSetNavbarHighlight('favorite');
 
   const { routingHandlers } = useNavigator();
-  const { isLoading, bookmarks: topics } = useGetBookmarks();
-
-  if (isLoading)
-    return (
-      <>
-        <Wrapper>
-          <Space size={5} />
-          <SkeletonBox width={160} height={32} />
-          <Space size={0} />
-          <SkeletonBox width={230} height={16} />
-
-          <Space size={5} />
-          <TopicListSkeleton />
-        </Wrapper>
-      </>
-    );
+  const { bookmarks: topics } = useGetBookmarks();
 
   return (
     <Wrapper>

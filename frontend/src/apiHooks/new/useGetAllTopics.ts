@@ -1,14 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { getAllTopics } from '../../apis/new';
 
 const useGetAllTopics = () => {
-  const { isLoading, data: allTopics } = useQuery({
+  const { data: allTopics } = useSuspenseQuery({
     queryKey: ['GetAllTopics'],
     queryFn: getAllTopics,
   });
 
-  return { isLoading, allTopics };
+  return { allTopics };
 };
 
 export default useGetAllTopics;

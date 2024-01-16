@@ -1,14 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { getNewestTopics } from '../../apis/new';
 
 const useGetNewestTopics = () => {
-  const { isLoading, data: newestTopics } = useQuery({
+  const { data: newestTopics } = useSuspenseQuery({
     queryKey: ['GetNewestTopics'],
     queryFn: getNewestTopics,
   });
 
-  return { isLoading, newestTopics };
+  return { newestTopics };
 };
 
 export default useGetNewestTopics;

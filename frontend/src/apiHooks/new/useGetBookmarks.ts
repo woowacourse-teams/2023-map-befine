@@ -1,14 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { getBookmarks } from '../../apis/new';
 
 const useGetBookmarks = () => {
-  const { isLoading, data: bookmarks } = useQuery({
+  const { data: bookmarks } = useSuspenseQuery({
     queryKey: ['GetBookmarks'],
     queryFn: getBookmarks,
   });
 
-  return { isLoading, bookmarks };
+  return { bookmarks };
 };
 
 export default useGetBookmarks;

@@ -2,6 +2,7 @@ import { lazy, ReactNode, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import AuthLayout from './components/Layout/AuthLayout';
+import TopicListSkeleton from './components/Skeletons/TopicListSkeleton';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import RootPage from './pages/RootPage';
@@ -79,36 +80,36 @@ const routes: routeElement[] = [
       {
         path: 'see-all/popularity',
         element: (
-          <SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
             <SeeAllBestTopics />
-          </SuspenseComp>
+          </Suspense>
         ),
         withAuth: false,
       },
       {
         path: 'see-all/near',
         element: (
-          <SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
             <SeeAllAllTopics />
-          </SuspenseComp>
+          </Suspense>
         ),
         withAuth: false,
       },
       {
         path: 'see-all/latest',
         element: (
-          <SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
             <SeeAllNewestTopics />
-          </SuspenseComp>
+          </Suspense>
         ),
         withAuth: false,
       },
       {
         path: 'favorite',
         element: (
-          <SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
             <Bookmark />
-          </SuspenseComp>
+          </Suspense>
         ),
         withAuth: true,
       },

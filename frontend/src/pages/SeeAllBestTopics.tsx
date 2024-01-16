@@ -8,8 +8,6 @@ import Grid from '../components/common/Grid';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
-import SkeletonBox from '../components/Skeletons/common/SkeletonBox';
-import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
 import TopicCard from '../components/TopicCard';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
@@ -19,22 +17,7 @@ function SeeAllBestTopics() {
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
 
-  const { isLoading, bestTopics: topics } = useGetBestTopics();
-
-  if (isLoading)
-    return (
-      <>
-        <Wrapper>
-          <Space size={5} />
-
-          <SkeletonBox width={160} height={32} />
-          <Space size={4} />
-
-          <Space size={5} />
-          <TopicListSkeleton />
-        </Wrapper>
-      </>
-    );
+  const { bestTopics: topics } = useGetBestTopics();
 
   return (
     <Wrapper>
