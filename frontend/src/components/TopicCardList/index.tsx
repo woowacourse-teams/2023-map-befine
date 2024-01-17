@@ -1,7 +1,6 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
-import useGet from '../../apiHooks/useGet';
 import { TopicCardProps } from '../../types/Topic';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
@@ -29,7 +28,6 @@ function TopicCardList({
   children,
 }: TopicCardListProps) {
   const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
-  const { fetchGet } = useGet();
   const { data } = useProfileList();
 
   const getTopicsFromServer = async () => {
