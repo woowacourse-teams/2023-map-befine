@@ -30,7 +30,7 @@ function TopicCardList({
 }: TopicCardListProps) {
   const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
   const { fetchGet } = useGet();
-  const { data } = useProfileList(url);
+  const { data } = useProfileList();
 
   const getTopicsFromServer = async () => {
     if (data !== undefined) {
