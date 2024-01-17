@@ -45,21 +45,19 @@
 <br />
 <br />
 
-<table>
-  <tr>
-    <td>
-      <p style="font-size: 24px; font-weight: bold">
-        관심 있는 지도들을 골라
-        여러 장소를 한 번에 모아보세요.
-      </p>
-      <p >
-        예를 들어, 산책 명소 지도와 카페 지도를 모아
-        데이트 코스를 만들 수 있어요.
-      </p>
-    </td>
-    <td><img src="https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/10a4aebe-77ee-4b0b-9870-9abd59ca3052" alt="image" /></td>
-  </tr>
-</table>
+<div style="display: flex">
+  <div>
+    <p style="font-size: 24px; font-weight: bold">
+    관심 있는 지도들을 골라
+    여러 장소를 한 번에 모아보세요.
+    </p>
+    <p >
+    예를 들어, 산책 명소 지도와 카페 지도를 모아
+    데이트 코스를 만들 수 있어요.
+    </p>
+  </div>
+  <div><img src="https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/10a4aebe-77ee-4b0b-9870-9abd59ca3052" alt="image" /></div>
+</div>
 
 <br />
 
