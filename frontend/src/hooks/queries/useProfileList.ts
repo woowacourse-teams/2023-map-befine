@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { getProfile } from '../../apis/Patrick';
-import { TopicCardProps } from '../../types/Topic';
 
 const useProfileList = () => {
-  return useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['profileList'],
     queryFn: getProfile,
   });
+
+  return { data, refetch };
 };
 
 export default useProfileList;
