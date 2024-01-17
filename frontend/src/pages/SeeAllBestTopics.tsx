@@ -1,23 +1,22 @@
+import { Suspense } from 'react';
 import { styled } from 'styled-components';
 
-import useGetBestTopics from '../apiHooks/new/useGetBestTopics';
-import { getBestTopics } from '../apis/new';
 import Box from '../components/common/Box';
-import Flex from '../components/common/Flex';
-import Grid from '../components/common/Grid';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
-import TopicCard from '../components/TopicCard';
+import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicCardList from '../components/TopicCardList';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
+import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-function SeeAllBestTopics() {
+function SeeAllAllTopics() {
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
 
-  const { bestTopics: topics } = useGetBestTopics();
+  const { routingHandlers } = useNavigator();
 
   return (
     <Wrapper>
@@ -28,47 +27,21 @@ function SeeAllBestTopics() {
         $fontSize="extraLarge"
         $fontWeight="bold"
         tabIndex={ARIA_FOCUS}
-        aria-label="인기 급상승할 지도 전체보기 페이지 입니다."
+        aria-label="모두일 지도 전체보기 페이지 입니다."
       >
-        인기 급상승할 지도?
+        새로울 지도?
       </MediaText>
 
       <MediaSpace size={6} />
 
-      {topics && (
-        <Flex as="section" $flexWrap="wrap" $gap="20px">
-          <Grid
-            rows="auto"
-            columns={5}
-            gap={20}
-            width="100%"
-            $mediaQueries={[
-              [1180, 4],
-              [900, 3],
-              [660, 2],
-              [320, 1],
-            ]}
-          >
-            {topics.map((topic) => (
-              <ul key={topic.id}>
-                <TopicCard
-                  cardType="default"
-                  id={topic.id}
-                  image={topic.image}
-                  name={topic.name}
-                  creator={topic.creator}
-                  updatedAt={topic.updatedAt}
-                  pinCount={topic.pinCount}
-                  bookmarkCount={topic.bookmarkCount}
-                  isInAtlas={topic.isInAtlas}
-                  isBookmarked={topic.isBookmarked}
-                  getTopicsFromServer={getBestTopics}
-                />
-              </ul>
-            ))}
-          </Grid>
-        </Flex>
-      )}
+      <Suspense fallback={<TopicListSkeleton />}>
+        <TopicCardList
+          url="/topics/bests"
+          commentWhenEmpty="생성된 지도가 없습니다. 지도를 만들어보세요."
+          routePageName="지도 만들러 가기"
+          routePage={routingHandlers.newTopic}
+        />
+      </Suspense>
 
       <Space size={8} />
     </Wrapper>
@@ -85,4 +58,4 @@ const Wrapper = styled(Box)`
   }
 `;
 
-export default SeeAllBestTopics;
+export default SeeAllAllTopics;
