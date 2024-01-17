@@ -27,18 +27,7 @@ function TopicCardList({
   routePage,
   children,
 }: TopicCardListProps) {
-  const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
-  const { data } = useProfileList();
-
-  const getTopicsFromServer = async () => {
-    if (data !== undefined) {
-      setTopics(data);
-    }
-  };
-
-  useEffect(() => {
-    getTopicsFromServer();
-  }, []);
+  const { data: topics, refetch: refetchTopic } = useProfileList();
 
   if (!topics) return null;
 
@@ -88,7 +77,7 @@ function TopicCardList({
               bookmarkCount={topic.bookmarkCount}
               isInAtlas={topic.isInAtlas}
               isBookmarked={topic.isBookmarked}
-              getTopicsFromServer={getTopicsFromServer}
+              getTopicsFromServer={refetchTopic}
             />
           </ul>
         ))}
