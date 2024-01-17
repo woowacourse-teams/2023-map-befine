@@ -11,6 +11,7 @@ const token = localStorage.getItem('userToken');
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: token ? { Authorization: `Bearer ${token}` } : {},
+  // withCredentials: true,
 });
 
 let refreshResponse: Promise<Response> | null = null;
