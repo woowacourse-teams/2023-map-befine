@@ -1,7 +1,6 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
-import useGet from '../../apiHooks/useGet';
 import { TopicCardProps } from '../../types/Topic';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
@@ -9,6 +8,7 @@ import Grid from '../common/Grid';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import TopicCard from '../TopicCard';
+import useProfileList from '../../hooks/queries/useProfileList';
 
 interface TopicCardListProps {
   url: string;
@@ -27,18 +27,7 @@ function TopicCardList({
   routePage,
   children,
 }: TopicCardListProps) {
-  const [topics, setTopics] = useState<TopicCardProps[] | null>(null);
-  const { fetchGet } = useGet();
-
-  const getTopicsFromServer = async () => {
-    fetchGet<TopicCardProps[]>(url, errorMessage, (response) => {
-      setTopics(response);
-    });
-  };
-
-  useEffect(() => {
-    getTopicsFromServer();
-  }, []);
+  const { data: topics, refetch: refetchTopic } = useProfileList();
 
   if (!topics) return null;
 
@@ -88,7 +77,7 @@ function TopicCardList({
               bookmarkCount={topic.bookmarkCount}
               isInAtlas={topic.isInAtlas}
               isBookmarked={topic.isBookmarked}
-              getTopicsFromServer={getTopicsFromServer}
+              getTopicsFromServer={refetchTopic}
             />
           </ul>
         ))}
