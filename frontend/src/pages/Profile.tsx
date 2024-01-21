@@ -16,13 +16,9 @@ import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 const TopicCardList = lazy(() => import('../components/TopicCardList'));
 
 function Profile() {
-  const { routePage } = useNavigator();
+  const { routingHandlers } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('profile');
-
-  const goToNewTopic = () => {
-    routePage('/new-topic');
-  };
 
   return (
     <Wrapper>
@@ -56,10 +52,9 @@ function Profile() {
       <Suspense fallback={<TopicListSkeleton />}>
         <TopicCardList
           url="/members/my/topics"
-          errorMessage="로그인 후 이용해주세요."
           commentWhenEmpty="추가하기 버튼을 눌러 지도를 추가해보세요."
-          pageCommentWhenEmpty="지도 만들러 가기"
-          routePage={goToNewTopic}
+          routePageName="메인 페이지로 가기"
+          routePage={routingHandlers.home}
         />
       </Suspense>
 
