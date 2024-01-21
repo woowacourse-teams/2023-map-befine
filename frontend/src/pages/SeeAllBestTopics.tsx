@@ -1,29 +1,25 @@
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 import { styled } from 'styled-components';
 
 import Box from '../components/common/Box';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicCardList from '../components/TopicCardList';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-const TopicCardList = lazy(() => import('../components/TopicCardList'));
-
-function SeeAllNearTopics() {
-  const { routePage } = useNavigator();
+function SeeAllAllTopics() {
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
 
-  const goToHome = () => {
-    routePage('/new-topic');
-  };
+  const { routingHandlers } = useNavigator();
 
   return (
-    <Wrapper as="section">
+    <Wrapper>
       <Space size={5} />
       <MediaText
         as="h2"
@@ -33,18 +29,17 @@ function SeeAllNearTopics() {
         tabIndex={ARIA_FOCUS}
         aria-label="모두일 지도 전체보기 페이지 입니다."
       >
-        모두일 지도?
+        새로울 지도?
       </MediaText>
 
       <MediaSpace size={6} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      <Suspense fallback={<TopicListSkeleton />}>
         <TopicCardList
-          url="/topics"
-          errorMessage="로그인 후 이용해주세요."
-          commentWhenEmpty="지도가 없습니다. 추가하기 버튼을 눌러 지도를 추가해보세요."
-          pageCommentWhenEmpty="지도 만들러 가기"
-          routePage={goToHome}
+          url="/topics/bests"
+          commentWhenEmpty="생성된 지도가 없습니다. 지도를 만들어보세요."
+          routePageName="지도 만들러 가기"
+          routePage={routingHandlers.newTopic}
         />
       </Suspense>
 
@@ -63,4 +58,4 @@ const Wrapper = styled(Box)`
   }
 `;
 
-export default SeeAllNearTopics;
+export default SeeAllAllTopics;

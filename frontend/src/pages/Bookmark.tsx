@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 import { styled } from 'styled-components';
 
 import FavoriteNotFilledSVG from '../assets/favoriteBtn_notFilled.svg';
@@ -7,22 +7,18 @@ import Flex from '../components/common/Flex';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicCardList from '../components/TopicCardList';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-const TopicCardList = lazy(() => import('../components/TopicCardList'));
-
 function Bookmark() {
-  const { routePage } = useNavigator();
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('favorite');
 
-  const goToHome = () => {
-    routePage('/');
-  };
+  const { routingHandlers } = useNavigator();
 
   return (
     <Wrapper>
@@ -48,16 +44,14 @@ function Bookmark() {
 
       <MediaSpace size={6} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      <Suspense fallback={<TopicListSkeleton />}>
         <TopicCardList
           url="/members/my/bookmarks"
-          errorMessage="로그인 후 이용해주세요."
           commentWhenEmpty="버튼으로 지도를 즐겨찾기에 담아보세요."
-          pageCommentWhenEmpty="메인페이지로 가기"
-          routePage={goToHome}
-        >
-          <FavoriteNotFilledSVG />
-        </TopicCardList>
+          routePageName="메인 페이지로 가기"
+          routePage={routingHandlers.home}
+          svgElementWhenEmpty={<FavoriteNotFilledSVG />}
+        />
       </Suspense>
 
       <Space size={8} />

@@ -1,29 +1,25 @@
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 import { styled } from 'styled-components';
 
 import Box from '../components/common/Box';
 import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicCardList from '../components/TopicCardList';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
 
-const TopicCardList = lazy(() => import('../components/TopicCardList'));
-
-function SeeAllLatestTopics() {
-  const { routePage } = useNavigator();
+function SeeAllAllTopics() {
   useSetLayoutWidth(FULLSCREEN);
   useSetNavbarHighlight('home');
 
-  const goToHome = () => {
-    routePage('/');
-  };
+  const { routingHandlers } = useNavigator();
 
   return (
-    <Wrapper as="section">
+    <Wrapper>
       <Space size={5} />
       <MediaText
         as="h2"
@@ -31,20 +27,19 @@ function SeeAllLatestTopics() {
         $fontSize="extraLarge"
         $fontWeight="bold"
         tabIndex={ARIA_FOCUS}
-        aria-label="새로울 지도 전체보기 페이지 입니다."
+        aria-label="모두일 지도 전체보기 페이지 입니다."
       >
-        새로울 지도?
+        모두일 지도?
       </MediaText>
 
       <MediaSpace size={6} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      <Suspense fallback={<TopicListSkeleton />}>
         <TopicCardList
-          url="/topics/newest"
-          errorMessage="로그인 후 이용해주세요."
-          commentWhenEmpty="최근에 핀이 찍힌 지도가 없습니다."
-          pageCommentWhenEmpty="메인페이지로 가기"
-          routePage={goToHome}
+          url="/topics"
+          commentWhenEmpty="생성된 지도가 없습니다. 지도를 만들어보세요."
+          routePageName="지도 만들러 가기"
+          routePage={routingHandlers.newTopic}
         />
       </Suspense>
 
@@ -63,4 +58,4 @@ const Wrapper = styled(Box)`
   }
 `;
 
-export default SeeAllLatestTopics;
+export default SeeAllAllTopics;

@@ -1,53 +1,21 @@
 import { keyframes, styled } from 'styled-components';
 
-import Flex from '../common/Flex';
+import Box from '../common/Box';
 import Space from '../common/Space';
+import SkeletonBox from './common/SkeletonBox';
 
 function TopicCardSkeleton() {
   return (
-    <Flex $flexDirection="row">
-      <SkeletonImg />
-      <Space size={2} />
-      <Flex $flexDirection="column">
-        <SkeletonTitle />
-        <Space size={5} />
-        <SkeletonDescription />
-      </Flex>
-    </Flex>
+    <Box>
+      <SkeletonBox width="100%" $maxWidth={212} ratio="1.6 / 1" />
+      <Space size={1} />
+      <SkeletonBox width={212} height={25} />
+      <Space size={5} />
+      <SkeletonBox width={100} height={25} />
+      <Space size={1} />
+      <SkeletonBox width={212} height={46} />
+    </Box>
   );
 }
-
-const skeletonAnimation = keyframes`
-    from {
-    opacity: 0.1;
-    }
-    to {
-    opacity: 1;
-    }
-`;
-
-const SkeletonImg = styled.div`
-  width: 138px;
-  height: 138px;
-
-  border-radius: 8px;
-
-  background: ${({ theme }) => theme.color.lightGray};
-  animation: ${skeletonAnimation} 1s infinite;
-`;
-
-const SkeletonTitle = styled.div`
-  width: 172px;
-  height: 32px;
-
-  border-radius: 8px;
-
-  background: ${({ theme }) => theme.color.lightGray};
-  animation: ${skeletonAnimation} 1s infinite;
-`;
-
-const SkeletonDescription = styled(SkeletonTitle)`
-  height: 80px;
-`;
 
 export default TopicCardSkeleton;

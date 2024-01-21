@@ -2,6 +2,7 @@ import { lazy, ReactNode, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import AuthLayout from './components/Layout/AuthLayout';
+import TopicListSkeleton from './components/Skeletons/TopicListSkeleton';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import RootPage from './pages/RootPage';
@@ -11,9 +12,9 @@ import TopicListSkeleton from './components/Skeletons/TopicListSkeleton';
 const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
 const NewPin = lazy(() => import('./pages/NewPin'));
 const NewTopic = lazy(() => import('./pages/NewTopic'));
-const SeeAllPopularTopics = lazy(() => import('./pages/SeeAllPopularTopics'));
-const SeeAllNearTopics = lazy(() => import('./pages/SeeAllNearTopics'));
-const SeeAllLatestTopics = lazy(() => import('./pages/SeeAllLatestTopics'));
+const SeeAllBestTopics = lazy(() => import('./pages/SeeAllBestTopics'));
+const SeeAllAllTopics = lazy(() => import('./pages/SeeAllAllTopics'));
+const SeeAllNewestTopics = lazy(() => import('./pages/SeeAllNewestTopics'));
 const KakaoRedirect = lazy(() => import('./pages/KakaoRedirect'));
 const Profile = lazy(() => import('./pages/Profile'));
 const AskLogin = lazy(() => import('./pages/AskLogin'));
@@ -80,36 +81,36 @@ const routes: routeElement[] = [
       {
         path: 'see-all/popularity',
         element: (
-          <SuspenseComp>
-            <SeeAllPopularTopics />
-          </SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
+            <SeeAllBestTopics />
+          </Suspense>
         ),
         withAuth: false,
       },
       {
         path: 'see-all/near',
         element: (
-          <SuspenseComp>
-            <SeeAllNearTopics />
-          </SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
+            <SeeAllAllTopics />
+          </Suspense>
         ),
         withAuth: false,
       },
       {
         path: 'see-all/latest',
         element: (
-          <SuspenseComp>
-            <SeeAllLatestTopics />
-          </SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
+            <SeeAllNewestTopics />
+          </Suspense>
         ),
         withAuth: false,
       },
       {
         path: 'favorite',
         element: (
-          <SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
             <Bookmark />
-          </SuspenseComp>
+          </Suspense>
         ),
         withAuth: true,
       },

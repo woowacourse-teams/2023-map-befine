@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
-import { styled } from 'styled-components';
-
-import { TopicCardProps } from '../../types/Topic';
+import { ReactNode } from 'react';
+import useGetTopics from '../../apiHooks/new/useGetTopics';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Grid from '../common/Grid';
@@ -12,30 +10,26 @@ import useProfileList from '../../hooks/queries/useProfileList';
 
 interface TopicCardListProps {
   url: string;
-  errorMessage: string;
   commentWhenEmpty: string;
-  pageCommentWhenEmpty: string;
+  routePageName: string;
   routePage: () => void;
-  children?: React.ReactNode;
+  svgElementWhenEmpty?: ReactNode;
 }
 
 function TopicCardList({
   url,
-  errorMessage,
   commentWhenEmpty,
-  pageCommentWhenEmpty,
+  routePageName,
   routePage,
-  children,
+  svgElementWhenEmpty,
 }: TopicCardListProps) {
-  const { data: topics, refetch: refetchTopic } = useProfileList();
-
-  if (!topics) return null;
+  const { topics, refetch } = useGetTopics(url);
 
   if (topics.length === 0) {
     return (
-      <EmptyWrapper>
+      <Flex height="240px" $flexDirection="column" $alignItems="center">
         <Flex $alignItems="center">
-          {children}
+          {svgElementWhenEmpty}
           <Space size={1} />
           <Text color="black" $fontSize="default" $fontWeight="normal">
             {commentWhenEmpty}
@@ -44,14 +38,14 @@ function TopicCardList({
         </Flex>
         <Space size={5} />
         <Button variant="primary" onClick={routePage}>
-          {pageCommentWhenEmpty}
+          {routePageName}
         </Button>
-      </EmptyWrapper>
+      </Flex>
     );
   }
 
   return (
-    <Wrapper>
+    <Flex $flexWrap="wrap" $gap="20px">
       <Grid
         rows="auto"
         columns={5}
@@ -77,26 +71,13 @@ function TopicCardList({
               bookmarkCount={topic.bookmarkCount}
               isInAtlas={topic.isInAtlas}
               isBookmarked={topic.isBookmarked}
-              getTopicsFromServer={refetchTopic}
+              getTopicsFromServer={refetch}
             />
           </ul>
         ))}
       </Grid>
-    </Wrapper>
+    </Flex>
   );
 }
-
-const EmptyWrapper = styled.section`
-  height: 240px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Wrapper = styled.section`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-`;
 
 export default TopicCardList;

@@ -7,7 +7,7 @@ import Space from '../components/common/Space';
 import MediaSpace from '../components/common/Space/MediaSpace';
 import MediaText from '../components/common/Text/MediaText';
 import MyInfo from '../components/MyInfo';
-import TopicCardContainerSkeleton from '../components/Skeletons/TopicListSkeleton';
+import TopicListSkeleton from '../components/Skeletons/TopicListSkeleton';
 import { ARIA_FOCUS, FULLSCREEN } from '../constants';
 import useNavigator from '../hooks/useNavigator';
 import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
@@ -53,7 +53,7 @@ function Profile() {
 
       <MediaSpace size={6} />
 
-      <Suspense fallback={<TopicCardContainerSkeleton />}>
+      <Suspense fallback={<TopicListSkeleton />}>
         <TopicCardList
           url="/members/my/topics"
           errorMessage="로그인 후 이용해주세요."
