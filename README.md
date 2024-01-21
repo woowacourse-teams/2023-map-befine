@@ -45,76 +45,35 @@
 <br />
 <br />
 
-<table>
-  <tr>
-    <td>
-      <p style="font-size: larger;">
-        관심 있는 지도들을 골라
-        여러 장소를 한 번에 모아보세요.
-      </p>
-      <p >
-        예를 들어, 산책 명소 지도와 카페 지도를 모아
-        데이트 코스를 만들 수 있어요.
-      </p>
-    </td>
-    <td><img  src="https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/10a4aebe-77ee-4b0b-9870-9abd59ca3052" alt="image" /></td>
-  </tr>
-</table>
+### 관심 있는 지도들을 골라 여러 장소를 한 번에 모아보세요.
+
+예를 들어, 산책 명소 지도와 카페 지도를 모아 데이트 코스를 만들 수 있어요.
+
+![image](https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/26a2d8cf-e7bb-4f7e-89b4-b75e4ad4d55a)
 
 <br />
 
-<table>
-  <tr>
-      <td><img src="https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/0cd59a39-2b37-4f3f-a777-403f45b548ff" alt="image" /></td>
-    <td>
-      <p style="font-size: 24px; font-weight: bold">
-        기록하거나 공유하고 싶은
-        장소를 추가해 보세요.
-      </p>
-      <p >
-        지도에 핀을 추가해보세요.
-        장소에 이름을 붙이고, 나만의 생각과 사진을 남겨보세요.
-      </p>
-    </td>
-  </tr>
-</table>
+### 기록하거나 공유하고 싶은 장소를 추가해 보세요.
+
+지도에 핀을 추가해보세요. 장소에 이름을 붙이고, 나만의 생각과 사진을 남겨보세요.
+
+![image](https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/2e33a06b-6f24-4ebb-bb7e-f8005cb38c75)
 
 <br />
 
-<table>
-  <tr>
-    <td>
-      <p style="font-size: 24px; font-weight: bold">
-        나만의 지도를 만들어
-        함께 채워나가 보세요.
-      </p>
-      <p >
-        다 함께 볼 수도, 혼자 볼 수도 있어요.
-        원하는 친구들만 지도에 참여하도록 정할 수 있어요.
-      </p>
-    </td>
-    <td><img src="https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/df5f87bf-1056-438b-a502-26f87b783699" alt="image" /></td>
-  </tr>
-</table>
+### 나만의 지도를 만들어 함께 채워나가 보세요.
+
+다 함께 볼 수도, 혼자 볼 수도 있어요. 원하는 친구들만 지도에 참여하도록 정할 수 있어요.
+
+![image](https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/bbc93da0-eb71-47f4-96e8-c87f29f7bf96)
 
 <br />
 
-<table>
-  <tr>
-      <td><img src="https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/ec421219-c407-48c3-8856-cf338fdac743" alt="image" /></td>
-    <td>
-      <p style="font-size: 24px; font-weight: bold">
-        공개된 다른 지도에서
-        마음에 드는 핀을 가져올 수도 있어요.
-      </p>
-      <p >
-        마음에 드는 핀들만 뽑아서
-        새로운 지도를 쉽게 만들어보세요.
-        나만의 고유한 핀으로 복사할 수 있어요.
-      </p>
-    </td>
-  </tr>
-</table>
+### 공개된 다른 지도에서 마음에 드는 핀을 가져올 수도 있어요.
+
+마음에 드는 핀들만 뽑아서 새로운 지도를 쉽게 만들어보세요. 나만의 고유한 핀으로 복사할 수 있어요.
+
+![image](https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/43a367b2-92f5-48d0-992e-da5a0b12e343)
 
 <br />
 <br />
@@ -136,11 +95,11 @@
 
 ### 인프라 구조
 
-![image](https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/cd3dba90-f585-422b-985e-858549f0284f)
+![인프라 png 001](https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/7e8d69ca-424f-4aef-8791-131b02468c55)
 
 ### CI/CD 파이프라인
 
-![image](https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/8f205c06-660a-46c9-ad99-278e22e31fc6)
+![KakaoTalk_Photo_2024-01-21-20-39-21](https://github.com/woowacourse-teams/2023-map-befine/assets/89172499/47010f11-c1cc-4314-a301-d4a9f38c475b)
 
 <br />
 <br />
