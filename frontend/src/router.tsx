@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import RootPage from './pages/RootPage';
 import Search from './pages/Search';
+import TopicListSkeleton from './components/Skeletons/TopicListSkeleton';
 
 const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
 const NewPin = lazy(() => import('./pages/NewPin'));
@@ -116,9 +117,9 @@ const routes: routeElement[] = [
       {
         path: 'my-page',
         element: (
-          <SuspenseComp>
+          <Suspense fallback={<TopicListSkeleton />}>
             <Profile />
-          </SuspenseComp>
+          </Suspense>
         ),
         withAuth: true,
       },
