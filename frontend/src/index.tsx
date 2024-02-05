@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ReactDOM from 'react-dom/client';
 import ReactGA from 'react-ga4';
 import { ThemeProvider } from 'styled-components';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -24,8 +23,6 @@ const queryClient = new QueryClient({
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
 const root = ReactDOM.createRoot(rootElement);
-
-const queryClient = new QueryClient();
 
 // if (process.env.NODE_ENV === 'development') {
 //   const { worker } = require('./mocks/browser');

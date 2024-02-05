@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import useGetTopics from '../../apiHooks/new/useGetTopics';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
@@ -6,7 +7,6 @@ import Grid from '../common/Grid';
 import Space from '../common/Space';
 import Text from '../common/Text';
 import TopicCard from '../TopicCard';
-import useProfileList from '../../hooks/queries/useProfileList';
 
 interface TopicCardListProps {
   url: string;

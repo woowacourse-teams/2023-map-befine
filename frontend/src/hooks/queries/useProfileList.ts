@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getProfile } from '../../apis/Patrick';
+
+import { getProfile } from '../../apis/new';
 
 const useProfileList = () => {
   const { data, refetch } = useSuspenseQuery({
