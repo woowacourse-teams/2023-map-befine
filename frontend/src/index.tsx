@@ -33,6 +33,8 @@ if (process.env.REACT_APP_GOOGLE_ANALYTICS) {
   ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS);
 }
 
+const queryClient = new QueryClient();
+
 root.render(
   <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={theme}>

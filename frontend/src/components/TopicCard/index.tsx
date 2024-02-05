@@ -1,4 +1,5 @@
-import { SyntheticEvent, useContext, useState } from 'react';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
+import { useContext, useState } from 'react';
 import { styled } from 'styled-components';
 
 import SeeTogetherSVG from '../../assets/seeTogetherBtn_filled.svg';
@@ -26,7 +27,9 @@ interface OnClickDesignatedProps {
 interface TopicCardExtendedProps extends TopicCardProps {
   cardType: 'default' | 'modal';
   onClickDesignated?: ({ topicId, topicName }: OnClickDesignatedProps) => void;
-  getTopicsFromServer?: () => void;
+  getTopicsFromServer?: (
+    options?: RefetchOptions | undefined,
+  ) => Promise<QueryObserverResult<TopicCardProps[], Error>>;
 }
 
 function TopicCard({
@@ -39,7 +42,6 @@ function TopicCard({
   pinCount,
   bookmarkCount,
   isInAtlas,
-  isBookmarked,
   onClickDesignated,
   getTopicsFromServer,
 }: TopicCardExtendedProps) {
