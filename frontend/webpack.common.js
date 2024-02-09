@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ProvidePlugin, DefinePlugin } = require('webpack');
 const DotenvWebpackPlugin = require('dotenv-webpack');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   entry: {
@@ -26,6 +27,9 @@ module.exports = {
     }),
     new DotenvWebpackPlugin({
       systemvars: true,
+    }),
+    new BundleAnalyzerPlugin({
+      openAnalyzer: true,
     }),
   ],
   resolve: {
