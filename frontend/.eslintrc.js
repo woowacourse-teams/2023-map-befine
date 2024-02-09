@@ -41,6 +41,8 @@ module.exports = {
     'react/no-unused-prop-types': 'off',
     'no-underscore-dangle': 'off',
     'default-case': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'no-dupe-keys': 'off',
   },
   settings: {
     'import/resolver': {
