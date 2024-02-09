@@ -11,8 +11,8 @@
     }
   ],
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true, // eslint
-    "source.fixAll.stylelint": true // Stylelint
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
   },
   // formatter
   "editor.defaultFormatter": "esbenp.prettier-vscode",
