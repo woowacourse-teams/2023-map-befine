@@ -30,7 +30,7 @@ module.exports = {
       systemvars: true,
     }),
     new BundleAnalyzerPlugin({
-      openAnalyzer: true,
+      openAnalyzer: false,
     }),
     new CompressionPlugin({
       filename: '[path][base].gz',
