@@ -51,7 +51,7 @@ function UpdateMyInfo({
       $justifyContent="center"
       $alignItems="center"
     >
-      <MyInfoImg src={myInfo.imageUrl} />
+      <MyInfoImg src={myInfo.imageUrl} alt="내 프로필 이미지" />
       <Space size={5} />
       <Box>
         <MyInfoInput value={myInfo.nickName} onChange={onChangeMyInfoName} />

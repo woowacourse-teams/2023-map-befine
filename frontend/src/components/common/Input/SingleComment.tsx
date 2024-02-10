@@ -111,6 +111,7 @@ function SingleComment({
       <Flex $gap="12px">
         <ProfileImage
           src={comment.creatorImageUrl}
+          alt="프로필 이미지"
           width="40px"
           height="40px"
         />
@@ -202,6 +203,7 @@ function SingleComment({
               <div style={{ display: 'flex', gap: '12px' }}>
                 <ProfileImage
                   src={user?.imageUrl || ''}
+                  alt="프로필 이미지"
                   width="40px"
                   height="40px"
                 />
@@ -228,6 +230,7 @@ function SingleComment({
             <Flex>
               <ProfileImage
                 src={replyList[0].creatorImageUrl || ''}
+                alt="프로필 이미지"
                 width="28px"
                 height="28px"
               />
