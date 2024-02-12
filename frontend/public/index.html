@@ -2,19 +2,41 @@
 <html lang="ko">
   <head>
     <base href="/" />
-    <link
-      rel="icon"
-      href="https://dr702blqc4x5d.cloudfront.net/2023-map-be-fine/icon/favicon.svg"
-    />
+    <link rel="icon" href="./mapbefine_favicon.svg" />
     <meta charset="utf-8" />
     <meta name="theme-color" content="#000000" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="cache-control" content="max-age=31536000, no-cache" />
+
+    <title>괜찮을지도</title>
+    <meta
+      name="keyword"
+      content="지도, 붕어빵, 카페, 관심사, 맛집, 명소, 기록, 모아보기, 공유"
+    />
+    <meta
+      name="description"
+      content="내 관심사로 지도를 만들어보세요. 여러 지도를 한 번에 모아볼 수도 있고, 공개된 다른 지도에서 마음에 드는 장소만 뽑아서 내 지도에 추가할 수도 있어요."
+    />
+
+    <meta property="og:title" content="괜찮을지도" />
+    <meta
+      property="og:description"
+      content="내 관심사로 지도를 만들어보세요."
+    />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:url" content="https://mapbefine.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="괜찮을지도" />
+    <meta property="og:image" content="./mapbefine_og_image.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- T Map -->
     <script
       script
       src="https://apis.openapi.sk.com/tmap/vectorjs?version=1&&appKey=P2MX6F1aaf428AbAyahIl9L8GsIlES04aXS9hgxo"
     ></script>
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <!-- Google tag (gtag.js) -->
     <script
@@ -30,10 +52,5 @@
 
       gtag('config', 'G-5BQ0F8QB8B');
     </script>
-
-    <title>괜찮을지도</title>
-  </head>
-  <body>
-    <div id="root"></div>
   </body>
 </html>

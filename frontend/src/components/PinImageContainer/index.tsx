@@ -116,7 +116,7 @@ function PinImageContainer({ images, getPinData }: PinImageContainerProps) {
         {isModalOpen && (
           <ImageModal closeModalHandler={closeModal}>
             <ModalImageWrapper>
-              <ModalImage src={modalImage} />
+              <ModalImage src={modalImage} alt="선택한 장소 이미지" />
               <Space size={3} />
               <Button variant="custom" onClick={closeModal}>
                 닫기

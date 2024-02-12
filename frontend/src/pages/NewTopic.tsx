@@ -190,7 +190,7 @@ function NewTopic() {
         <Flex>
           {showImage && (
             <>
-              <ShowImage src={showImage} alt="사진 이미지" /> <Space size={2} />{' '}
+              <ShowImage src={showImage} alt="지도 이미지" /> <Space size={2} />{' '}
             </>
           )}
 
