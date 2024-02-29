@@ -2,19 +2,18 @@ import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
-import { getApi } from '../../apis/getApi';
 import Space from '../../components/common/Space';
 import PullPin from '../../components/PullPin';
 import PinsOfTopicSkeleton from '../../components/Skeletons/PinsOfTopicSkeleton';
 import { LAYOUT_PADDING, SIDEBAR } from '../../constants';
 import { CoordinatesContext } from '../../context/CoordinatesContext';
-import useRealDistanceOfPin from '../../hooks/useRealDistanceOfPin';
 import useResizeMap from '../../hooks/useResizeMap';
 import useSetLayoutWidth from '../../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../../hooks/useSetNavbarHighlight';
 import useTags from '../../hooks/useTags';
 import useMapStore from '../../store/mapInstance';
 import PinDetail from '../PinDetail';
+import useClusterCoordinates from './hooks/useClusterCoordinates';
 import useTopicDetailQuery from './hooks/useTopicDetailQuery';
 
 const PinsOfTopic = lazy(() => import('../../components/PinsOfTopic'));
@@ -30,39 +29,15 @@ function SelectedTopic() {
   const zoomTimerIdRef = useRef<NodeJS.Timeout | null>(null);
   const dragTimerIdRef = useRef<NodeJS.Timeout | null>(null);
   const { mapInstance } = useMapStore((state) => state);
-  const { getDistanceOfPin } = useRealDistanceOfPin();
 
   const { data: topicDetail, refetch: getTopicDetail } =
     useTopicDetailQuery(topicId);
+  const setClusteredCoordinates = useClusterCoordinates(topicId);
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
     useTags();
 
   useSetNavbarHighlight('none');
   useResizeMap();
-
-  const setClusteredCoordinates = async () => {
-    if (!topicDetail || !mapInstance) return;
-
-    const newCoordinates: any = [];
-    const distanceOfPinSize = getDistanceOfPin(mapInstance);
-
-    const diameterPins = await getApi<any>(
-      `/topics/clusters?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
-    );
-
-    diameterPins.forEach((clusterOrPin: any, idx: number) => {
-      newCoordinates.push({
-        topicId,
-        id: clusterOrPin.pins[0].id || `cluster ${idx}`,
-        pinName: clusterOrPin.pins[0].name,
-        latitude: clusterOrPin.latitude,
-        longitude: clusterOrPin.longitude,
-        pins: clusterOrPin.pins,
-      });
-    });
-
-    setCoordinates(newCoordinates);
-  };
 
   const setPrevCoordinates = () => {
     setCoordinates((prev) => [...prev]);

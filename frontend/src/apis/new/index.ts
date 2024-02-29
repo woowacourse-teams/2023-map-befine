@@ -1,3 +1,4 @@
+import { ClusteredCoordinates } from '../../pages/SelectedTopic/types';
 import { TopicCardProps, TopicDetailProps } from '../../types/Topic';
 import { http } from './http';
 
@@ -8,3 +9,11 @@ export const getProfile = () =>
 
 export const getTopicDetail = (topicId: string) =>
   http.get<TopicDetailProps[]>(`/topics/ids?ids=${topicId}`);
+
+export const getClusteredCoordinates = (
+  topicId: string,
+  distanceOfPinSize: number,
+) =>
+  http.get<ClusteredCoordinates[]>(
+    `/topics/clusters?ids=${topicId}&image-diameter=${distanceOfPinSize}`,
+  );
