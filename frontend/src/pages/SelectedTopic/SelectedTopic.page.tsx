@@ -15,19 +15,18 @@ import useMapStore from '../../store/mapInstance';
 import PinDetail from '../PinDetail';
 import useClusterCoordinates from './hooks/useClusterCoordinates';
 import useHandleMapInteraction from './hooks/useHandleMapInteraction';
+import useSetSelectedPinId from './hooks/useSetSelectedPinId';
 import useTopicDetailQuery from './hooks/useTopicDetailQuery';
 
 const PinsOfTopic = lazy(() => import('../../components/PinsOfTopic'));
 
 function SelectedTopic() {
   const { topicId } = useParams() as { topicId: string };
-  const [searchParams, _] = useSearchParams();
-  const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
-  const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { width } = useSetLayoutWidth(SIDEBAR);
 
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } = useTags();
+  const { isDoubleSidebarOpen, selectedPinId, setIsDoubleSidebarOpen, setSelectedPinId } = useSetSelectedPinId();
   const { data: topicDetail, refetch: getTopicDetail } = useTopicDetailQuery(topicId);
   const setClusteredCoordinates = useClusterCoordinates(topicId);
 
@@ -41,18 +40,6 @@ function SelectedTopic() {
   useEffect(() => {
     setTags([]);
   }, []);
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-
-    if (queryParams.has('pinDetail')) {
-      setSelectedPinId(Number(queryParams.get('pinDetail')));
-      setIsOpen(true);
-      return;
-    }
-
-    setSelectedPinId(null);
-  }, [searchParams]);
 
   if (!topicId || !topicDetail) return <></>;
 
@@ -82,15 +69,15 @@ function SelectedTopic() {
       {selectedPinId && (
         <>
           <ToggleButton
-            $isCollapsed={!isOpen}
+            $isCollapsed={!isDoubleSidebarOpen}
             onClick={() => {
-              setIsOpen(!isOpen);
+              setIsDoubleSidebarOpen(!isDoubleSidebarOpen);
             }}
-            aria-label={`장소 상세 설명 버튼 ${isOpen ? '닫기' : '열기'}`}
+            aria-label={`장소 상세 설명 버튼 ${isDoubleSidebarOpen ? '닫기' : '열기'}`}
           >
             ◀
           </ToggleButton>
-          <PinDetailWrapper className={isOpen ? '' : 'collapsedPinDetail'}>
+          <PinDetailWrapper className={isDoubleSidebarOpen ? '' : 'collapsedPinDetail'}>
             <PinDetail
               width={width}
               pinId={selectedPinId}
