@@ -6,7 +6,7 @@ import { getApi } from '../../apis/getApi';
 import Space from '../../components/common/Space';
 import PullPin from '../../components/PullPin';
 import PinsOfTopicSkeleton from '../../components/Skeletons/PinsOfTopicSkeleton';
-import { LAYOUT_PADDING, PIN_SIZE, SIDEBAR } from '../../constants';
+import { LAYOUT_PADDING, SIDEBAR } from '../../constants';
 import { CoordinatesContext } from '../../context/CoordinatesContext';
 import useRealDistanceOfPin from '../../hooks/useRealDistanceOfPin';
 import useResizeMap from '../../hooks/useResizeMap';
@@ -14,15 +14,14 @@ import useSetLayoutWidth from '../../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../../hooks/useSetNavbarHighlight';
 import useTags from '../../hooks/useTags';
 import useMapStore from '../../store/mapInstance';
-import { TopicDetailProps } from '../../types/Topic';
 import PinDetail from '../PinDetail';
+import useTopicDetailQuery from './hooks/useTopicDetailQuery';
 
 const PinsOfTopic = lazy(() => import('../../components/PinsOfTopic'));
 
 function SelectedTopic() {
-  const { topicId } = useParams();
+  const { topicId } = useParams() as { topicId: string };
   const [searchParams, _] = useSearchParams();
-  const [topicDetail, setTopicDetail] = useState<TopicDetailProps | null>(null);
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
@@ -33,19 +32,13 @@ function SelectedTopic() {
   const { mapInstance } = useMapStore((state) => state);
   const { getDistanceOfPin } = useRealDistanceOfPin();
 
+  const { data: topicDetail, refetch: getTopicDetail } =
+    useTopicDetailQuery(topicId);
   const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
     useTags();
+
   useSetNavbarHighlight('none');
   useResizeMap();
-
-  const getAndSetDataFromServer = async () => {
-    const topicInArray = await getApi<TopicDetailProps[]>(
-      `/topics/ids?ids=${topicId}`,
-    );
-    const topic = topicInArray[0];
-
-    setTopicDetail(topic);
-  };
 
   const setClusteredCoordinates = async () => {
     if (!topicDetail || !mapInstance) return;
@@ -83,7 +76,6 @@ function SelectedTopic() {
   };
 
   useEffect(() => {
-    getAndSetDataFromServer();
     setTags([]);
   }, []);
 
@@ -156,7 +148,7 @@ function SelectedTopic() {
           topicDetail={topicDetail}
           setSelectedPinId={setSelectedPinId}
           setIsEditPinDetail={setIsEditPinDetail}
-          setTopicsFromServer={getAndSetDataFromServer}
+          setTopicsFromServer={getTopicDetail}
         />
       </Suspense>
 
