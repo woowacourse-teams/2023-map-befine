@@ -20,7 +20,6 @@ import PinDetail from '../PinDetail';
 const PinsOfTopic = lazy(() => import('../../components/PinsOfTopic'));
 
 function SelectedTopic() {
-  const { Tmapv3 } = window;
   const { topicId } = useParams();
   const [searchParams, _] = useSearchParams();
   const [topicDetail, setTopicDetail] = useState<TopicDetailProps | null>(null);
