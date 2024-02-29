@@ -2,22 +2,22 @@ import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
-import { getApi } from '../apis/getApi';
-import Space from '../components/common/Space';
-import PullPin from '../components/PullPin';
-import PinsOfTopicSkeleton from '../components/Skeletons/PinsOfTopicSkeleton';
-import { LAYOUT_PADDING, PIN_SIZE, SIDEBAR } from '../constants';
-import { CoordinatesContext } from '../context/CoordinatesContext';
-import useRealDistanceOfPin from '../hooks/useRealDistanceOfPin';
-import useResizeMap from '../hooks/useResizeMap';
-import useSetLayoutWidth from '../hooks/useSetLayoutWidth';
-import useSetNavbarHighlight from '../hooks/useSetNavbarHighlight';
-import useTags from '../hooks/useTags';
-import useMapStore from '../store/mapInstance';
-import { TopicDetailProps } from '../types/Topic';
-import PinDetail from './PinDetail';
+import { getApi } from '../../apis/getApi';
+import Space from '../../components/common/Space';
+import PullPin from '../../components/PullPin';
+import PinsOfTopicSkeleton from '../../components/Skeletons/PinsOfTopicSkeleton';
+import { LAYOUT_PADDING, PIN_SIZE, SIDEBAR } from '../../constants';
+import { CoordinatesContext } from '../../context/CoordinatesContext';
+import useRealDistanceOfPin from '../../hooks/useRealDistanceOfPin';
+import useResizeMap from '../../hooks/useResizeMap';
+import useSetLayoutWidth from '../../hooks/useSetLayoutWidth';
+import useSetNavbarHighlight from '../../hooks/useSetNavbarHighlight';
+import useTags from '../../hooks/useTags';
+import useMapStore from '../../store/mapInstance';
+import { TopicDetailProps } from '../../types/Topic';
+import PinDetail from '../PinDetail';
 
-const PinsOfTopic = lazy(() => import('../components/PinsOfTopic'));
+const PinsOfTopic = lazy(() => import('../../components/PinsOfTopic'));
 
 function SelectedTopic() {
   const { Tmapv3 } = window;
