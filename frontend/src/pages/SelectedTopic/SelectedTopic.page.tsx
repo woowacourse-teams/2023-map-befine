@@ -14,6 +14,7 @@ import useTags from '../../hooks/useTags';
 import useMapStore from '../../store/mapInstance';
 import PinDetail from '../PinDetail';
 import useClusterCoordinates from './hooks/useClusterCoordinates';
+import useHandleMapInteraction from './hooks/useHandleMapInteraction';
 import useTopicDetailQuery from './hooks/useTopicDetailQuery';
 
 const PinsOfTopic = lazy(() => import('../../components/PinsOfTopic'));
@@ -24,70 +25,22 @@ function SelectedTopic() {
   const [selectedPinId, setSelectedPinId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
-  const { setCoordinates } = useContext(CoordinatesContext);
   const { width } = useSetLayoutWidth(SIDEBAR);
-  const zoomTimerIdRef = useRef<NodeJS.Timeout | null>(null);
-  const dragTimerIdRef = useRef<NodeJS.Timeout | null>(null);
-  const { mapInstance } = useMapStore((state) => state);
 
-  const { data: topicDetail, refetch: getTopicDetail } =
-    useTopicDetailQuery(topicId);
+  const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } = useTags();
+  const { data: topicDetail, refetch: getTopicDetail } = useTopicDetailQuery(topicId);
   const setClusteredCoordinates = useClusterCoordinates(topicId);
-  const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } =
-    useTags();
 
+  useHandleMapInteraction({
+    topicId,
+    onAfterInteraction: setClusteredCoordinates,
+  });
   useSetNavbarHighlight('none');
   useResizeMap();
-
-  const setPrevCoordinates = () => {
-    setCoordinates((prev) => [...prev]);
-  };
-
-  const adjustMapDirection = () => {
-    if (!mapInstance) return;
-
-    mapInstance.setBearing(0);
-    mapInstance.setPitch(0);
-  };
 
   useEffect(() => {
     setTags([]);
   }, []);
-
-  useEffect(() => {
-    setClusteredCoordinates();
-
-    const onDragEnd = (evt: evt) => {
-      if (dragTimerIdRef.current) {
-        clearTimeout(dragTimerIdRef.current);
-      }
-
-      dragTimerIdRef.current = setTimeout(() => {
-        setPrevCoordinates();
-        adjustMapDirection();
-      }, 100);
-    };
-    const onZoomEnd = (evt: evt) => {
-      if (zoomTimerIdRef.current) {
-        clearTimeout(zoomTimerIdRef.current);
-      }
-
-      zoomTimerIdRef.current = setTimeout(() => {
-        setClusteredCoordinates();
-        adjustMapDirection();
-      }, 100);
-    };
-
-    if (!mapInstance) return;
-
-    mapInstance.on('DragEnd', onDragEnd);
-    mapInstance.on('ZoomEnd', onZoomEnd);
-
-    return () => {
-      mapInstance.off('DragEnd', onDragEnd);
-      mapInstance.off('ZoomEnd', onZoomEnd);
-    };
-  }, [topicDetail]);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -104,10 +57,7 @@ function SelectedTopic() {
   if (!topicId || !topicDetail) return <></>;
 
   return (
-    <Wrapper
-      width={`calc(${width} - ${LAYOUT_PADDING})`}
-      $selectedPinId={selectedPinId}
-    >
+    <Wrapper width={`calc(${width} - ${LAYOUT_PADDING})`} $selectedPinId={selectedPinId}>
       <Space size={3} />
       {tags.length > 0 && (
         <PullPin
