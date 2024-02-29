@@ -1,17 +1,15 @@
-import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { lazy, Suspense, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import Space from '../../components/common/Space';
 import PullPin from '../../components/PullPin';
 import PinsOfTopicSkeleton from '../../components/Skeletons/PinsOfTopicSkeleton';
 import { LAYOUT_PADDING, SIDEBAR } from '../../constants';
-import { CoordinatesContext } from '../../context/CoordinatesContext';
 import useResizeMap from '../../hooks/useResizeMap';
 import useSetLayoutWidth from '../../hooks/useSetLayoutWidth';
 import useSetNavbarHighlight from '../../hooks/useSetNavbarHighlight';
 import useTags from '../../hooks/useTags';
-import useMapStore from '../../store/mapInstance';
 import PinDetail from '../PinDetail';
 import useClusterCoordinates from './hooks/useClusterCoordinates';
 import useHandleMapInteraction from './hooks/useHandleMapInteraction';
@@ -24,8 +22,7 @@ function SelectedTopic() {
   const { topicId } = useParams() as { topicId: string };
   const [isEditPinDetail, setIsEditPinDetail] = useState<boolean>(false);
   const { width } = useSetLayoutWidth(SIDEBAR);
-
-  const { tags, setTags, onClickInitTags, onClickCreateTopicWithTags } = useTags();
+  const { tags, onClickInitTags, onClickCreateTopicWithTags } = useTags({ isInitTags: true });
   const { isDoubleSidebarOpen, selectedPinId, setIsDoubleSidebarOpen, setSelectedPinId } = useSetSelectedPinId();
   const { data: topicDetail, refetch: getTopicDetail } = useTopicDetailQuery(topicId);
   const setClusteredCoordinates = useClusterCoordinates(topicId);
@@ -36,10 +33,6 @@ function SelectedTopic() {
   });
   useSetNavbarHighlight('none');
   useResizeMap();
-
-  useEffect(() => {
-    setTags([]);
-  }, []);
 
   if (!topicId || !topicDetail) return <></>;
 

@@ -1,9 +1,13 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { TagContext } from '../context/TagContext';
 import useNavigator from './useNavigator';
 
-const useTags = () => {
+interface Props {
+  isInitTags: boolean;
+}
+
+const useTags = ({ isInitTags }: Props) => {
   const { tags, setTags } = useContext(TagContext);
   const { routePage } = useNavigator();
 
@@ -15,7 +19,13 @@ const useTags = () => {
     setTags([]);
   };
 
-  return { tags, setTags, onClickInitTags, onClickCreateTopicWithTags };
+  useEffect(() => {
+    if (isInitTags) return;
+
+    setTags([]);
+  }, []);
+
+  return { tags, onClickInitTags, onClickCreateTopicWithTags };
 };
 
 export default useTags;
