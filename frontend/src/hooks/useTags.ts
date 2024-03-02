@@ -20,9 +20,7 @@ const useTags = ({ isInitTags }: Props) => {
   };
 
   useEffect(() => {
-    if (isInitTags) return;
-
-    setTags([]);
+    if (isInitTags) setTags([]);
   }, []);
 
   return { tags, onClickInitTags, onClickCreateTopicWithTags };
