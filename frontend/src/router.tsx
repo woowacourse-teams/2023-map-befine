@@ -8,7 +8,9 @@ import NotFound from './pages/NotFound';
 import RootPage from './pages/RootPage';
 import Search from './pages/Search';
 
-const SelectedTopic = lazy(() => import('./pages/SelectedTopic'));
+const SelectedTopic = lazy(
+  () => import('./pages/SelectedTopic/SelectedTopic.page'),
+);
 const NewPin = lazy(() => import('./pages/NewPin'));
 const NewTopic = lazy(() => import('./pages/NewTopic'));
 const SeeAllBestTopics = lazy(() => import('./pages/SeeAllBestTopics'));
