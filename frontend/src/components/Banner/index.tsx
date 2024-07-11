@@ -22,17 +22,7 @@ export default function Banner() {
   };
 
   return (
-    <Swiper
-      as="section"
-      width={1140}
-      height={400}
-      $simpleTab
-      $tabBoxPosition="bottom"
-      $isNotTabBoxShow
-      swipeable
-      swiper
-      autoplay
-    >
+    <Swiper as="section" width={1140} height={400} $tabBoxPosition="bottom" autoplay>
       <Tab label="붕어빵 지도">
         <Box cursor="pointer" onClick={goToBoongABbangTopic}>
           <BannerImage
