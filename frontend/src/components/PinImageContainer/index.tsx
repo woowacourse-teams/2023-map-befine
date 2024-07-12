@@ -59,9 +59,7 @@ function PinImageContainer({ images, getPinData }: PinImageContainerProps) {
                   $errorDefaultSrc={NOT_FOUND_IMAGE}
                 />
               </div>
-              <RemoveImageIconWrapper
-                onClick={() => onRemovePinImage(image.id)}
-              >
+              <RemoveImageIconWrapper onClick={() => onRemovePinImage(image.id)}>
                 <RemoveImageButton />
               </RemoveImageIconWrapper>
             </ImageWrapper>
@@ -84,15 +82,7 @@ function PinImageContainer({ images, getPinData }: PinImageContainerProps) {
 
   return (
     <Wrapper>
-      <Swiper
-        as="ul"
-        width={330}
-        height={100}
-        $elementsOneTab={3}
-        swiper
-        swipeable
-        $isNotTabBoxShow
-      >
+      <Swiper tag="ul" width={330} height={100} $slidePerTab={3}>
         {images.map((image, index) => (
           <Tab label={`${index}`} key={image.id}>
             <ImageWrapper key={`image-${index}`}>
@@ -105,9 +95,7 @@ function PinImageContainer({ images, getPinData }: PinImageContainerProps) {
                   $errorDefaultSrc={NOT_FOUND_IMAGE}
                 />
               </div>
-              <RemoveImageIconWrapper
-                onClick={() => onRemovePinImage(image.id)}
-              >
+              <RemoveImageIconWrapper onClick={() => onRemovePinImage(image.id)}>
                 <RemoveImageButton />
               </RemoveImageIconWrapper>
             </ImageWrapper>

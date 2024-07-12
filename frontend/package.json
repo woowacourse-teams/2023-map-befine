@@ -20,7 +20,7 @@
     "@tanstack/react-query-devtools": "^5.17.9",
     "axios": "^1.5.1",
     "history": "^5.3.0",
-    "map-befine-swiper": "^0.8.3",
+    "map-befine-swiper": "^0.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ga4": "^2.1.0",

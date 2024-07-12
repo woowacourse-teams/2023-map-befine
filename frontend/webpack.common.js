@@ -2,7 +2,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ProvidePlugin, DefinePlugin } = require('webpack');
 const DotenvWebpackPlugin = require('dotenv-webpack');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
@@ -28,9 +27,6 @@ module.exports = {
     }),
     new DotenvWebpackPlugin({
       systemvars: true,
-    }),
-    new BundleAnalyzerPlugin({
-      openAnalyzer: false,
     }),
     new CompressionPlugin({
       filename: '[path][base].gz',

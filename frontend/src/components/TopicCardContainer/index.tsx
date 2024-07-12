@@ -30,22 +30,11 @@ function TopicCardContainer({
     <section>
       <Flex $justifyContent="space-between" $alignItems="flex-end">
         <Box>
-          <MediaText
-            as="h2"
-            color="black"
-            $fontSize="extraLarge"
-            $fontWeight="bold"
-            tabIndex={0}
-          >
+          <MediaText as="h2" color="black" $fontSize="extraLarge" $fontWeight="bold" tabIndex={0}>
             {containerTitle}
           </MediaText>
           <Space size={0} />
-          <MediaText
-            color="gray"
-            $fontSize="default"
-            $fontWeight="normal"
-            tabIndex={0}
-          >
+          <MediaText color="gray" $fontSize="default" $fontWeight="normal" tabIndex={0}>
             {containerDescription}
           </MediaText>
         </Box>
@@ -68,14 +57,16 @@ function TopicCardContainer({
       <Space size={4} />
 
       <Swiper
-        as="ul"
+        tag="ul"
         width={1140}
-        height={300}
-        $elementsOneTab={5}
-        $elementsMediaQueries={[1180, 900, 660, 320]}
-        swiper
-        swipeable
-        $isNotTabBoxShow
+        height="auto"
+        $slidePerTab={5}
+        $breakPoints={{
+          1100: 4,
+          900: 3,
+          660: 2,
+          320: 1,
+        }}
       >
         {topics &&
           topics.map(
