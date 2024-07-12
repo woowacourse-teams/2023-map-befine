@@ -82,7 +82,7 @@ function PinImageContainer({ images, getPinData }: PinImageContainerProps) {
 
   return (
     <Wrapper>
-      <Swiper as="ul" width={330} height={100} $slidePerTab={3}>
+      <Swiper tag="ul" width={330} height={100} $slidePerTab={3}>
         {images.map((image, index) => (
           <Tab label={`${index}`} key={image.id}>
             <ImageWrapper key={`image-${index}`}>

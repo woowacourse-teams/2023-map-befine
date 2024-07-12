@@ -57,9 +57,9 @@ function TopicCardContainer({
       <Space size={4} />
 
       <Swiper
-        as="ul"
+        tag="ul"
         width={1140}
-        height={300}
+        height="auto"
         $slidePerTab={5}
         $breakPoints={{
           1100: 4,
